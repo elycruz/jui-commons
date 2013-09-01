@@ -8,11 +8,18 @@
 $.widget('jui.rotateItemsIntoPlace', $.jui.juiBase, {
     options: {
         animation: {
-            duration: 0.16,
+            /**
+             * Could be a function also which would receive the
+             * item, the index and would be called on this
+             */
             from: {
-                rotation: -120,
-                opacity: 0,
-                left: -20
+                duration: 0.16,
+                options: {
+                    rotation: -120,
+                    opacity: 0,
+                    left: -20
+                },
+                easing: null
             }
         },
         timeline: {
@@ -30,7 +37,7 @@ $.widget('jui.rotateItemsIntoPlace', $.jui.juiBase, {
     _create: function () {
         var plugin = this,
             ops = plugin.options,
-        items = plugin.getItems(),
+            items = plugin.getItems(),
             timeline = plugin.getTimeline();
 
         // If no items do nothing
@@ -43,7 +50,12 @@ $.widget('jui.rotateItemsIntoPlace', $.jui.juiBase, {
             var item = $(this);
             for (prop in ops.animation) {
                 if (prop === 'from' || prop === 'to') {
-                    timeline[prop](item, ops.animation.duration, ops.animation[prop]);
+                    var propOptions = ops.animation[prop];
+                    if (typeof propOptions === 'function') {
+                        propOptions = propOptions.call(this, item, i);
+                    }
+                    timeline[prop](item, propOptions.duration,
+                        propOptions.options, propOptions.easing);
                 }
             }
         });
@@ -55,7 +67,7 @@ $.widget('jui.rotateItemsIntoPlace', $.jui.juiBase, {
     getTimeline: function () {
         var ops = this.options;
         if (empty(ops.timeline.timeline)) {
-            ops.timeline.timeline = new TimelineLite(ops.timeline.options);
+            ops.timeline.timeline = new TimelineMax(ops.timeline.options);
         }
         return ops.timeline.timeline;
     }

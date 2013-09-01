@@ -1,113 +1,128 @@
+@import "compass/css3/transform";
+@import "compass/css3/transition";
+
 html, body {
-  margin: 0;
-  padding: 10px;
-  font: normal 110% Arial, Helvetica, Verdana, sans-serif;
+    margin: 0;
+    padding: 10px;
+    font: normal 110% Arial, Helvetica, Verdana, sans-serif;
 }
 
 .none {
-  display: none;
+    display: none;
 }
 
 .wrapper {
-  position: relative;
-  width: 100%;
+    position: relative;
+    width: 100%;
 }
 
 //
 .creative-slide-show {
-  position: relative;
-  width: 100%;
-  min-width: 1024px;
-  height: 280px;
-  min-height: 240px;
-  background: #96f226;
-
-  header, footer, section, .body, .item, .items, .controls, div {
     position: relative;
-  }
-
-  .controls {
-    width: 100%;
-    height: 248px;
-    z-index: 1000;
-    > .prev-btn,
-    > .next-btn {
-      top: 0;
-      bottom: 0;
-      width: 60px;
-      height: 100%;
-      text-align: center;
-      vertical-align: center;
-      font: bold 38px;
-      background: rgba(255,255,255,0.38);
-    }
-    .prev-btn {
-      float: left;
-      left: 0;
-    }
-    .next-btn {
-      float: right;
-      right: 0;
-    }
-  }
-
-  .items {
-    position: absolute;
-    left: 0;
     width: 100%;
     min-width: 1024px;
-    overflow: auto;
-    height: 280px;
-    float: left;
-    z-index: 999;
+    height: 400px;
+    min-height: 400px;
+    background: #96f226;
+    overflow: hidden;
+    z-index: 9999;
 
-    .item {
-      position: absolute;
-      overflow: hidden;
-      width: 60px;
-      height: 240px;
-      float: left;
-      background: rgba(0, 0, 0, 0.38);
-      border: 3px solid #000;
-
-      &.selected {
-        width: 320px;
-      }
-
-      header {
-        position: absolute;
-        width: 320px;
-        height: 36px;
-        background: rgba(0,0,0,0.38);
-        border-bottom: 3px solid #000;
-      }
-      .body {
-        position: absolute;
-        top: 36px;
-        clear: both;
-        float: left;
-        width: 100%;
-        .dir {
-          border: 1px solid #fff;
-        }
-      }
-
-      .body .right {
-        position: absolute;
-        width: 140px;
-        right: 0;
-      }
-
-      .body .left {
-        position: absolute;
-        width: 140px;
-        left: 0;
-      }
+    header, footer, section, .body, .item, .items, .controls, div {
+        position: relative;
     }
-    // .item
 
-  }
-  // .items
+    > .prev-btn,
+    > .next-btn {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 64px;
+        height: 100%;
+        text-align: center;
+        vertical-align: center;
+        font: bold 38px;
+        background: rgba(255, 255, 255, 0.38);
+        z-index: 10001;
+    }
+    > .prev-btn {
+        float: left;
+        left: 0;
+    }
+    > .next-btn {
+        float: right;
+        right: 0;
+    }
+
+    .items {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        min-width: 1024px;
+        height: auto;
+        margin-top: 80px;
+        float: left;
+        z-index: 10000;
+
+        .item {
+            position: relative;
+            overflow: hidden;
+            width: 60px;
+            height: 240px;
+            float: left;
+            background: rgb(120,255,120);
+            border: 3px solid #000;
+            //@include single-transition(width, 0.16s, linear);
+            //@include single-transition(height, 0.16s, linear);
+            //@include scale(1);
+
+            &.selected {
+                margin-top: - 40px;
+                width: 320px;
+                height: 320px;
+            }
+
+            &:hover {
+                z-index: 10001;
+            }
+
+            header {
+                position: absolute;
+                width: 320px;
+                height: 36px;
+                background: rgba(0, 0, 0, 0.38);
+                border-bottom: 3px solid #000;
+            }
+            .body {
+                position: absolute;
+                top: 36px;
+                clear: both;
+                float: left;
+                width: 100%;
+                .column {
+                    position: absolute;
+                    border: 1px solid #fff;
+                    margin: 10px;
+                    padding: 5px;
+                    background: rgba(255,255,255,0.20);
+                }
+            }
+
+            .body .right {
+                width: 120px;
+                float: right;
+                right: 0;
+            }
+
+            .body .left {
+                width: 120px;
+                float: left;
+                left: 0;
+            }
+        }
+        // .item
+
+    }
+    // .items
 }
 
 // .creative-...

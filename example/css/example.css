@@ -1,88 +1,92 @@
-/* line 1, ../sass/example.scss */
+/* line 4, ../sass/example.scss */
 html, body {
   margin: 0;
   padding: 10px;
   font: normal 110% Arial, Helvetica, Verdana, sans-serif;
 }
 
-/* line 7, ../sass/example.scss */
+/* line 10, ../sass/example.scss */
 .none {
   display: none;
 }
 
-/* line 11, ../sass/example.scss */
+/* line 14, ../sass/example.scss */
 .wrapper {
   position: relative;
   width: 100%;
 }
 
-/* line 17, ../sass/example.scss */
+/* line 20, ../sass/example.scss */
 .creative-slide-show {
   position: relative;
   width: 100%;
   min-width: 1024px;
-  height: 280px;
-  min-height: 240px;
+  height: 400px;
+  min-height: 400px;
   background: #96f226;
+  overflow: hidden;
+  z-index: 9999;
 }
-/* line 25, ../sass/example.scss */
+/* line 30, ../sass/example.scss */
 .creative-slide-show header, .creative-slide-show footer, .creative-slide-show section, .creative-slide-show .body, .creative-slide-show .item, .creative-slide-show .items, .creative-slide-show .controls, .creative-slide-show div {
   position: relative;
 }
-/* line 29, ../sass/example.scss */
-.creative-slide-show .controls {
-  width: 100%;
-  height: 248px;
-  z-index: 1000;
-}
-/* line 34, ../sass/example.scss */
-.creative-slide-show .controls > .prev-btn,
-.creative-slide-show .controls > .next-btn {
+/* line 35, ../sass/example.scss */
+.creative-slide-show > .prev-btn,
+.creative-slide-show > .next-btn {
+  position: absolute;
   top: 0;
   bottom: 0;
-  width: 60px;
+  width: 64px;
   height: 100%;
   text-align: center;
   vertical-align: center;
   font: bold 38px;
   background: rgba(255, 255, 255, 0.38);
+  z-index: 10001;
 }
-/* line 44, ../sass/example.scss */
-.creative-slide-show .controls .prev-btn {
+/* line 47, ../sass/example.scss */
+.creative-slide-show > .prev-btn {
   float: left;
   left: 0;
 }
-/* line 48, ../sass/example.scss */
-.creative-slide-show .controls .next-btn {
+/* line 51, ../sass/example.scss */
+.creative-slide-show > .next-btn {
   float: right;
   right: 0;
 }
-/* line 54, ../sass/example.scss */
+/* line 56, ../sass/example.scss */
 .creative-slide-show .items {
   position: absolute;
   left: 0;
   width: 100%;
   min-width: 1024px;
-  overflow: auto;
-  height: 280px;
+  height: auto;
+  margin-top: 80px;
   float: left;
-  z-index: 999;
+  z-index: 10000;
 }
-/* line 64, ../sass/example.scss */
+/* line 66, ../sass/example.scss */
 .creative-slide-show .items .item {
-  position: absolute;
+  position: relative;
   overflow: hidden;
   width: 60px;
   height: 240px;
   float: left;
-  background: rgba(0, 0, 0, 0.38);
+  background: #78ff78;
   border: 3px solid #000;
 }
-/* line 73, ../sass/example.scss */
+/* line 78, ../sass/example.scss */
 .creative-slide-show .items .item.selected {
+  margin-top: -40px;
   width: 320px;
+  height: 320px;
 }
-/* line 77, ../sass/example.scss */
+/* line 84, ../sass/example.scss */
+.creative-slide-show .items .item:hover {
+  z-index: 10001;
+}
+/* line 88, ../sass/example.scss */
 .creative-slide-show .items .item header {
   position: absolute;
   width: 320px;
@@ -90,7 +94,7 @@ html, body {
   background: rgba(0, 0, 0, 0.38);
   border-bottom: 3px solid #000;
 }
-/* line 84, ../sass/example.scss */
+/* line 95, ../sass/example.scss */
 .creative-slide-show .items .item .body {
   position: absolute;
   top: 36px;
@@ -98,19 +102,23 @@ html, body {
   float: left;
   width: 100%;
 }
-/* line 90, ../sass/example.scss */
-.creative-slide-show .items .item .body .dir {
-  border: 1px solid #fff;
-}
-/* line 95, ../sass/example.scss */
-.creative-slide-show .items .item .body .right {
+/* line 101, ../sass/example.scss */
+.creative-slide-show .items .item .body .column {
   position: absolute;
-  width: 140px;
+  border: 1px solid #fff;
+  margin: 10px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.2);
+}
+/* line 110, ../sass/example.scss */
+.creative-slide-show .items .item .body .right {
+  width: 120px;
+  float: right;
   right: 0;
 }
-/* line 101, ../sass/example.scss */
+/* line 116, ../sass/example.scss */
 .creative-slide-show .items .item .body .left {
-  position: absolute;
-  width: 140px;
+  width: 120px;
+  float: left;
   left: 0;
 }
