@@ -21,34 +21,68 @@ html, body {
   position: relative;
   width: 100%;
   min-width: 1024px;
-  height: 240px;
+  height: 280px;
   min-height: 240px;
+  background: #96f226;
 }
-/* line 24, ../sass/example.scss */
+/* line 25, ../sass/example.scss */
 .creative-slide-show header, .creative-slide-show footer, .creative-slide-show section, .creative-slide-show .body, .creative-slide-show .item, .creative-slide-show .items, .creative-slide-show .controls, .creative-slide-show div {
   position: relative;
 }
-/* line 28, ../sass/example.scss */
-.creative-slide-show .items {
+/* line 29, ../sass/example.scss */
+.creative-slide-show .controls {
   width: 100%;
-  height: 240px;
-  float: left;
+  height: 248px;
+  z-index: 1000;
 }
-/* line 33, ../sass/example.scss */
+/* line 34, ../sass/example.scss */
+.creative-slide-show .controls > .prev-btn,
+.creative-slide-show .controls > .next-btn {
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  height: 100%;
+  text-align: center;
+  vertical-align: center;
+  font: bold 38px;
+  background: rgba(255, 255, 255, 0.38);
+}
+/* line 44, ../sass/example.scss */
+.creative-slide-show .controls .prev-btn {
+  float: left;
+  left: 0;
+}
+/* line 48, ../sass/example.scss */
+.creative-slide-show .controls .next-btn {
+  float: right;
+  right: 0;
+}
+/* line 54, ../sass/example.scss */
+.creative-slide-show .items {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  min-width: 1024px;
+  overflow: auto;
+  height: 280px;
+  float: left;
+  z-index: 999;
+}
+/* line 64, ../sass/example.scss */
 .creative-slide-show .items .item {
-  position: relative;
+  position: absolute;
   overflow: hidden;
-  width: 32px;
+  width: 60px;
   height: 240px;
   float: left;
   background: rgba(0, 0, 0, 0.38);
   border: 3px solid #000;
 }
-/* line 42, ../sass/example.scss */
+/* line 73, ../sass/example.scss */
 .creative-slide-show .items .item.selected {
   width: 320px;
 }
-/* line 46, ../sass/example.scss */
+/* line 77, ../sass/example.scss */
 .creative-slide-show .items .item header {
   position: absolute;
   width: 320px;
@@ -56,7 +90,7 @@ html, body {
   background: rgba(0, 0, 0, 0.38);
   border-bottom: 3px solid #000;
 }
-/* line 53, ../sass/example.scss */
+/* line 84, ../sass/example.scss */
 .creative-slide-show .items .item .body {
   position: absolute;
   top: 36px;
@@ -64,17 +98,17 @@ html, body {
   float: left;
   width: 100%;
 }
-/* line 59, ../sass/example.scss */
+/* line 90, ../sass/example.scss */
 .creative-slide-show .items .item .body .dir {
   border: 1px solid #fff;
 }
-/* line 64, ../sass/example.scss */
+/* line 95, ../sass/example.scss */
 .creative-slide-show .items .item .body .right {
   position: absolute;
   width: 140px;
   right: 0;
 }
-/* line 70, ../sass/example.scss */
+/* line 101, ../sass/example.scss */
 .creative-slide-show .items .item .body .left {
   position: absolute;
   width: 140px;

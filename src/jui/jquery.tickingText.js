@@ -24,7 +24,7 @@
      * Jquery Plugin for making Ticking Text
      * @triggers tickint-text:complete
      */
-    $.widget('edlc.tickingText', $.edlc.splitText, {
+    $.widget('jui.tickingText', $.jui.splitText, {
 
         options:{
             minCharCode:40,

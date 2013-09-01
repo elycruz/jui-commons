@@ -7,17 +7,19 @@
  */
 $(function () {
     var slideShow = $('.creative-slide-show'),
-        prevItem = null,
-        offset = 0;
-//    $('.item', slideShow).each(function (i) {
-//        var item = $(this), position = item.width() * i;
-//        if (prevItem !== null) {
-//            offset = prevItem.width() > item.width() ? prevItem.width() : 0;
-//        }
-//        item.css({left: item.width() * i + offset});
-//        prevItem = item;
-//    });
+        offset = 0,
+        items = $('.item', slideShow),
+        itemWidth = items.eq(0).width();
 
-    slideShow.paginatorWithTextField();
+    items.each(function (i) {
+        var item = $(this),
+            position =  itemWidth * i;
+        item.css({left: position + offset});
+        if (offset === 0) {
+            offset = item.width() > itemWidth ? item.width() : 0;
+        }
+    });
+
+//    slideShow.accordianSlideShow();
 
 });

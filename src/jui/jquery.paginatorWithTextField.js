@@ -5,9 +5,10 @@
  * Time: 1:15 AM
  * To change this template use File | Settings | File Templates.
  */
-$.widget('edlc.paginatorWithTextField', $.edlc.paginator, {
+$.widget('jui.paginatorWithTextField', $.jui.paginator, {
     options: {
         pages: {
+            selector: null,
             length: 100
         },
         items: {
@@ -44,27 +45,49 @@ $.widget('edlc.paginatorWithTextField', $.edlc.paginator, {
             selector: '> .controls > .last-btn',
             enabled: true,
             html: ''
-        }
+        },
+        eventsPrefix: 'jui.paginatorWithTextField'
     },
     _create: function () {
         // Determine number of pages
         this._super();
     },
+
+    // Actions
     firstPage: function () {
         this._gotoPageNum(0);
-        console.log('Page: ' + this.options.pages.pointer);
+        console.log('Page: ' + this.getPointer());
     },
     prevPage: function () {
         this._prevPage();
-        console.log('Page: ' + this.options.pages.pointer);
+        console.log('Page: ' + this.getPointer());
     },
     nextPage: function () {
         this._nextPage();
-        console.log('Page: ' + this.options.pages.pointer);
+        console.log('Page: ' + this.getPointer());
     },
     lastPage: function () {
         this._gotoPageNum(this.options.pages.length - 1);
-        console.log('Page: ' + this.options.pages.pointer);
+        console.log('Page: ' + this.getPointer());
+    },
+
+    // ========================================================
+    // Getters and Setters
+    // ========================================================
+    getFirstBtn: function () {
+        this._getElementFromConfigSection('firstBtn');
+    },
+    getPrevBtn: function () {
+        this._getElementFromConfigSection('prevBtn');
+    },
+    getNextBtn: function () {
+        this._getElementFromConfigSection('nextBtn');
+    },
+    getLastBtn: function () {
+        this._getElementFromConfigSection('lastBtn');
+    },
+    getTextField: function () {
+        this._getElementFromConfigSection('textField');
     }
 
 });

@@ -13,7 +13,7 @@
      * Jquery Plugin for making Ticking Text
      * @triggers tickint-text:complete
      */
-    $.widget('edlc.splitText', {
+    $.widget('jui.splitText', {
         options:{
             states: {
                 unsplit: 'unsplit',

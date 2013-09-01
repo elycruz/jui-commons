@@ -8,9 +8,11 @@
  * @triggers 'paginator:gotoPageNum', {pointer: Number}
  */
 
-$.widget('edlc.paginator', {
+$.widget('jui.paginator', $.jui.juiBase, {
     options: {
         items: {
+            elm: null,
+            selector: '> .items > .item',
             firstInRange: 0,
             lastInRange: 0,
             perPage: 0
@@ -23,16 +25,11 @@ $.widget('edlc.paginator', {
             length: 0,
             direction: 1
         },
+        eventsPrefix: 'jui.paginator',
         onGotoPageNum: null,
         debug_output: '',
         debug: true
     },
-
-    /**
-     * Events Prefix.  Exists cause this plugin is meant to be extended (abstract).
-     * @type String
-     */
-    _eventsPrefix: 'paginator',
 
     /**
      * Goes to page 1 which fires paginator:gotoPageNum event.
@@ -86,12 +83,37 @@ $.widget('edlc.paginator', {
         ops.pages.pointer = num;
 
         // Trigger
-        this.element.trigger(ops._eventsPrefix + ':gotoPageNum', {pointer: num});
+        this.element.trigger(ops.eventsPrefix + ':gotoPageNum', {pointer: num});
 
         // If callback is set
         if (ops.onGotoPageNum !== null && typeof ops.onGotoPageNum === 'function') {
             ops.onGotoPageNum.call(this, {pointer: num});
         }
+    },
+
+    _calculateNumbers: function () {
+        var ops = this.options,
+            items = this.getItems(),
+            itemsPerPage;
+
+        // If items per page is a function
+        itemsPerPage = typeof ops.items.perPage === 'function' ?
+            itemsPerPage = ops.items.perPage() : ops.itemsPerPage;
+
+        // Pages length
+        ops.pages.length = items.length / itemsPerPage;
+        ops.pages.length = ops.pages.length !== NaN ? ops.pages.length : 0;
+    },
+
+    refresh: function () {
+        this._calculateNumbers();
+    },
+
+    getItems: function () {
+        this._getElementFromConfigSection('items');
+    },
+    getPointer: function () {
+        return this.options.pages.pointer;
     }
 
 });
