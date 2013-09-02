@@ -6,18 +6,17 @@
  * To change this template use File | Settings | File Templates.
  */
 $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
-    options: {
-        items: {
-            animation: {
+    options:{
+        items:{
+            animation:{
                 from: function (item, i) {
-                    var width = item.css('border-width').match(/\d+/)[0] * 2 + item.width();
+                    var width = 3 * 2 + item.width();
                     return {
-                        duration: 1, //0.0538,
+                        duration: 0.0538,
                         options: {
                             opacity: 0,
-                            rotationX: 45 * (i % 2 ? -1 : 1),
-                            left: width * i + width,
-                            top: item.height() * (i % 2 ? -1 : 1)
+//                            rotationX: 45 * (i % 2 ? -1 : 1),
+                            left: width
                         },
                         easing: null
                     };
@@ -25,11 +24,17 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             }
         }
     },
-    _create: function () {
+    _create:function () {
         var plugin = this, ops = plugin.options,
             items = plugin.getItems();
 
         // Animate items
-        plugin.element.rotateItemsIntoPlace({animation: ops.items.animation});
+        $.jui.animateItemsWithGsap.apply(this);
+        plugin._addEmptyItems();
+    },
+
+    _addEmptyItems: function () {
+        var plugin = this;
+        plugin.getItems();
     }
 });

@@ -5,8 +5,12 @@
  * Time: 5:50 AM
  * To change this template use File | Settings | File Templates.
  */
-$.widget('jui.rotateItemsIntoPlace', $.jui.juiBase, {
+$.widget('jui.animateItemsWithGsap', $.jui.juiBase, {
     options: {
+        /**
+         * possible animation keys include [from, to, staggarFrom, staggarTo]
+         * Their values can be either functions or object literals
+         */
         animation: {
             /**
              * Could be a function also which would receive the
@@ -22,6 +26,7 @@ $.widget('jui.rotateItemsIntoPlace', $.jui.juiBase, {
                 easing: null
             }
         },
+        // Where we store the TimelineLite | TimelineMax instance for this plugin
         timeline: {
             timeline: null,
             options: {
@@ -61,9 +66,11 @@ $.widget('jui.rotateItemsIntoPlace', $.jui.juiBase, {
         });
 
     },
+
     getItems: function () {
         return this._getElementFromConfigSection('items');
     },
+
     getTimeline: function () {
         var ops = this.options;
         if (empty(ops.timeline.timeline)) {
@@ -71,4 +78,5 @@ $.widget('jui.rotateItemsIntoPlace', $.jui.juiBase, {
         }
         return ops.timeline.timeline;
     }
+
 });

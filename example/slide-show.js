@@ -38,8 +38,8 @@ $(function () {
                 if (!target.hasClass('selected')) {
                     tl.to(target, 0.16, {scaleX: 0.9, scaleY: 0.9});
                 }
-                items.removeClass('selected');
-                target.toggleClass('selected');
+                items.removeClass('selected', 1000, function () {});
+                target.toggleClass('selected', 1000, function () {});
             })
             .mouseout(function (e) {
                 var target = $(this);
@@ -47,8 +47,9 @@ $(function () {
                      {css: {scaleX: 1, scaleY: 1, boxShadow: 'none'}});
             });
 
+        // On Close Button
         $('> header > button.close-btn', item).click(function   (e) {
-            items.removeClass('selected');
+            items.removeClass('selected', 1000);
         });
     });
 
