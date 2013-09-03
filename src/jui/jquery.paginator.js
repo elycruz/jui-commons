@@ -110,8 +110,13 @@ $.widget('jui.paginator', $.jui.juiBase, {
     },
 
     getItems: function () {
-        this._getElementFromConfigSection('items');
+        return this._getElementFromConfigSection('items');
     },
+
+    getItemsContainer: function () {
+        return this._getElementFromConfigSection('itemsContainer');
+    },
+
     getPointer: function () {
         return this.options.pages.pointer;
     }

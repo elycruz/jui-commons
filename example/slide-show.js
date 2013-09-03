@@ -53,12 +53,6 @@ $(function () {
         });
     });
 
-    // Resize items container
-    // @todo offset width based on number of items on screen
-
-
-    itemsContainer.width((items.length + 10) * itemWidth);
-
     // Accordian Slide Show
     slideShow.accordianSlideShow({
         items: {

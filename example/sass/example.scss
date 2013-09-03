@@ -64,6 +64,7 @@ html, body {
         float: left;
         z-index: 10000;
 
+        .spacer,
         .item {
             position: relative;
             overflow: hidden;
@@ -121,6 +122,12 @@ html, body {
             }
         }
         // .item
+
+        // Spacer used to add padding to top and
+        // bottom (front and back) of items array
+        .spacer {
+            visibility: hidden;
+        }
 
     }
     // .items
