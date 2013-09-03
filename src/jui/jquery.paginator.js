@@ -91,22 +91,18 @@ $.widget('jui.paginator', $.jui.juiBase, {
         }
     },
 
-    _calculateNumbers: function () {
+    _calculateNumberOfPages: function () {
         var ops = this.options,
             items = this.getItems(),
             itemsPerPage;
 
         // If items per page is a function
         itemsPerPage = typeof ops.items.perPage === 'function' ?
-            itemsPerPage = ops.items.perPage() : ops.itemsPerPage;
+            itemsPerPage = ops.items.perPage.apply(this) : ops.items.PerPage;
 
         // Pages length
-        ops.pages.length = items.length / itemsPerPage;
+        ops.pages.length = Math.ceil(items.length / itemsPerPage);
         ops.pages.length = ops.pages.length !== NaN ? ops.pages.length : 0;
-    },
-
-    refresh: function () {
-        this._calculateNumbers();
     },
 
     getItems: function () {

@@ -6,179 +6,207 @@
  * To change this template use File | Settings | File Templates.
  */
 $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
-    options:{
-        nextBtn: {
-            selector: '.next-btn'
-        },
-        prevBtn: {
-            selector: '.prev-btn'
-        },
-        itemsSpacer:{
-            tagName:'div',
-            className:'spacer',
-            selector:'.spacer'
-        },
-        itemsContainerContainer: {
-            elm: null,
-            selector: '> .items-container'
-        },
-        itemsContainer: {
-            elm: null,
-            selector: '> .items-container > .items'
-        },
-        items:{
-            numPaddingItems: null,
-            item: {
-                isSelected: false,
-                normalWidth: null,
-                normalHeight: null,
-                selectedWidth: null,
-                selectedHeight: null
-            },
-            animation: {
-                from:function (item, i) {
-                    var width = 3 * 2 + item.width();
-                    return {
-                        duration:0.0538,
-                        options:{
-                            opacity:0,
+	options: {
+		nextBtn: {
+			selector: '.next-btn'
+		},
+		prevBtn: {
+			selector: '.prev-btn'
+		},
+		itemsSpacer: {
+			tagName: 'div',
+			className: 'spacer',
+			selector: '.spacer'
+		},
+		itemsContainerContainer: {
+			elm: null,
+			selector: '> .items-container'
+		},
+		itemsContainer: {
+			elm: null,
+			selector: '> .items-container > .items'
+		},
+		items: {
+			numPaddingItems: null,
+			item: {
+				isSelected: false,
+				normalWidth: null,
+				normalHeight: null,
+				selectedWidth: null,
+				selectedHeight: null,
+				border: [3, 3, 3, 3]
+			},
+			animation: {
+				from: function (item, i) {
+					var width = 6 + item.width();
+					return {
+						duration: 0.0538,
+						options: {
+							opacity: 0,
 //                            rotationX: 45 * (i % 2 ? -1 : 1),
-                            left:width
-                        },
-                        easing:null
-                    };
-                }
-            },
-            perPage: function () {
-                return 1024 / this.getItems().eq(0).width()
-            }
-        }
-    },
+							left: width
+						},
+						easing: null
+					};
+				}
+			},
+			perPage: function () {
+				return 1024 / this.getItems().eq(0).width()
+			}
+		}
+	},
 
-    _create:function () {
-        var plugin = this, ops = plugin.options,
-            items = plugin.getItems();
+	_create: function () {
+		var plugin = this, ops = plugin.options,
+			items = plugin.getItems();
 
-        // Super
-        plugin._super();
+		// Super
+		plugin._super();
 
-        // Animate items
-        $.jui.animateItemsWithGsap.apply(this);
+		// Animate items
+		$.jui.animateItemsWithGsap.apply(this);
 
-        // Add padding at beginning and end
-        plugin._addEmptyItems();
+		// Calculate numbers
+		plugin._calculateNumberOfPages();
 
-        // Add event listeners
-        plugin._addEventListeners();
-    },
+		// Add padding at beginning and end
+		plugin._addEmptyItems();
 
-    _addEventListeners: function () {
-        var plugin = this,
-            ops = plugin.options,
-            scrollableContainer = plugin._getItemsContainerContainer();
+		// Add event listeners
+		plugin._addEventListeners();
+	},
 
-        // Item Click
-        plugin.getItems().bind('click', function (e) {
-            var item = $(this),
-                itemWidth = plugin._getItemsItemWidth();
+	_addEventListeners: function () {
+		var plugin = this,
+			ops = plugin.options,
+			scrollableContainer = plugin._getItemsContainerContainer(),
+			items = plugin.getItems(),
+			regularItemWidth = plugin._getItemsItemWidth(),
+			expandedItemWidth = plugin._getItemsSelectedItemWidth();
 
-            console.log(item.offset().left);
-            scrollableContainer.animate({scrollLeft:
-                (ops.items.numPaddingItems / 2 + Number(item.attr('data-index'))) * itemWidth}, 300);
-        });
+		// Item Click
+		items.bind('click', function (e) {
+			var item = $(this);
 
-        // Prev and Next Btns
-        plugin.getNextBtn().bind('click', function (e) {
-            scrollableContainer.animate({scrollLeft: plugin.getPointer() * plugin._getScrollAmountPerPage()}, 300);
-        });
-    },
+			console.log(item.offset().left);
+			scrollableContainer.animate({scrollLeft: (ops.items.numPaddingItems / 4 + Number(item.attr('data-index'))) * regularItemWidth}, 300);
+		});
 
-    _getItemsItemWidth: function () {
-        return this._getItemsItemDimProp('width', 'normal');
-    },
+		// Prev and Next Btns
+		plugin.getNextBtn().bind('click', function (e) {
+//			var item = items.eq(plugin.getPointer());
+//			items.removeClass('selected');
+//			item.addClass('selected');
+			plugin.nextPage();
+			scrollableContainer.animate({scrollLeft: (plugin._getItemsPerPage() * regularItemWidth) * plugin.getPointer()}, 300);
+		});
 
-    _getItemsItemHeight: function () {
-        return this._getItemsItemDimProp('height', 'normal');
-    },
+		plugin.getPrevBtn().bind('click', function (e) {
+			var item = plugin._getSelectedItem();
 
-    _getItemsSelectedItemWidth: function () {
-        return this._getItemsItemDimProp('width', 'selected', '.selected');
-    },
+			if (item.length > 0) {
+				item.removeClass('selected');
+			}
 
-    _getItemsSelectedItemHeight: function () {
-        return this._getItemsItemDimProp('height', 'selected', '.selected');
-    },
 
-    _getItemsItemDimProp: function (dimPropName, dimPropPrefix, itemStateClass) {
+			plugin.prevPage();
+			scrollableContainer.animate({scrollLeft: (plugin._getItemsPerPage() * regularItemWidth) * plugin.getPointer()}, 300);
+		});
+	},
 
-        // If empty bail
-        if (empty(dimPropName)) {
-            return null;
-        }
+	_getItemsItemWidth: function () {
+		return this._getItemsItemDimProp('width', 'normal');
+	},
 
-        var ops = this.options, item,
-            items = this.getItems(),
-            key = dimPropPrefix + ucaseFirst(dimPropName),
-            value = ops.items.item[key];
+	_getItemsItemHeight: function () {
+		return this._getItemsItemDimProp('height', 'normal');
+	},
 
-        // Get prop key value
-        if (!isset(value)) {
-            item = itemStateClass ? $('>' + itemStateClass, items).eq(0) : items.eq(0);
-            value = this.options.items.item[key] = item[dimPropName]();
-        }
+	_getItemsSelectedItemWidth: function () {
+		return this._getItemsItemDimProp('width', 'selected', '.selected');
+	},
 
-        return value;
-    },
+	_getItemsSelectedItemHeight: function () {
+		return this._getItemsItemDimProp('height', 'selected', '.selected');
+	},
 
-    _addEmptyItems:function () {
-        var plugin = this,
-            ops = plugin.options,
-            items = plugin.getItems(),
-            i, itemsPadding = '',
-            itemsContainer = plugin.getItemsContainer(),
-            spacer = '<div class="'
-                + ops.itemsSpacer.className
-                + '">&nbsp;</div>';
+	_getItemsItemDimProp: function (dimPropName, dimPropPrefix, itemStateClass) {
 
-        // Set num padding items
-        ops.items.numPaddingItems = items.length;
+		// If empty bail
+		if (empty(dimPropName)) {
+			return null;
+		}
 
-        // Make some padding
-        for (i = 0; i < ops.items.numPaddingItems / 2; i += 1) {
-            itemsPadding += spacer;
-        }
+		var ops = this.options, item,
+			items = this.getItems(),
+			key = dimPropPrefix + ucaseFirst(dimPropName),
+			value = ops.items.item[key];
 
-        // Resize items container
-        itemsContainer.width((items.length * 2) * plugin._getItemsItemWidth());
+		// Get prop key value
+		if (!isset(value)) {
+			item = itemStateClass ? $('>' + itemStateClass, items).eq(0) : items.eq(0);
+			value = this.options.items.item[key] = item[dimPropName]() + 6;
+		}
 
-        // Add padding to the container
-        itemsContainer
-            .prepend(itemsPadding)
-            .append(itemsPadding);
+		return value;
+	},
 
-        // Scroll
-//        this._getItemsContainerContainer().scrollLeft(items.length / 2 * (items.eq(0).width() + 6));
-    },
+	_addEmptyItems: function () {
+		var plugin = this,
+			ops = plugin.options,
+			items = plugin.getItems(),
+			i, itemsPadding = '',
+			itemsContainer = plugin.getItemsContainer(),
+			spacer = '<div class="'
+				+ ops.itemsSpacer.className
+				+ '">&nbsp;</div>',
+			itemWidth = plugin._getItemsItemWidth();
 
-    _getItemsContainerContainer: function () {
-        return this._getElementFromConfigSection('itemsContainerContainer');
-    },
+		// Set num padding items
+		ops.items.numPaddingItems = items.length;
 
-    _getItemsPerPage: function () {
-        var ops = this.options,
-            retVal = isset(ops.items.perPage) ? ops.items.perPage : 1;
-        if (ops.items.perPage === 'function') {
-            retVal =  ops.items.perPage();
-        }
-        return retVal;
-    },
+		// Make some padding
+		for (i = 0; i < ops.items.numPaddingItems / 2; i += 1) {
+			itemsPadding += spacer;
+		}
 
-    _getScrollAmountPerPage: function () {
-        var ops = this.options,
-            normalPageWidth = (ops.items.numPaddingItems / 2 + this._getItemsPerPage()) * this._getItemsItemWidth();
-            return ops.items.isItemSelected ?
-                normalPageWidth - this._getItemsSelectedItemWidth() : normalPageWidth;
-    }
+		// Resize items container
+		itemsContainer.width((items.length * 2) * plugin._getItemsItemWidth());
+
+		// Add padding to the container
+		itemsContainer
+			.prepend(itemsPadding)
+			.append(itemsPadding);
+
+		// Scroll
+		this._getItemsContainerContainer().scrollLeft(items.length / 2 * itemWidth);
+	},
+
+	_getItemsContainerContainer: function () {
+		return this._getElementFromConfigSection('itemsContainerContainer');
+	},
+
+	_getItemsPerPage: function () {
+		var ops = this.options,
+			retVal = isset(ops.items.perPage) ? ops.items.perPage : 1;
+		if (typeof ops.items.perPage === 'function') {
+			retVal = ops.items.perPage.apply(this);
+		}
+		return Math.ceil(retVal);
+	},
+	_getSelectedItem: function () {
+		return $('.selected', this.getItems());
+	},
+	_getScrollAmountPerPage: function () {
+		var ops = this.options,
+			normalPageWidth = (ops.items.numPaddingItems / 2 + this._getItemsPerPage()) * this._getItemsItemWidth();
+		return ops.items.isItemSelected ?
+			normalPageWidth - this._getItemsSelectedItemWidth() : normalPageWidth;
+	},
+
+	_scrollToSelectedItem: function (selectedItem) {
+
+	}
 
 
 });
