@@ -75,19 +75,19 @@ $.widget('jui.paginatorWithTextField', $.jui.paginator, {
     // Getters and Setters
     // ========================================================
     getFirstBtn: function () {
-        this._getElementFromConfigSection('firstBtn');
+        return this._getElementFromConfigSection('firstBtn');
     },
     getPrevBtn: function () {
-        this._getElementFromConfigSection('prevBtn');
+        return this._getElementFromConfigSection('prevBtn');
     },
     getNextBtn: function () {
-        this._getElementFromConfigSection('nextBtn');
+        return this._getElementFromConfigSection('nextBtn');
     },
     getLastBtn: function () {
-        this._getElementFromConfigSection('lastBtn');
+        return this._getElementFromConfigSection('lastBtn');
     },
     getTextField: function () {
-        this._getElementFromConfigSection('textField');
+        return this._getElementFromConfigSection('textField');
     }
 
 });

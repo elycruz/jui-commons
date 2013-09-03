@@ -7,17 +7,35 @@
  */
 $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
     options:{
+        nextBtn: {
+            selector: '.next-btn'
+        },
+        prevBtn: {
+            selector: '.prev-btn'
+        },
         itemsSpacer:{
             tagName:'div',
             className:'spacer',
             selector:'.spacer'
         },
+        itemsContainerContainer: {
+            elm: null,
+            selector: '> .items-container'
+        },
         itemsContainer: {
             elm: null,
-            selector: '> .items'
+            selector: '> .items-container > .items'
         },
         items:{
-            animation:{
+            numPaddingItems: null,
+            item: {
+                isSelected: false,
+                normalWidth: null,
+                normalHeight: null,
+                selectedWidth: null,
+                selectedHeight: null
+            },
+            animation: {
                 from:function (item, i) {
                     var width = 3 * 2 + item.width();
                     return {
@@ -30,6 +48,9 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
                         easing:null
                     };
                 }
+            },
+            perPage: function () {
+                return 1024 / this.getItems().eq(0).width()
             }
         }
     },
@@ -43,7 +64,70 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
 
         // Animate items
         $.jui.animateItemsWithGsap.apply(this);
+
+        // Add padding at beginning and end
         plugin._addEmptyItems();
+
+        // Add event listeners
+        plugin._addEventListeners();
+    },
+
+    _addEventListeners: function () {
+        var plugin = this,
+            ops = plugin.options,
+            scrollableContainer = plugin._getItemsContainerContainer();
+
+        // Item Click
+        plugin.getItems().bind('click', function (e) {
+            var item = $(this),
+                itemWidth = plugin._getItemsItemWidth();
+
+            console.log(item.offset().left);
+            scrollableContainer.animate({scrollLeft:
+                (ops.items.numPaddingItems / 2 + Number(item.attr('data-index'))) * itemWidth}, 300);
+        });
+
+        // Prev and Next Btns
+        plugin.getNextBtn().bind('click', function (e) {
+            scrollableContainer.animate({scrollLeft: plugin.getPointer() * plugin._getScrollAmountPerPage()}, 300);
+        });
+    },
+
+    _getItemsItemWidth: function () {
+        return this._getItemsItemDimProp('width', 'normal');
+    },
+
+    _getItemsItemHeight: function () {
+        return this._getItemsItemDimProp('height', 'normal');
+    },
+
+    _getItemsSelectedItemWidth: function () {
+        return this._getItemsItemDimProp('width', 'selected', '.selected');
+    },
+
+    _getItemsSelectedItemHeight: function () {
+        return this._getItemsItemDimProp('height', 'selected', '.selected');
+    },
+
+    _getItemsItemDimProp: function (dimPropName, dimPropPrefix, itemStateClass) {
+
+        // If empty bail
+        if (empty(dimPropName)) {
+            return null;
+        }
+
+        var ops = this.options, item,
+            items = this.getItems(),
+            key = dimPropPrefix + ucaseFirst(dimPropName),
+            value = ops.items.item[key];
+
+        // Get prop key value
+        if (!isset(value)) {
+            item = itemStateClass ? $('>' + itemStateClass, items).eq(0) : items.eq(0);
+            value = this.options.items.item[key] = item[dimPropName]();
+        }
+
+        return value;
     },
 
     _addEmptyItems:function () {
@@ -56,13 +140,16 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
                 + ops.itemsSpacer.className
                 + '">&nbsp;</div>';
 
+        // Set num padding items
+        ops.items.numPaddingItems = items.length;
+
         // Make some padding
-        for (i = 0; i < items.length / 2; i += 1) {
+        for (i = 0; i < ops.items.numPaddingItems / 2; i += 1) {
             itemsPadding += spacer;
         }
 
         // Resize items container
-        itemsContainer.width((items.length * 2) * items.eq(0).width());
+        itemsContainer.width((items.length * 2) * plugin._getItemsItemWidth());
 
         // Add padding to the container
         itemsContainer
@@ -70,6 +157,28 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             .append(itemsPadding);
 
         // Scroll
-        this.element.scrollLeft(items.length / 2 * (items.eq(0).width() + 6));
+//        this._getItemsContainerContainer().scrollLeft(items.length / 2 * (items.eq(0).width() + 6));
+    },
+
+    _getItemsContainerContainer: function () {
+        return this._getElementFromConfigSection('itemsContainerContainer');
+    },
+
+    _getItemsPerPage: function () {
+        var ops = this.options,
+            retVal = isset(ops.items.perPage) ? ops.items.perPage : 1;
+        if (ops.items.perPage === 'function') {
+            retVal =  ops.items.perPage();
+        }
+        return retVal;
+    },
+
+    _getScrollAmountPerPage: function () {
+        var ops = this.options,
+            normalPageWidth = (ops.items.numPaddingItems / 2 + this._getItemsPerPage()) * this._getItemsItemWidth();
+            return ops.items.isItemSelected ?
+                normalPageWidth - this._getItemsSelectedItemWidth() : normalPageWidth;
     }
+
+
 });

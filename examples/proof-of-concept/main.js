@@ -8,7 +8,7 @@
 $(function () {
     var slideShow = $('.creative-slide-show'),
         offset = 0,
-        itemsContainer = $('>.items', slideShow),
+        itemsContainer = $('> .items-container > .items', slideShow),
         items = $('.item', itemsContainer),
         itemWidth = items.eq(0).width() + 6; // + items.eq(0).css('border-width').match(/\d+/)[0] * 2;
 
@@ -16,7 +16,9 @@ $(function () {
         var item = $(this),
             tl = new TimelineLite();
 
-        item.data('timeline', tl);
+        // Add data index to element
+        item.attr('data-index', i);
+
         item
             .mouseup(function (e) {
                 var target = $(this);
@@ -56,6 +58,7 @@ $(function () {
     // Accordian Slide Show
     slideShow.accordianSlideShow({
         items: {
+            selector: '.items-container > .items > .item',
             animation: {
                 from: function (item, i) {
                     var width = 3 * 2 + item.width();

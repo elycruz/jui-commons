@@ -1,22 +1,22 @@
-/* line 4, ../sass/example.scss */
+/* line 4, ../sass/screen.scss */
 html, body {
   margin: 0;
   padding: 10px;
   font: normal 110% Arial, Helvetica, Verdana, sans-serif;
 }
 
-/* line 10, ../sass/example.scss */
+/* line 10, ../sass/screen.scss */
 .none {
   display: none;
 }
 
-/* line 14, ../sass/example.scss */
+/* line 14, ../sass/screen.scss */
 .wrapper {
   position: relative;
   width: 100%;
 }
 
-/* line 20, ../sass/example.scss */
+/* line 20, ../sass/screen.scss */
 .creative-slide-show {
   position: relative;
   width: 100%;
@@ -28,18 +28,11 @@ html, body {
   overflow: hidden;
   z-index: 9999;
 }
-/* line 31, ../sass/example.scss */
-.creative-slide-show header,
-.creative-slide-show footer,
-.creative-slide-show section,
-.creative-slide-show .body,
-.creative-slide-show .item,
-.creative-slide-show .items,
-.creative-slide-show .controls,
-.creative-slide-show div {
+/* line 31, ../sass/screen.scss */
+.creative-slide-show header, .creative-slide-show footer, .creative-slide-show section, .creative-slide-show .body, .creative-slide-show .item, .creative-slide-show .items, .creative-slide-show .controls, .creative-slide-show div {
   position: relative;
 }
-/* line 36, ../sass/example.scss */
+/* line 36, ../sass/screen.scss */
 .creative-slide-show > .prev-btn,
 .creative-slide-show > .next-btn {
   position: absolute;
@@ -53,17 +46,24 @@ html, body {
   background: rgba(255, 255, 255, 0.38);
   z-index: 10001;
 }
-/* line 48, ../sass/example.scss */
+/* line 48, ../sass/screen.scss */
 .creative-slide-show > .prev-btn {
   float: left;
   left: 0;
 }
-/* line 52, ../sass/example.scss */
+/* line 52, ../sass/screen.scss */
 .creative-slide-show > .next-btn {
   float: right;
   right: 0;
 }
-/* line 57, ../sass/example.scss */
+/* line 57, ../sass/screen.scss */
+.creative-slide-show .items-container {
+  width: 100%;
+  height: 100%;
+  min-width: 1024px;
+  overflow: hidden;
+}
+/* line 64, ../sass/screen.scss */
 .creative-slide-show .items {
   position: absolute;
   left: 0;
@@ -74,7 +74,7 @@ html, body {
   float: left;
   z-index: 10000;
 }
-/* line 68, ../sass/example.scss */
+/* line 75, ../sass/screen.scss */
 .creative-slide-show .items .spacer,
 .creative-slide-show .items .item {
   position: relative;
@@ -85,19 +85,19 @@ html, body {
   background: #78ff78;
   border: 3px solid #000;
 }
-/* line 80, ../sass/example.scss */
+/* line 87, ../sass/screen.scss */
 .creative-slide-show .items .spacer.selected,
 .creative-slide-show .items .item.selected {
   margin-top: -40px;
   width: 320px;
   height: 320px;
 }
-/* line 86, ../sass/example.scss */
+/* line 93, ../sass/screen.scss */
 .creative-slide-show .items .spacer:hover,
 .creative-slide-show .items .item:hover {
   z-index: 10001;
 }
-/* line 90, ../sass/example.scss */
+/* line 97, ../sass/screen.scss */
 .creative-slide-show .items .spacer header,
 .creative-slide-show .items .item header {
   position: absolute;
@@ -106,7 +106,7 @@ html, body {
   background: rgba(0, 0, 0, 0.38);
   border-bottom: 3px solid #000;
 }
-/* line 97, ../sass/example.scss */
+/* line 104, ../sass/screen.scss */
 .creative-slide-show .items .spacer .body,
 .creative-slide-show .items .item .body {
   position: absolute;
@@ -115,7 +115,7 @@ html, body {
   float: left;
   width: 100%;
 }
-/* line 103, ../sass/example.scss */
+/* line 110, ../sass/screen.scss */
 .creative-slide-show .items .spacer .body .column,
 .creative-slide-show .items .item .body .column {
   position: absolute;
@@ -124,21 +124,21 @@ html, body {
   padding: 5px;
   background: rgba(255, 255, 255, 0.2);
 }
-/* line 112, ../sass/example.scss */
+/* line 119, ../sass/screen.scss */
 .creative-slide-show .items .spacer .body .right,
 .creative-slide-show .items .item .body .right {
   width: 120px;
   float: right;
   right: 0;
 }
-/* line 118, ../sass/example.scss */
+/* line 125, ../sass/screen.scss */
 .creative-slide-show .items .spacer .body .left,
 .creative-slide-show .items .item .body .left {
   width: 120px;
   float: left;
   left: 0;
 }
-/* line 128, ../sass/example.scss */
+/* line 135, ../sass/screen.scss */
 .creative-slide-show .items .spacer {
   visibility: hidden;
 }

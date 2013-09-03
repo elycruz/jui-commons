@@ -54,6 +54,13 @@ html, body {
         right: 0;
     }
 
+    .items-container {
+        width: 100%;
+        height: 100%;
+        min-width: 1024px;
+        overflow: hidden;
+    }
+
     .items {
         position: absolute;
         left: 0;
