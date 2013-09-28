@@ -27,14 +27,14 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             selector: '> .items-container > .items'
         },
         items: {
+            pointer: 0,
             numPaddingItems: null,
             item: {
                 isSelected: false,
-                normalWidth: 60,
+                normalWidth: 64,
                 normalHeight: null,
-                selectedWidth: 980,
-                selectedHeight: null,
-                border: [3, 3, 3, 3]
+                selectedWidth: 960,
+                selectedHeight: null
             },
             animation: {
                 from: function (item, i) {
@@ -51,9 +51,23 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
                 }
             },
             perPage: function () {
-                return 1024 / this.getItems().eq(0).width();
+                return Math.ceil(this.element.width()
+                    / this.getItems()
+                    .not('.selected, .spacer').eq(0).width());
             }
         }
+    },
+
+    nextItem: function () {
+
+    },
+
+    prevItem: function () {
+
+    },
+
+    scrollToItemPointer: function () {
+
     },
 
     _create: function () {
@@ -65,9 +79,6 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
 
         // Animate items
         $.jui.animateItemsWithGsap.apply(this);
-
-        // Calculate numbers
-        plugin._calculateNumberOfPages();
 
         // Add padding at beginning and end
         plugin._addEmptyItems();
@@ -87,36 +98,35 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
         // Item Click
         items.bind('click', function (e) {
             var item = $(this);
-
-            console.log(item.offset().left);
+            ops.items.pointer = Number(item.attr('data-index'));
             scrollableContainer.animate({
-                scrollLeft: (ops.items.numPaddingItems
-                    / 4 + Number(item.attr('data-index')))
-                    * regularItemWidth}, 300);
+                scrollLeft: item[0].offsetLeft - regularItemWidth}, 300);
         });
+
+        // Size Items Container to num items
+//        plugin._sizeItemsContainerToItems();
 
         // Prev and Next Btns
         plugin.getNextBtn().bind('click', function (e) {
-//			var item = items.eq(plugin.getPointer());
-//			items.removeClass('selected');
-//			item.addClass('selected');
-            plugin.nextPage();
-            scrollableContainer.animate({
-                scrollLeft: (plugin._getItemsPerPage()
-                    * regularItemWidth) * plugin.getPointer()}, 300);
+//            if (ops.items.item.isSelected) {
+//                plugin.nextItem();
+//                plugin._scrollToItemPointer();
+//            }
+//            else {
+                plugin.nextPage();
+                plugin._scrollToPointerPosition();
+//            }
         });
 
         plugin.getPrevBtn().bind('click', function (e) {
-            var item = plugin._getSelectedItem();
-
-            if (item.length > 0) {
-                item.removeClass('selected');
-            }
-
-            plugin.prevPage();
-            scrollableContainer.animate({
-                scrollLeft: (plugin._getItemsPerPage()
-                    * regularItemWidth) * plugin.getPointer()}, 300);
+//            if (ops.items.item.isSelected) {
+//                plugin.prevItem();
+//                plugin._scrollToItemPointer();
+//            }
+//            else {
+                plugin.prevPage();
+                plugin._scrollToPointerPosition();
+//            }
         });
     },
 
@@ -163,30 +173,62 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             items = plugin.getItems(),
             i, itemsPadding = '',
             itemsContainer = plugin.getItemsContainer(),
-            spacer = '<div class="'
-                + ops.itemsSpacer.className
-                + '">&nbsp;</div>',
-            itemWidth = plugin._getItemsItemWidth();
+            itemWidth = plugin._getItemsItemWidth(),
+            itemsPerPage = plugin._getItemsPerPage();
 
         // Set num padding items
-        ops.items.numPaddingItems = items.length;
+        ops.items.numPaddingItems = itemsPerPage;
 
         // Make some padding
-        for (i = 0; i < ops.items.numPaddingItems / 2; i += 1) {
-            itemsPadding += spacer;
+        for (i = 0; i < ops.items.numPaddingItems; i += 1) {
+            itemsPadding += '<div class="'
+                + ops.itemsSpacer.className
+                + '">&nbsp;' + (i + 1) + '</div>';
         }
 
         // Resize items container
-        itemsContainer.width((items.length * 2) * plugin._getItemsItemWidth());
+        this._sizeItemsContainerToItems((items.length * 2)
+            * plugin._getItemsItemWidth());
 
         // Add padding to the container
-        itemsContainer
-            .prepend(itemsPadding)
-            .append(itemsPadding);
+        itemsContainer.prepend(itemsPadding);
+        itemsContainer.append(itemsPadding);
+
+        // Recalculate number of pages
+        this._reCalculateNumPages();
 
         // Scroll
-        this._getItemsContainerContainer().scrollLeft(items.length / 2 * itemWidth);
+        ops.pages.pointer = 0;
+        this._scrollToPointerPosition();
     },
+
+    _sizeItemsContainerToItems: function (width, height) {
+        width = width || this.getItems().length
+            * this._getItemsItemWidth();
+        this.getItemsContainer().width(width);
+        if (height) {
+            this.getItemsContainer().height(height);
+        }
+    },
+
+    _scrollToPointerPosition: function () {
+        var plugin = this,
+            item = plugin._getSelectedItem(),
+            pointer = plugin.getPointer() + 1,
+            scrollableContainer = plugin._getItemsContainerContainer(),
+            scrollTo = pointer * plugin._getScrollAmountPerPage();
+        if (item.length > 0) {
+            item.removeClass('selected');
+        }
+        scrollableContainer.animate({scrollLeft: scrollTo}, 300);
+    },
+
+    _reCalculateNumPages: function () {
+        this.options.pages.length = Math.ceil(this.getItems().length /
+            this._getItemsPerPage());
+    },
+
+    // ================================================================
 
     _getItemsContainerContainer: function () {
         return this._getElementFromConfigSection('itemsContainerContainer');
@@ -207,14 +249,14 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
 
     _getScrollAmountPerPage: function () {
         var ops = this.options,
-            normalPageWidth = (ops.items.numPaddingItems / 2 + this._getItemsPerPage()) * this._getItemsItemWidth();
-        return ops.items.isItemSelected ?
-            normalPageWidth - this._getItemsSelectedItemWidth() : normalPageWidth;
-    },
+            normalPageWidth = this._getItemsPerPage()
+                * this._getItemsItemWidth(),
+            itemPadding = ops.items.numPaddingItems;
 
-    _scrollToSelectedItem: function (selectedItem) {
-
+//        return ops.items.isItemSelected ?
+//            (itemPadding / 2) + normalPageWidth
+//                - this._getItemsSelectedItemWidth() :  normalPageWidth;
+        return normalPageWidth;
     }
-
 
 });

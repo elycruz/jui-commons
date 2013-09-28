@@ -20,7 +20,7 @@ html, body {
 .creative-slide-show {
     position: relative;
     width: 100%;
-    min-width: 1024px;
+    width: 1024px;
     height: 400px;
     min-height: 400px;
     background: #96f226;
@@ -79,14 +79,14 @@ html, body {
             height: 240px;
             float: left;
             background: rgb(120, 255, 120);
-            border: 3px solid #000;
+            border: 2px solid #000;
             //@include single-transition(width, 0.16s, linear);
             //@include single-transition(height, 0.16s, linear);
             //@include scale(1);
 
             &.selected {
                 margin-top: - 40px;
-                width: 980px;
+                width: 896px;
                 height: 320px;
             }
 
@@ -133,6 +133,7 @@ html, body {
         // Spacer used to add padding to top and
         // bottom (front and back) of items array
         .spacer {
+            //background: #ff0084;
             visibility: hidden;
         }
 

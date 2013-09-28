@@ -20,7 +20,7 @@ html, body {
 .creative-slide-show {
   position: relative;
   width: 100%;
-  min-width: 1024px;
+  width: 1024px;
   height: 400px;
   min-height: 400px;
   background: #96f226;
@@ -83,13 +83,13 @@ html, body {
   height: 240px;
   float: left;
   background: #78ff78;
-  border: 3px solid #000;
+  border: 2px solid #000;
 }
 /* line 87, ../sass/screen.scss */
 .creative-slide-show .items .spacer.selected,
 .creative-slide-show .items .item.selected {
   margin-top: -40px;
-  width: 980px;
+  width: 896px;
   height: 320px;
 }
 /* line 93, ../sass/screen.scss */
