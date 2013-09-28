@@ -32,7 +32,7 @@ $.widget('jui.paginator', $.jui.juiBase, {
     },
 
     /**
-     * Goes to page 1 which fires paginator:gotoPageNum event.
+     * Goes to page 1 which fires jquery-jui-paginator:gotoPageNum event.
      * @type Function
      */
     _create: function () {

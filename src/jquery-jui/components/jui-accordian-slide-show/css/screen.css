@@ -89,7 +89,7 @@ html, body {
 .creative-slide-show .items .spacer.selected,
 .creative-slide-show .items .item.selected {
   margin-top: -40px;
-  width: 320px;
+  width: 980px;
   height: 320px;
 }
 /* line 93, ../sass/screen.scss */
