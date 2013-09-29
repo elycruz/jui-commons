@@ -15,6 +15,7 @@
     "gsap": "greensock/GreenSock-JS#~1.10.2",
     "phpjs": "elycruz/phpjs#~0.4.9",
     "es5-shim": "~2.1.0",
-    "unsemantic": "*"
+    "unsemantic": "*",
+    "jquery-smartresize": "louisremi/jquery-smartresize"
   }
 }

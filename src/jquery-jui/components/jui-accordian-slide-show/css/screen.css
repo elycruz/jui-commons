@@ -20,7 +20,7 @@ html, body {
 .creative-slide-show {
   position: relative;
   width: 100%;
-  width: 1024px;
+  min-width: 1024px;
   height: 400px;
   min-height: 400px;
   background: #96f226;

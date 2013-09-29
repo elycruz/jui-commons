@@ -33,7 +33,7 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
                 isSelected: false,
                 normalWidth: 64,
                 normalHeight: null,
-                selectedWidth: 960,
+                selectedWidth: 964,
                 selectedHeight: null
             },
             animation: {
@@ -52,8 +52,7 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             },
             perPage: function () {
                 return Math.ceil(this.element.width()
-                    / this.getItems()
-                    .not('.selected, .spacer').eq(0).width());
+                    /  this.options.items.item.normalWidth); // this.getItems().not('.selected, .spacer').eq(0).width());
             }
         }
     },
@@ -97,14 +96,19 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
 
         // Item Click
         items.bind('click', function (e) {
-            var item = $(this);
+            var item = $(this),
+                leftOffset = (plugin.element.width() - expandedItemWidth);
+            leftOffset = /^\d/.test(leftOffset) ? leftOffset : 0;
             ops.items.pointer = Number(item.attr('data-index'));
+
             scrollableContainer.animate({
-                scrollLeft: item[0].offsetLeft - regularItemWidth}, 300);
+                scrollLeft: item[0].offsetLeft - leftOffset}, 300);
         });
 
         // Size Items Container to num items
-//        plugin._sizeItemsContainerToItems();
+        $(window).on('debouncedresize', function () {
+            plugin._reCalculateNumberOfPages();
+        });
 
         // Prev and Next Btns
         plugin.getNextBtn().bind('click', function (e) {
@@ -173,7 +177,7 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             items = plugin.getItems(),
             i, itemsPadding = '',
             itemsContainer = plugin.getItemsContainer(),
-            itemWidth = plugin._getItemsItemWidth(),
+            itemWidth = ops.items.item.normalWidth, //plugin._getItemsItemWidth(),
             itemsPerPage = plugin._getItemsPerPage();
 
         // Set num padding items
@@ -190,12 +194,14 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
         this._sizeItemsContainerToItems((items.length * 2)
             * plugin._getItemsItemWidth());
 
+        // Also add one expanded item/spacer
+        itemsContainer.append('<div class="' + ops.itemsSpacer.className + ' selected">&nbsp;</span>');
         // Add padding to the container
         itemsContainer.prepend(itemsPadding);
         itemsContainer.append(itemsPadding);
 
         // Recalculate number of pages
-        this._reCalculateNumPages();
+        this._reCalculateNumberOfPages();
 
         // Scroll
         ops.pages.pointer = 0;
@@ -223,7 +229,7 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
         scrollableContainer.animate({scrollLeft: scrollTo}, 300);
     },
 
-    _reCalculateNumPages: function () {
+    _reCalculateNumberOfPages: function () {
         this.options.pages.length = Math.ceil(this.getItems().length /
             this._getItemsPerPage());
     },
