@@ -29,6 +29,8 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
         items: {
             pointer: 0,
             numPaddingItems: null,
+            delayIntervals: [],
+            selector: '.items-container > .items > .item',
             item: {
                 isSelected: false,
                 normalWidth: 64,
@@ -36,37 +38,83 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
                 selectedWidth: 964,
                 selectedHeight: null
             },
-            animation: {
-                from: function (item, i) {
-                    var width = 6 + item.width();
-                    return {
-                        duration: 0.0538,
-                        options: {
-                            opacity: 0,
-//                            rotationX: 45 * (i % 2 ? -1 : 1),
-                            left: width
-                        },
-                        easing: null
-                    };
-                }
-            },
             perPage: function () {
                 return Math.ceil(this.element.width()
-                    /  this.options.items.item.normalWidth); // this.getItems().not('.selected, .spacer').eq(0).width());
+                    /  this.options.items.item.normalWidth);
             }
-        }
+        },
+        eventsPrefix: 'jui.accordianSlideShow'
     },
 
     nextItem: function () {
-
+        this._nextItem();
+        this._gotoItemAtItemPointer();
     },
 
     prevItem: function () {
+        this._prevItem();
+        this._gotoItemAtItemPointer();
+    },
+
+    gotoItemAtIndex: function (num) {
+        this._gotoItemAtItemPointer(num);
+    },
+
+    _nextItem: function () {
+        var ops = this.options;
+
+        // Set direction to next
+        ops.items.pointer_direction = 1;
+
+        if (ops.items.pointer < ops.items.length - 1) {
+            ops.items.pointer += 1;
+        }
+        else {
+            ops.items.pointer = 0;
+        }
 
     },
 
-    scrollToItemPointer: function () {
+    _prevItem: function () {
+        var ops = this.options;
+        if (ops.items.pointer > 0) {
+            ops.items.pointer -= 1;
+        }
+        else {
+            ops.items.pointer = ops.items.length - 1;
+        }
 
+        // Set direction to previous
+        ops.items.pointer_direction = -1;
+    },
+
+    _gotoItemAtItemPointer: function (index) {
+        var ops = this.options,
+            item;
+
+        // Set pointer if necessary
+        if (isset(index) && /\d+/.test(index)) {
+            ops.items.pointer = +index;
+        }
+
+        // Get item to selected
+        item = this.getItems().eq(ops.items.pointer);
+
+        // Set prev and next
+        ops.items.prev = ops.items.pointer - 1;
+        ops.items.next = ops.items.pointer + 1;
+
+        // Set selected item flag
+        ops.items.item.isSelected = true;
+
+        // Deselected selected items, except passed in index
+        this._deselectSelectedItems(ops.items.pointer);
+
+        // Select item
+        this._selectItem(item);
+
+        // Scroll to selected item
+        this._delayedScrollToSelectedItem(item, 380);
     },
 
     _create: function () {
@@ -76,14 +124,21 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
         // Super
         plugin._super();
 
-        // Animate items
-        $.jui.animateItemsWithGsap.apply(this);
-
         // Add padding at beginning and end
         plugin._addEmptyItems();
 
+        // Calculate number of pages
+        plugin._reCalculateNumberOfItems();
+
+        // Recalculate number of pages
+        plugin._reCalculateNumberOfPages();
+
         // Add event listeners
         plugin._addEventListeners();
+
+        // Scroll to pointer position
+        plugin._scrollToPointerPosition();
+
     },
 
     _addEventListeners: function () {
@@ -95,42 +150,35 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             expandedItemWidth = plugin._getItemsSelectedItemWidth();
 
         // Item Click
-        items.bind('click', function (e) {
-            var item = $(this),
-                leftOffset = (plugin.element.width() - expandedItemWidth);
-            leftOffset = /^\d/.test(leftOffset) ? leftOffset : 0;
-            ops.items.pointer = Number(item.attr('data-index'));
-
-            scrollableContainer.animate({
-                scrollLeft: item[0].offsetLeft - leftOffset}, 300);
+        items.click('click', function (e) {
+            plugin.gotoItemAtIndex(Number($(this).attr('data-index')));
         });
 
         // Size Items Container to num items
         $(window).on('debouncedresize', function () {
             plugin._reCalculateNumberOfPages();
+            plugin._addEmptyItems();
         });
 
         // Prev and Next Btns
         plugin.getNextBtn().bind('click', function (e) {
-//            if (ops.items.item.isSelected) {
-//                plugin.nextItem();
-//                plugin._scrollToItemPointer();
-//            }
-//            else {
+            if (ops.items.item.isSelected) {
+                plugin.nextItem();
+            }
+            else {
                 plugin.nextPage();
                 plugin._scrollToPointerPosition();
-//            }
+            }
         });
 
         plugin.getPrevBtn().bind('click', function (e) {
-//            if (ops.items.item.isSelected) {
-//                plugin.prevItem();
-//                plugin._scrollToItemPointer();
-//            }
-//            else {
+            if (ops.items.item.isSelected) {
+                plugin.prevItem();
+            }
+            else {
                 plugin.prevPage();
                 plugin._scrollToPointerPosition();
-//            }
+            }
         });
     },
 
@@ -164,7 +212,7 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
 
         // Get prop key value
         if (!isset(value)) {
-            item = itemStateClass ? $('>' + itemStateClass, items).eq(0) : items.eq(0);
+            item = itemStateClass ? $('> ' + itemStateClass, items).eq(0) : items.eq(0);
             value = this.options.items.item[key] = item[dimPropName]() + 6;
         }
 
@@ -177,7 +225,7 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             items = plugin.getItems(),
             i, itemsPadding = '',
             itemsContainer = plugin.getItemsContainer(),
-            itemWidth = ops.items.item.normalWidth, //plugin._getItemsItemWidth(),
+            itemWidth = plugin._getItemsItemWidth(),
             itemsPerPage = plugin._getItemsPerPage();
 
         // Set num padding items
@@ -185,27 +233,35 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
 
         // Make some padding
         for (i = 0; i < ops.items.numPaddingItems; i += 1) {
-            itemsPadding += '<div class="'
+            itemsPadding += '<' + ops.itemsSpacer.tagName + ' class="'
                 + ops.itemsSpacer.className
-                + '">&nbsp;' + (i + 1) + '</div>';
+                + '">&nbsp;' + (i + 1)
+                + '</' + ops.itemsSpacer.tagName + '>';
         }
 
         // Resize items container
         this._sizeItemsContainerToItems((items.length * 2)
-            * plugin._getItemsItemWidth());
+            * plugin._getItemsItemWidth() + plugin._getItemsSelectedItemWidth());
 
-        // Also add one expanded item/spacer
-        itemsContainer.append('<div class="' + ops.itemsSpacer.className + ' selected">&nbsp;</span>');
-        // Add padding to the container
-        itemsContainer.prepend(itemsPadding);
-        itemsContainer.append(itemsPadding);
+        // Remove older spacers and add new ones
+        // Fade items out;  Add spacers;
+        // Scroll to selected item if necessary; Fade items in
+        TweenLite.to(items, 0.16, {css: {opacity: 0}, onComplete: function () {
+            // Remove any current spacers
+            $(ops.itemsSpacer.selector, itemsContainer).remove();
 
-        // Recalculate number of pages
-        this._reCalculateNumberOfPages();
+            // Add padding to the container
+            itemsContainer.prepend(itemsPadding);
+            itemsContainer.append(itemsPadding);
 
-        // Scroll
-        ops.pages.pointer = 0;
-        this._scrollToPointerPosition();
+            // If selected Item scroll to it
+            if (ops.items.item.isSelected) {
+                plugin._scrollToSelectedItem();
+            }
+
+            // Fade element(s) back in
+            TweenLite.to(items, 0.16, {css: {opacity: 1}});
+        }});
     },
 
     _sizeItemsContainerToItems: function (width, height) {
@@ -223,10 +279,26 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             pointer = plugin.getPointer() + 1,
             scrollableContainer = plugin._getItemsContainerContainer(),
             scrollTo = pointer * plugin._getScrollAmountPerPage();
-        if (item.length > 0) {
-            item.removeClass('selected');
-        }
-        scrollableContainer.animate({scrollLeft: scrollTo}, 300);
+        TweenMax.to(scrollableContainer, 0.38, {scrollLeft: scrollTo, ease: Power3.easeOut});
+    },
+
+    _scrollToSelectedItem: function (selectedItem) {
+        selectedItem = selectedItem || this._getSelectedItem();
+        var plugin = this,
+            ops = plugin.options,
+            expandedItemWidth = plugin._getItemsSelectedItemWidth(),
+            regularItemWidth = plugin._getItemsItemWidth(),
+            scrollableContainer = plugin._getItemsContainerContainer(),
+            item = selectedItem,
+            leftOffset = (plugin.element.width() - expandedItemWidth + regularItemWidth);
+
+        // Clear delay intervals
+        plugin._clearItemDelayIntervals();
+
+        leftOffset = /^\d/.test(leftOffset) ? leftOffset / 2 : 0;
+        TweenMax.to(scrollableContainer, 0.38, {
+            scrollLeft: item[0].offsetLeft - leftOffset,
+            ease: Power3.easeOut});
     },
 
     _reCalculateNumberOfPages: function () {
@@ -234,7 +306,9 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             this._getItemsPerPage());
     },
 
-    // ================================================================
+    _reCalculateNumberOfItems: function () {
+        this.options.items.length = this.getItems().length;
+    },
 
     _getItemsContainerContainer: function () {
         return this._getElementFromConfigSection('itemsContainerContainer');
@@ -250,7 +324,24 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
     },
 
     _getSelectedItem: function () {
-        return $('.selected', this.getItems());
+        return $(this.options.items.selector + '.selected');
+    },
+
+    _selectItem: function (item) {
+        if (!item.hasClass('selected')) {
+            item.addClass('selected');
+        }
+    },
+
+    _deselectSelectedItems: function (exceptIndex) {
+        if (exceptIndex) {
+            $(this.options.items.selector
+                + '[data-index!="' + exceptIndex + '"]',
+                this.element).removeClass('selected');
+        }
+        else {
+            this.getItems().removeClass('selected');
+        }
     },
 
     _getScrollAmountPerPage: function () {
@@ -263,6 +354,19 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
 //            (itemPadding / 2) + normalPageWidth
 //                - this._getItemsSelectedItemWidth() :  normalPageWidth;
         return normalPageWidth;
-    }
+    },
 
+    _clearItemDelayIntervals: function () {
+        this.options.items.delayIntervals.forEach(function (x, i, a) {
+            clearTimeout(x);
+            a.splice(i, 1);
+        });
+    },
+
+    _delayedScrollToSelectedItem: function (item, delay) {
+        var plugin = this;
+        plugin.options.items.delayIntervals.push(setTimeout(function () {
+            plugin._scrollToSelectedItem(item);
+        }, delay));
+    }
 });

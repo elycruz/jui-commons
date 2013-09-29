@@ -19,20 +19,24 @@ $(function () {
         // Add data index to element
         item.attr('data-index', i);
 
-        item
-            .mouseup(function (e) {
+        // Mouse events
+        item.mouseup(function (e) {
                 var target = $(this);
                 if (!target.hasClass('selected')) {
-                    tl.to(target, 0.16, {scaleX: 1.06, scaleY: 1.06});
+                    tl.to(target, 0.16, {scaleX: 1.038, scaleY: 1.038});
                 }
                 else {
                     tl.to(target, 0.16, {scaleX: 1, scaleY: 1});
                 }
+                target.addClass('selected');
             })
-            .mouseover(function (e) {
+            .mouseenter(function (e) {
                 var target = $(this);
                 if (!target.hasClass('selected')) {
-                    tl.to(target, 0.3, {css: {scaleX: 1.08, scaleY: 1.08, boxShadow: '3px 3px 20px #000'}});
+                    tl.to(target, 0.3,
+                        {css: {
+                            scaleX: 1.02, scaleY: 1.02,
+                            boxShadow: '3px 3px 20px #000'}});
                 }
             })
             .mousedown(function (e) {
@@ -40,11 +44,8 @@ $(function () {
                 if (!target.hasClass('selected')) {
                     tl.to(target, 0.16, {scaleX: 0.9, scaleY: 0.9});
                 }
-                slideShow.accordianSlideShow('option', 'items.item.isSelected', true);
-                items.removeClass('selected', 1000, function () {});
-                target.toggleClass('selected', 1000, function () {});
             })
-            .mouseout(function (e) {
+            .mouseleave(function (e) {
                 var target = $(this);
                 tl.to(target, 0.16,
                      {css: {scaleX: 1, scaleY: 1, boxShadow: 'none'}});
@@ -52,31 +53,17 @@ $(function () {
 
         // On Close Button
         $('> header > button.close-btn', item).click(function   (e) {
-            items.removeClass('selected', 1000);
+            e.stopPropagation();
+            items.removeClass('selected');
             slideShow.accordianSlideShow('option', 'items.item.isSelected', false);
-
         });
+
     });
+    // items . each
 
     // Accordian Slide Show
     slideShow.accordianSlideShow({
-        items: {
-            selector: '.items-container > .items > .item',
-            animation: {
-                from: function (item, i) {
-                    var width = 3 * 2 + item.width();
-                    return {
-                        duration: 0.0538,
-                        options: {
-                            opacity: 0,
-                            rotationX: 45 * (i % 2 ? -1 : 1),
-                            left: width
-                        },
-                        easing: null
-                    };
-                }
-            }
-        }
+        items: { selector: '.items-container > .items > .item'}
     });
 
 });

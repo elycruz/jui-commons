@@ -16,6 +16,7 @@
     "phpjs": "elycruz/phpjs#~0.4.9",
     "es5-shim": "~2.1.0",
     "unsemantic": "*",
-    "jquery-smartresize": "louisremi/jquery-smartresize"
+    "jquery-smartresize": "louisremi/jquery-smartresize",
+    "delayed-for-jquery": "https://github.com/theloveofcode/delayed-for-jquery.git"
   }
 }
