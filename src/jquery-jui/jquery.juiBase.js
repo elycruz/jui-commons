@@ -46,18 +46,36 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Populates config | options.ui with element collections.
+     * Populates this.ui with element collections from this.options.
      * @param config Object
-     * @private
      * @return jui.juiBase
      */
-    _fetchUiElements: function (config) {
+    populateUiElementsFromOptions: function (options) {
         var self = this;
-        config = config || this.ui;
-        Object.keys(config).forEach(function (key) {
-            var val = config[key];
-            config[key] = $(config[key], self.element);
+
+        // Get options
+        options = options || this.options.ui;
+
+        // Set our ui collection
+        if (!isset(self.ui)) {
+            self.ui = {};
+        }
+
+        // Loop through options and populate elements
+        Object.keys(options).forEach(function (key) {
+
+            // If key is string
+            if (typeof options[key] === 'string') {
+                self.ui[key] = options[key] = $(options[key], self.element);
+            }
+
+            // If key is plain object
+            if ($.isPlainObject(options[key])) {
+                self.ui[key] = self.getElementFromOptions(options[key]);
+            }
+
         });
+        // /Loop through options
     },
 
     /**
@@ -65,6 +83,7 @@ $.widget('jui.juiBase', {
      * @param configSection
      * @returns {*}
      * @private
+     * @refactor change method name to getElementFromOptions
      */
     _getElementFromConfigSection:function (configSection) {
         var self = this,
@@ -92,18 +111,77 @@ $.widget('jui.juiBase', {
         }
 
         // If element is a jquery element
-        if (!empty(config.elm) && config.elm instanceof $ && config.elm.length > 0) {
+        if (isset(config.elm)
+            && config.elm instanceof $
+            && config.elm.length > 0) {
             return config.elm;
         }
 
         // If Selector
-        if (!empty(config.selector) && typeof config.selector === 'string') {
+        if (isset(config.selector)
+            && empty(config.create)
+            && typeof config.selector === 'string') {
             config.elm = $(config.selector, self.element);
         }
 
-        // @todo include creation option here
+        // Create element and `append to` config section if necessary
+        if (empty(config.elm) && isset(config.html)
+            && typeof config.html === 'string') {
+            config.elm = this._createElementFromConfig(config);
+            if (isset(config.appendTo)
+                && typeof config.appendTo === 'string') {
+                config.elm =
+                    this._getElementFromConfigSection('ui.' + config.appendTo)
+                    .append(config.elm).find(config.selector);
+            }
+        }
 
         // Return element
         return !empty(config.elm) ? config.elm : null;
+    },
+
+    _createElementFromConfig: function (config) {
+        var elm = null;
+
+        // If config is string look it up in our options hash
+        if (isset(config) && typeof config === 'string') {
+            config = this._namespace(config);
+        }
+
+        // If config is empty
+        if (empty(config)) {
+            return;
+        }
+
+        // Assume config is an object
+        // @todo create explicit check for object
+        if (config.html) {
+            elm = $(config.html);
+            if (config.attribs) {
+                elm.attr(config.attribs);
+            }
+        }
+        return elm;
+    },
+
+    _removeCreatedElements: function () {
+        var self = this, ops = self.options;
+        ops.ui.keys.forEach(function (x) {
+            if (ops.ui[key].elm instanceof $ && ops.ui[key].create) {
+                ops.ui[key].elm.remove();
+            }
+        });
+    },
+
+    getElementFromOptions: function (namespace_or_optionsObj) {
+        return this._getElementFromConfigSection(namespace_or_optionsObj);
+    },
+
+    getUiElm: function (alias) {
+        if (isset(this.ui[alias]) && this.ui[alias] instanceof $) {
+            return this.ui[alias];
+        }
+        return this.getElementFromOptions(alias);
     }
+
 });

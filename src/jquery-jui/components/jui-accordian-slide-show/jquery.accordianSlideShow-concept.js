@@ -150,7 +150,7 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             expandedItemWidth = plugin._getItemsSelectedItemWidth();
 
         // Item Click
-        items.click('click', function (e) {
+        items.bind('click', function (e) {
             plugin.gotoItemAtIndex(Number($(this).attr('data-index')));
         });
 
@@ -181,6 +181,8 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
             }
         });
     },
+
+    _removeEventListeners: function () { },
 
     _getItemsItemWidth: function () {
         return this._getItemsItemDimProp('width', 'normal');
@@ -368,5 +370,9 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
         plugin.options.items.delayIntervals.push(setTimeout(function () {
             plugin._scrollToSelectedItem(item);
         }, delay));
-    }
+
+    },
+
+    destroy: function () { }
+
 });
