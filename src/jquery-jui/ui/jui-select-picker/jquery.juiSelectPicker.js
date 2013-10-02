@@ -258,7 +258,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._drawSelectOptions();
         this._addEventListeners();
         this.setLabelText();
-        this.element.val(0)
+        this.element.val(null)
             .trigger('change');
     },
 

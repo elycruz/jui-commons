@@ -20,6 +20,22 @@ $(function () {
         collapseOn: 'mouseleave'
     });
 
+    // Expands on hover
+    $otherOptions3 = $('#example-3').juiSelectPicker({
+        ui: {
+            optionsElm: {
+                elm: $('#example-3 .options').eq(0)
+            },
+            buttonElm: {
+                elm: $('#example-3 button').eq(0)
+            }
+        },
+        skipDrawFromSelect: true,
+        labelText: 'Select an "Other Option":',
+        expandOn: 'mouseenter',
+        collapseOn: 'mouseleave'
+    });
+
     $cats.on('change', function (e) {
         if (isset($cats.val())) {
             $cats.juiSelectPicker('setLabelText',
@@ -27,6 +43,8 @@ $(function () {
                     $cats.val() + '"<\span>.', 'html');
         }
     });
+
+
 
     // Toggle the select element
     $('.toggle-select-element').click(function () {
