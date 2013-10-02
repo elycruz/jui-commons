@@ -127,12 +127,24 @@ $.widget('jui.juiBase', {
         // Create element and `append to` config section if necessary
         if (empty(config.elm) && isset(config.html)
             && typeof config.html === 'string') {
+
             config.elm = this._createElementFromConfig(config);
+
             if (isset(config.appendTo)
                 && typeof config.appendTo === 'string') {
-                config.elm =
-                    this._getElementFromConfigSection('ui.' + config.appendTo)
-                    .append(config.elm).find(config.selector);
+                if (config.appendTo === 'this.element') {
+
+                    config.elm =
+                        this.element
+                            .append(config.elm).find(config.selector);
+                }
+                else {
+                    config.elm =
+                        this._getElementFromConfigSection('ui.'
+                                + config.appendTo)
+                        .append(config.elm).find(config.selector);
+                }
+
             }
         }
 

@@ -3,6 +3,7 @@
  * @todo use TweenMax/TweenLite for animations
  */
 $.widget('jui.juiSelectPicker', $.jui.juiBase, {
+
     options: {
         ui: {
             wrapperElm: {
@@ -72,7 +73,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Add event class names
         wrapperElm.addClass(this._getExpandOnClassName())
             .addClass(this._getCollapseOnClassName());
-
 
         // Populate ui elements on this (this.ui[elmKeyAlias])
         this.populateUiElementsFromOptions();
@@ -166,20 +166,21 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-            self.getUiElm('optionsElm').slideUp(300);
+            self.timeline.reverse();
             self.options.state = states.COLLAPSED;
         });
 
         // If expand and collapse events are the same (use toggle pattern)
         if (expandOnMouseEvent === collapseOnMouseEvent) {
             this.ui.wrapperElm.on(expandOnMouseEvent, function (e) {
-                var opsElm = self.getUiElm('optionsElm');
                 if (self.options.state === states.COLLAPSED) {
-                    opsElm.slideDown(300);
+                    self.ensureAnimationFunctionality();
+                    self.timeline.play();
                     self.options.state = states.EXPANDED;
                 }
                 else {
-                    opsElm.slideUp(300);
+                    self.ensureAnimationFunctionality();
+                    self.timeline.reverse();
                     self.options.state = states.COLLAPSED;
                 }
             });
@@ -187,16 +188,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         else {
             // On expand event
             this.ui.wrapperElm.on(expandOnMouseEvent, function (e) {
-                self.getUiElm('optionsElm').slideDown(300);
-                console.log('expanded');
+                self.ensureAnimationFunctionality();
+                self.timeline.play();
                 self.options.state = states.EXPANDED;
             })
-                // On collapse event
-                .on(collapseOnMouseEvent, function (e) {
-                    self.getUiElm('optionsElm').slideUp(300);
-                    console.log('collapsed');
-                    self.options.state = states.COLLAPSED;
-                });
+            // On collapse event
+            .on(collapseOnMouseEvent, function (e) {
+                self.ensureAnimationFunctionality();
+                self.timeline.reverse();
+                self.options.state = states.COLLAPSED;
+            });
         }
     },
 
@@ -209,6 +210,39 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _removeCreatedOptions: function () {
         this.getUiElm('optionsElm').find('ul').remove();
+    },
+
+    _initScrollbar: function () {
+        this.ui.scrollbar = this.ui.wrapperElm.juiScrollPane({
+            ui: {
+                contentHolder: {
+                    elm: this.getUiElm('optionsElm'),
+                    selector: this.options.ui.optionsElm.selector + ''
+                }
+            }
+        }).find('.scrollbar');
+        this.ui.scrollbar.css('bottom', 0);
+    },
+
+    _initAnimationTimeline: function () {
+        var self = this,
+            dur = 0.30,
+            timeline = this.timeline = new TimelineMax();
+        TweenLite.to(this.ui.optionsElm, dur, {css: {opacity: 1}});
+        timeline.from(this.ui.optionsElm, dur, {css: {height: 0}});
+        timeline.from(this.ui.scrollbar, dur, {css: {opacity: 0}, delay: -0.10});
+        timeline.reverse();
+    },
+
+    _initTimeline: function () {
+        if (empty(this.timeline)) {
+            this._initAnimationTimeline()
+        }
+    },
+
+    ensureAnimationFunctionality: function () {
+        this._initScrollbar();
+        this._initTimeline();
     },
 
     destroy: function () {

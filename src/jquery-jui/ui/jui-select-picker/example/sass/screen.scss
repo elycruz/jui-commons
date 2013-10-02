@@ -10,6 +10,9 @@
 @import "../../../../../../bower_components/unsemantic/assets/sass/unsemantic-grid-desktop";
 //@import "../../sass/jui.juiSelectPicker.scss";
 
+// Jui Scrollpane
+@import "../../../jui-scrollpane/jui-scrollpane";
+
 .display-none {
     display: none;
 }
@@ -41,12 +44,28 @@ label {
 select {
     margin-bottom: 10px;
 }
+
+.jui-scrollpane {
+    .scrollbar {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 2%;
+        background: #ddd;
+        .handle {
+            background: #ccc;
+        }
+    }
+}
+
 .jui-select-picker {
 
     position: relative;
     border: 1px solid #888;
     background: #fff;
     width: 320px;
+    max-height: 280px;
     color: #888;
 
     .button {
@@ -64,15 +83,14 @@ select {
         width: 100%;
         overflow: hidden;
         max-height: 240px;
-        display: none;
         outline: solid #000 1px;
+        @include opacity(0);
         background: #fff;
         ul {
             li {
                 width: 100%;
                 border-top: 1px solid #888;
                 border-bottom: 1px solid #888;
-                background: #fff;
             }
             li a {
                 display: block;
@@ -88,12 +106,26 @@ select {
     }
 }
 
+// Scrollpane scrollbar
+.jui-select-picker.jui-scrollpane {
+    &:hover {
+        .scrollbar {
+            @include opacity(1);
+        }
+    }
+    .scrollbar {
+        @include opacity(0);
+        height: 275px;
+        z-index: 3;
+    }
+}
+
 // Mouse Event Fallback
 .jui-select-picker.expands-on-click {
     &.active,
     &:active {
         .options {
-            display: block;
+            @include opacity(1);
         }
     }
 }
@@ -102,8 +134,10 @@ select {
 .jui-select-picker.expands-on-mouseover {
     &:hover {
         .options {
-            display: block;
+            @include opacity(1);
         }
     }
 }
+
+
 

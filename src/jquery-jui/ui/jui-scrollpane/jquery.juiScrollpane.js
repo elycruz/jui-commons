@@ -12,47 +12,52 @@
  * @requires jquery.mousewheel (for crossbrowser mousewheel functionality)
  * @returns jquery selection
  */
-$.widget('jui.juiScrollPane', {
+$.widget('jui.juiScrollPane', $.jui.juiBase, {
     options: {
         // [vertical, horizontal, all]
         orientation: 'vertical',
-        handle: {
-            elm: null,
-            selector: '.ui-scrollbar > .ui-handle',
-            html: '<div class="ui-handle"></div>',
-            appendToConfigSection: 'scrollbar',
-            attribs: {
-                'class': 'ui-handle'
+        ui: {
+            contentHolder: {
+                elm: null,
+                selector: '.content',
+                html: '<div></div>',
+                attribs: {
+                    'class': 'content'
+                }
             },
-            create: true
-        },
-        scrollbar: {
-            elm: null,
-            selector: '.ui-scrollbar',
-            html: '<div class="ui-scrollbar"></div>',
-            attribs: {
-                'class': 'ui-scrollbar'
+            scrollbar: {
+                elm: null,
+                selector: '.scrollbar',
+                html: '<div></div>',
+                appendTo: 'this.element',
+                attribs: {
+                    'class': 'scrollbar'
+                },
+                create: true
             },
-            create: true
-        },
-        contentHolder: {
-            elm: null,
-            selector: '.content',
-            html: '<div class="content"></div>',
-            attribs: {
-                'class': 'content'
+            handle: {
+                elm: null,
+                selector: '.handle',
+                html: '<div></div>',
+                appendTo: 'scrollbar',
+                attribs: {
+                    'class': 'handle'
+                },
+                create: true
             }
         },
+
         scrollableDist: 0,
         debug: false
     },
     _create: function () {
+        this.populateUiElementsFromOptions();
         var ops = this.options,
             elm = this.element,
-            scrollbar = this.getScrollbar(),
-            contentHolder = this.getContentHolder(),
+            scrollbar = this.ui.scrollbar,
+            contentHolder = this.ui.contentHolder,
             contentScrollHeight = contentHolder.get(0).scrollHeight,
-            handle = this.getScrollbarHandle(),
+            handle = this.ui.handle,
             plugin = this;
 
         // Conetnt Holder
@@ -60,41 +65,44 @@ $.widget('jui.juiScrollPane', {
             contentHolder.css('overflow', 'hidden');
         }
 
+        // Add plugin class
+        plugin.element.addClass('jui-scrollpane');
+
         // Get scrollable distance
         ops.scrollableDist = scrollbar.height();
 
         // Init scrollbar
         plugin.initScrollbar();
 
-        plugin.element.mousewheel(function (e, delta, deltaX, deltaY) {
-            delta = delta !== undefined || delta !== null ? delta : deltaY;
-
-            // If no delta bail
-            if (delta === null || delta === undefined) {
-                return;
-            }
-
-            // Prelims
-            var incrementer = delta < 1 ? 10 : -10,
-                scrollTo = contentHolder.scrollTop() + incrementer,
-                handleOffsetTop = handle.position().top + incrementer;
-
-            // Position Handle
-            handle.css('top', handleOffsetTop);
-
-            // Constrain Handle
-            plugin.constrainHandle();
-
-            // Scroll content holder
-            plugin.scrollContentHolder();
-        });
+//        plugin.element.mousewheel(function (e, delta, deltaX, deltaY) {
+//            delta = delta !== undefined || delta !== null ? delta : deltaY;
+//
+//            // If no delta bail
+//            if (delta === null || delta === undefined) {
+//                return;
+//            }
+//
+//            // Prelims
+//            var incrementer = delta < 1 ? 10 : -10,
+//                scrollTo = contentHolder.scrollTop() + incrementer,
+//                handleOffsetTop = handle.position().top + incrementer;
+//
+//            // Position Handle
+//            handle.css('top', handleOffsetTop);
+//
+//            // Constrain Handle
+//            plugin.constrainHandle();
+//
+//            // Scroll content holder
+//            plugin.scrollContentHolder();
+//        });
 
     },
 
     scrollContentHolder: function () {
         // Calculate percent of scroll action
-        var handle = this.getScrollbarHandle(),
-            contentHolder = this.getContentHolder(),
+        var handle = this.ui.handle,
+            contentHolder = this.ui.contentHolder,
             contentScrollHeight = contentHolder.get(0).scrollHeight,
             percentScroll = handle.position().top / this.options.scrollableDist,
             scrollTopPos = percentScroll * contentScrollHeight;
@@ -112,8 +120,8 @@ $.widget('jui.juiScrollPane', {
     },
 
     constrainHandle: function () {
-        var handle = this.getScrollbarHandle(),
-            scrollbar = this.getScrollbar();
+        var handle = this.ui.handle,
+            scrollbar = this.ui.scrollbar;
 
         // Limit handle position within scroll bar
         if (handle.position().top < 0) {
@@ -125,9 +133,9 @@ $.widget('jui.juiScrollPane', {
     },
 
     initScrollbar: function () {
-        var scrollbar = this.getScrollbar(),
-            handle = this.getScrollbarHandle(),
-            contentHolder = this.getContentHolder(),
+        var scrollbar = this.ui.scrollbar,
+            handle = this.ui.handle,
+            contentHolder = this.ui.contentHolder,
             contentScrollHeight = contentHolder.get(0).scrollHeight,
             ops = this.options,
             plugin = this;
@@ -159,22 +167,13 @@ $.widget('jui.juiScrollPane', {
     },
 
     initScrollbarHandle: function () {
-        var contentHolder = this.getContentHolder(),
-            scrollBar = this.getScrollbar(),
-            handle = this.getScrollbarHandle(),
+        var contentHolder = this.ui.contentHolder,
+            scrollBar = this.ui.scrollbar,
+            handle = this.ui.handle,
             sph = contentHolder.height(),
             sh = contentHolder.get(0).scrollHeight,
             sbh = scrollBar.height();
         handle.height((sph * sbh) / sh);
-    },
-
-    getContentHolder: function () {
-        return this._getInternalElement(this.options.contentHolder);
-    },
-    getScrollbar: function () {
-        return this._getInternalElement(this.options.scrollbar);
-    },
-    getScrollbarHandle: function () {
-        return this._getInternalElement(this.options.handle);
     }
+
 });

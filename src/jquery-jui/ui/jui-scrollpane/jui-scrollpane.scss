@@ -1,0 +1,13 @@
+.jui-scrollpane {
+    .scrollbar {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 2%;
+        background: #ddd;
+        .handle {
+            background: #ccc;
+        }
+    }
+}
