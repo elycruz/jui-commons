@@ -133,14 +133,14 @@ $.widget('jui.juiScrollableDropdown', $.jui.juiBase, {
     },
 
     _removeCreatedOptions: function () {
-        this.getUiElm('contentElm').find('ul').remove();
+        this.getUiElement('contentElm').find('ul').remove();
     },
 
     _initScrollbar: function () {
         this.ui.scrollbar = this.element.juiScrollPane({
             ui: {
                 contentHolder: {
-                    elm: this.getUiElm('contentElm'),
+                    elm: this.getUiElement('contentElm'),
                     selector: this.options.ui.contentElm.selector + ''
                 }
             }

@@ -92,7 +92,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _drawSelectOptions: function () {
         var self = this,
-            optionsElm = self.getUiElm('optionsElm'),
+            optionsElm = self.getUiElement('optionsElm'),
             options = self.element.find('option'),
             ul = $('<ul></ul>');
 
@@ -209,14 +209,14 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     _removeCreatedOptions: function () {
-        this.getUiElm('optionsElm').find('ul').remove();
+        this.getUiElement('optionsElm').find('ul').remove();
     },
 
     _initScrollbar: function () {
         this.ui.scrollbar = this.ui.wrapperElm.juiScrollPane({
             ui: {
                 contentHolder: {
-                    elm: this.getUiElm('optionsElm'),
+                    elm: this.getUiElement('optionsElm'),
                     selector: this.options.ui.optionsElm.selector + ''
                 }
             }
@@ -268,7 +268,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             ? this.options.ui.buttonElm.text
             : (!empty(this.options.labelText) ? this.options.labelText :
             this.element.find('option[value]').eq(0).text()));
-        this.getUiElm('buttonElm')[textType](label);
+        this.getUiElement('buttonElm')[textType](label);
     },
 
     setSelected: function (elm) {
@@ -280,7 +280,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     clearSelected: function () {
-        this.getUiElm('optionsElm')
+        this.getUiElement('optionsElm')
             .find('> ul > li').removeClass(
                 this.options.ui.optionsElm.optionSelectedClassName);
     }

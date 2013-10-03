@@ -189,7 +189,28 @@ $.widget('jui.juiBase', {
         return this._getElementFromConfigSection(namespace_or_optionsObj);
     },
 
-    getUiElm: function (alias) {
+    /**
+     * Gets a value from the options hash.  If that value is a function
+     * calls the function and returns it's result unless raw is passed
+     * in which will cause the function to return the value if it is
+     * a function too.
+     * @param key
+     * @param args
+     * @param raw
+     * @returns {*}
+     */
+    getFromOptionsHash: function (key, args, raw) {
+        var retVal = null;
+        if (typeof key === 'string') {
+            retVal = this._namespace(key);
+        }
+        if (typeof retVal === 'function' && empty(raw)) {
+            retVal = retVal.apply(this, args);
+        }
+        return retVal;
+    },
+
+    getUiElement: function (alias) {
         if (isset(this.ui[alias]) && this.ui[alias] instanceof $) {
             return this.ui[alias];
         }
