@@ -60,7 +60,7 @@ $.widget('jui.juiScrollableDropdown', $.jui.juiBase, {
             .addClass(this._getCollapseOnClassName());
 
         // Populate ui elements on this (this.ui[elmKeyAlias])
-        this.populateUiElementsFromOptions();
+        this._populateUiElementsFromOptions();
 
         // Add event listeners
         this._addEventListeners();

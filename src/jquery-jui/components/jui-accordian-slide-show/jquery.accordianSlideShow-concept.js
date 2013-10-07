@@ -313,7 +313,7 @@ $.widget('jui.accordianSlideShow', $.jui.paginatorWithTextField, {
     },
 
     _getItemsContainerContainer: function () {
-        return this._getElementFromConfigSection('itemsContainerContainer');
+        return this._getElementFromOptions('itemsContainerContainer');
     },
 
     _getItemsPerPage: function () {

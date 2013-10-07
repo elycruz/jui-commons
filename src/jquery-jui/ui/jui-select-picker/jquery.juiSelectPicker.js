@@ -62,7 +62,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _create: function () {
         var ops = this.options,
-            wrapperElm = this.getElementFromOptions('ui.wrapperElm');
+            wrapperElm = this._getElementFromOptions('ui.wrapperElm');
 
         // Hide this element and append new markup beside where it used
         // to be
@@ -75,7 +75,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             .addClass(this._getCollapseOnClassName());
 
         // Populate ui elements on this (this.ui[elmKeyAlias])
-        this.populateUiElementsFromOptions();
+        this._populateUiElementsFromOptions();
 
         // Set button text/label
         this.setLabelText();
@@ -226,7 +226,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _initAnimationTimeline: function () {
         var self = this,
-            dur = 0.30,
+            dur = 0.3,
             timeline = this.timeline = new TimelineMax();
         TweenLite.to(this.ui.optionsElm, dur, {css: {opacity: 1}});
         timeline.from(this.ui.optionsElm, dur, {css: {height: 0}});

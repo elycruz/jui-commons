@@ -68,7 +68,7 @@ $.widget('jui.animateItemsWithGsap', $.jui.juiBase, {
     },
 
     getItems: function () {
-        return this._getElementFromConfigSection('items');
+        return this._getElementFromOptions('items');
     },
 
     getTimeline: function () {

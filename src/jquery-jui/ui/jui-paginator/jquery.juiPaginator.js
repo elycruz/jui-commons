@@ -106,11 +106,11 @@ $.widget('jui.paginator', $.jui.juiBase, {
     },
 
     getItems: function () {
-        return this._getElementFromConfigSection('items');
+        return this._getElementFromOptions('items');
     },
 
     getItemsContainer: function () {
-        return this._getElementFromConfigSection('itemsContainer');
+        return this._getElementFromOptions('itemsContainer');
     },
 
     getPointer: function () {
