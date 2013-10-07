@@ -5,8 +5,8 @@ $(function () {
 
     // Expands on hover
     $otherOptions = $('.test-scrollable-dropdown').juiScrollableDropdown({
-        expandOn: 'mouseenter',
-        collapseOn: 'mouseleave'
+        expandOn: 'click',
+        collapseOn: 'click'
     });
 
 });

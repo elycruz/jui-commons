@@ -868,8 +868,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   width: 100%;
 }
 
-/* line 2, ../../../jui-scrollpane/jui-scrollpane.scss */
-.jui-scrollpane .scrollbar {
+/* line 2, ../../../jui-scroll-pane/jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar {
   position: absolute;
   top: 0;
   right: 0;
@@ -877,8 +877,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   width: 2%;
   background: #ddd;
 }
-/* line 9, ../../../jui-scrollpane/jui-scrollpane.scss */
-.jui-scrollpane .scrollbar .handle {
+/* line 9, ../../../jui-scroll-pane/jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar .handle {
   background: #ccc;
 }
 
@@ -930,7 +930,7 @@ select {
 }
 
 /* line 49, ../sass/screen.scss */
-.jui-scrollpane .scrollbar {
+.jui-scroll-pane .scrollbar {
   position: absolute;
   top: 0;
   right: 0;
@@ -939,7 +939,7 @@ select {
   background: #ddd;
 }
 /* line 56, ../sass/screen.scss */
-.jui-scrollpane .scrollbar .handle {
+.jui-scroll-pane .scrollbar .handle {
   background: #ccc;
 }
 
@@ -994,12 +994,12 @@ select {
 }
 
 /* line 112, ../sass/screen.scss */
-.jui-select-picker.jui-scrollpane:hover .scrollbar {
+.jui-select-picker.jui-scroll-pane:hover .scrollbar {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;
 }
 /* line 116, ../sass/screen.scss */
-.jui-select-picker.jui-scrollpane .scrollbar {
+.jui-select-picker.jui-scroll-pane .scrollbar {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
   height: 275px;

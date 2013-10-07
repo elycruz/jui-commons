@@ -5,6 +5,7 @@
 $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     options: {
+        
         ui: {
             wrapperElm: {
                 elm: null,

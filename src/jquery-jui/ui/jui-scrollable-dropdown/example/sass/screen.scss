@@ -11,7 +11,7 @@
 //@import "../../sass/jui.juiSelectPicker.scss";
 
 // Jui Scrollpane
-@import "../../../jui-scrollpane/jui-scrollpane";
+@import "../../../jui-scroll-pane/jui-scroll-pane";
 
 .display-none {
     display: none;
@@ -45,7 +45,7 @@ select {
     margin-bottom: 10px;
 }
 
-.jui-scrollpane {
+.jui-scroll-pane {
     .scrollbar {
         position: absolute;
         top: 0;
@@ -107,7 +107,7 @@ select {
 }
 
 // Scrollpane scrollbar
-.jui-scrollable-drop-down.jui-scrollpane {
+.jui-scrollable-drop-down.jui-scroll-pane {
     &:hover {
         .scrollbar {
             @include opacity(1);

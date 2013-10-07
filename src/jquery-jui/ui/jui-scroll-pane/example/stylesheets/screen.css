@@ -99,7 +99,7 @@ html, body {
 }
 
 /* line 36, ../sass/screen.scss */
-.jui-scrollpane .scrollbar {
+.jui-scroll-pane .scrollbar {
   position: absolute;
   top: 0;
   right: 0;
@@ -108,6 +108,6 @@ html, body {
   background: #ddd;
 }
 /* line 43, ../sass/screen.scss */
-.jui-scrollpane .scrollbar .handle {
+.jui-scroll-pane .scrollbar .handle {
   background: #ccc;
 }

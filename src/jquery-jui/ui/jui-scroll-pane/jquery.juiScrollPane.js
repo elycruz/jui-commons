@@ -66,7 +66,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
 
         // Add plugin class
-        plugin.element.addClass('jui-scrollpane');
+        plugin.element.addClass('jui-scroll-pane');
 
         // Get scrollable distance
         ops.scrollableDist = scrollbar.height();
