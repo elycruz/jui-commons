@@ -2,5 +2,4 @@
 .nb*
 bower_components
 node_modules
-package.json
 .sass-cache
