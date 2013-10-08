@@ -1,10 +1,12 @@
 require([
 	'backbone',
 	'application',
-	'regionManager'
+	'regionManager',
+    'modules/ExamplesModule'
+
 ],
 function ( Backbone, App ) {
     'use strict';
-
+    Backbone.history.start();
 	App.start();
 });

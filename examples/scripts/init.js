@@ -3,7 +3,7 @@ require.config({
     
 
     /* starting point for application */
-    deps: ['backbone.marionette', 'bootstrap', 'main'],
+    deps: ['es5-shim','es5-sham','phpjs','backbone.marionette','bootstrap','main'],
 
     shim: {
         bootstrap: {
@@ -13,7 +13,17 @@ require.config({
     },
 
     paths: {
-        jquery: '../bower_components/jquery/jquery',
+        'es5-shim':     '../bower_components/es5-shim/es5-shim',
+        'es5-sham':     '../bower_components/es5-shim/es5-sham',
+        'phpjs':          '../bower_components/phpjs/phpjs-shim',
+        'TweenMax':       '../bower_components/gsap/src/minified/TweenMax.min',
+
+        /** Jquery **/
+        'jquery': '../bower_components/jquery/jquery',
+        'jquery-ui': '../bower_components/jquery-ui/ui',
+        'jui-commons':  '',
+
+        /** Backbone **/
         backbone: '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',
 
