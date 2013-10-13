@@ -23,7 +23,13 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         yeoman: yeomanConfig,
-
+        compass: {
+            dist: {
+                options: {
+                    config: 'config.rb'
+                }
+            }
+        },
         // watch list
         watch: {
             
@@ -35,7 +41,7 @@ module.exports = function (grunt) {
                     
                     'test/spec/{,**/}*.js'
                 ],
-                tasks: ['exec'],
+                tasks: ['compass-compile', 'exec'],
                 options: {
                     livereload: true
                 }
@@ -274,5 +280,7 @@ module.exports = function (grunt) {
         'copy',
         'usemin'
     ]);
+
+    grunt.registerTask('compass-compile', ['compass']);
 
 };

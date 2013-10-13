@@ -2,7 +2,11 @@ require([
 	'backbone',
 	'application',
 	'regionManager',
-    'modules/ExamplesModule'
+    'modules/ExamplesModule',
+    'jquery',
+    'jquery-ui',
+    'TweenMax',
+    'jui-commons'
 
 ],
 function ( Backbone, App ) {

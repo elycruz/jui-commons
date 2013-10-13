@@ -1,6 +1,6 @@
 define([
 	'backbone',
-	'hbs!tmpl/layout/MainLayout'
+	'hbs!tmpl/layout/main-layout'
 ],
 function( Backbone, tmpl  ) {
     'use strict';
@@ -21,17 +21,8 @@ function( Backbone, tmpl  ) {
             leftColRegion: '#left-col',
             mainColRegion: '#main-col',
             navRegion: '> nav'
-        },
-
-    	/* ui selector cache */
-    	ui: {},
-
-		/* Ui events hash */
-		events: {},
-
-		/* on render callback */
-		onRender: function() {
         }
+
 	});
 
 });

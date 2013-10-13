@@ -1,0 +1,46 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+/**
+ * @requires compass border-radius
+ * @requires compass border-bottom-radius
+ */
+@import "../../bower_components/unsemantic/assets/sass/unsemantic-grid-desktop";
+@import "../../src/sass/jui-commons/jui-commons";
+@import "jui-scrollable-drop-down-example";
+
+html, body {
+    background: #ccc;
+}
+
+h1, h3 {
+    font: bold 122%"Helvetica Neue", Arial, Helvetica, sans-serif ! important;
+}
+
+h1 {
+    font-size: 200% !important;
+}
+textarea {
+    padding: 10px;
+    @include border-radius(20px);
+}
+header, section,
+section > div {
+    margin: 10px;
+}
+
+label {
+    font: normal 100% "Arial Black", Arial, Verdana, "Sans-serif";
+    margin-bottom: 10px;
+}
+select {
+    margin-bottom: 10px;
+}
+

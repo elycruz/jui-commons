@@ -5,17 +5,50 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
             options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+                banner: '/*! ' +
+                    '<%= pkg.name %> ' +
+                    '<%= grunt.template.today("yyyy-mm-dd") %> */\n',
+                beautify: {
+                    beautify: true,
+                    width: 72
+                }
             },
             build: {
-                src: 'src/js/jquery.juiBase.js', // <%= pkg.name %>
+                src: [
+                    'src/js/jquery.juiBase.js',
+                    'src/js/ui/*.js'
+                ],
                 dest: 'distro/<%= pkg.name %>.min.js'
             }
         },
         compass: {
             dist: {
                 options: {
-                    config: 'src/config.rb'
+                    config: 'config.rb'
+                }
+            }
+        },
+        watch: {
+            compass: {
+                files: ['./src/sass/**/*.scss'],
+                tasks: ['compass'],
+                options: {
+                    spawn: false
+                }
+            },
+            js: {
+                files: ['./src/js/**/*.js'],
+                tasks: ['uglify'],
+                options: {
+                    spawn: false
+                }
+            }
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 9000,
+                    base: '.'
                 }
             }
         },
@@ -32,16 +65,19 @@ module.exports = function (grunt) {
 
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
-
     grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     // Load the plugin that provides the "jsdoc" task.
     grunt.loadNpmTasks('grunt-jsdoc');
 
     // Default task(s).
-    grunt.registerTask('default', ['compass', 'uglify', 'jsdoc']);
+    grunt.registerTask('default', [
+        'compass', 'uglify', 'jsdoc', 'connect', 'watch']);
 
-    // Documentation Tasks
-    grunt.registerTask('docs', ['jsdoc']);
+    // Build task
+    grunt.registerTask('build', [
+        'compass', 'jshint', 'uglify', 'jsdoc']);
 
 };

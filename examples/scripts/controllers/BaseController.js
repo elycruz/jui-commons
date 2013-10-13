@@ -1,8 +1,10 @@
 define(['backbone.marionette'], function(Marionette) {
+    'use strict';
 
     return Marionette.Controller.extend({
-        defaultRequestParams: {},
-        requestParams: {},
+//        defaultRequestParams: {},
+//        requestParams: {},
+        viewClassSuffix: 'View',
         setRequestParams: function(requestParams) {
             this.requestParams = requestParams;
             return this;
@@ -13,6 +15,10 @@ define(['backbone.marionette'], function(Marionette) {
         },
         getRequestParams: function() {
             return this.requestParams;
+        },
+        getViewClassName: function () {
+            return strToCamelCase(this.requestParams.action
+                + this.viewClassSuffix);
         }
 
     });

@@ -1,8 +1,8 @@
 define([
 	'backbone',
-	'hbs!tmpl/item/JuiScrollPaneView'
+	'hbs!tmpl/item/jui-scroll-pane-view'
 ],
-function( Backbone, Juiscrollpaneview  ) {
+function( Backbone, tmpl ) {
     'use strict';
 
 	/* Return a ItemView class definition */
@@ -10,19 +10,14 @@ function( Backbone, Juiscrollpaneview  ) {
 
 		initialize: function() {
 			console.log("initialize a Juiscrollpaneview ItemView");
-		},
+        },
 		
-    	template: Juiscrollpaneview,
-        
+    	template: tmpl,
 
-    	/* ui selector cache */
-    	ui: {},
+        onShow: function () {
+            $('.content-pane', this.$el).juiScrollPane();
+        }
 
-		/* Ui events hash */
-		events: {},
-
-		/* on render callback */
-		onRender: function() {}
 	});
 
 });

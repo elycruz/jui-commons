@@ -1,4 +1,7 @@
 define(['application', 'backbone.marionette'], function (app, Marionette) {
+
+    'use strict';
+
     return Marionette.AppRouter.extend({
 
         objAliasRegex: /^[a-z]+[a-z0-9\-_]*$/i,
@@ -29,8 +32,14 @@ define(['application', 'backbone.marionette'], function (app, Marionette) {
 
             require([entrypoint], function (Entrypoint) {
                 
-                E = new Entrypoint();
-                E.mergeRequestParams(requestParams);
+                E = new Entrypoint({
+                    requestParams: $.extend({
+                        controller: controller,
+                        action: action}, requestParams)
+                });
+
+                //                E.mergeRequestParams();
+
                 if (typeof E[actionName] === 'function') {
                     E[actionName]();
                 }

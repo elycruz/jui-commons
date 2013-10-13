@@ -1,34 +1,48 @@
 define([
-	'controllers/BaseController',
+    'controllers/BaseController',
     'views/item/WelcomeItemView',
     'views/layout/MainLayout',
-    'views/item/jui-scroll-pane-view',
-    'views/item/jui-scrollable-drop-down-view',
-    'views/item/jui-select-picker-view'
+    'juiBase'
 ],
-function( BaseController, IndexView, Layout ) {
-    'use strict';
+    function (BaseController, IndexView, Layout) {
+        'use strict';
 
-	return BaseController.extend({
+        return BaseController.extend({
 
-		initialize: function( options ) {
-            this.layout = new Layout();
-			console.log("initialize a Indexcontroller Controller");
+            initialize: function (options) {
+                this.layout = new Layout();
+            },
 
-		},
-        indexAction: function () {
-            console.log('index action');
-            this.layout.mainColRegion.show(new IndexView());
-        },
-        juiScrollPaneExampleAction: function () {
-            //$('.content-pane').juiScrollPane();
-        },
-        juiSelectPickerExampleAction: function () {
+            indexAction: function () {
+                this.showView();
+            },
 
-        },
-        juiScrollableDropDownExampleAction: function () {
+            juiScrollPaneAction: function () {
+                this.showView();
+            },
 
-        }
-	});
+            juiSelectPickerAction: function () {
+                this.showView();
+            },
 
-});
+            juiScrollableDropDownAction: function () {
+                this.showView();
+            },
+
+            showView: function () {
+                var self = this;
+                require(['views/item/'
+                    + this.getViewClassName()], function (View) {
+                    var view = new View();
+                    self.layout.mainColRegion.show(view);
+                });
+            },
+
+            getViewClassName: function () {
+                return strToCamelCase(this.options.requestParams.action)
+                    + 'View';
+            }
+
+        });
+
+    });

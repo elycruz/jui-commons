@@ -17,7 +17,9 @@
     "chai": "~1.7.2",
     "sinon": "~1.7.3",
     "jquery-ui": "~1.10.3",
-    "gsap": "https://github.com/greensock/GreenSock-JS.git#~1.10.3"
+    "gsap": "https://github.com/greensock/GreenSock-JS.git#~1.10.3",
+    "es5-shim": "~2.1.0",
+    "phpjs": "elycruz/phpjs#~0.5.1"
   },
   "devDependencies": {},
   "directory": "bower_components"

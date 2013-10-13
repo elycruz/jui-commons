@@ -70,3 +70,78 @@
 .jui-scroll-pane .scrollbar .handle {
   background: #ccc;
 }
+
+/* line 2, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down {
+  position: relative;
+  border: 1px solid #888;
+  background: #fff;
+  width: 320px;
+  max-height: 280px;
+  color: #888;
+}
+/* line 11, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down .button {
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  background: #fff;
+  border: none;
+  text-align: left;
+  z-index: 1;
+}
+/* line 21, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down .content {
+  position: absolute;
+  width: 100%;
+  overflow: hidden;
+  max-height: 240px;
+  outline: solid #000 1px;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+  background: #fff;
+}
+/* line 30, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down .content ul li {
+  width: 100%;
+  border-top: 1px solid #888;
+  border-bottom: 1px solid #888;
+}
+/* line 35, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down .content ul li a {
+  display: block;
+  padding: 10px;
+}
+/* line 39, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down .content ul li.first {
+  border-top: none !important;
+}
+/* line 42, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down .content ul li.last {
+  border-bottom: none;
+}
+
+/* line 52, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down.jui-scroll-pane:hover .scrollbar {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+/* line 56, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down.jui-scroll-pane .scrollbar {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  height: 275px;
+  z-index: 3;
+}
+
+/* line 67, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down.expands-on-click.active .content, .jui-scrollable-drop-down.expands-on-click:active .content {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+/* line 76, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down.expands-on-mouseover:hover .content {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}

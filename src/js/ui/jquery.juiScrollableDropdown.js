@@ -16,7 +16,7 @@
  * @requires jquery.juiBase
  * @requires jquery.juiScrollPane
  */
-$.widget('jui.juiScrollableDropdown', $.jui.juiBase, {
+$.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     options: {
         className: 'jui-scrollable-drop-down',
@@ -31,6 +31,21 @@ $.widget('jui.juiScrollableDropdown', $.jui.juiBase, {
                 appendTo: 'this.element'
             }
         },
+
+        // Example animations hash
+        defaultAnimations: [{
+                type: 'from',
+                duration: 0.30,
+                elmAlias: 'contentElm',
+                props: {css: {height: 0}}
+            },
+            {
+                type: 'from',
+                duration: 0.30,
+                elmAlias: 'scrollbar',
+                props: {css: {opacity: 0}},
+                delay: -0.10
+        }],
 
         // Expand select-picker on event
         expandOn: 'click',
@@ -100,12 +115,12 @@ $.widget('jui.juiScrollableDropdown', $.jui.juiBase, {
             this.element.on(expandOnMouseEvent, function (e) {
                 if (self.options.state === states.COLLAPSED) {
                     self.ensureAnimationFunctionality();
-                    self.timeline.play();
+                    self.options.timeline.play();
                     self.options.state = states.EXPANDED;
                 }
                 else {
                     self.ensureAnimationFunctionality();
-                    self.timeline.reverse();
+                    self.options.timeline.reverse();
                     self.options.state = states.COLLAPSED;
                 }
             });
@@ -114,13 +129,13 @@ $.widget('jui.juiScrollableDropdown', $.jui.juiBase, {
             // On expand event
             this.element.on(expandOnMouseEvent, function (e) {
                 self.ensureAnimationFunctionality();
-                self.timeline.play();
+                self.options.timeline.play();
                 self.options.state = states.EXPANDED;
             })
             // On collapse event
             .on(collapseOnMouseEvent, function (e) {
                 self.ensureAnimationFunctionality();
-                self.timeline.reverse();
+                self.options.timeline.reverse();
                 self.options.state = states.COLLAPSED;
             });
         }
@@ -145,21 +160,16 @@ $.widget('jui.juiScrollableDropdown', $.jui.juiBase, {
                 }
             }
         }).find('.scrollbar');
-        this.ui.scrollbar.css('bottom', 0);
     },
 
     _initAnimationTimeline: function () {
-        var self = this,
-            dur = 0.30,
-            timeline = this.timeline = new TimelineMax();
-        TweenLite.to(this.ui.contentElm, dur, {css: {opacity: 1}});
-        timeline.from(this.ui.contentElm, dur, {css: {height: 0}});
-        timeline.from(this.ui.scrollbar, dur, {css: {opacity: 0}, delay: -0.10});
-        timeline.reverse();
+        var timeline = this.getAnimationTimeline();
+        this.initAnimationTimeline(timeline);
+//        this.getAnimationTimeline().reverse();
     },
 
     _initTimeline: function () {
-        if (empty(this.timeline)) {
+        if (empty(this.options.timeline)) {
             this._initAnimationTimeline()
         }
     },

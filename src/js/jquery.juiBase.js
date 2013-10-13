@@ -10,14 +10,14 @@
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
  */
-$.widget('jui.juiBase',
-    {
+$.widget('jui.juiBase', {
 
     /**
      * Options hash.
      * @type {Object}
      */
     options: {
+        defaultTimelineClass: 'TimelineMax',
         ui: {}
     },
 
@@ -104,15 +104,8 @@ $.widget('jui.juiBase',
         }
 
         // If config is jquery selection return it
-        if (config instanceof $) {
+        if (config instanceof $ && config.length > 0) {
             return config
-        }
-
-        // If element is a jquery element
-        if (isset(config.elm)
-            && config.elm instanceof $
-            && config.elm.length > 0) {
-            return config.elm;
         }
 
         // If Selector
@@ -123,7 +116,7 @@ $.widget('jui.juiBase',
         }
 
         // Create element and `append to` config section if necessary
-        if (empty(config.elm) && isset(config.html)
+        if (!empty(config.html) && config.create
             && typeof config.html === 'string') {
 
             config.elm = this._createElementFromOptions(config);
@@ -131,10 +124,12 @@ $.widget('jui.juiBase',
             if (isset(config.appendTo)
                 && typeof config.appendTo === 'string') {
                 if (config.appendTo === 'this.element') {
-
                     config.elm =
                         this.element
                             .append(config.elm).find(config.selector);
+                }
+                else if (config.appendTo === 'after this.element') {
+                    this.element.after(config.elm);
                 }
                 else {
                     config.elm =
@@ -142,7 +137,6 @@ $.widget('jui.juiBase',
                                 + config.appendTo)
                         .append(config.elm).find(config.selector);
                 }
-
             }
         }
 
@@ -177,6 +171,7 @@ $.widget('jui.juiBase',
             if (config.attribs) {
                 elm.attr(config.attribs);
             }
+            config.create = false;
         }
         return elm;
     },
@@ -202,7 +197,6 @@ $.widget('jui.juiBase',
      * @param args {Array} optional
      * @param raw {Boolean} optional
      * @returns {*}
-     * 
      */
     getFromOptions: function (key, args, raw) {
         var retVal = null;
@@ -227,6 +221,45 @@ $.widget('jui.juiBase',
             return this.ui[alias];
         }
         return this._getElementFromOptions('ui.' + alias);
+    },
+
+    /**
+     * Lazy initializes a Timeline Lite or
+     * Timeline Max animation timeline.
+     * @returns {TimelineMax|TimelineLite}
+     */
+    getAnimationTimeline: function () {
+        var ops = this.options;
+        if (empty(ops.timeline)) {
+            ops.timeline = new window[this.options.defaultTimelineClass];
+        }
+        return ops.timeline;
+    },
+
+    /**
+     * Adds animations to our animation timeline.
+     * @param timeline optional
+     * @returns default
+     */
+    initAnimationTimeline: function (timeline) {
+        timeline = timeline || this.getAnimationTimeline();
+        var self = this,
+            ops = self.options,
+            i, config, elm, dur, props;
+
+        // If this.options.animations not an array, bail
+        if (empty(ops.animations) || ! ops.animations instanceof Array) {
+            return;
+        }
+
+        // Add animations to timeline
+        for (i = 0; i < ops.animations.length; i += 1) {
+            config = ops.animations[i];
+            elm = self.getUiElement(config.elmAlias);
+            dur = config.duration;
+            props = config.props;
+            timeline[config.type](elm, dur, props);
+        }
     }
 
 });

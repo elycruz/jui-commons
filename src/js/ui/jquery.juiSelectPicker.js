@@ -12,7 +12,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 attribs: {
                     'class': 'jui-select-picker'
                 },
-                selector: '> .jui-select-picker',
+                appendTo: "after this.element",
+                selector: '.jui-select-picker',
                 html: '<div></div>',
                 create: true
             },
@@ -62,21 +63,19 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     _create: function () {
-        var ops = this.options,
-            wrapperElm = this._getElementFromOptions('ui.wrapperElm');
+        var ops = this.options;
 
         // Hide this element and append new markup beside where it used
         // to be
         this.element
-            .attr('hidden', 'hidden')
-            .after(wrapperElm);
-
-        // Add event class names
-        wrapperElm.addClass(this._getExpandOnClassName())
-            .addClass(this._getCollapseOnClassName());
+            .attr('hidden', 'hidden');
 
         // Populate ui elements on this (this.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
+
+        // Add event class names
+        this.ui.wrapperElm.addClass(this._getExpandOnClassName())
+            .addClass(this._getCollapseOnClassName());
 
         // Set button text/label
         this.setLabelText();

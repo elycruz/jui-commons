@@ -3,12 +3,30 @@ require.config({
     
 
     /* starting point for application */
-    deps: ['es5-shim','es5-sham','phpjs','backbone.marionette','bootstrap','main'],
+    deps: ['es5-shim','es5-sham','phpjs','backbone.marionette','jquery','main'],
 
     shim: {
-        bootstrap: {
-            deps: ['jquery'],
+        jquery: {
             exports: 'jquery'
+        },
+        'jquery-ui': {
+            deps: ['jquery'],
+            exports: 'jquery-ui'
+        },
+        'jui-commons': {
+            deps: ['jquery', 'jquery-ui']
+        },
+        'juiBase': {
+            deps: ['jquery', 'jquery-ui']
+        },
+        'juiScrollPane': {
+            deps: ['juiBase']
+        },
+        'juiScrollableDropDown': {
+            deps: ['juiBase']
+        },
+        'juiSelectPicker': {
+            deps: ['juiBase']
         }
     },
 
@@ -17,11 +35,15 @@ require.config({
         'es5-sham':     '../bower_components/es5-shim/es5-sham',
         'phpjs':          '../bower_components/phpjs/phpjs-shim',
         'TweenMax':       '../bower_components/gsap/src/minified/TweenMax.min',
+        'jui-commons': '../../distro/jui-commons.min',
+        'juiBase': '../../src/js/jquery.juiBase',
+        'juiScrollPane': '../../src/js/ui/jquery.juiScrollPane',
+        'juiSelectPicker': '../../src/js/ui/jquery.juiSelectPicker',
+        'juiScrollableDropDown': '../../src/js/ui/jquery.juiScrollableDropDown',
 
         /** Jquery **/
         'jquery': '../bower_components/jquery/jquery',
-        'jquery-ui': '../bower_components/jquery-ui/ui',
-        'jui-commons':  '',
+        'jquery-ui': '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
 
         /** Backbone **/
         backbone: '../bower_components/backbone-amd/backbone',
@@ -46,6 +68,7 @@ require.config({
         i18nprecompile: '../bower_components/require-handlebars-plugin/hbs/i18nprecompile',
         json2: '../bower_components/require-handlebars-plugin/hbs/json2',
         hbs: '../bower_components/require-handlebars-plugin/hbs'
+
     },
 
     hbs: {

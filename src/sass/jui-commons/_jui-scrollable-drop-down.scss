@@ -1,63 +1,3 @@
-/* Welcome to Compass.
- * In this file you should write your main styles. (or centralize your imports)
- * Import this file using the following HTML or equivalent:
- * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
-/**
- * @requires compass border-radius
- * @requires compass border-bottom-radius
- */
-@import "compass/reset";
-@import "../../../../../../bower_components/unsemantic/assets/sass/unsemantic-grid-desktop";
-//@import "../../sass/jui.juiSelectPicker.scss";
-
-// Jui Scrollpane
-@import "../../../jui-scroll-pane/jui-scroll-pane";
-
-.display-none {
-    display: none;
-}
-
-html, body {
-    background: #ccc;
-}
-
-h1, h3 {
-    font: bold 122%"Helvetica Neue", Arial, Helvetica, sans-serif ! important;
-}
-
-h1 {
-    font-size: 200% !important;
-}
-textarea {
-    padding: 10px;
-    @include border-radius(20px);
-}
-header, section,
-section > div {
-    margin: 10px;
-}
-
-label {
-    font: normal 100% "Arial Black", Arial, Verdana, "Sans-serif";
-    margin-bottom: 10px;
-}
-select {
-    margin-bottom: 10px;
-}
-
-.jui-scroll-pane {
-    .scrollbar {
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-        width: 2%;
-        background: #ddd;
-        .handle {
-            background: #ccc;
-        }
-    }
-}
 
 .jui-scrollable-drop-down {
 
@@ -84,7 +24,7 @@ select {
         overflow: hidden;
         max-height: 240px;
         outline: solid #000 1px;
-        @include opacity(0);
+        @include opacity(1);
         background: #fff;
         ul {
             li {
@@ -124,7 +64,7 @@ select {
 .jui-scrollable-drop-down.expands-on-click {
     &.active,
     &:active {
-        .options {
+        .content {
             @include opacity(1);
         }
     }
@@ -133,11 +73,8 @@ select {
 // Mouse Event Fallback
 .jui-scrollable-drop-down.expands-on-mouseover {
     &:hover {
-        .options {
+        .content {
             @include opacity(1);
         }
     }
 }
-
-
-
