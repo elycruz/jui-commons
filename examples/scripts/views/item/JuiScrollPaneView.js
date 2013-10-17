@@ -17,7 +17,6 @@ function( Backbone, tmpl ) {
         onShow: function () {
             $('.content-pane', this.$el).juiScrollPane();
         }
-
 	});
 
 });

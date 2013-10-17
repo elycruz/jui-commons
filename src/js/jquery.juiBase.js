@@ -217,7 +217,7 @@ $.widget('jui.juiBase', {
      * 
      */
     getUiElement: function (alias) {
-        if (isset(this.ui[alias]) && this.ui[alias] instanceof $) {
+        if (isset(this.ui[alias]) && (this.ui[alias] instanceof $ && this.ui[alias].length > 0)) {
             return this.ui[alias];
         }
         return this._getElementFromOptions('ui.' + alias);
