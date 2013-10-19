@@ -10,7 +10,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             wrapperElm: {
                 elm: null,
                 attribs: {
-                    'class': 'jui-select-picker'
+                    'class': 'jui-select-picker jui-select-picker-example-1'
                 },
                 appendTo: "after this.element",
                 selector: '.jui-select-picker',

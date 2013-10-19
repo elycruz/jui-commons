@@ -1,6 +1,7 @@
 define([
     'backbone',
-    'hbs!tmpl/item/jui-select-picker-view'
+    'hbs!tmpl/item/jui-select-picker-view',
+    'juiSelectPicker'
 ],
 function (Backbone, tmpl) {
     'use strict';

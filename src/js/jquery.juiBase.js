@@ -112,13 +112,20 @@ $.widget('jui.juiBase', {
         if (isset(config.selector)
             && empty(config.create)
             && typeof config.selector === 'string') {
-            config.elm = $(config.selector, self.element);
+            if (typeof config.appendTo === 'string'
+                && config.appendTo.length > 0 && config.appendTo.indexOf('this') === -1) {
+                config.elm = $(config.selector, self.getUiElement(config.appendTo));
+            }
+            else {
+                config.elm = $(config.selector, self.element);
+            }
         }
 
         // Create element and `append to` config section if necessary
         if (!empty(config.html) && config.create
             && typeof config.html === 'string') {
 
+            // Create element
             config.elm = this._createElementFromOptions(config);
 
             if (isset(config.appendTo)
@@ -132,9 +139,8 @@ $.widget('jui.juiBase', {
                     this.element.after(config.elm);
                 }
                 else {
-                    config.elm =
-                        this._getElementFromOptions('ui.'
-                                + config.appendTo)
+//                    config.elm =
+                        this.getUiElement(config.appendTo)
                         .append(config.elm).find(config.selector);
                 }
             }

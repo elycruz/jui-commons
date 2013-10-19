@@ -4,57 +4,55 @@
   border: 1px solid #888;
   background: #fff;
   width: 320px;
+  max-height: 280px;
   color: #888;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
-  border-radius: 10px;
 }
 /* line 10, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .button {
   position: relative;
   width: 100%;
   padding: 10px;
-  background: none;
+  background: #fff;
+  height: 42px;
   border: none;
   text-align: left;
+  z-index: 98;
 }
-/* line 19, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 21, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options {
   position: absolute;
+  width: 100%;
+  overflow: hidden;
+  max-height: 240px;
+  outline: solid #000 1px;
   background: #fff;
-  -moz-border-radius-bottomleft: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  -moz-border-radius-bottomright: 10px;
-  -webkit-border-bottom-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  z-index: 97;
 }
-/* line 24, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 30, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li {
   width: 100%;
   border-top: 1px solid #888;
   border-bottom: 1px solid #888;
 }
-/* line 29, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 35, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li a {
   display: block;
   padding: 10px;
 }
-/* line 33, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 39, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.first {
-  border-top: none;
+  border-top: none !important;
 }
-/* line 36, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 42, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.last {
   border-bottom: none;
-  -moz-border-radius-bottomleft: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  -moz-border-radius-bottomright: 10px;
-  -webkit-border-bottom-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+}
+/* line 48, ../../sass/jui-commons/_jui-select-picker.scss */
+.jui-select-picker .scrollbar {
+  position: absolute;
+  height: 282px !important;
+  width: 10px !important;
+  z-index: 99;
 }
 
 /* line 2, ../../sass/jui-commons/_jui-scroll-pane.scss */
@@ -86,11 +84,12 @@
   width: 100%;
   padding: 10px;
   background: #fff;
+  height: 42px;
   border: none;
   text-align: left;
   z-index: 1;
 }
-/* line 21, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 22, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content {
   position: absolute;
   width: 100%;
@@ -101,32 +100,32 @@
   opacity: 1;
   background: #fff;
 }
-/* line 30, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 31, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li {
   width: 100%;
   border-top: 1px solid #888;
   border-bottom: 1px solid #888;
 }
-/* line 35, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 36, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li a {
   display: block;
   padding: 10px;
 }
-/* line 39, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 40, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li.first {
   border-top: none !important;
 }
-/* line 42, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 43, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li.last {
   border-bottom: none;
 }
 
-/* line 52, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 53, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down.jui-scroll-pane:hover .scrollbar {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;
 }
-/* line 56, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 57, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down.jui-scroll-pane .scrollbar {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
@@ -134,13 +133,13 @@
   z-index: 3;
 }
 
-/* line 67, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 68, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down.expands-on-click.active .content, .jui-scrollable-drop-down.expands-on-click:active .content {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;
 }
 
-/* line 76, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 77, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down.expands-on-mouseover:hover .content {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;

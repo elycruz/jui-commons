@@ -4,22 +4,28 @@
     border: 1px solid #888;
     background: #fff;
     width: 320px;
+    max-height: 280px;
     color: #888;
-    @include border-radius(10px);
 
     .button {
         position: relative;
         width: 100%;
         padding: 10px;
-        background: none;
+        background: #fff;
+        height: 42px;
         border: none;
         text-align: left;
+        z-index: 98;
     }
 
     .options {
         position: absolute;
+        width: 100%;
+        overflow: hidden;
+        max-height: 240px;
+        outline: solid #000 1px;
         background: #fff;
-        @include border-bottom-radius(10px);
+        z-index: 97;
         ul {
             li {
                 width: 100%;
@@ -31,12 +37,18 @@
                 padding: 10px;
             }
             li.first {
-                border-top: none;
+                border-top: none !important;
             }
             li.last {
                 border-bottom: none;
-                @include border-bottom-radius(10px);
             }
         }
+    }
+
+    .scrollbar {
+        position: absolute;
+        height: 282px !important;
+        width: 10px !important;
+        z-index: 99;
     }
 }

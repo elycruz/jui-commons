@@ -165,7 +165,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _initAnimationTimeline: function () {
         var timeline = this.getAnimationTimeline();
         this.initAnimationTimeline(timeline);
-//        this.getAnimationTimeline().reverse();
     },
 
     _initTimeline: function () {
