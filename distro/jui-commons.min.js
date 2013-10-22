@@ -186,7 +186,6 @@ $.widget("jui.juiBase", {
     }
 }), $.widget("jui.juiScrollPane", $.jui.juiBase, {
     options: {
-        orientation: "vertical",
         ui: {
             contentHolder: {
                 elm: null,
@@ -251,6 +250,12 @@ $.widget("jui.juiBase", {
         "hidden" !== b.css("overflow") && b.css("overflow", "hidden"), e.element.addClass("jui-scroll-pane"), 
         d > b.height() && e.initScrollbar(a.scrollbarOriented.VERTICALLY), c > b.width() ? e.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : this.ui.horizScrollbar.css("display", "none");
     },
+    _scrollByOrientation: function(a, b) {
+        var c, d = (this.options, this.ui.contentHolder), e = b, f = this.getScrollDirVars(e), g = f.scrollAmountTotal, h = this.getScrollbarHandleByOrientation(e), i = this.getScrollbarByOrientation(e), j = f.cssCalcDir, k = "outer" + ucaseFirst(f.scrollbarDimProp);
+        d[f.scrollbarDimProp]() >= g || (g >= a && a >= 0 ? (d.scrollTop(a), c = a / g, 
+        h.css(j, i[k]() * c)) : a > g ? h.css(j, i[k]() - h[k]()) : 0 > a && h.css(j, 0), 
+        this.scrollContentHolder(e), this.constrainHandle(e));
+    },
     scrollContentHolder: function(a) {
         var b = this.getScrollbarHandleByOrientation(a), c = this.getScrollbarByOrientation(a), d = this.ui.contentHolder, e = this.getScrollDirVars(a), f = e.scrollAmountTotal, g = e.cssCalcDir, h = e.scrollbarDimProp, i = b.position()[g] / c[h](), j = i * f, k = "scroll" + ucaseFirst(g);
         j >= 0 && f >= j ? d[k](i * f) : 0 > j ? d[k](0) : j > f && d[k](f);
@@ -301,8 +306,12 @@ $.widget("jui.juiBase", {
         var b = this.options;
         return a === b.scrollbarOriented.VERTICALLY ? this.ui.vertHandle : this.ui.horizHandle;
     },
-    resolveAutoHide: function() {},
-    refresh: function() {}
+    scrollVertically: function(a) {
+        this._scrollByOrientation(a, this.options.scrollbarOriented.VERTICALLY);
+    },
+    scrollHorizontally: function(a) {
+        this._scrollByOrientation(a, this.options.scrollbarOriented.HORIZONTALLY);
+    }
 }), $.widget("jui.juiScrollableDropDown", $.jui.juiBase, {
     options: {
         className: "jui-scrollable-drop-down",

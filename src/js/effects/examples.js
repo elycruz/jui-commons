@@ -21,12 +21,12 @@ $(function () {
 //        .on('ticking-text:complete', function () {
 //
 //            // Animate Paragraph once Header is done
-//            $('.ticking-text.paragraph').tickingText({
-//                delayPerChar: 10,
-//                charChangeSpeeds: 10,
-//                charChangeReps: 10,
-//                fadeInSpeed: 1500
-//            });
+            $('.ticking-text.paragraph').tickingText({
+                delayPerChar: 10,
+                charChangeSpeeds: 10,
+                charChangeReps: 10,
+                fadeInSpeed: 1500
+            });
 //
 //        });
 

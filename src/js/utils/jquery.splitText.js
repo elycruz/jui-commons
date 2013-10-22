@@ -26,8 +26,11 @@
             var i = 0,
                 output = '',
                 val;
+
+            str = $.trim(str);
+
             while (i < str.length) {
-                val = str[i] === '' || /\s/.test(str[i]) ? '&nbsp;' : str[i];
+                val = /\s/.test(str[i]) ? '&nbsp;' : str[i];
                 output += '<span>' + val + '</span>';
                 i += 1;
             }
