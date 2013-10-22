@@ -2,7 +2,8 @@ define([
     'controllers/BaseController',
     'views/item/WelcomeItemView',
     'views/layout/MainLayout',
-    'juiBase'
+    'juiBase',
+    'jquery-mousewheel'
 ],
     function (BaseController, IndexView, Layout) {
         'use strict';

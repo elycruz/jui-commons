@@ -1,5 +1,12 @@
 .jui-select-picker {
 
+    &.expanded {
+        .options {
+            outline: solid #000 1px;
+        }
+        border: 1px solid #000;
+    }
+
     position: relative;
     border: 1px solid #888;
     background: #fff;
@@ -20,12 +27,14 @@
 
     .options {
         position: absolute;
+        top: 41px;
         width: 100%;
         overflow: hidden;
         max-height: 240px;
-        outline: solid #000 1px;
+        outline: solid #888 1px;
         background: #fff;
         z-index: 97;
+
         ul {
             li {
                 width: 100%;
@@ -45,10 +54,9 @@
         }
     }
 
-    .scrollbar {
+    .vertical.scrollbar {
         position: absolute;
         height: 282px !important;
-        width: 10px !important;
         z-index: 99;
     }
 }

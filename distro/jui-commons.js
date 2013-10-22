@@ -1,4 +1,4 @@
-/*! jui-commons 2013-10-19 */
+/*! jui-commons 2013-10-22 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineMax",
@@ -196,65 +196,113 @@ $.widget("jui.juiBase", {
                     "class": "content"
                 }
             },
-            scrollbar: {
+            vertScrollbar: {
                 elm: null,
-                selector: ".scrollbar",
+                selector: ".vertical.scrollbar",
                 html: "<div></div>",
                 appendTo: "this.element",
                 attribs: {
-                    "class": "scrollbar"
+                    "class": "vertical scrollbar"
                 },
                 create: !0
             },
-            handle: {
+            vertHandle: {
                 elm: null,
                 selector: ".handle",
                 html: "<div></div>",
-                appendTo: "scrollbar",
+                appendTo: "vertScrollbar",
+                attribs: {
+                    "class": "handle"
+                },
+                create: !0
+            },
+            horizScrollbar: {
+                elm: null,
+                selector: ".horizontal.scrollbar",
+                html: "<div></div>",
+                appendTo: "this.element",
+                attribs: {
+                    "class": "horizontal scrollbar"
+                },
+                create: !0
+            },
+            horizHandle: {
+                elm: null,
+                selector: ".handle",
+                html: "<div></div>",
+                appendTo: "horizScrollbar",
                 attribs: {
                     "class": "handle"
                 },
                 create: !0
             }
         },
-        scrollableDist: 0,
+        scrollbarOriented: {
+            VERTICALLY: "vertical",
+            HORIZONTALLY: "horizontal"
+        },
+        autoHide: !1,
         debug: !1
     },
     _create: function() {
         this._populateUiElementsFromOptions();
-        var a = this.options, b = (this.element, this.ui.scrollbar), c = this.ui.contentHolder, d = (c.get(0).scrollHeight, 
-        this.ui.handle, this);
-        "hidden" !== c.css("overflow") && c.css("overflow", "hidden"), d.element.addClass("jui-scroll-pane"), 
-        a.scrollableDist = b.height(), d.initScrollbar();
+        var a = this.options, b = (this.element, this.ui.vertScrollbar, this.ui.contentHolder), c = b.get(0).scrollWidth, d = b.get(0).scrollHeight, e = (this.ui.vertHandle, 
+        this);
+        "hidden" !== b.css("overflow") && b.css("overflow", "hidden"), e.element.addClass("jui-scroll-pane"), 
+        d > b.height() && e.initScrollbar(a.scrollbarOriented.VERTICALLY), c > b.width() ? e.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : this.ui.horizScrollbar.css("display", "none");
     },
-    scrollContentHolder: function() {
-        var a = this.ui.handle, b = this.ui.contentHolder, c = b.get(0).scrollHeight, d = a.position().top / this.options.scrollableDist, e = d * c;
-        e >= 0 && c >= e ? b.scrollTop(d * c) : 0 > e ? b.scrollTop(0) : e > c && b.scrollTop(c);
+    scrollContentHolder: function(a) {
+        var b = this.getScrollbarHandleByOrientation(a), c = this.getScrollbarByOrientation(a), d = this.ui.contentHolder, e = this.getScrollDirVars(a), f = e.scrollAmountTotal, g = e.cssCalcDir, h = e.scrollbarDimProp, i = b.position()[g] / c[h](), j = i * f, k = "scroll" + ucaseFirst(g);
+        j >= 0 && f >= j ? d[k](i * f) : 0 > j ? d[k](0) : j > f && d[k](f);
     },
-    constrainHandle: function() {
-        var a = this.ui.handle, b = this.ui.scrollbar;
-        a.position().top < 0 ? a.css("top", 0) : a.position().top + a.height() > b.height() && a.css("top", b.height() - a.height());
+    constrainHandle: function(a) {
+        var b = this.getScrollbarHandleByOrientation(a), c = this.getScrollbarByOrientation(a), d = this.getScrollDirVars(a), e = d.scrollbarDimProp, f = d.cssCalcDir;
+        b.position()[f] < 0 ? b.css(f, 0) : b.position()[f] + b[e]() > c[e]() && b.css(f, c[e]() - b[e]());
     },
-    initScrollbar: function() {
-        var a = this.ui.scrollbar, b = this.ui.handle, c = this.ui.contentHolder, d = c.get(0).scrollHeight, e = this.options, f = this;
-        f.initScrollbarHandle(), b.draggable({
+    initScrollbar: function(a) {
+        var b = this.getScrollbarByOrientation(a), c = this.getScrollbarHandleByOrientation(a), d = this.ui.contentHolder, e = (this.options, 
+        this), f = e.getScrollDirVars(a), g = f.dragAxis, h = f.cssCalcDir, i = f.scrollbarDimProp;
+        e.initScrollbarHandle(a), c.draggable({
             containment: "parent",
             cursor: "s-resize",
-            axis: "y",
-            drag: function(a, b) {
-                var f = b.position.top / e.scrollableDist;
-                c.scrollTop(f * d), e.debug && console.log("top: " + b.position.top, "left: " + b.position.left);
+            axis: g,
+            drag: function(a, c) {
+                var e = c.position[h] / b[i]();
+                d["scroll" + ucaseFirst(h)](e * f.scrollAmountTotal);
             }
-        }), a.bind("click", function(a) {
-            b.css({
-                top: a.offsetY - b.height() / 2
-            }), f.constrainHandle(), f.scrollContentHolder();
+        }), b.bind("click", function(b) {
+            c.css(h, b["offset" + g.toUpperCase()] - c[i]() / 2), e.constrainHandle(a), 
+            e.scrollContentHolder(a);
         });
     },
-    initScrollbarHandle: function() {
-        var a = this.ui.contentHolder, b = this.ui.scrollbar, c = this.ui.handle, d = a.height(), e = a.get(0).scrollHeight, f = b.height();
-        c.height(d * f / e);
-    }
+    initScrollbarHandle: function(a) {
+        var b = this.ui.contentHolder, c = this.getScrollbarByOrientation(a), d = this.getScrollbarHandleByOrientation(a), e = this.getScrollDirVars(a), f = e.scrollbarDimProp, g = b[f](), h = b.get(0)["scroll" + ucaseFirst(f)], i = c[f]();
+        d[f](g * i / h);
+    },
+    getScrollDirVars: function(a) {
+        var b, c = this, d = (c.options, this.ui.contentHolder);
+        return b = a === c.options.scrollbarOriented.VERTICALLY ? {
+            dragAxis: "y",
+            cssCalcDir: "top",
+            scrollbarDimProp: "height",
+            scrollAmountTotal: d.get(0).scrollHeight
+        } : {
+            dragAxis: "x",
+            cssCalcDir: "left",
+            scrollbarDimProp: "width",
+            scrollAmountTotal: d.get(0).scrollWidth
+        };
+    },
+    getScrollbarByOrientation: function(a) {
+        var b = this.options;
+        return a === b.scrollbarOriented.VERTICALLY ? this.ui.vertScrollbar : this.ui.horizScrollbar;
+    },
+    getScrollbarHandleByOrientation: function(a) {
+        var b = this.options;
+        return a === b.scrollbarOriented.VERTICALLY ? this.ui.vertHandle : this.ui.horizHandle;
+    },
+    resolveAutoHide: function() {},
+    refresh: function() {}
 }), $.widget("jui.juiScrollableDropDown", $.jui.juiBase, {
     options: {
         className: "jui-scrollable-drop-down",

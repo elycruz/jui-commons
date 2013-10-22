@@ -25,21 +25,41 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                     'class': 'content'
                 }
             },
-            scrollbar: {
+            vertScrollbar: {
                 elm: null,
-                selector: '.scrollbar',
+                selector: '.vertical.scrollbar',
                 html: '<div></div>',
                 appendTo: 'this.element',
                 attribs: {
-                    'class': 'scrollbar'
+                    'class': 'vertical scrollbar'
                 },
                 create: true
             },
-            handle: {
+            vertHandle: {
                 elm: null,
                 selector: '.handle',
                 html: '<div></div>',
-                appendTo: 'scrollbar',
+                appendTo: 'vertScrollbar',
+                attribs: {
+                    'class': 'handle'
+                },
+                create: true
+            },
+            horizScrollbar: {
+                elm: null,
+                selector: '.horizontal.scrollbar',
+                html: '<div></div>',
+                appendTo: 'this.element',
+                attribs: {
+                    'class': 'horizontal scrollbar'
+                },
+                create: true
+            },
+            horizHandle: {
+                elm: null,
+                selector: '.handle',
+                html: '<div></div>',
+                appendTo: 'horizScrollbar',
                 attribs: {
                     'class': 'handle'
                 },
@@ -47,17 +67,25 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             }
         },
 
-        scrollableDist: 0,
+        scrollbarOriented: {
+            VERTICALLY: 'vertical',
+            HORIZONTALLY: 'horizontal'
+        },
+
+        autoHide: false,
+
         debug: false
     },
+
     _create: function () {
         this._populateUiElementsFromOptions();
         var ops = this.options,
             elm = this.element,
-            scrollbar = this.ui.scrollbar,
+            scrollbar = this.ui.vertScrollbar,
             contentHolder = this.ui.contentHolder,
+            contentScrollWidth = contentHolder.get(0).scrollWidth,
             contentScrollHeight = contentHolder.get(0).scrollHeight,
-            handle = this.ui.handle,
+            handle = this.ui.vertHandle,
             plugin = this;
 
         // Conetnt Holder
@@ -68,11 +96,19 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         // Add plugin class
         plugin.element.addClass('jui-scroll-pane');
 
-        // Get scrollable distance
-        ops.scrollableDist = scrollbar.height();
+        // Determine whether we need a horizontal and/or vertical scrollbar.
+        // Init vertical scrollbar
+        if (contentScrollHeight > contentHolder.height()) {
+            plugin.initScrollbar(ops.scrollbarOriented.VERTICALLY);
+        }
 
-        // Init scrollbar
-        plugin.initScrollbar();
+        // Init horizontal scrollbar or hide it
+        if (contentScrollWidth > contentHolder.width()) {
+            plugin.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
+        }
+        else {
+            this.ui.horizScrollbar.css('display', 'none');
+        }
 
 //        plugin.element.mousewheel(function (e, delta, deltaX, deltaY) {
 //            delta = delta !== undefined || delta !== null ? delta : deltaY;
@@ -99,81 +135,161 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
     },
 
-    scrollContentHolder: function () {
+    scrollContentHolder: function (oriented) {
         // Calculate percent of scroll action
-        var handle = this.ui.handle,
+        var handle = this.getScrollbarHandleByOrientation(oriented),
+            scrollbar = this.getScrollbarByOrientation(oriented),
             contentHolder = this.ui.contentHolder,
-            contentScrollHeight = contentHolder.get(0).scrollHeight,
-            percentScroll = handle.position().top / this.options.scrollableDist,
-            scrollTopPos = percentScroll * contentScrollHeight;
+
+            // Scroll vars
+            scrollVars = this.getScrollDirVars(oriented),
+            scrollAmountTotal = scrollVars.scrollAmountTotal,
+            dir = scrollVars.cssCalcDir,
+            dimProp = scrollVars.scrollbarDimProp,
+
+            // Math
+            percentScroll = handle.position()[dir] / scrollbar[dimProp](),
+            scrollPos = percentScroll * scrollAmountTotal,
+            contentHolderScrollFunc = 'scroll' + ucaseFirst(dir);
 
         // Scroll only if limits haven't been reached
-        if (scrollTopPos >= 0 && scrollTopPos <= contentScrollHeight) {
-            contentHolder.scrollTop(percentScroll * contentScrollHeight);
+        if (scrollPos >= 0 && scrollPos <= scrollAmountTotal) {
+            contentHolder[contentHolderScrollFunc]
+                (percentScroll * scrollAmountTotal);
         }
-        else if (scrollTopPos < 0) {
-            contentHolder.scrollTop(0);
+
+        // Constrain scroll limits
+        else if (scrollPos < 0) {
+            contentHolder[contentHolderScrollFunc](0);
         }
-        else if (scrollTopPos > contentScrollHeight) {
-            contentHolder.scrollTop(contentScrollHeight);
+        else if (scrollPos > scrollAmountTotal) {
+            contentHolder[contentHolderScrollFunc]
+                (scrollAmountTotal);
         }
+
     },
 
-    constrainHandle: function () {
-        var handle = this.ui.handle,
-            scrollbar = this.ui.scrollbar;
+    constrainHandle: function (oriented) {
+        var handle = this.getScrollbarHandleByOrientation(oriented),
+            scrollbar = this.getScrollbarByOrientation(oriented),
+            vars = this.getScrollDirVars(oriented),
+            dimProp = vars.scrollbarDimProp,
+            dir = vars.cssCalcDir;
 
         // Limit handle position within scroll bar
-        if (handle.position().top < 0) {
-            handle.css('top', 0);
+        if (handle.position()[dir] < 0) {
+            handle.css(dir, 0);
         }
-        else if (handle.position().top + handle.height() > scrollbar.height()) {
-            handle.css('top', scrollbar.height() - handle.height());
+        else if (handle.position()[dir]
+            + handle[dimProp]() > scrollbar[dimProp]()) {
+            handle.css(dir, scrollbar[dimProp]() - handle[dimProp]());
         }
     },
 
-    initScrollbar: function () {
-        var scrollbar = this.ui.scrollbar,
-            handle = this.ui.handle,
+    initScrollbar: function (oriented) {
+        var scrollbar = this.getScrollbarByOrientation(oriented),
+            handle = this.getScrollbarHandleByOrientation(oriented),
             contentHolder = this.ui.contentHolder,
-            contentScrollHeight = contentHolder.get(0).scrollHeight,
             ops = this.options,
-            plugin = this;
+            plugin = this,
+
+            // Resolve scrollbar direction variables
+            scrollVars = plugin.getScrollDirVars(oriented),
+            dragAxis = scrollVars.dragAxis,
+            dir = scrollVars.cssCalcDir,
+            dimProp = scrollVars.scrollbarDimProp;
 
         // Resize handle
-        plugin.initScrollbarHandle();
+        plugin.initScrollbarHandle(oriented);
 
         // Make draggable handle on scrollbar
         handle.draggable({
             containment: 'parent',
             cursor: 's-resize',
-            axis: 'y',
+            axis: dragAxis,
             drag: function (e, ui) {
-                var percentScroll = ui.position.top / ops.scrollableDist;
-                contentHolder.scrollTop(percentScroll * contentScrollHeight);
-                if (ops.debug) {
-                    console.log('top: ' +
-                        ui.position.top, 'left: ' + ui.position.left);
-                }
+                var percentScroll =
+                    ui.position[dir] / scrollbar[dimProp]();
+
+                contentHolder['scroll' + ucaseFirst(dir)]
+                        (percentScroll * scrollVars.scrollAmountTotal);
+
+//                if (ops.debug) {
+//                    console.log('top: ' +
+//                        ui.position.top, 'left: ' + ui.position.left);
+//                }
             }
         });
 
         // On Scroll bar click
         scrollbar.bind('click', function (e) {
-            handle.css({top: e.offsetY - handle.height() / 2});
-            plugin.constrainHandle();
-            plugin.scrollContentHolder();
+            handle.css(dir, e['offset' + dragAxis.toUpperCase()]
+                    - handle[dimProp] () / 2);
+
+            plugin.constrainHandle(oriented);
+            plugin.scrollContentHolder(oriented);
         });
     },
 
-    initScrollbarHandle: function () {
+    initScrollbarHandle: function (oriented) {
         var contentHolder = this.ui.contentHolder,
-            scrollBar = this.ui.scrollbar,
-            handle = this.ui.handle,
-            sph = contentHolder.height(),
-            sh = contentHolder.get(0).scrollHeight,
-            sbh = scrollBar.height();
-        handle.height((sph * sbh) / sh);
+            scrollBar = this.getScrollbarByOrientation(oriented),
+            handle = this.getScrollbarHandleByOrientation(oriented),
+            vars = this.getScrollDirVars(oriented),
+            dimProp = vars.scrollbarDimProp,
+            contentDimVal = contentHolder[dimProp](),
+            scrollTotal = contentHolder.get(0)['scroll'
+                + ucaseFirst(dimProp)],
+            scrollbarDimVal = scrollBar[dimProp]();
+        handle[dimProp]
+            ((contentDimVal * scrollbarDimVal) / scrollTotal);
+    },
+
+    getScrollDirVars: function (oriented) {
+        var plugin = this,
+            ops = plugin.options,
+            contentHolder = this.ui.contentHolder,
+            retVal;
+
+        // Resolve scrollbar direction variables
+        if (oriented === plugin.options.scrollbarOriented.VERTICALLY) {
+            retVal = {
+                dragAxis: 'y',
+                cssCalcDir: 'top',
+                scrollbarDimProp: 'height',
+                scrollAmountTotal: contentHolder.get(0).scrollHeight
+            }
+        }
+        else {
+            retVal = {
+                dragAxis: 'x',
+                cssCalcDir: 'left',
+                scrollbarDimProp: 'width',
+                scrollAmountTotal: contentHolder.get(0).scrollWidth
+            }
+        }
+
+        return retVal;
+    },
+
+    getScrollbarByOrientation: function (oriented) {
+        var ops = this.options;
+        return oriented === ops.scrollbarOriented.VERTICALLY ?
+            this.ui.vertScrollbar : this.ui.horizScrollbar;
+    },
+
+    getScrollbarHandleByOrientation: function (oriented) {
+        var ops = this.options;
+        return oriented === ops.scrollbarOriented.VERTICALLY ?
+            this.ui.vertHandle : this.ui.horizHandle;
+    },
+
+    resolveAutoHide: function () {
+
+    },
+
+    refresh: function () {
+
     }
 
 });

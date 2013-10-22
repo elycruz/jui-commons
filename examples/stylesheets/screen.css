@@ -72,10 +72,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
  * In this file you should write your main styles. (or centralize your imports)
  * Import this file using the following HTML or equivalent:
  * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
-/**
- * @requires compass border-radius
- * @requires compass border-bottom-radius
- */
 /* line 47, ../../bower_components/unsemantic/assets/sass/partials/_unsemantic-vars.sass */
 .grid-100:before,
 .grid-100:after {
@@ -882,49 +878,60 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 /* line 1, ../sass/_jui-scroll-pane-example.scss */
 .content-pane {
   position: relative;
-  width: 550px;
-  height: 400px;
+  width: 320px;
+  height: 240px;
   border: 3px solid #000;
   background: #fff;
 }
-/* line 8, ../sass/_jui-scroll-pane-example.scss */
+/* line 9, ../sass/_jui-scroll-pane-example.scss */
 .content-pane .content {
   position: relative;
   overflow: hidden;
-  height: 400px;
+  height: 240px;
   width: 100%;
 }
-/* line 13, ../sass/_jui-scroll-pane-example.scss */
-.content-pane .content > div {
-  width: 64px;
-  height: 64px;
+/* line 14, ../sass/_jui-scroll-pane-example.scss */
+.content-pane .content div {
+  font: bold 72px "Arial Black", Verdana, Arial, Sans-serif;
+}
+/* line 17, ../sass/_jui-scroll-pane-example.scss */
+.content-pane .content div.number-box {
+  font-size: 48px;
   margin: 10px;
+  padding: 10px;
   background: #ff0084;
   border: 3px solid #000;
   float: left;
 }
-/* line 24, ../sass/_jui-scroll-pane-example.scss */
-.content-pane .scrollbar {
-  position: absolute;
-  height: 400px;
+
+/* line 35, ../sass/_jui-scroll-pane-example.scss */
+.second.content-pane .content div.alphabet {
+  float: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  line-height: 78px;
+  letter-spacing: 10px;
+  width: 1000px;
 }
 
-/* line 21, ../sass/screen.scss */
+/* line 19, ../sass/screen.scss */
 html, body {
   background: #ccc;
 }
 
-/* line 25, ../sass/screen.scss */
+/* line 23, ../sass/screen.scss */
 h1, h3 {
   font: bold 122% "Helvetica Neue", Arial, Helvetica, sans-serif !important;
 }
 
-/* line 29, ../sass/screen.scss */
+/* line 27, ../sass/screen.scss */
 h1 {
   font-size: 200% !important;
 }
 
-/* line 32, ../sass/screen.scss */
+/* line 30, ../sass/screen.scss */
 textarea {
   padding: 10px;
   -webkit-border-radius: 20px;
@@ -934,13 +941,13 @@ textarea {
   border-radius: 20px;
 }
 
-/* line 37, ../sass/screen.scss */
+/* line 35, ../sass/screen.scss */
 header, section, nav,
 section > div {
   margin: 10px;
 }
 
-/* line 41, ../sass/screen.scss */
+/* line 39, ../sass/screen.scss */
 nav > ul {
   margin: 0;
   padding: 0;
@@ -971,19 +978,19 @@ nav > ul li:last-child {
 nav > ul li.last {
   padding-right: 0;
 }
-/* line 44, ../sass/screen.scss */
+/* line 42, ../sass/screen.scss */
 nav > ul > li a {
   padding: 10px;
   display: block;
 }
 
-/* line 51, ../sass/screen.scss */
+/* line 49, ../sass/screen.scss */
 label {
   font: normal 100% "Arial Black", Arial, Verdana, "Sans-serif";
   margin-bottom: 10px;
 }
 
-/* line 55, ../sass/screen.scss */
+/* line 53, ../sass/screen.scss */
 select {
   margin-bottom: 10px;
 }

@@ -19,7 +19,8 @@
     "jquery-ui": "~1.10.3",
     "gsap": "https://github.com/greensock/GreenSock-JS.git#~1.10.3",
     "es5-shim": "~2.1.0",
-    "phpjs": "elycruz/phpjs#~0.5.1"
+    "phpjs": "elycruz/phpjs#~0.5.1",
+    "jquery-mousewheel": "~3.1.4"
   },
   "devDependencies": {},
   "directory": "bower_components"

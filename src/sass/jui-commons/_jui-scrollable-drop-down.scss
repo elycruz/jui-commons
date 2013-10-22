@@ -45,37 +45,9 @@
             }
         }
     }
-}
 
-// Scrollpane scrollbar
-.jui-scrollable-drop-down.jui-scroll-pane {
-    &:hover {
-        .scrollbar {
-            @include opacity(1);
-        }
-    }
-    .scrollbar {
-        @include opacity(0);
-        height: 275px;
+    .vertical.scrollbar {
+        height: 282px;
         z-index: 3;
-    }
-}
-
-// Mouse Event Fallback
-.jui-scrollable-drop-down.expands-on-click {
-    &.active,
-    &:active {
-        .content {
-            @include opacity(1);
-        }
-    }
-}
-
-// Mouse Event Fallback
-.jui-scrollable-drop-down.expands-on-mouseover {
-    &:hover {
-        .content {
-            @include opacity(1);
-        }
     }
 }

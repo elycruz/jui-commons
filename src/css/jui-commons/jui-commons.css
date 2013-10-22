@@ -7,7 +7,15 @@
   max-height: 280px;
   color: #888;
 }
-/* line 10, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 3, ../../sass/jui-commons/_jui-select-picker.scss */
+.jui-select-picker.expanded {
+  border: 1px solid #000;
+}
+/* line 4, ../../sass/jui-commons/_jui-select-picker.scss */
+.jui-select-picker.expanded .options {
+  outline: solid #000 1px;
+}
+/* line 17, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .button {
   position: relative;
   width: 100%;
@@ -18,55 +26,75 @@
   text-align: left;
   z-index: 98;
 }
-/* line 21, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 28, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options {
   position: absolute;
+  top: 41px;
   width: 100%;
   overflow: hidden;
   max-height: 240px;
-  outline: solid #000 1px;
+  outline: solid #888 1px;
   background: #fff;
   z-index: 97;
 }
-/* line 30, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 39, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li {
   width: 100%;
   border-top: 1px solid #888;
   border-bottom: 1px solid #888;
 }
-/* line 35, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 44, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li a {
   display: block;
   padding: 10px;
 }
-/* line 39, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 48, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.first {
   border-top: none !important;
 }
-/* line 42, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 51, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.last {
   border-bottom: none;
 }
-/* line 48, ../../sass/jui-commons/_jui-select-picker.scss */
-.jui-select-picker .scrollbar {
+/* line 57, ../../sass/jui-commons/_jui-select-picker.scss */
+.jui-select-picker .vertical.scrollbar {
   position: absolute;
   height: 282px !important;
-  width: 10px !important;
   z-index: 99;
 }
 
-/* line 2, ../../sass/jui-commons/_jui-scroll-pane.scss */
+/* line 3, ../../sass/jui-commons/_jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar {
   position: absolute;
+  background: #ddd;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+}
+/* line 7, ../../sass/jui-commons/_jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar .handle {
+  background: #888;
+}
+/* line 12, ../../sass/jui-commons/_jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar.vertical {
   top: 0;
   right: 0;
   height: 100%;
-  width: 2%;
-  background: #ddd;
+  width: 13px;
 }
-/* line 9, ../../sass/jui-commons/_jui-scroll-pane.scss */
-.jui-scroll-pane .scrollbar .handle {
-  background: #ccc;
+/* line 17, ../../sass/jui-commons/_jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar.vertical .handle {
+  width: 13px;
+}
+/* line 22, ../../sass/jui-commons/_jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar.horizontal {
+  bottom: 0;
+  left: 0;
+  height: 13px;
+  width: 100%;
+}
+/* line 27, ../../sass/jui-commons/_jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar.horizontal .handle {
+  height: 13px;
 }
 
 /* line 2, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
@@ -119,28 +147,8 @@
 .jui-scrollable-drop-down .content ul li.last {
   border-bottom: none;
 }
-
-/* line 53, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
-.jui-scrollable-drop-down.jui-scroll-pane:hover .scrollbar {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-  opacity: 1;
-}
-/* line 57, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
-.jui-scrollable-drop-down.jui-scroll-pane .scrollbar {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-  opacity: 0;
-  height: 275px;
+/* line 49, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+.jui-scrollable-drop-down .vertical.scrollbar {
+  height: 282px;
   z-index: 3;
-}
-
-/* line 68, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
-.jui-scrollable-drop-down.expands-on-click.active .content, .jui-scrollable-drop-down.expands-on-click:active .content {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-  opacity: 1;
-}
-
-/* line 77, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
-.jui-scrollable-drop-down.expands-on-mouseover:hover .content {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-  opacity: 1;
 }

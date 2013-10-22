@@ -19,6 +19,19 @@ module.exports = function (grunt) {
                     'src/js/ui/*.js'
                 ],
                 dest: 'distro/<%= pkg.name %>.min.js'
+            },
+            dev: {
+                src: [
+                    'src/js/jquery.juiBase.js',
+                    'src/js/ui/*.js'
+                ],
+                dest: 'distro/<%= pkg.name %>.js',
+                options: {
+                    beautify: {
+                        beautify: true,
+                        width: 72
+                    }
+                }
             }
         },
         compass: {

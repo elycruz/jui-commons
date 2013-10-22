@@ -13,6 +13,9 @@ require.config({
             deps: ['jquery'],
             exports: 'jquery-ui'
         },
+        'jquery-mousewheel': {
+            deps: ['jquery', 'jquery-ui']
+        },
         'jui-commons': {
             deps: ['jquery', 'jquery-ui']
         },
@@ -31,43 +34,38 @@ require.config({
     },
 
     paths: {
-        'es5-shim':     '../bower_components/es5-shim/es5-shim',
-        'es5-sham':     '../bower_components/es5-shim/es5-sham',
-        'phpjs':          '../bower_components/phpjs/phpjs-shim',
-        'TweenMax':       '../bower_components/gsap/src/minified/TweenMax.min',
-        'jui-commons': '../../distro/jui-commons.min',
-        'juiBase': '../../src/js/jquery.juiBase',
-        'juiScrollPane': '../../src/js/ui/jquery.juiScrollPane',
-        'juiSelectPicker': '../../src/js/ui/jquery.juiSelectPicker',
-        'juiScrollableDropDown': '../../src/js/ui/jquery.juiScrollableDropDown',
+        'es5-shim':             '../bower_components/es5-shim/es5-shim',
+        'es5-sham':             '../bower_components/es5-shim/es5-sham',
+        'phpjs':                '../bower_components/phpjs/phpjs-shim',
+        'TweenMax':             '../bower_components/gsap/src/minified/TweenMax.min',
+        'jui-commons':          '../../distro/jui-commons.min',
+        'juiBase':              '../../src/js/jquery.juiBase',
+        'juiScrollPane':        '../../src/js/ui/jquery.juiScrollPane',
+        'juiSelectPicker':      '../../src/js/ui/jquery.juiSelectPicker',
+        'juiScrollableDropDown':'../../src/js/ui/jquery.juiScrollableDropDown',
 
-        /** Jquery **/
-        'jquery': '../bower_components/jquery/jquery',
-        'jquery-ui': '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
+        'jquery':       '../bower_components/jquery/jquery',
+        'jquery-ui':    '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
+        'jquery-mousewheel':    '../bower_components/jquery-mousewheel/jquery.mousewheel',
 
-        /** Backbone **/
-        backbone: '../bower_components/backbone-amd/backbone',
+        backbone:   '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',
 
-        /* alias all marionette libs */
-        'backbone.marionette': '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
-        'backbone.wreqr': '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
-        'backbone.babysitter': '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
+        'backbone.marionette':  '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
+        'backbone.wreqr':       '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
+        'backbone.babysitter':  '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
 
-        /* alias the bootstrap js lib */
         bootstrap: 'vendor/bootstrap',
 
-        /* Alias text.js for template loading and shortcut the templates dir to tmpl */
         text: '../bower_components/requirejs-text/text',
         tmpl: "../templates",
 
-        /* handlebars from the require handlerbars plugin below */
         handlebars: '../bower_components/require-handlebars-plugin/Handlebars',
 
         /* require handlebars plugin - Alex Sexton */
         i18nprecompile: '../bower_components/require-handlebars-plugin/hbs/i18nprecompile',
-        json2: '../bower_components/require-handlebars-plugin/hbs/json2',
-        hbs: '../bower_components/require-handlebars-plugin/hbs'
+        json2:          '../bower_components/require-handlebars-plugin/hbs/json2',
+        hbs:            '../bower_components/require-handlebars-plugin/hbs'
 
     },
 

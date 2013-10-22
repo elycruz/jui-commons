@@ -17,6 +17,7 @@
     "es5-shim": "~2.1.0",
     "unsemantic": "*",
     "jquery-smartresize": "louisremi/jquery-smartresize",
-    "delayed-for-jquery": "https://github.com/theloveofcode/delayed-for-jquery.git"
+    "delayed-for-jquery": "https://github.com/theloveofcode/delayed-for-jquery.git",
+    "jquery-mousewheel": "~3.1.4"
   }
 }
