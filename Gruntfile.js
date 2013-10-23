@@ -16,6 +16,7 @@ module.exports = function (grunt) {
             build: {
                 src: [
                     'src/js/jquery.juiBase.js',
+                    'src/js/effects/*.js',
                     'src/js/ui/*.js'
                 ],
                 dest: 'distro/<%= pkg.name %>.min.js'
@@ -23,6 +24,7 @@ module.exports = function (grunt) {
             dev: {
                 src: [
                     'src/js/jquery.juiBase.js',
+                    'src/js/utils/*.js',
                     'src/js/ui/*.js'
                 ],
                 dest: 'distro/<%= pkg.name %>.js',

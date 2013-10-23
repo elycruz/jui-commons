@@ -1,0 +1,7 @@
+
+section p.ticking-text.paragraph {
+    width: 550px;
+}
+p.ticking-text span {
+    display: inline-block;
+}

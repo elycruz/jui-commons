@@ -54,6 +54,36 @@ $.widget("jui.juiBase", {
         if (!(empty(h.animations) || !h.animations instanceof Array)) for (b = 0; b < h.animations.length; b += 1) c = h.animations[b], 
         d = g.getUiElement(c.elmAlias), e = c.duration, f = c.props, a[c.type](d, e, f);
     }
+}), $.widget("jui.splitText", {
+    options: {
+        states: {
+            unsplit: "unsplit",
+            split: "split"
+        },
+        state: null,
+        eventsPrefix: "split-text"
+    },
+    _splitStrToSpans: function(a) {
+        for (var b, c = 0, d = ""; c < a.length; ) b = /\s/.test(a[c]) ? "&nbsp;" : a[c], 
+        d += "<span>" + b + "</span>", c += 1;
+        return d;
+    },
+    _create: function() {
+        var a = this, b = a.options;
+        b.state = b.state || b.states.unsplit, b.originalText = a.element.text().replace(/\s{3,}/gim, "  "), 
+        a.toggleSplitText(), a.element.trigger(b.eventsPrefix + ":complete");
+    },
+    toggleSplitText: function(a) {
+        var b = this, c = b.options;
+        a = a || c.state, a === c.states.unsplit ? (c.state = c.states.split, b.element.html(b._splitStrToSpans(c.originalText))) : (c.state = c.states.unsplit, 
+        b.element.text(c.originalText)), this.element.trigger(c.eventsPrefix + ":toggle", {
+            states: c.states,
+            state: c.state
+        });
+    },
+    getOriginalText: function() {
+        return this.options.originalText;
+    }
 }), $.widget("jui.paginator", $.jui.juiBase, {
     options: {
         items: {

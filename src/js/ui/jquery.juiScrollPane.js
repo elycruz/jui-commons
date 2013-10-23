@@ -6,7 +6,7 @@
  * @module $.jui.juiScrollPane
  * @requires jquery.mousewheel (for crossbrowser mousewheel functionality)
  * @requires jquery
- * @requires jquery.ui
+ * @requires jquery.ui (jquery ui core)
  * @requires jquery.juiBase
  * @requires TweenMax
  * @returns jquery selection
