@@ -30,6 +30,10 @@ define([
                 this.showView();
             },
 
+            effectsAction: function () {
+                this.showView();
+            },
+
             showView: function () {
                 var self = this;
                 require(['views/item/'

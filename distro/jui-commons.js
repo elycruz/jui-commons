@@ -1,4 +1,4 @@
-/*! jui-commons 2013-10-22 */
+/*! jui-commons 2013-10-28 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineMax",
