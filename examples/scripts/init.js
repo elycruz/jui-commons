@@ -6,12 +6,8 @@ require.config({
     deps: ['es5-shim','es5-sham','phpjs','backbone.marionette','jquery','main'],
 
     shim: {
-        jquery: {
-            exports: 'jquery'
-        },
         'jquery-ui': {
-            deps: ['jquery'],
-            exports: 'jquery-ui'
+            deps: ['jquery']
         },
         'jquery-mousewheel': {
             deps: ['jquery', 'jquery-ui']
@@ -37,7 +33,7 @@ require.config({
         'es5-shim':             '../bower_components/es5-shim/es5-shim',
         'es5-sham':             '../bower_components/es5-shim/es5-sham',
         'phpjs':                '../bower_components/phpjs/phpjs-shim',
-        'TweenMax':             '../bower_components/gsap/src/minified/TweenMax.min',
+        'TweenMax':             '../bower_components/gsap/src/uncompressed/TweenMax',
         'jui-commons':          '../../distro/jui-commons.min',
         'juiBase':              '../../src/js/jquery.juiBase',
         'juiScrollPane':        '../../src/js/ui/jquery.juiScrollPane',

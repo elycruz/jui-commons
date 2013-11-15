@@ -1,0 +1,14 @@
+.jui-floating-scroll-indicator {
+    > .indicator-wrapper {
+        position: fixed;
+        right: 20px;
+        top: 0;
+        .indicator {
+            position: relative;
+            background: #FF0000;
+            width: 10px;
+            height: 10px;
+            @include border-radius(5px);
+        }
+    }
+}

@@ -78,6 +78,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
     _create: function () {
         this._populateUiElementsFromOptions();
+        console.log('hello');
         var ops = this.options,
             elm = this.element,
             scrollbar = this.ui.vertScrollbar,

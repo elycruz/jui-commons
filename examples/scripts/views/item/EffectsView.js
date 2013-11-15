@@ -36,9 +36,10 @@ define([
                     span.css({position: 'relative', display: 'inline-block'});
                 });
 
-                timeline0.to(spans, 9, {
+                timeline0.from(spans,0.38, {
                         css: {
-                            scale: 100
+                            scale: 0.16,
+                            opacity: 0
                         },
                         delay: -0.08
                     });

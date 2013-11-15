@@ -12,6 +12,8 @@ define(function() {
 		    'spec/modules/TestingTesting123Module.js',
 		    'spec/routers/Router.js',
 		    'spec/testSuite.js',
+		    'spec/views/item/EffectsView.js',
+		    'spec/views/item/JuiFloatingScrollIndicatorsView.js',
 		    'spec/views/item/JuiScrollableDropDownView.js',
 		    'spec/views/item/JuiScrollbarView.js',
 		    'spec/views/item/JuiScrollPaneView.js',

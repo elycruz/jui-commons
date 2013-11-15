@@ -138,6 +138,15 @@ $.widget('jui.juiBase', {
                 else if (config.appendTo === 'after this.element') {
                     this.element.after(config.elm);
                 }
+                else if (config.appendTo === 'before this.element') {
+                    this.element.before(config.elm);
+                }
+                else if (config.appendTo === 'prepend to this.element') {
+                    this.element.prepend(config.elm);
+                }
+                else if (config.appendTo === 'append to this.element') {
+                    this.element.append(config.elm);
+                }
                 else {
 //                    config.elm =
                         this.getUiElement(config.appendTo)

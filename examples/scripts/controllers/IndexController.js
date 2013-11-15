@@ -30,6 +30,10 @@ define([
                 this.showView();
             },
 
+            juiFloatingScrollIndicatorsAction: function () {
+                this.showView();
+            },
+
             effectsAction: function () {
                 this.showView();
             },

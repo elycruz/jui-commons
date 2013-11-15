@@ -1,5 +1,4 @@
 .jui-select-picker {
-
     &.expanded {
         .options {
             outline: solid #000 1px;
@@ -16,13 +15,17 @@
 
     .button {
         position: relative;
+        display: border-box;
         width: 100%;
-        padding: 10px;
+        height: 2em;
         background: #fff;
-        height: 42px;
         border: none;
         text-align: left;
+        vertical-align: center;
         z-index: 98;
+        .label {
+            margin: 1em;
+        }
     }
 
     .options {
