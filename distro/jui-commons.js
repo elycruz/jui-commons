@@ -1,4 +1,4 @@
-/*! jui-commons 2013-11-15 */
+/*! jui-commons 2013-11-19 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineMax",
@@ -53,6 +53,10 @@ $.widget("jui.juiBase", {
         var b, c, d, e, f, g = this, h = g.options;
         if (!(empty(h.animations) || !h.animations instanceof Array)) for (b = 0; b < h.animations.length; b += 1) c = h.animations[b], 
         d = g.getUiElement(c.elmAlias), e = c.duration, f = c.props, a[c.type](d, e, f);
+    },
+    getOptionValue: function(a) {
+        var b = this._namespace(a);
+        return "function" == typeof b ? b.call(this) : b;
     }
 }), $.widget("jui.splitText", {
     options: {
@@ -83,6 +87,48 @@ $.widget("jui.juiBase", {
     },
     getOriginalText: function() {
         return this.options.originalText;
+    }
+}), $.widget("jui.juiAffix", $.jui.juiBase, {
+    options: {
+        "class": "jui-afix",
+        scrollableElm: $(window),
+        affixVertically: !0,
+        affixHorizontally: !1,
+        offset: {
+            top: 10,
+            right: 10,
+            bottom: 10,
+            left: 10
+        },
+        _isPositionFixedSupported: !1
+    },
+    _create: function() {
+        var a = this, b = a.options, c = a.element, d = b.affixVertically, e = (b.affixHorizontally, 
+        {
+            position: c.css("position"),
+            top: c.offset().top,
+            right: c.offset().right,
+            bottom: c.offset().bottom,
+            left: c.offset().left
+        }), f = b.scrollableElm, g = {
+            top: a.getOptionValue("offset.top"),
+            right: a.getOptionValue("offset.right"),
+            bottom: a.getOptionValue("offset.bottom"),
+            left: a.getOptionValue("offset.left")
+        };
+        c.addClass(b["class"]), f.bind("scroll resize orientationchange load", function() {
+            var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
+            f.width() + g.right, d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
+                position: "fixed",
+                top: g.top,
+                bottom: "auto"
+            }) : b <= e.top && (c.css("position", e.position), c.css("top", e.top), 
+            c.css("bottom", "auto")), e.top - b >= h && c.css({
+                position: "fixed",
+                top: "auto",
+                bottom: -g.bottom
+            }));
+        }), f.scroll();
     }
 }), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
     options: {
@@ -122,13 +168,24 @@ $.widget("jui.juiBase", {
     _create: function() {
         var a = this, b = a.options;
         a.element.addClass(b["class"]), a._populateUiElementsFromOptions(), a._createInidicators(), 
-        $(window).scroll(function() {});
+        $(window).bind("orientationchange resize", function() {
+            var c = a.getUiElement("wrapperElm"), d = b.ui.inidicatorsNeededElms.elm;
+            d.each(function(a, b) {
+                b = $(b), $(".indicator", c).eq(a).css("top", b.offset().top);
+            });
+        });
     },
-    _addScrollListeners: function() {},
     _createInidicators: function() {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm");
-        a = $(e.selector, this.element), 0 !== a.length && (a.each(function(a, b) {
-            b = $(b), f.append('<div class="indicator" title="' + b.text() + '"' + 'data-index="' + a + '"></div>');
+        e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
+            c = $(c);
+            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
+            f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
+                offset: {
+                    top: (b + 1) * d.height(),
+                    bottom: -((a.length - b) * d.height())
+                }
+            });
         }), b = d.ui.indicatorElms.elm = $(d.ui.indicatorElms.selector, f), b.click(function() {
             var b = $(this), d = a.eq(b.attr("data-index"));
             c.ui.scrollableElm.animate({

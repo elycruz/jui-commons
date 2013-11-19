@@ -1,7 +1,8 @@
 .jui-floating-scroll-indicator {
     > .indicator-wrapper {
-        position: fixed;
+        position: absolute;
         right: 20px;
+        height: 100%;
         top: 0;
         .indicator {
             position: relative;

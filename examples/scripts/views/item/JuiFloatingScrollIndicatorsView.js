@@ -23,7 +23,8 @@ function( Backbone, JuiFloatingScrollIndicatorsView  ) {
 		/* on show callback */
 		onShow: function() {
             console.log("floating scroll ind");
-            $('.floating-scroll-indicators-test').juiFloatingScrollIndicators()
+            var indTestElm = $('.floating-scroll-indicators-test')
+                .juiFloatingScrollIndicators();
         }
 	});
 

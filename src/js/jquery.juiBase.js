@@ -275,6 +275,17 @@ $.widget('jui.juiBase', {
             props = config.props;
             timeline[config.type](elm, dur, props);
         }
+    },
+
+    /**
+     * Gets an option value from the options hash.  If the option
+     * value is a function returns the functions return value.
+     * @param key
+     * @returns {Object}
+     */
+    getOptionValue: function (key) {
+        var value = this._namespace(key);
+        return typeof value === 'function' ? value.call(this) : value;
     }
 
 });

@@ -49,12 +49,15 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         // Populate initial ui elements
         self._populateUiElementsFromOptions();
         self._createInidicators();
-        $(window).scroll(function (e) {
-
-        })
-    },
-
-    _addScrollListeners: function () {
+        $(window).bind('orientationchange resize', function (e) {
+            var wrapper = self.getUiElement('wrapperElm'),
+                indElms = ops.ui.inidicatorsNeededElms.elm;
+            indElms.each(function (index, elm) {
+                elm = $(elm);
+                $('.indicator', wrapper).eq(index)
+                    .css('top', elm.offset().top);
+            });
+        });
     },
 
     _createInidicators: function () {
@@ -65,18 +68,11 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
             indNeededElm,
             indElms;
 
-//        if (createOps.hasOwnProperty('selectors')
-//            && createOps.selectors.length > 0) {
-//            createOps.selectors.forEach(function (x) {
-//                wrapper.append('<a href="class="indicator"></div>');
-//            });
-//        }
-
         // By Selector
         // -------------------------------------------------------
         // -------------------------------------------------------
         // Get elements that need a floating scroll indicator
-        indNeededElm = $(createOps.selector, this.element);
+        createOps.elm = indNeededElm = $(createOps.selector, this.element);
 
         // If no elements need floating scroll indicators, bail
         if (indNeededElm.length === 0) {
@@ -86,10 +82,19 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         // Add indicators
         indNeededElm.each(function (index, elm) {
             elm = $(elm);
-            wrapper.append('<div ' +
+            var nuIndElm = $('<div ' +
                 'class="indicator" ' +
                 'title="' + elm.text() + '"' +
                 'data-index="' + index + '"></div>');
+            wrapper.append(nuIndElm);
+            $('.indicator', wrapper).eq(index)
+                    .css('top', elm.offset().top);
+            nuIndElm.juiAffix({
+                offset: {
+                    top: (index + 1) * nuIndElm.height(),
+                    bottom: -((indNeededElm.length - index) * nuIndElm.height())
+                }
+            });
         });
 
         // Get indicators
