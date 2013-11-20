@@ -1,11 +1,16 @@
 /**
  * Created by edelacruz on 11/15/13.
  */
+// @todo refactor to use parentOffset or offsetParent (I believe it's the position property)
 // @todo use Tween Max for animation here
 // @todo create alternate indicator creation method (list of selectors?)
 $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
     options: {
         'class': 'jui-floating-scroll-indicator',
+        animation: {
+            easing: Power3.easeInOut,
+            duration: 0.38
+        },
         ui: {
             scrollableElm: {
                 elm: $('body').eq(0)
@@ -49,13 +54,13 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         // Populate initial ui elements
         self._populateUiElementsFromOptions();
         self._createInidicators();
-        $(window).bind('orientationchange resize', function (e) {
+        $(window).on('debouncedresize', function (e) {
             var wrapper = self.getUiElement('wrapperElm'),
-                indElms = ops.ui.inidicatorsNeededElms.elm;
+                indElms = ops.ui.inidicatorsNeededElms.elm,
+                inds = $('.indicator', wrapper);
             indElms.each(function (index, elm) {
                 elm = $(elm);
-                $('.indicator', wrapper).eq(index)
-                    .css('top', elm.offset().top);
+                inds.eq(index).css('top', elm.offset().top);
             });
         });
     },
@@ -72,7 +77,8 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         // -------------------------------------------------------
         // -------------------------------------------------------
         // Get elements that need a floating scroll indicator
-        createOps.elm = indNeededElm = $(createOps.selector, this.element);
+        createOps.elm =
+            indNeededElm = $(createOps.selector, this.element);
 
         // If no elements need floating scroll indicators, bail
         if (indNeededElm.length === 0) {
@@ -92,7 +98,8 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
             nuIndElm.juiAffix({
                 offset: {
                     top: (index + 1) * nuIndElm.height(),
-                    bottom: -((indNeededElm.length - index) * nuIndElm.height())
+                    bottom: -((indNeededElm.length - index)
+                        * nuIndElm.height())
                 }
             });
         });
@@ -105,8 +112,9 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         indElms.click(function (e) {
             var elm = $(this),
             toElm = indNeededElm.eq(elm.attr('data-index'));
-            self.ui.scrollableElm.animate({
-                scrollTop: toElm.offset().top}, 300);
+            TweenMax.to(self.ui.scrollableElm, ops.animation.duration,
+                {scrollTop: parseInt(toElm.offset().top),
+                    easing: ops.animation.easing});
         });
     }
 

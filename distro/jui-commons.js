@@ -1,4 +1,4 @@
-/*! jui-commons 2013-11-19 */
+/*! jui-commons 2013-11-20 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineMax",
@@ -133,6 +133,10 @@ $.widget("jui.juiBase", {
 }), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
     options: {
         "class": "jui-floating-scroll-indicator",
+        animation: {
+            easing: Power3.easeInOut,
+            duration: .38
+        },
         ui: {
             scrollableElm: {
                 elm: $("body").eq(0)
@@ -168,10 +172,10 @@ $.widget("jui.juiBase", {
     _create: function() {
         var a = this, b = a.options;
         a.element.addClass(b["class"]), a._populateUiElementsFromOptions(), a._createInidicators(), 
-        $(window).bind("orientationchange resize", function() {
-            var c = a.getUiElement("wrapperElm"), d = b.ui.inidicatorsNeededElms.elm;
+        $(window).on("debouncedresize", function() {
+            var c = a.getUiElement("wrapperElm"), d = b.ui.inidicatorsNeededElms.elm, e = $(".indicator", c);
             d.each(function(a, b) {
-                b = $(b), $(".indicator", c).eq(a).css("top", b.offset().top);
+                b = $(b), e.eq(a).css("top", b.offset().top);
             });
         });
     },
@@ -187,10 +191,11 @@ $.widget("jui.juiBase", {
                 }
             });
         }), b = d.ui.indicatorElms.elm = $(d.ui.indicatorElms.selector, f), b.click(function() {
-            var b = $(this), d = a.eq(b.attr("data-index"));
-            c.ui.scrollableElm.animate({
-                scrollTop: d.offset().top
-            }, 300);
+            var b = $(this), e = a.eq(b.attr("data-index"));
+            TweenMax.to(c.ui.scrollableElm, d.animation.duration, {
+                scrollTop: parseInt(e.offset().top),
+                easing: d.animation.easing
+            });
         }));
     }
 }), $.widget("jui.paginator", $.jui.juiBase, {

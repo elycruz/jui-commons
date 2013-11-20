@@ -34,15 +34,18 @@ define([
                 spans.each(function (i) {
                     span = $(this);
                     span.css({position: 'relative', display: 'inline-block'});
-                });
-
-                timeline0.from(spans,0.38, {
+                    timeline0.from(span, 0.16, {
                         css: {
-                            scale: 0.16,
+//                            scale: 1.12,
+//                            rotation: 360,
+                            left: - span.width(),
+                            top: - span.height(),
                             opacity: 0
                         },
                         delay: -0.08
                     });
+                });
+
 
                 // ==============================================================
                 // GSAP Test (@see greensock.com - Green Sock Animation Platform)
