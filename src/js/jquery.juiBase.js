@@ -54,11 +54,11 @@ $.widget('jui.juiBase', {
         var self = this;
 
         // Get options
-        options = options || this.options.ui;
+        options = options || this.options;
 
         // Set our ui collection
-        if (!isset(self.ui)) {
-            self.ui = {};
+        if (!isset(options.ui)) {
+            options.ui = {};
         }
 
         // Loop through options and populate elements
@@ -66,16 +66,15 @@ $.widget('jui.juiBase', {
 
             // If key is string
             if (typeof options[key] === 'string') {
-                self.ui[key] = options[key] = $(options[key], self.element);
+                options[key] = options[key] = $(options[key], self.element);
             }
 
             // If key is plain object
             if ($.isPlainObject(options[key])) {
-                self.ui[key] = self._getElementFromOptions(options[key]);
+                options[key].elm = self._getElementFromOptions(options[key]);
             }
 
         });
-        // /Loop through options
     },
 
     /**
@@ -90,7 +89,7 @@ $.widget('jui.juiBase', {
 
         // If config is a string
         if (typeof config === 'string') {
-            config = self._namespace(config);
+            config = self._namespace(config, ops);
         }
 
         // If config is a function
@@ -148,7 +147,6 @@ $.widget('jui.juiBase', {
                     this.element.append(config.elm);
                 }
                 else {
-//                    config.elm =
                         this.getUiElement(config.appendTo)
                         .append(config.elm).find(config.selector);
                 }
@@ -232,8 +230,12 @@ $.widget('jui.juiBase', {
      * 
      */
     getUiElement: function (alias) {
-        if (isset(this.ui[alias]) && (this.ui[alias] instanceof $ && this.ui[alias].length > 0)) {
-            return this.ui[alias];
+        var ops = this.options;
+        if (isset(ops.ui[alias])) {
+            var uiAlias = ops.ui[alias];
+            if (uiAlias instanceof $ && uiAlias.length > 0) {
+                return uiAlias;
+            }
         }
         return this._getElementFromOptions('ui.' + alias);
     },

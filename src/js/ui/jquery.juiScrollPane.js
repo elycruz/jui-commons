@@ -78,14 +78,10 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
     _create: function () {
         this._populateUiElementsFromOptions();
-        console.log('hello');
         var ops = this.options,
-            elm = this.element,
-            scrollbar = this.ui.vertScrollbar,
-            contentHolder = this.ui.contentHolder,
+            contentHolder = this.getUiElement('contentHolder'),
             contentScrollWidth = contentHolder.get(0).scrollWidth,
             contentScrollHeight = contentHolder.get(0).scrollHeight,
-            handle = this.ui.vertHandle,
             plugin = this;
 
         // Conetnt Holder
@@ -107,7 +103,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             plugin.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
         }
         else {
-            this.ui.horizScrollbar.css('display', 'none');
+            this.getUiElement('horizScrollbar').css('display', 'none');
         }
 
 //        plugin.element.mousewheel(function (e, delta, deltaX, deltaY) {
@@ -137,7 +133,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
     _scrollByOrientation: function (value, orientation) {
         var ops = this.options,
-            contentHolder = this.ui.contentHolder,
+            contentHolder = this.getUiElement('contentHolder'),
             layout = orientation,
             vars = this.getScrollDirVars(layout),
             scrollTotal = vars.scrollAmountTotal,
@@ -171,7 +167,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         // Calculate percent of scroll action
         var handle = this.getScrollbarHandleByOrientation(oriented),
             scrollbar = this.getScrollbarByOrientation(oriented),
-            contentHolder = this.ui.contentHolder,
+            contentHolder = this.getUiElement('contentHolder'),
 
         // Scroll vars
             scrollVars = this.getScrollDirVars(oriented),
@@ -220,7 +216,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     initScrollbar: function (oriented) {
         var scrollbar = this.getScrollbarByOrientation(oriented),
             handle = this.getScrollbarHandleByOrientation(oriented),
-            contentHolder = this.ui.contentHolder,
+            contentHolder = this.getUiElement('contentHolder'),
             ops = this.options,
             plugin = this,
 
@@ -229,6 +225,8 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             dragAxis = scrollVars.dragAxis,
             dir = scrollVars.cssCalcDir,
             dimProp = scrollVars.scrollbarDimProp;
+
+        console.log(scrollbar.length, handle.length, contentHolder);
 
         // Resize handle
         plugin.initScrollbarHandle(oriented);
@@ -263,7 +261,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     },
 
     initScrollbarHandle: function (oriented) {
-        var contentHolder = this.ui.contentHolder,
+        var contentHolder = this.getUiElement('contentHolder'),
             scrollBar = this.getScrollbarByOrientation(oriented),
             handle = this.getScrollbarHandleByOrientation(oriented),
             vars = this.getScrollDirVars(oriented),
@@ -279,7 +277,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     getScrollDirVars: function (oriented) {
         var plugin = this,
             ops = plugin.options,
-            contentHolder = this.ui.contentHolder,
+            contentHolder = this.getUiElement('contentHolder'),
             retVal;
 
         // Resolve scrollbar direction variables
@@ -306,13 +304,13 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     getScrollbarByOrientation: function (oriented) {
         var ops = this.options;
         return oriented === ops.scrollbarOriented.VERTICALLY ?
-            this.ui.vertScrollbar : this.ui.horizScrollbar;
+            this.getUiElement('vertScrollbar') : this.getUiElement('horizScrollbar');
     },
 
     getScrollbarHandleByOrientation: function (oriented) {
         var ops = this.options;
         return oriented === ops.scrollbarOriented.VERTICALLY ?
-            this.ui.vertHandle : this.ui.horizHandle;
+            this.getUiElement('vertHandle') : this.getUiElement('horizHandle');
     },
 
     scrollVertically: function (value) {

@@ -6,6 +6,9 @@ require.config({
     deps: ['es5-shim','es5-sham','phpjs','backbone.marionette','jquery','main'],
 
     shim: {
+        'backbone.marionette': {
+            deps: ['backbone', 'underscore']
+        },
         'jquery-ui': {
             deps: ['jquery']
         },
