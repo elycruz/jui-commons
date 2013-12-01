@@ -33,7 +33,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         },
 
         // Example animations hash
-        defaultAnimations: [{
+        defaultAnimations: [
+            {
                 type: 'from',
                 duration: 0.30,
                 elmAlias: 'contentElm',
@@ -45,7 +46,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 elmAlias: 'scrollbar',
                 props: {css: {opacity: 0}},
                 delay: -0.10
-        }],
+            }
+        ],
 
         // Expand select-picker on event
         expandOn: 'click',
@@ -107,10 +109,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _addEventListeners: function () {
         var self = this,
             states = self.options.states,
+            ops = this.options,
             collapseOnMouseEvent = this._getCollapseOnEventStringName(),
             expandOnMouseEvent = this._getExpandOnEventStringName();
 
         // If expand and collapse events are the same (use toggle pattern)
+
         if (expandOnMouseEvent === collapseOnMouseEvent) {
             this.element.on(expandOnMouseEvent, function (e) {
                 if (self.options.state === states.COLLAPSED) {
@@ -132,12 +136,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 self.options.timeline.play();
                 self.options.state = states.EXPANDED;
             })
-            // On collapse event
-            .on(collapseOnMouseEvent, function (e) {
-                self.ensureAnimationFunctionality();
-                self.options.timeline.reverse();
-                self.options.state = states.COLLAPSED;
-            });
+                // On collapse event
+                .on(collapseOnMouseEvent, function (e) {
+                    self.ensureAnimationFunctionality();
+                    self.options.timeline.reverse();
+                    self.options.state = states.COLLAPSED;
+                });
         }
     },
 
@@ -147,19 +151,19 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             .off(this._getExpandOnEventStringName());
     },
 
-    _removeCreatedOptions: function () {
-        this.getUiElement('contentElm').find('ul').remove();
-    },
-
     _initScrollbar: function () {
-        this.ui.scrollbar = this.element.juiScrollPane({
+        var ops = this.options,
+            scrollbar = this._namespace('ui.scrollbar');
+        this.element.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement('contentElm'),
-                    selector: this.options.ui.contentElm.selector + ''
+                    selector: ops.ui.contentElm.selector + ''
                 }
             }
-        }).find('.scrollbar');
+        });
+
+        scrollbar.elm = $('.scrollbar', this.element);
     },
 
     _initAnimationTimeline: function () {

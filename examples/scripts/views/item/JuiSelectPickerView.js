@@ -18,7 +18,7 @@ function (Backbone, tmpl) {
         onShow: function () {
 
             // Expands on click
-            var $cats = $('#categories', this.$el).juiSelectPicker({
+            var $cats = $('#categories', this.$el).juiSelectPicker2({
                     labelText: 'Select a Category:',
 
                     // Uses only one callback if both are set

@@ -9,6 +9,7 @@
  * @requires jQuery
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
+ * @todo finish juibase append call
  */
 $.widget('jui.juiBase', {
 
@@ -51,27 +52,30 @@ $.widget('jui.juiBase', {
      * @return {void}
      */
     _populateUiElementsFromOptions: function (options) {
-        var self = this;
+        var self = this,
 
         // Get options
-        options = options || this.options;
+        ops = !isset(options) ? this.options : options;
 
         // Set our ui collection
-        if (!isset(options.ui)) {
-            options.ui = {};
+        if (!isset(ops.ui)) {
+            ops.ui = {};
         }
 
-        // Loop through options and populate elements
-        Object.keys(options).forEach(function (key) {
+        // Ui ops
+        ops = ops.ui;
+
+            // Loop through ops and populate elements
+        Object.keys(ops).forEach(function (key) {
 
             // If key is string
-            if (typeof options[key] === 'string') {
-                options[key] = options[key] = $(options[key], self.element);
+            if (typeof ops[key] === 'string') {
+                ops[key] = ops[key] = $(ops[key], self.element);
             }
 
             // If key is plain object
-            if ($.isPlainObject(options[key])) {
-                options[key].elm = self._getElementFromOptions(options[key]);
+            if ($.isPlainObject(ops[key])) {
+                ops[key].elm = self._getElementFromOptions(ops[key]);
             }
 
         });
@@ -127,12 +131,12 @@ $.widget('jui.juiBase', {
             // Create element
             config.elm = this._createElementFromOptions(config);
 
+            debugger;
             if (isset(config.appendTo)
                 && typeof config.appendTo === 'string') {
                 if (config.appendTo === 'this.element') {
-                    config.elm =
-                        this.element
-                            .append(config.elm).find(config.selector);
+                    this.element.append(config.elm);
+                    config.elm = $(config.selector, this.element);
                 }
                 else if (config.appendTo === 'after this.element') {
                     this.element.after(config.elm);
@@ -147,7 +151,7 @@ $.widget('jui.juiBase', {
                     this.element.append(config.elm);
                 }
                 else {
-                        this.getUiElement(config.appendTo)
+                    config.elm = this.getUiElement(config.appendTo)
                         .append(config.elm).find(config.selector);
                 }
             }
@@ -248,7 +252,7 @@ $.widget('jui.juiBase', {
     getAnimationTimeline: function () {
         var ops = this.options;
         if (empty(ops.timeline)) {
-            ops.timeline = new window[this.options.defaultTimelineClass];
+            ops.timeline = new TimelineMax(); // || new window[this.options.defaultTimelineClass];
         }
         return ops.timeline;
     },

@@ -2,7 +2,7 @@
  * Created by ElyDeLaCruz on 10/1/13.
  *
   */
-$.widget('jui.juiSelectPicker', $.jui.juiBase, {
+$.widget('jui.juiSelectPicker2', $.jui.juiBase, {
 
     options: {
 
@@ -42,24 +42,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         },
 
         // Label text for select picker
-        labelText: '',
-
-        // Expand select-picker on event
-        expandOn: 'click',
-        expandOnClassNamePrefix: 'expands-on',
-
-        // Collapse select-picker on event
-        collapseOn: 'click',
-        collapseOnClassNamePrefix: 'collapses-on',
-
-        // States
-        states: {
-            COLLAPSED: 'collapsed',
-            EXPANDED: 'expanded'
-        },
-
-        // State
-        state: null
+        labelText: ''
     },
 
     _create: function () {
@@ -86,24 +69,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
 
-        // Add event class names
-        ops.ui.wrapperElm.elm.addClass(this._getExpandOnClassName())
-            .addClass(this._getCollapseOnClassName());
-
         // Set button text/label
         this.setLabelText();
 
         // Draw select options from this element onto our element
         this._drawSelectOptions();
-
-        // Add event listeners
-        this._addEventListeners();
-
-        // Animate
-        this.ensureAnimationFunctionality();
-
-        // Set collapsed state
-        ops.state = ops.states.COLLAPSED;
     },
 
     _drawSelectOptions: function () {
@@ -151,132 +121,19 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         optionsElm.append(ul);
     },
 
-    _getExpandOnClassName: function () {
-        var ops = this.options;
-        return ops.expandOnClassNamePrefix
-            + ops.expandOn;
-    },
-
-    _getExpandOnEventStringName: function () {
-        return this.options.expandOn;
-    },
-
-    _getCollapseOnClassName: function () {
-        var ops = this.options;
-        return ops.collapseOnClassNamePrefix
-            + ops.collapseOn;
-    },
-
-    _getCollapseOnEventStringName: function () {
-        return this.options.collapseOn;
-    },
-
-    _addEventListeners: function () {
-        var self = this,
-            states = self.options.states,
-            collapseOnMouseEvent = this._getCollapseOnEventStringName(),
-            expandOnMouseEvent = this._getExpandOnEventStringName()
-            ops = this.options;
-
-        // Option/A-Tag click
-        ops.ui.wrapperElm.elm.on('click', 'a[data-value]', function (e) {
-            e.stopPropagation();
-            var elm = $(e.currentTarget);
-            self.clearSelected();
-            self.setSelected(elm);
-            self.timeline.reverse();
-            self.options.state = states.COLLAPSED;
-        });
-
-        // If expand and collapse events are the same (use toggle pattern)
-        if (expandOnMouseEvent === collapseOnMouseEvent) {
-            ops.ui.wrapperElm.elm.on(expandOnMouseEvent, function (e) {
-                if (self.options.state === states.COLLAPSED) {
-                    self.ensureAnimationFunctionality();
-                    self.timeline.play();
-                    self.options.state = states.EXPANDED;
-                }
-                else {
-                    self.ensureAnimationFunctionality();
-                    self.timeline.reverse();
-                    self.options.state = states.COLLAPSED;
-                }
-            });
-        }
-        else {
-            // On expand event
-            ops.ui.wrapperElm.elm.on(expandOnMouseEvent, function (e) {
-                self.ensureAnimationFunctionality();
-                self.timeline.play();
-                self.options.state = states.EXPANDED;
-            })
-                // On collapse event
-                .on(collapseOnMouseEvent, function (e) {
-                    self.ensureAnimationFunctionality();
-                    self.timeline.reverse();
-                    self.options.state = states.COLLAPSED;
-                });
-        }
-    },
-
-    _removeEventListeners: function () {
-        this.options.ui.wrapperElm.elm
-            .off('click', 'a')
-            .off(this._getCollapseOnEventStringName())
-            .off(this._getExpandOnEventStringName());
-    },
-
     _removeCreatedOptions: function () {
         this.getUiElement('optionsElm').find('ul').remove();
     },
 
-    _initScrollbar: function () {
-        this.options.ui.scrollbar = this.options.ui.wrapperElm.elm.juiScrollPane({
-            ui: {
-                contentHolder: {
-                    elm: this.getUiElement('optionsElm'),
-                    selector: this.options.ui.optionsElm.selector + ''
-                }
-            }
-        }).find('.scrollbar');
-    },
-
-    _initAnimationTimeline: function () {
-        var self = this,
-            dur = 0.3,
-            timeline = this.timeline = new TimelineMax(),
-            initInterval;
-        timeline.from(this.options.ui.optionsElm.elm, dur, {css: {height: 0}});
-        timeline.from(this.options.ui.scrollbar, dur, {css: {opacity: 0}, delay: -0.10});
-        initInterval = setInterval(function () {
-            timeline.reverse();
-            clearInterval(initInterval);
-        }, 0.4 * 1000);
-    },
-
-    _initTimeline: function () {
-        if (empty(this.timeline)) {
-            this._initAnimationTimeline()
-        }
-    },
-
-    ensureAnimationFunctionality: function () {
-        this._initScrollbar();
-        this._initTimeline();
-    },
-
     destroy: function () {
         this.element.removeAttr('hidden');
-        this._removeCreatedElements();
-        this._removeEventListeners();
+        this._removeCreatedOptions();
         this._destroy();
     },
 
     refreshOptions: function () {
-        this._removeEventListeners();
         this._removeCreatedOptions();
         this._drawSelectOptions();
-        this._addEventListeners();
         this.setLabelText();
         this.element.val(null)
             .trigger('change');
@@ -304,6 +161,5 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             .find('> ul > li').removeClass(
                 this.options.ui.optionsElm.optionSelectedClassName);
     }
-
 
 });

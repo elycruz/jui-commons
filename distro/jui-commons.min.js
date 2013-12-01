@@ -1,4 +1,4 @@
-/*! jui-commons 2013-11-27 */
+/*! jui-commons 2013-11-30 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineMax",
@@ -11,9 +11,9 @@ $.widget("jui.juiBase", {
         return e;
     },
     _populateUiElementsFromOptions: function(a) {
-        var b = this;
-        a = a || this.options, isset(a.ui) || (a.ui = {}), Object.keys(a).forEach(function(c) {
-            "string" == typeof a[c] && (a[c] = a[c] = $(a[c], b.element)), $.isPlainObject(a[c]) && (a[c].elm = b._getElementFromOptions(a[c]));
+        var b = this, c = isset(a) ? a : this.options;
+        isset(c.ui) || (c.ui = {}), c = c.ui, Object.keys(c).forEach(function(a) {
+            "string" == typeof c[a] && (c[a] = c[a] = $(c[a], b.element)), $.isPlainObject(c[a]) && (c[a].elm = b._getElementFromOptions(c[a]));
         });
     },
     _getElementFromOptions: function(a) {
@@ -21,7 +21,8 @@ $.widget("jui.juiBase", {
         return "string" == typeof d && (d = b._namespace(d, c)), "function" == typeof d && (d = d()), 
         empty(d) ? null : d instanceof $ && d.length > 0 ? d : (isset(d.selector) && empty(d.create) && "string" == typeof d.selector && (d.elm = "string" == typeof d.appendTo && d.appendTo.length > 0 && -1 === d.appendTo.indexOf("this") ? $(d.selector, b.getUiElement(d.appendTo)) : $(d.selector, b.element)), 
         !empty(d.html) && d.create && "string" == typeof d.html && (d.elm = this._createElementFromOptions(d), 
-        isset(d.appendTo) && "string" == typeof d.appendTo && ("this.element" === d.appendTo ? d.elm = this.element.append(d.elm).find(d.selector) : "after this.element" === d.appendTo ? this.element.after(d.elm) : "before this.element" === d.appendTo ? this.element.before(d.elm) : "prepend to this.element" === d.appendTo ? this.element.prepend(d.elm) : "append to this.element" === d.appendTo ? this.element.append(d.elm) : this.getUiElement(d.appendTo).append(d.elm).find(d.selector))), 
+        isset(d.appendTo) && "string" == typeof d.appendTo && ("this.element" === d.appendTo ? (this.element.append(d.elm), 
+        d.elm = $(d.selector, this.element)) : "after this.element" === d.appendTo ? this.element.after(d.elm) : "before this.element" === d.appendTo ? this.element.before(d.elm) : "prepend to this.element" === d.appendTo ? this.element.prepend(d.elm) : "append to this.element" === d.appendTo ? this.element.append(d.elm) : d.elm = this.getUiElement(d.appendTo).append(d.elm).find(d.selector))), 
         empty(d.elm) ? null : d.elm);
     },
     _createElementFromOptions: function(a) {
@@ -50,8 +51,7 @@ $.widget("jui.juiBase", {
     },
     getAnimationTimeline: function() {
         var a = this.options;
-        return empty(a.timeline) && (a.timeline = new window[this.options.defaultTimelineClass]()), 
-        a.timeline;
+        return empty(a.timeline) && (a.timeline = new TimelineMax()), a.timeline;
     },
     initAnimationTimeline: function(a) {
         a = a || this.getAnimationTimeline();
@@ -394,9 +394,16 @@ $.widget("jui.juiBase", {
     },
     _create: function() {
         this._populateUiElementsFromOptions();
-        var a = this.options, b = this.getUiElement("contentHolder"), c = b.get(0).scrollWidth, d = b.get(0).scrollHeight, e = this;
-        "hidden" !== b.css("overflow") && b.css("overflow", "hidden"), e.element.addClass("jui-scroll-pane"), 
-        d > b.height() && e.initScrollbar(a.scrollbarOriented.VERTICALLY), c > b.width() ? e.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : this.getUiElement("horizScrollbar").css("display", "none");
+        var a = this.options, b = this.getUiElement("contentHolder"), c = b.get(0).scrollWidth, d = b.get(0).scrollHeight, e = plugin = this;
+        "hidden" !== b.css("overflow") && b.css("overflow", "hidden"), plugin.element.addClass("jui-scroll-pane"), 
+        d > b.height() && plugin.initScrollbar(a.scrollbarOriented.VERTICALLY), 
+        c > b.width() ? plugin.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : this.getUiElement("horizScrollbar").css("display", "none"), 
+        plugin.element.mousewheel(function(a, c, d, f) {
+            if (c = void 0 !== c || null !== c ? c : f, null !== c && void 0 !== c) {
+                var g = 1 > c ? 10 : -10, h = (b.scrollTop() + g, e.position().top + g);
+                e.css("top", h), plugin.constrainHandle(), plugin.scrollContentHolder();
+            }
+        });
     },
     _scrollByOrientation: function(a, b) {
         var c, d = (this.options, this.getUiElement("contentHolder")), e = b, f = this.getScrollDirVars(e), g = f.scrollAmountTotal, h = this.getScrollbarHandleByOrientation(e), i = this.getScrollbarByOrientation(e), j = f.cssCalcDir, k = "outer" + ucaseFirst(f.scrollbarDimProp);
@@ -415,7 +422,7 @@ $.widget("jui.juiBase", {
     initScrollbar: function(a) {
         var b = this.getScrollbarByOrientation(a), c = this.getScrollbarHandleByOrientation(a), d = this.getUiElement("contentHolder"), e = (this.options, 
         this), f = e.getScrollDirVars(a), g = f.dragAxis, h = f.cssCalcDir, i = f.scrollbarDimProp;
-        console.log(b.length, c.length, d), e.initScrollbarHandle(a), c.draggable({
+        console.log(b, c, d), console.log("hello"), e.initScrollbarHandle(a), c.draggable({
             containment: "parent",
             cursor: "s-resize",
             axis: g,
@@ -524,7 +531,7 @@ $.widget("jui.juiBase", {
         return this.options.collapseOn;
     },
     _addEventListeners: function() {
-        var a = this, b = a.options.states, c = this._getCollapseOnEventStringName(), d = this._getExpandOnEventStringName();
+        var a = this, b = a.options.states, c = (this.options, this._getCollapseOnEventStringName()), d = this._getExpandOnEventStringName();
         d === c ? this.element.on(d, function() {
             a.options.state === b.COLLAPSED ? (a.ensureAnimationFunctionality(), a.options.timeline.play(), 
             a.options.state = b.EXPANDED) : (a.ensureAnimationFunctionality(), a.options.timeline.reverse(), 
@@ -538,18 +545,16 @@ $.widget("jui.juiBase", {
     _removeEventListeners: function() {
         this.element.off(this._getCollapseOnEventStringName()).off(this._getExpandOnEventStringName());
     },
-    _removeCreatedOptions: function() {
-        this.getUiElement("contentElm").find("ul").remove();
-    },
     _initScrollbar: function() {
-        this.ui.scrollbar = this.element.juiScrollPane({
+        var a = this.options, b = this._namespace("ui.scrollbar");
+        this.element.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement("contentElm"),
-                    selector: this.options.ui.contentElm.selector + ""
+                    selector: a.ui.contentElm.selector + ""
                 }
             }
-        }).find(".scrollbar");
+        }), b.elm = $(".scrollbar", this.element);
     },
     _initAnimationTimeline: function() {
         var a = this.getAnimationTimeline();
@@ -618,17 +623,17 @@ $.widget("jui.juiBase", {
         var a = this.options;
         $("html").hasClass("touch") || ($("html").hasClass("lt-ie9") && console.log("** Note ** -- jquery.juiSelectPicker.js doesn't support anything less than Ie9 at the moment."), 
         this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
-        this.ui.wrapperElm.addClass(this._getExpandOnClassName()).addClass(this._getCollapseOnClassName()), 
+        a.ui.wrapperElm.elm.addClass(this._getExpandOnClassName()).addClass(this._getCollapseOnClassName()), 
         this.setLabelText(), this._drawSelectOptions(), this._addEventListeners(), 
         this.ensureAnimationFunctionality(), a.state = a.states.COLLAPSED);
     },
     _drawSelectOptions: function() {
-        var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>");
-        c.each(function(b, e) {
-            if (e = $(e), 0 !== b || !empty(a.options.ui.buttonElm.text)) {
-                var f = $('<li><a href="javascript: void(0);" data-value="' + e.attr("value") + '">' + e.text() + "</a></li>");
-                0 !== b || empty(a.options.ui.buttonElm.text) ? 1 === b && empty(a.options.ui.buttonElm.text) && f.addClass("first") : f.addClass("first"), 
-                b === c.length - 1 && f.addClass("last"), d.append(f);
+        var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
+        c.each(function(a, b) {
+            if (b = $(b), 0 !== a || !empty(e.ui.buttonElm.text)) {
+                var f = $('<li><a href="javascript: void(0);" data-value="' + b.attr("value") + '">' + b.text() + "</a></li>");
+                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && f.addClass("first") : f.addClass("first"), 
+                a === c.length - 1 && f.addClass("last"), d.append(f);
             }
         }), b.append(d);
     },
@@ -648,28 +653,28 @@ $.widget("jui.juiBase", {
     },
     _addEventListeners: function() {
         var a = this, b = a.options.states, c = this._getCollapseOnEventStringName(), d = this._getExpandOnEventStringName();
-        this.ui.wrapperElm.on("click", "a[data-value]", function(c) {
+        ops = this.options, ops.ui.wrapperElm.elm.on("click", "a[data-value]", function(c) {
             c.stopPropagation();
             var d = $(c.currentTarget);
             a.clearSelected(), a.setSelected(d), a.timeline.reverse(), a.options.state = b.COLLAPSED;
-        }), d === c ? this.ui.wrapperElm.on(d, function() {
+        }), d === c ? ops.ui.wrapperElm.elm.on(d, function() {
             a.options.state === b.COLLAPSED ? (a.ensureAnimationFunctionality(), a.timeline.play(), 
             a.options.state = b.EXPANDED) : (a.ensureAnimationFunctionality(), a.timeline.reverse(), 
             a.options.state = b.COLLAPSED);
-        }) : this.ui.wrapperElm.on(d, function() {
+        }) : ops.ui.wrapperElm.elm.on(d, function() {
             a.ensureAnimationFunctionality(), a.timeline.play(), a.options.state = b.EXPANDED;
         }).on(c, function() {
             a.ensureAnimationFunctionality(), a.timeline.reverse(), a.options.state = b.COLLAPSED;
         });
     },
     _removeEventListeners: function() {
-        this.ui.wrapperElm.off("click", "a").off(this._getCollapseOnEventStringName()).off(this._getExpandOnEventStringName());
+        this.options.ui.wrapperElm.elm.off("click", "a").off(this._getCollapseOnEventStringName()).off(this._getExpandOnEventStringName());
     },
     _removeCreatedOptions: function() {
         this.getUiElement("optionsElm").find("ul").remove();
     },
     _initScrollbar: function() {
-        this.ui.scrollbar = this.ui.wrapperElm.juiScrollPane({
+        this.options.ui.scrollbar = this.options.ui.wrapperElm.elm.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement("optionsElm"),
@@ -680,11 +685,11 @@ $.widget("jui.juiBase", {
     },
     _initAnimationTimeline: function() {
         var a, b = .3, c = this.timeline = new TimelineMax();
-        c.from(this.ui.optionsElm, b, {
+        c.from(this.options.ui.optionsElm.elm, b, {
             css: {
                 height: 0
             }
-        }), c.from(this.ui.scrollbar, b, {
+        }), c.from(this.options.ui.scrollbar, b, {
             css: {
                 opacity: 0
             },
@@ -706,6 +711,80 @@ $.widget("jui.juiBase", {
     refreshOptions: function() {
         this._removeEventListeners(), this._removeCreatedOptions(), this._drawSelectOptions(), 
         this._addEventListeners(), this.setLabelText(), this.element.val(null).trigger("change");
+    },
+    setLabelText: function(a, b) {
+        b = b || "text", a = a || (empty(this.options.ui.buttonElm.text) ? empty(this.options.labelText) ? this.element.find("option[value]").eq(0).text() : this.options.labelText : this.options.ui.buttonElm.text), 
+        $(".label", this.getUiElement("buttonElm")).eq(0)[b](a);
+    },
+    setSelected: function(a) {
+        a.parent().addClass(this.options.ui.optionsElm.optionSelectedClassName), 
+        this.element.val(a.attr("data-value")).trigger("change"), console.log(this.element.val());
+    },
+    clearSelected: function() {
+        this.getUiElement("optionsElm").find("> ul > li").removeClass(this.options.ui.optionsElm.optionSelectedClassName);
+    }
+}), $.widget("jui.juiSelectPicker2", $.jui.juiBase, {
+    options: {
+        ui: {
+            wrapperElm: {
+                elm: null,
+                attribs: {
+                    "class": "jui-select-picker jui-select-picker-example-1"
+                },
+                appendTo: "after this.element",
+                selector: ".jui-select-picker",
+                html: "<div></div>",
+                create: !0
+            },
+            buttonElm: {
+                elm: null,
+                attribs: {
+                    "class": "button"
+                },
+                text: "",
+                selector: "> .button",
+                html: '<div><div class="label"></div></div>',
+                appendTo: "wrapperElm",
+                create: !0
+            },
+            optionsElm: {
+                elm: null,
+                attribs: {
+                    "class": "options"
+                },
+                selector: "> .options",
+                html: "<div></div>",
+                appendTo: "wrapperElm",
+                create: !0,
+                optionSelectedClassName: "selected"
+            }
+        },
+        labelText: ""
+    },
+    _create: function() {
+        this.options, $("html").hasClass("touch") || ($("html").hasClass("lt-ie9") && console.log("** Note ** -- jquery.juiSelectPicker.js doesn't support anything less than Ie9 at the moment."), 
+        this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
+        this.setLabelText(), this._drawSelectOptions());
+    },
+    _drawSelectOptions: function() {
+        var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
+        c.each(function(a, b) {
+            if (b = $(b), 0 !== a || !empty(e.ui.buttonElm.text)) {
+                var f = $('<li><a href="javascript: void(0);" data-value="' + b.attr("value") + '">' + b.text() + "</a></li>");
+                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && f.addClass("first") : f.addClass("first"), 
+                a === c.length - 1 && f.addClass("last"), d.append(f);
+            }
+        }), b.append(d);
+    },
+    _removeCreatedOptions: function() {
+        this.getUiElement("optionsElm").find("ul").remove();
+    },
+    destroy: function() {
+        this.element.removeAttr("hidden"), this._removeCreatedOptions(), this._destroy();
+    },
+    refreshOptions: function() {
+        this._removeCreatedOptions(), this._drawSelectOptions(), this.setLabelText(), 
+        this.element.val(null).trigger("change");
     },
     setLabelText: function(a, b) {
         b = b || "text", a = a || (empty(this.options.ui.buttonElm.text) ? empty(this.options.labelText) ? this.element.find("option[value]").eq(0).text() : this.options.labelText : this.options.ui.buttonElm.text), 
