@@ -32,6 +32,24 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             }
         },
 
+        animations: [
+            {
+                type: 'from',
+                duration: 0.3,
+                elmAlias: 'contentElm',
+                props: {css: {height: 0},
+                    ease: Power1.easeOut
+                }
+            },
+            {
+                type: 'from',
+                duration: 0.3,
+                elmAlias: 'scrollbar',
+                props: {css: {opacity: 0},
+                    delay: -0.10}
+            }
+        ],
+
         // Example animations hash
         defaultAnimations: [
             {
@@ -154,6 +172,11 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _initScrollbar: function () {
         var ops = this.options,
             scrollbar = this._namespace('ui.scrollbar');
+
+        if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
+            return;
+        }
+
         this.element.juiScrollPane({
             ui: {
                 contentHolder: {

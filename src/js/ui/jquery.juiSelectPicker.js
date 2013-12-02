@@ -1,7 +1,7 @@
 /**
  * Created by ElyDeLaCruz on 10/1/13.
- *
-  */
+ * @deprecated Currently working on a refactor of this item (I know should have been in it's own branch)
+ */
 $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     options: {
@@ -231,14 +231,23 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     _initScrollbar: function () {
-        this.options.ui.scrollbar = this.options.ui.wrapperElm.elm.juiScrollPane({
+        var ops = this.options,
+            scrollbar = this._namespace('ui.scrollbar', ops);
+
+        if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
+            return;
+        }
+
+        this.element.juiScrollPane({
             ui: {
                 contentHolder: {
-                    elm: this.getUiElement('optionsElm'),
-                    selector: this.options.ui.optionsElm.selector + ''
+                    elm: this.getUiElement('contentElm'),
+                    selector: ops.ui.contentElm.selector + ''
                 }
             }
-        }).find('.scrollbar');
+        });
+
+        scrollbar.elm = $('.scrollbar', this.element);
     },
 
     _initAnimationTimeline: function () {

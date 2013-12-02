@@ -82,7 +82,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             contentHolder = this.getUiElement('contentHolder'),
             contentScrollWidth = contentHolder.get(0).scrollWidth,
             contentScrollHeight = contentHolder.get(0).scrollHeight,
-            handle =
+            handle = this.getUiElement('vertHandle'),
             plugin = this;
 
         // Conetnt Holder
@@ -108,6 +108,10 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
 
         plugin.element.mousewheel(function (e, delta, deltaX, deltaY) {
+
+            // Scroll this element individually
+            e.preventDefault();
+
             delta = delta !== undefined || delta !== null ? delta : deltaY;
 
             // If no delta bail
@@ -124,10 +128,12 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             handle.css('top', handleOffsetTop);
 
             // Constrain Handle
-            plugin.constrainHandle();
+            plugin.constrainHandle(ops.scrollbarOriented.VERTICALLY);
+            plugin.constrainHandle(ops.scrollbarOriented.HORIZONTALLY);
 
             // Scroll content holder
-            plugin.scrollContentHolder();
+            plugin.scrollContentHolder(ops.scrollbarOriented.VERTICALLY);
+            plugin.scrollContentHolder(ops.scrollbarOriented.HORIZONTALLY);
         });
 
     },
@@ -226,9 +232,6 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             dragAxis = scrollVars.dragAxis,
             dir = scrollVars.cssCalcDir,
             dimProp = scrollVars.scrollbarDimProp;
-
-        console.log(scrollbar, handle, contentHolder);
-        console.log("hello");
 
         // Resize handle
         plugin.initScrollbarHandle(oriented);

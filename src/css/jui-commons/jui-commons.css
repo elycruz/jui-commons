@@ -105,7 +105,7 @@
 /* line 2, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down {
   position: relative;
-  border: 1px solid #888;
+  outline: #000 1px solid;
   background: #fff;
   width: 320px;
   max-height: 280px;

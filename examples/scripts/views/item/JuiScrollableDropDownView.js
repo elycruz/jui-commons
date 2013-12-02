@@ -48,7 +48,7 @@ define([
                                 elmAlias: 'contentElm',
                                 props: {
                                     css: {
-                                        clip: 'rect(0px, 320px, 240px, 0px)'
+                                        clip: 'rect(-1px, 321px, 241px, -1px)'
                                     },
                                     ease: Bounce.easeOut
                                 }

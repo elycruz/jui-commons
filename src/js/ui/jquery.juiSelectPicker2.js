@@ -1,7 +1,7 @@
 /**
  * Created by ElyDeLaCruz on 10/1/13.
- *
-  */
+ * @todo finish up the refactor.  Maybe use/extend scrollable drop down or use it from within...
+ */
 $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
 
     options: {
@@ -10,7 +10,7 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
             wrapperElm: {
                 elm: null,
                 attribs: {
-                    'class': 'jui-select-picker jui-select-picker-example-1'
+                    'class': 'jui-select-picker'
                 },
                 appendTo: "after this.element",
                 selector: '.jui-select-picker',
@@ -24,7 +24,7 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
                 },
                 text: '',
                 selector: '> .button',
-                html: '<div><div class="label"></div></div>',
+                html: '<button></button>',
                 appendTo: 'wrapperElm',
                 create: true
             },
@@ -62,9 +62,7 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
 
         // Hide this element and append new markup beside where it used
         // to be
-        this.element
-            .attr('hidden', 'hidden')
-            .css('display', 'none');
+        this.element.attr('hidden', 'hidden').css('display', 'none');
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
@@ -74,6 +72,8 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
 
         // Draw select options from this element onto our element
         this._drawSelectOptions();
+
+        this._initScrollbar();
     },
 
     _drawSelectOptions: function () {
@@ -119,10 +119,80 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
 
         // Append unordered list element
         optionsElm.append(ul);
+
+    },
+
+    _addEventListeners: function () {
+        var self = this,
+            states = self.options.states,
+            collapseOnMouseEvent = this._getCollapseOnEventStringName(),
+            expandOnMouseEvent = this._getExpandOnEventStringName()
+        ops = this.options;
+
+        // Option/A-Tag click
+        ops.ui.wrapperElm.elm.on('click', 'a[data-value]', function (e) {
+            e.stopPropagation();
+            var elm = $(e.currentTarget);
+            self.clearSelected();
+            self.setSelected(elm);
+            self.timeline.reverse();
+            self.options.state = states.COLLAPSED;
+        });
+
+        // If expand and collapse events are the same (use toggle pattern)
+        if (expandOnMouseEvent === collapseOnMouseEvent) {
+            ops.ui.wrapperElm.elm.on(expandOnMouseEvent, function (e) {
+                if (self.options.state === states.COLLAPSED) {
+                    self.ensureAnimationFunctionality();
+                    self.timeline.play();
+                    self.options.state = states.EXPANDED;
+                }
+                else {
+                    self.ensureAnimationFunctionality();
+                    self.timeline.reverse();
+                    self.options.state = states.COLLAPSED;
+                }
+            });
+        }
+        else {
+            // On expand event
+            ops.ui.wrapperElm.elm.on(expandOnMouseEvent, function (e) {
+                self.ensureAnimationFunctionality();
+                self.timeline.play();
+                self.options.state = states.EXPANDED;
+            })
+                // On collapse event
+                .on(collapseOnMouseEvent, function (e) {
+                    self.ensureAnimationFunctionality();
+                    self.timeline.reverse();
+                    self.options.state = states.COLLAPSED;
+                });
+        }
     },
 
     _removeCreatedOptions: function () {
         this.getUiElement('optionsElm').find('ul').remove();
+    },
+
+    _initScrollbar: function () {
+        var ops = this.options,
+            scrollbar = this._namespace('ui.scrollbar');
+
+        if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
+            return;
+        }
+
+        this.getUiElement('wrapperElm').juiScrollableDropDown({
+            ui: {
+                contentElm: {
+                    elm: this.getUiElement('optionsElm'),
+                    attribs: ops.ui.optionsElm.attribs,
+                    selector: ops.ui.optionsElm.selector + ''
+                }
+            }
+        });
+
+        scrollbar.elm = $('.scrollbar', this.element);
     },
 
     destroy: function () {
@@ -153,7 +223,6 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
             this.options.ui.optionsElm.optionSelectedClassName);
         this.element.val(elm.attr('data-value')).trigger('change');
         console.log(this.element.val());
-
     },
 
     clearSelected: function () {

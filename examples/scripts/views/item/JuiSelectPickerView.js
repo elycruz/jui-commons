@@ -25,30 +25,36 @@ function (Backbone, tmpl) {
                     // to the same mouse event
                     expandOn: 'click',
                     collapseOn: 'click'
-                }),
-
-            // Expands on hover
-                $otherOptions = $('#other-options').juiSelectPicker({
-                    labelText: 'Select an "Other Option":',
-                    expandOn: 'mouseenter',
-                    collapseOn: 'mouseleave'
-                }),
-
-            // Expands on hover
-                $otherOptions3 = $('#example-3').juiSelectPicker({
-                    ui: {
-                        optionsElm: {
-                            elm: $('#example-3 .options').eq(0)
-                        },
-                        buttonElm: {
-                            elm: $('#example-3 button').eq(0)
-                        }
-                    },
-                    skipDrawFromSelect: true,
-                    labelText: 'Select an "Other Option":',
-                    expandOn: 'mouseenter',
-                    collapseOn: 'mouseleave'
                 });
+//
+//            // Expands on hover
+//                $otherOptions = $('#other-options').juiSelectPicker({
+//                    wrapperElm: {
+//                        selector: '.jui-select-picker-example-1',
+//                        attribs: {
+//                            'class': 'jui-select-picker jui-select-picker-example-1'
+//                        }
+//                    },
+//                    labelText: 'Select an "Other Option":',
+//                    expandOn: 'mouseenter',
+//                    collapseOn: 'mouseleave'
+//                }),
+//
+//            // Expands on hover
+//                $otherOptions3 = $('#example-3').juiSelectPicker({
+//                    ui: {
+//                        optionsElm: {
+//                            elm: $('#example-3 .options').eq(0)
+//                        },
+//                        buttonElm: {
+//                            elm: $('#example-3 button').eq(0)
+//                        }
+//                    },
+//                    skipDrawFromSelect: true,
+//                    labelText: 'Select an "Other Option":',
+//                    expandOn: 'mouseenter',
+//                    collapseOn: 'mouseleave'
+//                });
 
             $cats.on('change', function (e) {
                 if (isset($cats.val())) {
