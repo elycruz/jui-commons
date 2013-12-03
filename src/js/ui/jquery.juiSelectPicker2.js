@@ -1,8 +1,8 @@
 /**
  * Created by ElyDeLaCruz on 10/1/13.
- * @deprecated Currently working on a refactor of this item (I know should have been in it's own branch)
+ * @todo finish up the refactor.  Maybe use/extend scrollable drop down or use it from within...
  */
-$.widget('jui.juiSelectPicker', $.jui.juiBase, {
+$.widget('jui.juiSelectPicker2', $.jui.juiBase, {
 
     options: {
 
@@ -10,7 +10,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             wrapperElm: {
                 elm: null,
                 attribs: {
-                    'class': 'jui-select-picker jui-select-picker-example-1'
+                    'class': 'jui-select-picker'
                 },
                 appendTo: "after this.element",
                 selector: '.jui-select-picker',
@@ -22,10 +22,32 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 attribs: {
                     'class': 'button'
                 },
-                text: '',
                 selector: '> .button',
-                html: '<div><div class="label"></div></div>',
+                html: '<button></button>',
                 appendTo: 'wrapperElm',
+                create: true
+            },
+            labelElm: {
+                elm: null,
+                attribs: {
+                    'class': 'label'
+                },
+                text: '',
+                selector: '> .label',
+                html: '<span></span>',
+                appendTo: 'buttonElm',
+                create: true
+            },
+            selectedItemLabelElm: {
+                elm: null,
+                attribs: {
+                    'class': 'selected-item-label selected'
+                },
+                prefixText: 'You\'ve chosen "',
+                suffixText: '"',
+                selector: '> .selected-item-label',
+                html: '<span></span>',
+                appendTo: 'buttonElm',
                 create: true
             },
             optionsElm: {
@@ -42,24 +64,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         },
 
         // Label text for select picker
-        labelText: '',
-
-        // Expand select-picker on event
-        expandOn: 'click',
-        expandOnClassNamePrefix: 'expands-on',
-
-        // Collapse select-picker on event
-        collapseOn: 'click',
-        collapseOnClassNamePrefix: 'collapses-on',
-
-        // States
-        states: {
-            COLLAPSED: 'collapsed',
-            EXPANDED: 'expanded'
-        },
-
-        // State
-        state: null
+        labelText: ''
     },
 
     _create: function () {
@@ -79,16 +84,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Hide this element and append new markup beside where it used
         // to be
-        this.element
-            .attr('hidden', 'hidden')
-            .css('display', 'none');
+        this.element.attr('hidden', 'hidden').css('display', 'none');
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
-
-        // Add event class names
-        ops.ui.wrapperElm.elm.addClass(this._getExpandOnClassName())
-            .addClass(this._getCollapseOnClassName());
 
         // Set button text/label
         this.setLabelText();
@@ -96,14 +95,9 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Draw select options from this element onto our element
         this._drawSelectOptions();
 
-        // Add event listeners
+        this._initScrollbar();
+
         this._addEventListeners();
-
-        // Animate
-        this.ensureAnimationFunctionality();
-
-        // Set collapsed state
-        ops.state = ops.states.COLLAPSED;
     },
 
     _drawSelectOptions: function () {
@@ -149,81 +143,28 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Append unordered list element
         optionsElm.append(ul);
-    },
 
-    _getExpandOnClassName: function () {
-        var ops = this.options;
-        return ops.expandOnClassNamePrefix
-            + ops.expandOn;
-    },
-
-    _getExpandOnEventStringName: function () {
-        return this.options.expandOn;
-    },
-
-    _getCollapseOnClassName: function () {
-        var ops = this.options;
-        return ops.collapseOnClassNamePrefix
-            + ops.collapseOn;
-    },
-
-    _getCollapseOnEventStringName: function () {
-        return this.options.collapseOn;
     },
 
     _addEventListeners: function () {
         var self = this,
-            states = self.options.states,
-            collapseOnMouseEvent = this._getCollapseOnEventStringName(),
-            expandOnMouseEvent = this._getExpandOnEventStringName()
-            ops = this.options;
+        ops = this.options;
 
         // Option/A-Tag click
-        ops.ui.wrapperElm.elm.on('click', 'a[data-value]', function (e) {
-            e.stopPropagation();
+        self.getUiElement('wrapperElm').on('click', 'a[data-value]', function (e) {
+//            e.stopPropagation();
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-            self.timeline.reverse();
-            self.options.state = states.COLLAPSED;
         });
 
-        // If expand and collapse events are the same (use toggle pattern)
-        if (expandOnMouseEvent === collapseOnMouseEvent) {
-            ops.ui.wrapperElm.elm.on(expandOnMouseEvent, function (e) {
-                if (self.options.state === states.COLLAPSED) {
-                    self.ensureAnimationFunctionality();
-                    self.timeline.play();
-                    self.options.state = states.EXPANDED;
-                }
-                else {
-                    self.ensureAnimationFunctionality();
-                    self.timeline.reverse();
-                    self.options.state = states.COLLAPSED;
-                }
-            });
-        }
-        else {
-            // On expand event
-            ops.ui.wrapperElm.elm.on(expandOnMouseEvent, function (e) {
-                self.ensureAnimationFunctionality();
-                self.timeline.play();
-                self.options.state = states.EXPANDED;
-            })
-                // On collapse event
-                .on(collapseOnMouseEvent, function (e) {
-                    self.ensureAnimationFunctionality();
-                    self.timeline.reverse();
-                    self.options.state = states.COLLAPSED;
-                });
-        }
-    },
-
-    _removeEventListeners: function () {
-        this.options.ui.wrapperElm.elm
-            .off('click', 'a')
-            .off(this._getCollapseOnEventStringName())
-            .off(this._getExpandOnEventStringName());
+        // On select element change set it's selected item label text
+        this.element.on('change', function (e) {
+            var elm = $(this);
+            if (isset(elm.val())) {
+                self.setSelectedItemLabelText(elm.val());
+            }
+        });
     },
 
     _removeCreatedOptions: function () {
@@ -232,17 +173,18 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _initScrollbar: function () {
         var ops = this.options,
-            scrollbar = this._namespace('ui.scrollbar', ops);
+            scrollbar = this._namespace('ui.scrollbar');
 
         if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
             return;
         }
 
-        this.element.juiScrollPane({
+        this.getUiElement('wrapperElm').juiScrollableDropDown({
             ui: {
-                contentHolder: {
-                    elm: this.getUiElement('contentElm'),
-                    selector: ops.ui.contentElm.selector + ''
+                contentElm: {
+                    elm: this.getUiElement('optionsElm'),
+                    attribs: ops.ui.optionsElm.attribs,
+                    selector: ops.ui.optionsElm.selector + ''
                 }
             }
         });
@@ -250,54 +192,52 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         scrollbar.elm = $('.scrollbar', this.element);
     },
 
-    _initAnimationTimeline: function () {
-        var self = this,
-            dur = 0.3,
-            timeline = this.timeline = new TimelineMax(),
-            initInterval;
-        timeline.from(this.options.ui.optionsElm.elm, dur, {css: {height: 0}});
-        timeline.from(this.options.ui.scrollbar, dur, {css: {opacity: 0}, delay: -0.10});
-        initInterval = setInterval(function () {
-            timeline.reverse();
-            clearInterval(initInterval);
-        }, 0.4 * 1000);
-    },
-
-    _initTimeline: function () {
-        if (empty(this.timeline)) {
-            this._initAnimationTimeline()
-        }
-    },
-
-    ensureAnimationFunctionality: function () {
-        this._initScrollbar();
-        this._initTimeline();
-    },
-
     destroy: function () {
         this.element.removeAttr('hidden');
-        this._removeCreatedElements();
-        this._removeEventListeners();
+        this._removeCreatedOptions();
         this._destroy();
     },
 
     refreshOptions: function () {
-        this._removeEventListeners();
         this._removeCreatedOptions();
         this._drawSelectOptions();
-        this._addEventListeners();
         this.setLabelText();
         this.element.val(null)
             .trigger('change');
     },
 
-    setLabelText: function (label, textType) {
+    setSelectedItemLabelText: function (text, textType, usePrefixAndSuffix) {
+        text = text || '';
         textType = textType || 'text';
-        label = label || (!empty(this.options.ui.buttonElm.text)
+        usePrefixAndSuffix = usePrefixAndSuffix || true;
+        var config = this.options.ui.selectedItemLabelElm,
+            elm = this.getUiElement('selectedItemLabelElm').eq(0);
+        if (usePrefixAndSuffix) {
+            text = config.prefixText + text + config.suffixText;
+        }
+
+        // @todo move this declaration to the add event listeners
+        // function and optimize it
+        TweenMax.to(elm, 0.16, {
+            opacity: 0,
+            onCompleteParams: [text, textType, elm],
+            onComplete: function () {
+                var args = arguments,
+                    text = args[0],
+                    textType = args[1],
+                    elm = args[2];
+                elm[textType](text);
+                TweenMax.to(elm, 0.16, {opacity: 1});
+            }});
+    },
+
+    setLabelText: function (text, textType) {
+        textType = textType || 'text';
+        text = text || (!empty(this.options.ui.buttonElm.text)
             ? this.options.ui.buttonElm.text
             : (!empty(this.options.labelText) ? this.options.labelText :
             this.element.find('option[value]').eq(0).text()));
-        $('.label', this.getUiElement('buttonElm')).eq(0)[textType](label);
+        this.getUiElement('labelElm').eq(0)[textType](text);
     },
 
     setSelected: function (elm) {
@@ -305,7 +245,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             this.options.ui.optionsElm.optionSelectedClassName);
         this.element.val(elm.attr('data-value')).trigger('change');
         console.log(this.element.val());
-
     },
 
     clearSelected: function () {
@@ -313,6 +252,5 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             .find('> ul > li').removeClass(
                 this.options.ui.optionsElm.optionSelectedClassName);
     }
-
 
 });

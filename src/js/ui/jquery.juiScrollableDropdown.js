@@ -32,8 +32,27 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             }
         },
 
+        animations: [
+            {
+                type: 'from',
+                duration: 0.3,
+                elmAlias: 'contentElm',
+                props: {css: {height: 0},
+                    ease: Power1.easeOut
+                }
+            },
+            {
+                type: 'from',
+                duration: 0.3,
+                elmAlias: 'scrollbar',
+                props: {css: {autoAlpha: 0},
+                    delay: -0.10}
+            }
+        ],
+
         // Example animations hash
-        defaultAnimations: [{
+        defaultAnimations: [
+            {
                 type: 'from',
                 duration: 0.30,
                 elmAlias: 'contentElm',
@@ -43,9 +62,10 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 type: 'from',
                 duration: 0.30,
                 elmAlias: 'scrollbar',
-                props: {css: {opacity: 0}},
+                props: {css: {autoAlpha: 0}},
                 delay: -0.10
-        }],
+            }
+        ],
 
         // Expand select-picker on event
         expandOn: 'click',
@@ -107,10 +127,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _addEventListeners: function () {
         var self = this,
             states = self.options.states,
+            ops = this.options,
             collapseOnMouseEvent = this._getCollapseOnEventStringName(),
             expandOnMouseEvent = this._getExpandOnEventStringName();
 
         // If expand and collapse events are the same (use toggle pattern)
+
         if (expandOnMouseEvent === collapseOnMouseEvent) {
             this.element.on(expandOnMouseEvent, function (e) {
                 if (self.options.state === states.COLLAPSED) {
@@ -132,12 +154,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 self.options.timeline.play();
                 self.options.state = states.EXPANDED;
             })
-            // On collapse event
-            .on(collapseOnMouseEvent, function (e) {
-                self.ensureAnimationFunctionality();
-                self.options.timeline.reverse();
-                self.options.state = states.COLLAPSED;
-            });
+                // On collapse event
+                .on(collapseOnMouseEvent, function (e) {
+                    self.ensureAnimationFunctionality();
+                    self.options.timeline.reverse();
+                    self.options.state = states.COLLAPSED;
+                });
         }
     },
 
@@ -147,19 +169,24 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             .off(this._getExpandOnEventStringName());
     },
 
-    _removeCreatedOptions: function () {
-        this.getUiElement('contentElm').find('ul').remove();
-    },
-
     _initScrollbar: function () {
-        this.ui.scrollbar = this.element.juiScrollPane({
+        var ops = this.options,
+            scrollbar = this._namespace('ui.scrollbar');
+
+        if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
+            return;
+        }
+
+        this.element.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement('contentElm'),
-                    selector: this.options.ui.contentElm.selector + ''
+                    selector: ops.ui.contentElm.selector + ''
                 }
             }
-        }).find('.scrollbar');
+        });
+
+        scrollbar.elm = $('.scrollbar', this.element);
     },
 
     _initAnimationTimeline: function () {

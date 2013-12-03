@@ -1,53 +1,60 @@
-
 .jui-scrollable-drop-down {
+  &.expanded {
+    .options {
+      outline: solid #000 1px;
+    }
+    outline: solid #000 1px;
+  }
 
+  position: relative;
+  outline: solid #888 1px;
+  background: #fff;
+  width: 320px;
+  max-height: 280px;
+  color: #888;
+
+  .button {
     position: relative;
-    border: 1px solid #888;
+    width: 100%;
+    padding: 10px;
     background: #fff;
-    width: 320px;
-    max-height: 280px;
-    color: #888;
+    height: 42px;
+    border: none;
+    text-align: left;
+    z-index: 98;
+  }
 
-    .button {
-        position: relative;
+  .content {
+    position: absolute;
+    width: 100%;
+    overflow: hidden;
+    max-height: 240px;
+    outline: solid #000 1px;
+    @include opacity(1);
+    background: #fff;
+    z-index: 97;
+    ul {
+      li {
         width: 100%;
+        border-top: 1px solid #888;
+        border-bottom: 1px solid #888;
+      }
+      li a {
+        display: block;
         padding: 10px;
-        background: #fff;
-        height: 42px;
-        border: none;
-        text-align: left;
-        z-index: 1;
+      }
+      li.first {
+        border-top: none !important;
+      }
+      li.last {
+        border-bottom: none;
+      }
     }
+  }
 
-    .content {
-        position: absolute;
-        width: 100%;
-        overflow: hidden;
-        max-height: 240px;
-        outline: solid #000 1px;
-        @include opacity(1);
-        background: #fff;
-        ul {
-            li {
-                width: 100%;
-                border-top: 1px solid #888;
-                border-bottom: 1px solid #888;
-            }
-            li a {
-                display: block;
-                padding: 10px;
-            }
-            li.first {
-                border-top: none !important;
-            }
-            li.last {
-                border-bottom: none;
-            }
-        }
-    }
-
-    .vertical.scrollbar {
-        height: 282px;
-        z-index: 3;
-    }
+  .vertical.scrollbar {
+    position: absolute;
+    height: 282px;
+    z-index: 99;
+  }
 }
