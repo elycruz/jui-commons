@@ -3,11 +3,11 @@
         .options {
             outline: solid #000 1px;
         }
-        border: 1px solid #000;
+        outline: solid #000 1px;
     }
 
     position: relative;
-    border: 1px solid #888;
+    outline: solid #888 1px;
     background: #fff;
     width: 320px;
     max-height: 280px;

@@ -1,4 +1,4 @@
-/**
+    /**
  * Makes a content area scrollable with custom
  * scrollbars whose elements are fetched or created depending on the
  * flags passed in/or not passed in by the user.
@@ -110,7 +110,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         plugin.element.mousewheel(function (e, delta, deltaX, deltaY) {
 
             // Scroll this element individually
-            e.preventDefault();
+            e.stopPropagation();
 
             delta = delta !== undefined || delta !== null ? delta : deltaY;
 
@@ -257,6 +257,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
         // On Scroll bar click
         scrollbar.bind('click', function (e) {
+            e.stopPropagation();
             handle.css(dir, e['offset' + dragAxis.toUpperCase()]
                 - handle[dimProp]() / 2);
 

@@ -58,7 +58,7 @@ function (Backbone, tmpl) {
 
             $cats.on('change', function (e) {
                 if (isset($cats.val())) {
-                    $cats.juiSelectPicker('setLabelText',
+                    $cats.juiSelectPicker2('setLabelText',
                         'Select a Category: <span style="color:' +
                             ' #ff0000;">You\'ve chosen "' +
                             $cats.val() + '"<\span>.', 'html');

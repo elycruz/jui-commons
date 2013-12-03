@@ -2,7 +2,7 @@
  * Created by ElyDeLaCruz on 10/1/13.
  * @todo finish up the refactor.  Maybe use/extend scrollable drop down or use it from within...
  */
-$.widget('jui.juiSelectPicker2', $.jui.juiBase, {
+$.widget('jui.juiSelectPicker3', $.jui.juiScrollableDropDown, {
 
     options: {
 
@@ -24,11 +24,11 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
                 },
                 text: '',
                 selector: '> .button',
-                html: '<button><span class="label"></span></button>',
+                html: '<button></button>',
                 appendTo: 'wrapperElm',
                 create: true
             },
-            optionsElm: {
+            contentElm: {
                 elm: null,
                 attribs: {
                     'class': 'options'
@@ -65,22 +65,21 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
         this.element.attr('hidden', 'hidden').css('display', 'none');
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
-        this._populateUiElementsFromOptions();
+//        this._populateUiElementsFromOptions();
 
         // Set button text/label
-        this.setLabelText();
+//        this.setLabelText();
 
         // Draw select options from this element onto our element
-        this._drawSelectOptions();
+//        this._drawSelectOptions();
 
-        this._initScrollbar();
-
-        this._addEventListeners();
+        // Call drop downs create
+        this._super();
     },
 
     _drawSelectOptions: function () {
         var self = this,
-            optionsElm = self.getUiElement('optionsElm'),
+            contentElm = self.getUiElement('contentElm'),
             options = self.element.find('option'),
             ul = $('<ul></ul>'),
             ops = self.options;
@@ -120,7 +119,7 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
         });
 
         // Append unordered list element
-        optionsElm.append(ul);
+        contentElm.append(ul);
 
     },
 
@@ -130,46 +129,27 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
         ops = this.options;
 
         // Option/A-Tag click
-        self.getUiElement('wrapperElm').on('click', 'a[data-value]', function (e) {
+        ops.ui.wrapperElm.elm.on('click', 'a[data-value]', function (e) {
             e.stopPropagation();
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-//            self.timeline.reverse();
-//            self.options.state = states.COLLAPSED;
+            self.timeline.reverse();
+            self.options.state = states.COLLAPSED;
         });
 
+        this._super();
     },
 
     _removeCreatedOptions: function () {
-        this.getUiElement('optionsElm').find('ul').remove();
-    },
-
-    _initScrollbar: function () {
-        var ops = this.options,
-            scrollbar = this._namespace('ui.scrollbar');
-
-        if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
-            return;
-        }
-
-        this.getUiElement('wrapperElm').juiScrollableDropDown({
-            ui: {
-                contentElm: {
-                    elm: this.getUiElement('optionsElm'),
-                    attribs: ops.ui.optionsElm.attribs,
-                    selector: ops.ui.optionsElm.selector + ''
-                }
-            }
-        });
-
-        scrollbar.elm = $('.scrollbar', this.element);
+        this.getUiElement('contentElm').find('ul').remove();
     },
 
     destroy: function () {
         this.element.removeAttr('hidden');
         this._removeCreatedOptions();
         this._destroy();
+        this._super();
     },
 
     refreshOptions: function () {
@@ -191,15 +171,15 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
 
     setSelected: function (elm) {
         elm.parent().addClass(
-            this.options.ui.optionsElm.optionSelectedClassName);
+            this.options.ui.contentElm.optionSelectedClassName);
         this.element.val(elm.attr('data-value')).trigger('change');
         console.log(this.element.val());
     },
 
     clearSelected: function () {
-        this.getUiElement('optionsElm')
+        this.getUiElement('contentElm')
             .find('> ul > li').removeClass(
-                this.options.ui.optionsElm.optionSelectedClassName);
+                this.options.ui.contentElm.optionSelectedClassName);
     }
 
 });
