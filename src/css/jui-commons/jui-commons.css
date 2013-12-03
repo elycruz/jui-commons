@@ -64,7 +64,7 @@
 /* line 60, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar {
   position: absolute;
-  height: 282px !important;
+  height: 281px !important;
   z-index: 99;
 }
 
@@ -186,4 +186,9 @@
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
+}
+
+/* line 7, ../../sass/jui-commons/jui-commons.scss */
+.selected {
+  color: green;
 }

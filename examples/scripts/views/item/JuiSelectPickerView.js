@@ -25,54 +25,47 @@ function (Backbone, tmpl) {
                     // to the same mouse event
                     expandOn: 'click',
                     collapseOn: 'click'
-                });
-//
-//            // Expands on hover
-//                $otherOptions = $('#other-options').juiSelectPicker({
-//                    wrapperElm: {
-//                        selector: '.jui-select-picker-example-1',
-//                        attribs: {
-//                            'class': 'jui-select-picker jui-select-picker-example-1'
-//                        }
-//                    },
-//                    labelText: 'Select an "Other Option":',
-//                    expandOn: 'mouseenter',
-//                    collapseOn: 'mouseleave'
-//                }),
-//
-//            // Expands on hover
-//                $otherOptions3 = $('#example-3').juiSelectPicker({
-//                    ui: {
-//                        optionsElm: {
-//                            elm: $('#example-3 .options').eq(0)
-//                        },
-//                        buttonElm: {
-//                            elm: $('#example-3 button').eq(0)
-//                        }
-//                    },
-//                    skipDrawFromSelect: true,
-//                    labelText: 'Select an "Other Option":',
-//                    expandOn: 'mouseenter',
-//                    collapseOn: 'mouseleave'
-//                });
+                }),
 
-            $cats.on('change', function (e) {
-                if (isset($cats.val())) {
-                    $cats.juiSelectPicker2('setLabelText',
-                        'Select a Category: <span style="color:' +
-                            ' #ff0000;">You\'ve chosen "' +
-                            $cats.val() + '"<\span>.', 'html');
-                }
-            });
+            // Expands on hover
+                $otherOptions = $('#other-options').juiSelectPicker2({
+                    wrapperElm: {
+                        selector: '.jui-select-picker-example-1',
+                        attribs: {
+                            'class': 'jui-select-picker jui-select-picker-example-1'
+                        }
+                    },
+                    labelText: 'Select an "Other Option":',
+                    expandOn: 'mouseenter',
+                    collapseOn: 'mouseleave'
+                }),
+
+            // Expands on hover
+                $otherOptions3 = $('#example-3').juiSelectPicker({
+                    ui: {
+                        optionsElm: {
+                            elm: $('#example-3 .options').eq(0)
+                        },
+                        buttonElm: {
+                            elm: $('#example-3 button').eq(0)
+                        }
+                    },
+                    skipDrawFromSelect: true,
+                    labelText: 'Select an "Other Option":',
+                    expandOn: 'mouseenter',
+                    collapseOn: 'mouseleave'
+                });
 
             // Toggle the select element
             $('.toggle-select-element').click(function () {
                 var selElm = $(this).parent().find('select');
                 if (selElm.attr('hidden') === 'hidden') {
                     selElm.attr('hidden', false);
+                    selElm.css('display', 'block');
                 }
                 else {
                     selElm.attr('hidden', 'hidden');
+                    selElm.css('display', 'none');
                 }
             });
 

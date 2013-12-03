@@ -22,10 +22,32 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
                 attribs: {
                     'class': 'button'
                 },
-                text: '',
                 selector: '> .button',
-                html: '<button><span class="label"></span></button>',
+                html: '<button></button>',
                 appendTo: 'wrapperElm',
+                create: true
+            },
+            labelElm: {
+                elm: null,
+                attribs: {
+                    'class': 'label'
+                },
+                text: '',
+                selector: '> .label',
+                html: '<span></span>',
+                appendTo: 'buttonElm',
+                create: true
+            },
+            selectedItemLabelElm: {
+                elm: null,
+                attribs: {
+                    'class': 'selected-item-label selected'
+                },
+                prefixText: 'You\'ve chosen "',
+                suffixText: '"',
+                selector: '> .selected-item-label',
+                html: '<span></span>',
+                appendTo: 'buttonElm',
                 create: true
             },
             optionsElm: {
@@ -126,19 +148,23 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
 
     _addEventListeners: function () {
         var self = this,
-            states = self.options.states,
         ops = this.options;
 
         // Option/A-Tag click
         self.getUiElement('wrapperElm').on('click', 'a[data-value]', function (e) {
-            e.stopPropagation();
+//            e.stopPropagation();
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-//            self.timeline.reverse();
-//            self.options.state = states.COLLAPSED;
         });
 
+        // On select element change set it's selected item label text
+        this.element.on('change', function (e) {
+            var elm = $(this);
+            if (isset(elm.val())) {
+                self.setSelectedItemLabelText(elm.val());
+            }
+        });
     },
 
     _removeCreatedOptions: function () {
@@ -180,13 +206,38 @@ $.widget('jui.juiSelectPicker2', $.jui.juiBase, {
             .trigger('change');
     },
 
-    setLabelText: function (label, textType) {
+    setSelectedItemLabelText: function (text, textType, usePrefixAndSuffix) {
+        text = text || '';
         textType = textType || 'text';
-        label = label || (!empty(this.options.ui.buttonElm.text)
+        usePrefixAndSuffix = usePrefixAndSuffix || true;
+        var config = this.options.ui.selectedItemLabelElm,
+            elm = this.getUiElement('selectedItemLabelElm').eq(0);
+        if (usePrefixAndSuffix) {
+            text = config.prefixText + text + config.suffixText;
+        }
+
+        // @todo move this declaration to the add event listeners
+        // function and optimize it
+        TweenMax.to(elm, 0.16, {
+            opacity: 0,
+            onCompleteParams: [text, textType, elm],
+            onComplete: function () {
+                var args = arguments,
+                    text = args[0],
+                    textType = args[1],
+                    elm = args[2];
+                elm[textType](text);
+                TweenMax.to(elm, 0.16, {opacity: 1});
+            }});
+    },
+
+    setLabelText: function (text, textType) {
+        textType = textType || 'text';
+        text = text || (!empty(this.options.ui.buttonElm.text)
             ? this.options.ui.buttonElm.text
             : (!empty(this.options.labelText) ? this.options.labelText :
             this.element.find('option[value]').eq(0).text()));
-        $('.label', this.getUiElement('buttonElm')).eq(0)[textType](label);
+        this.getUiElement('labelElm').eq(0)[textType](text);
     },
 
     setSelected: function (elm) {

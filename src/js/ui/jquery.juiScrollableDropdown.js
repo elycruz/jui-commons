@@ -45,7 +45,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 type: 'from',
                 duration: 0.3,
                 elmAlias: 'scrollbar',
-                props: {css: {opacity: 0},
+                props: {css: {autoAlpha: 0},
                     delay: -0.10}
             }
         ],
@@ -62,7 +62,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 type: 'from',
                 duration: 0.30,
                 elmAlias: 'scrollbar',
-                props: {css: {opacity: 0}},
+                props: {css: {autoAlpha: 0}},
                 delay: -0.10
             }
         ],
