@@ -18,7 +18,7 @@ function (Backbone, tmpl) {
         onShow: function () {
 
             // Expands on click
-            var $cats = $('#categories', this.$el).juiSelectPicker({
+            var $cats = $('#categories', this.$el).juiSelectPicker2({
                     labelText: 'Select a Category:',
 
                     // Uses only one callback if both are set
@@ -28,7 +28,13 @@ function (Backbone, tmpl) {
                 }),
 
             // Expands on hover
-                $otherOptions = $('#other-options').juiSelectPicker({
+                $otherOptions = $('#other-options').juiSelectPicker2({
+                    wrapperElm: {
+                        selector: '.jui-select-picker-example-1',
+                        attribs: {
+                            'class': 'jui-select-picker jui-select-picker-example-1'
+                        }
+                    },
                     labelText: 'Select an "Other Option":',
                     expandOn: 'mouseenter',
                     collapseOn: 'mouseleave'
@@ -50,23 +56,16 @@ function (Backbone, tmpl) {
                     collapseOn: 'mouseleave'
                 });
 
-            $cats.on('change', function (e) {
-                if (isset($cats.val())) {
-                    $cats.juiSelectPicker('setLabelText',
-                        'Select a Category: <span style="color:' +
-                            ' #ff0000;">You\'ve chosen "' +
-                            $cats.val() + '"<\span>.', 'html');
-                }
-            });
-
             // Toggle the select element
             $('.toggle-select-element').click(function () {
                 var selElm = $(this).parent().find('select');
                 if (selElm.attr('hidden') === 'hidden') {
                     selElm.attr('hidden', false);
+                    selElm.css('display', 'block');
                 }
                 else {
                     selElm.attr('hidden', 'hidden');
+                    selElm.css('display', 'none');
                 }
             });
 

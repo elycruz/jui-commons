@@ -6,6 +6,9 @@ require.config({
     deps: ['es5-shim','es5-sham','phpjs','backbone.marionette','jquery','main'],
 
     shim: {
+        'backbone.marionette': {
+            deps: ['backbone', 'underscore']
+        },
         'jquery-ui': {
             deps: ['jquery']
         },
@@ -38,7 +41,7 @@ require.config({
         'jui-commons':          '../../distro/jui-commons.min',
         'juiBase':              '../../src/js/jquery.juiBase',
         'juiScrollPane':        '../../src/js/ui/jquery.juiScrollPane',
-        'juiSelectPicker':      '../../src/js/ui/jquery.juiSelectPicker',
+        'juiSelectPicker':      '../../src/js/ui/jquery.juiSelectPicker2',
         'juiScrollableDropDown':'../../src/js/ui/jquery.juiScrollableDropDown',
 
         'jquery':       '../bower_components/jquery/jquery',

@@ -9,6 +9,7 @@
  * @requires jQuery
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
+ * @todo finish juibase append call
  */
 $.widget('jui.juiBase', {
 
@@ -30,7 +31,7 @@ $.widget('jui.juiBase', {
      * @param extendObj {Object} optional, default this.options
      * @returns {Object}
      */
-    _namespace:  function(ns_string, extendObj) {
+    _namespace: function (ns_string, extendObj) {
         var parts = ns_string.split('.'),
             parent = extendObj || this.options,
             i;
@@ -51,31 +52,33 @@ $.widget('jui.juiBase', {
      * @return {void}
      */
     _populateUiElementsFromOptions: function (options) {
-        var self = this;
+        var self = this,
 
         // Get options
-        options = options || this.options.ui;
+            ops = !isset(options) ? this.options : options;
 
         // Set our ui collection
-        if (!isset(self.ui)) {
-            self.ui = {};
+        if (!isset(ops.ui)) {
+            ops.ui = {};
         }
 
-        // Loop through options and populate elements
-        Object.keys(options).forEach(function (key) {
+        // Ui ops
+        ops = ops.ui;
+
+        // Loop through ops and populate elements
+        Object.keys(ops).forEach(function (key) {
 
             // If key is string
-            if (typeof options[key] === 'string') {
-                self.ui[key] = options[key] = $(options[key], self.element);
+            if (typeof ops[key] === 'string') {
+                ops[key] = ops[key] = $(ops[key], self.element);
             }
 
             // If key is plain object
-            if ($.isPlainObject(options[key])) {
-                self.ui[key] = self._getElementFromOptions(options[key]);
+            if ($.isPlainObject(ops[key])) {
+                ops[key].elm = self._getElementFromOptions(ops[key]);
             }
 
         });
-        // /Loop through options
     },
 
     /**
@@ -83,14 +86,16 @@ $.widget('jui.juiBase', {
      * @param optionKey {Object|String}
      * @returns {null|jQuery} null or the jquery element selection
      */
-    _getElementFromOptions:function (optionKey) {
+
+    _getElementFromOptions: function (optionKey) {
         var self = this,
             ops = self.options,
-            config = optionKey;
+            config = optionKey,
+            parent;
 
         // If config is a string
         if (typeof config === 'string') {
-            config = self._namespace(config);
+            config = self._namespace(config, ops);
         }
 
         // If config is a function
@@ -105,7 +110,11 @@ $.widget('jui.juiBase', {
 
         // If config is jquery selection return it
         if (config instanceof $ && config.length > 0) {
-            return config
+            return config;
+        }
+        else if (isset(config.elm)
+            && config.elm instanceof $ && config.length > 0) {
+            return config.elm
         }
 
         // If Selector
@@ -130,29 +139,33 @@ $.widget('jui.juiBase', {
 
             if (isset(config.appendTo)
                 && typeof config.appendTo === 'string') {
+                parent = this.element.parent();
                 if (config.appendTo === 'this.element') {
-                    config.elm =
-                        this.element
-                            .append(config.elm).find(config.selector);
+                    config.elm = this.element
+                        .append(config.elm).find(config.selector);
                 }
                 else if (config.appendTo === 'after this.element') {
                     this.element.after(config.elm);
+                    config.elm = parent.find(
+                        this.element.get(0).nodeName
+                            + ' ~ ' + config.selector);
                 }
                 else if (config.appendTo === 'before this.element') {
                     this.element.before(config.elm);
+                    config.elm = parent.find(config.selector
+                        + ' ~ ' + this.element.get(0).nodeName);
                 }
                 else if (config.appendTo === 'prepend to this.element') {
                     this.element.prepend(config.elm);
-                }
-                else if (config.appendTo === 'append to this.element') {
-                    this.element.append(config.elm);
+                    config.elm = this.element.children().first();
                 }
                 else {
-//                    config.elm =
-                        this.getUiElement(config.appendTo)
+                    config.elm = this.getUiElement(config.appendTo)
                         .append(config.elm).find(config.selector);
                 }
             }
+
+            delete config.create;
         }
 
         // Return element
@@ -186,7 +199,7 @@ $.widget('jui.juiBase', {
             if (config.attribs) {
                 elm.attr(config.attribs);
             }
-            config.create = false;
+            delete config.create;
         }
         return elm;
     },
@@ -229,11 +242,15 @@ $.widget('jui.juiBase', {
      * getElementFromOptions to create/fetch it.
      * @param {string} alias
      * @returns {*}
-     * 
+     *
      */
     getUiElement: function (alias) {
-        if (isset(this.ui[alias]) && (this.ui[alias] instanceof $ && this.ui[alias].length > 0)) {
-            return this.ui[alias];
+        var ops = this.options;
+        if (isset(ops.ui[alias])) {
+            alias = ops.ui[alias].elm;
+            if (alias instanceof $ && alias.length > 0) {
+                return alias;
+            }
         }
         return this._getElementFromOptions('ui.' + alias);
     },
@@ -246,7 +263,7 @@ $.widget('jui.juiBase', {
     getAnimationTimeline: function () {
         var ops = this.options;
         if (empty(ops.timeline)) {
-            ops.timeline = new window[this.options.defaultTimelineClass];
+            ops.timeline = new TimelineMax(); // || new window[this.options.defaultTimelineClass];
         }
         return ops.timeline;
     },
@@ -263,7 +280,7 @@ $.widget('jui.juiBase', {
             i, config, elm, dur, props;
 
         // If this.options.animations not an array, bail
-        if (empty(ops.animations) || ! ops.animations instanceof Array) {
+        if (empty(ops.animations) || !ops.animations instanceof Array) {
             return;
         }
 

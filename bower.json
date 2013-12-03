@@ -10,7 +10,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~1.10.2",
+    "jquery": "~2.0.3",
     "jquery-ui": "~1.10.3",
     "gsap": "greensock/GreenSock-JS#~1.10.2",
     "phpjs": "elycruz/phpjs#~0.4.9",
@@ -19,5 +19,9 @@
     "jquery-smartresize": "louisremi/jquery-smartresize",
     "delayed-for-jquery": "https://github.com/theloveofcode/delayed-for-jquery.git",
     "jquery-mousewheel": "~3.1.4"
+  },
+  "resolutions": {
+    "jquery": "~2.0.3",
+    "phpjs": "~0.5.4"
   }
 }

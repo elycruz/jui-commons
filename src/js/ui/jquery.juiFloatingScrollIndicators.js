@@ -13,7 +13,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         },
         ui: {
             scrollableElm: {
-                elm: $('body').eq(0)
+                elm: $(window).eq(0)
             },
             wrapperElm: {
                 elm: null,
@@ -54,7 +54,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         // Populate initial ui elements
         self._populateUiElementsFromOptions();
         self._createInidicators();
-        $(window).on('debouncedresize', function (e) {
+        self.getUiElement('scrollableElm').on('debouncedresize', function (e) {
             var wrapper = self.getUiElement('wrapperElm'),
                 indElms = ops.ui.inidicatorsNeededElms.elm,
                 inds = $('.indicator', wrapper);
