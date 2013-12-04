@@ -2,7 +2,7 @@
  * Created by ElyDeLaCruz on 10/1/13.
  * @todo finish up the refactor.  Maybe use/extend scrollable drop down or use it from within...
  */
-$.widget('jui.juiSelectPicker2', $.jui.juiBase, {
+$.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     options: {
 

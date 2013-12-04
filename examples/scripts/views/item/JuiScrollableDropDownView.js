@@ -19,25 +19,7 @@ define([
             onShow: function () {
                 // Example drop down using the height element property
                 $('.test-scrollable-dropdown', this.$el)
-                    .juiScrollableDropDown({
-                        animations: [
-                            {
-                                type: 'from',
-                                duration: 0.3,
-                                elmAlias: 'contentElm',
-                                props: {css: {height: 0},
-                                    ease: Power1.easeOut
-                                }
-                            },
-                            {
-                                type: 'from',
-                                duration: 0.3,
-                                elmAlias: 'scrollbar',
-                                props: {css: {opacity: 0},
-                                    delay: -0.10}
-                            }
-                        ]
-                    });
+                    .juiScrollableDropDown();
 
                 $('.clipped-drop-down', this.$el)
                     .juiScrollableDropDown({
