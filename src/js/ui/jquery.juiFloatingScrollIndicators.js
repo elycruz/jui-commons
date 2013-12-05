@@ -1,19 +1,18 @@
 /**
  * Created by edelacruz on 11/15/13.
  */
-// @todo refactor to use parentOffset or offsetParent (I believe it's the position property)
-// @todo use Tween Max for animation here
+// @todo refactor to use the position offset instead of offset.
 // @todo create alternate indicator creation method (list of selectors?)
 $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
     options: {
         'class': 'jui-floating-scroll-indicator',
         animation: {
-            easing: Power3.easeInOut,
-            duration: 0.38
+            easing: Power3.easeOut,
+            duration: 1
         },
         ui: {
             scrollableElm: {
-                elm: $(window).eq(0)
+                elm: $('body')
             },
             wrapperElm: {
                 elm: null,
@@ -70,6 +69,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
             ops = self.options,
             createOps = ops.ui.inidicatorsNeededElms,
             wrapper = self.getUiElement('wrapperElm'),
+            scrollableElm = self.getUiElement('scrollableElm'),
             indNeededElm,
             indElms;
 
@@ -111,10 +111,11 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         // Add click listener to indicator
         indElms.click(function (e) {
             var elm = $(this),
-            toElm = indNeededElm.eq(elm.attr('data-index'));
-            TweenMax.to(self.ui.scrollableElm, ops.animation.duration,
-                {scrollTop: parseInt(toElm.offset().top),
-                    easing: ops.animation.easing});
+            toElm = indNeededElm.eq(elm.attr('data-index')),
+                val = parseInt(toElm.offset().top);
+            console.log(scrollableElm, val, ops.animation);
+            TweenMax.to(scrollableElm, ops.animation.duration,
+                {scrollTo: val});
         });
     }
 

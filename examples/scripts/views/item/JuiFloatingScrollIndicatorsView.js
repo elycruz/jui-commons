@@ -1,7 +1,9 @@
 define([
 	'backbone',
 	'hbs!tmpl/item/jui-floating-scroll-indicators-view',
-    'TweenMax'
+    'TweenMax',
+    'gsap-scrollto-plugin'
+
 ],
 function( Backbone, JuiFloatingScrollIndicatorsView  ) {
     'use strict';

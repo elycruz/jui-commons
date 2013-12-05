@@ -16,7 +16,7 @@
     .button {
         position: relative;
         display: border-box;
-        width: 100%;
+        width: 100% !important;
         height: 2em;
         background: #fff;
         border: none;
@@ -31,7 +31,7 @@
     .options {
         position: absolute;
         top: 41px;
-        width: 100%;
+        width: 100% !important;
         overflow: hidden;
         max-height: 240px;
         outline: solid #888 1px;

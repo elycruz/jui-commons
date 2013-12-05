@@ -81,7 +81,9 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
+    },
 
+    _init: function () {
         // Set button text/label
         this.setLabelText();
 
@@ -178,7 +180,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         }
 
         dropDownOptions = {
-            state: 'expanded',
+//            timeline: new TimelineMax(),
+            state: 'collapsed',
             ui: {
                 contentElm: {
                     elm: this.getUiElement('optionsElm'),
@@ -204,7 +207,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     destroy: function () {
         this.element.removeAttr('hidden');
         this._removeCreatedOptions();
-        this._destroy();
+        this._super();
     },
 
     refreshOptions: function () {
