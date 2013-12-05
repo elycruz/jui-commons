@@ -32,24 +32,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             }
         },
 
-        animations: [
-            {
-                type: 'from',
-                duration: 0.3,
-                elmAlias: 'contentElm',
-                props: {css: {height: 0},
-                    ease: Power1.easeOut
-                }
-            },
-            {
-                type: 'from',
-                duration: 0.3,
-                elmAlias: 'scrollbar',
-                props: {css: {autoAlpha: 0},
-                    delay: -0.10}
-            }
-        ],
-
         // Example animations hash
         defaultAnimations: [
             {
@@ -59,11 +41,11 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 props: {css: {height: 0}}
             },
             {
-                type: 'from',
+                type: 'to',
                 duration: 0.30,
                 elmAlias: 'scrollbar',
-                props: {css: {autoAlpha: 0}},
-                delay: -0.10
+                props: {css: {opacity: 1},
+                delay: -0.10}
             }
         ],
 
@@ -101,7 +83,9 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         this._addEventListeners();
 
         // Set collapsed state
-        ops.state = ops.states.COLLAPSED;
+        ops.state = ops.state || ops.states.COLLAPSED;
+
+        this.ensureAnimationFunctionality();
     },
 
     _getExpandOnClassName: function () {

@@ -36,7 +36,6 @@
  * @requires jQuery
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
- * @todo finish juibase append call
  */
 $.widget('jui.juiBase', {
 
@@ -50,9 +49,11 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Takes a namespace string and fetches that location out from an object.
-     * If the namespace doesn't exists it is created then returned.
-     * Example: _namespace('hello.world.how.are.you.doing') will create/fetch:
+     * Takes a namespace string and fetches that location out from
+     * an object.  If the namespace doesn't exists it is created then
+     * returned.
+     * Example: _namespace('hello.world.how.are.you.doing') will
+     * create/fetch:
      * hello: { world: { how: { are: { you: { doing: {} } } } } }
      * @param ns_string {String} the namespace you wish to fetch
      * @param extendObj {Object} optional, default this.options
@@ -149,8 +150,10 @@ $.widget('jui.juiBase', {
             && empty(config.create)
             && typeof config.selector === 'string') {
             if (typeof config.appendTo === 'string'
-                && config.appendTo.length > 0 && config.appendTo.indexOf('this') === -1) {
-                config.elm = $(config.selector, self.getUiElement(config.appendTo));
+                && config.appendTo.length > 0
+                && config.appendTo.indexOf('this') === -1) {
+                config.elm = $(config.selector,
+                    self.getUiElement(config.appendTo));
             }
             else {
                 config.elm = $(config.selector, self.element);
@@ -200,10 +203,10 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Create and Element from the options.ui hash and appends it to it's config.appendTo
-     * section alias string.
-     * @param config {Object} the options object from which to create and where to
-     * populate the created element to.
+     * Create and Element from the options.ui hash and appends it to
+     * it's config.appendTo section alias string.
+     * @param config {Object} the options object from which to create
+     *  and where to populate the created element to.
      * @returns {null|jQuery}
      */
     _createElementFromOptions: function (config) {
@@ -220,10 +223,10 @@ $.widget('jui.juiBase', {
         }
 
         // Assume config is an object
-        // @todo create explicit check for object
         if (config.html) {
             elm = $(config.html);
-            if (config.attribs) {
+            if (isset(config.attribs)
+                && $.isPlainObject(config.attribs)) {
                 elm.attr(config.attribs);
             }
             delete config.create;
@@ -283,6 +286,19 @@ $.widget('jui.juiBase', {
     },
 
     /**
+     * Sets css on element if it exist.
+     * @tentative
+     * @param alias {string} Element alias
+     * @param cssHash {object}
+     */
+    setCssOnUiElement: function (alias, cssHash) {
+        var elm = this.getUiElement(alias);
+        if (elm) {
+            elm.css(cssHash);
+        }
+    },
+
+    /**
      * Lazy initializes a Timeline Lite or
      * Timeline Max animation timeline.
      * @returns {TimelineMax|TimelineLite}
@@ -290,7 +306,7 @@ $.widget('jui.juiBase', {
     getAnimationTimeline: function () {
         var ops = this.options;
         if (empty(ops.timeline)) {
-            ops.timeline = new TimelineMax(); // || new window[this.options.defaultTimelineClass];
+            ops.timeline = new window[this.options.defaultTimelineClass];
         }
         return ops.timeline;
     },
@@ -317,7 +333,7 @@ $.widget('jui.juiBase', {
             elm = self.getUiElement(config.elmAlias);
             dur = config.duration;
             props = config.props;
-            timeline[config.type](elm, dur, props);
+            timeline[config.type](elm.get(0), dur, props);
         }
     },
 
@@ -326,10 +342,17 @@ $.widget('jui.juiBase', {
      * value is a function returns the functions return value.
      * @param key
      * @returns {Object}
+     * @todo decide which one to keep between getFromOptions and this method
      */
     getOptionValue: function (key) {
         var value = this._namespace(key);
         return typeof value === 'function' ? value.call(this) : value;
+    },
+
+    // @todo finish this method
+    getValueFromHash: function (key, hash, args, raw) {
+        var value = this._namespace(key, hash);
+        return typeof value === 'function' ? value.call(this, args) : value;
     }
 
 });
@@ -343,13 +366,13 @@ $.widget('jui.juiBase', {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="juiScrollableDropdown.html">juiScrollableDropdown</a></li><li><a href="juiSplitText.html">juiSplitText</a></li><li><a href="juiBase.html">juiBase</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_create">_create</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="juiScrollableDropdown.html">juiScrollableDropdown</a></li><li><a href="juiScrollPane.html">juiScrollPane</a></li><li><a href="juiSplitText.html">juiSplitText</a></li><li><a href="juiBase.html">juiBase</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_create">_create</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Dec 04 2013 10:18:13 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Dec 04 2013 17:20:34 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

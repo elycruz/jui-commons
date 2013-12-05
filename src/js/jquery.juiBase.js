@@ -9,7 +9,6 @@
  * @requires jQuery
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
- * @todo finish juibase append call
  */
 $.widget('jui.juiBase', {
 
@@ -23,9 +22,11 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Takes a namespace string and fetches that location out from an object.
-     * If the namespace doesn't exists it is created then returned.
-     * Example: _namespace('hello.world.how.are.you.doing') will create/fetch:
+     * Takes a namespace string and fetches that location out from
+     * an object.  If the namespace doesn't exists it is created then
+     * returned.
+     * Example: _namespace('hello.world.how.are.you.doing') will
+     * create/fetch:
      * hello: { world: { how: { are: { you: { doing: {} } } } } }
      * @param ns_string {String} the namespace you wish to fetch
      * @param extendObj {Object} optional, default this.options
@@ -33,7 +34,7 @@ $.widget('jui.juiBase', {
      */
     _namespace: function (ns_string, extendObj) {
         var parts = ns_string.split('.'),
-            parent = extendObj || this.options,
+            parent = isset(extendObj) ? extendObj : this.options,
             i;
 
         for (i = 0; i < parts.length; i += 1) {
@@ -122,8 +123,10 @@ $.widget('jui.juiBase', {
             && empty(config.create)
             && typeof config.selector === 'string') {
             if (typeof config.appendTo === 'string'
-                && config.appendTo.length > 0 && config.appendTo.indexOf('this') === -1) {
-                config.elm = $(config.selector, self.getUiElement(config.appendTo));
+                && config.appendTo.length > 0
+                && config.appendTo.indexOf('this') === -1) {
+                config.elm = $(config.selector,
+                    self.getUiElement(config.appendTo));
             }
             else {
                 config.elm = $(config.selector, self.element);
@@ -173,10 +176,10 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Create and Element from the options.ui hash and appends it to it's config.appendTo
-     * section alias string.
-     * @param config {Object} the options object from which to create and where to
-     * populate the created element to.
+     * Create and Element from the options.ui hash and appends it to
+     * it's config.appendTo section alias string.
+     * @param config {Object} the options object from which to create
+     *  and where to populate the created element to.
      * @returns {null|jQuery}
      */
     _createElementFromOptions: function (config) {
@@ -193,10 +196,10 @@ $.widget('jui.juiBase', {
         }
 
         // Assume config is an object
-        // @todo create explicit check for object
         if (config.html) {
             elm = $(config.html);
-            if (config.attribs) {
+            if (isset(config.attribs)
+                && $.isPlainObject(config.attribs)) {
                 elm.attr(config.attribs);
             }
             delete config.create;
@@ -218,31 +221,10 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Gets a value from the options hash.  If that value is a function
-     * calls the function and returns it's result unless raw is passed
-     * in which case this function will return the function.
-     * @param key {String}
-     * @param args {Array} optional
-     * @param raw {Boolean} optional
-     * @returns {*}
-     */
-    getFromOptions: function (key, args, raw) {
-        var retVal = null;
-        if (typeof key === 'string') {
-            retVal = this._namespace(key);
-        }
-        if (typeof retVal === 'function' && empty(raw)) {
-            retVal = retVal.apply(this, args);
-        }
-        return retVal;
-    },
-
-    /**
      * Pulls a ui element from the options -> ui hash else uses
      * getElementFromOptions to create/fetch it.
      * @param {string} alias
      * @returns {*}
-     *
      */
     getUiElement: function (alias) {
         var ops = this.options;
@@ -256,6 +238,19 @@ $.widget('jui.juiBase', {
     },
 
     /**
+     * Sets css on element if it exist.
+     * @tentative
+     * @param alias {string} Element alias
+     * @param cssHash {object}
+     */
+    setCssOnUiElement: function (alias, cssHash) {
+        var elm = this.getUiElement(alias);
+        if (elm) {
+            elm.css(cssHash);
+        }
+    },
+
+    /**
      * Lazy initializes a Timeline Lite or
      * Timeline Max animation timeline.
      * @returns {TimelineMax|TimelineLite}
@@ -263,7 +258,7 @@ $.widget('jui.juiBase', {
     getAnimationTimeline: function () {
         var ops = this.options;
         if (empty(ops.timeline)) {
-            ops.timeline = new TimelineMax(); // || new window[this.options.defaultTimelineClass];
+            ops.timeline = new window[this.options.defaultTimelineClass];
         }
         return ops.timeline;
     },
@@ -277,32 +272,79 @@ $.widget('jui.juiBase', {
         timeline = timeline || this.getAnimationTimeline();
         var self = this,
             ops = self.options,
-            i, config, elm, dur, props;
+            i, config, elm, dur, props,
+            animations;
 
-        // If this.options.animations not an array, bail
-        if (empty(ops.animations) || !ops.animations instanceof Array) {
+        // If default animations, use them
+        if (isset(ops.defaultAnimations)
+            && ops.defaultAnimations instanceof Array) {
+            animations = ops.defaultAnimations;
+        }
+
+        // If animations, use them (also override defaults if any)
+        if (isset(ops.animations)
+            && ops.animations instanceof Array) {
+            animations = isset(animations)
+                ? $.extend(animations, ops.animations) : ops.animations;
+        }
+
+        // If no animations, bail
+        if (!isset(animations)) {
             return;
         }
 
         // Add animations to timeline
-        for (i = 0; i < ops.animations.length; i += 1) {
-            config = ops.animations[i];
+        for (i = 0; i < animations.length; i += 1) {
+            config = animations[i];
             elm = self.getUiElement(config.elmAlias);
             dur = config.duration;
             props = config.props;
+
+            // Pre init function
+            if (isset(config.preInit) && typeof config.preInit === 'function') {
+                config.preInit.apply(this);
+            }
+
+            // Init timeline
             timeline[config.type](elm, dur, props);
+
+            // Post init function
+            if (isset(config.postInit) && typeof config.postInit === 'function') {
+                config.postInit.apply(this);
+            }
         }
     },
 
     /**
-     * Gets an option value from the options hash.  If the option
-     * value is a function returns the functions return value.
+     * Gets an option value from the options hash.  This function is a
+     * proxy for `getValueFromHash` and it just sets the hash to `this.options`.
+     * @see getValueFromHash
      * @param key
      * @returns {Object}
      */
-    getOptionValue: function (key) {
-        var value = this._namespace(key);
-        return typeof value === 'function' ? value.call(this) : value;
+    getValueFromOptions: function (key, args, raw) {
+        return this.getValueFromHash (key, this.options, args, raw);
+    },
+
+    /**
+     * Searches hash for key and returns it's value.  If value is a function
+     * calls function, with optional `args`, and returns it's return value.
+     * If `raw` is true returns the actual function if value is a function.
+     * @param key {string} The hash key to search for
+     * @param hash {object} optional, the hash to search within
+     * @param args {array} optional the arrays to pass to value if it is a function
+     * @param raw {boolean} optional whether to return value even if it is a function
+     * @returns {*}
+     */
+    getValueFromHash: function (key, hash, args, raw) {
+        var retVal = null;
+        if (typeof key === 'string' && $.isPlainObject(hash)) {
+            retVal = this._namespace(key, hash);
+            if (typeof retVal === 'function' && empty(raw)) {
+                retVal = retVal.apply(this, args);
+            }
+        }
+        return retVal;
     }
 
 });

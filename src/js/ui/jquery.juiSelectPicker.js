@@ -1,6 +1,5 @@
 /**
  * Created by ElyDeLaCruz on 10/1/13.
- * @todo finish up the refactor.  Maybe use/extend scrollable drop down or use it from within...
  */
 $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
@@ -63,9 +62,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             }
         },
 
-        autoUpdateSelectedItemLabel: true,
-
-        closeOnOptionClick: true
+        // Label text for select picker
+        labelText: ''
     },
 
     _create: function () {
@@ -77,12 +75,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             return;
         }
 
-        // @todo fix ie8 and below bug with scrollbar
-        if ($('html').hasClass('lt-ie9')) {
-            console.log('** Note ** -- jquery.juiSelectPicker.js ' +
-                'doesn\'t support anything less than Ie9 at the moment.');
-        }
-
         // Hide this element and append new markup beside where it used
         // to be
         this.element.attr('hidden', 'hidden').css('display', 'none');
@@ -90,16 +82,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
 
+        // Set button text/label
+        this.setLabelText();
 
         // Draw select options from this element onto our element
         this._drawSelectOptions();
 
-        // Set button text/label
-        this.setLabelText();
-
-        // Initialize
+        // Scrollable Drop Down
         this._initScrollableDropDown();
 
+        // Listeners
         this._addEventListeners();
     },
 
@@ -151,29 +143,23 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _addEventListeners: function () {
         var self = this,
-            ops = this.options;
+        ops = this.options;
 
         // Option/A-Tag click
         self.getUiElement('wrapperElm').on('click', 'a[data-value]', function (e) {
-            if (!ops.closeOnOptionClick) {
-                e.stopPropagation();
-            }
+//            e.stopPropagation();
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
         });
 
-        // If auto update label
-        if (ops.autoUpdateSelectedItemLabel) {
-
-            // On select element change set it's selected item label text
-            this.element.on('change', function (e) {
-                var elm = $(this);
-                if (isset(elm.val())) {
-                    self.setSelectedItemLabelText(elm.val());
-                }
-            });
-        }
+        // On select element change set it's selected item label text
+        this.element.on('change', function (e) {
+            var elm = $(this);
+            if (isset(elm.val())) {
+                self.setSelectedItemLabelText(elm.val());
+            }
+        });
     },
 
     _removeCreatedOptions: function () {
@@ -182,21 +168,35 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _initScrollableDropDown: function () {
         var ops = this.options,
-            scrollbar = this._namespace('ui.scrollbar');
+            scrollbar = this._namespace('ui.scrollbar'),
+            wrapperElm = this.getUiElement('wrapperElm'),
+            dropDown,
+            dropDownOptions;
 
         if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
             return;
         }
 
-        this.getUiElement('wrapperElm').juiScrollableDropDown({
+        dropDownOptions = {
+            state: 'expanded',
             ui: {
                 contentElm: {
                     elm: this.getUiElement('optionsElm'),
                     attribs: ops.ui.optionsElm.attribs,
                     selector: ops.ui.optionsElm.selector + ''
                 }
-            }
-        });
+            }};
+
+        if (isset(ops.expandOn)) {
+            dropDownOptions.expandOn = ops.expandOn;
+        }
+
+        if (isset(ops.collapseOn)) {
+            dropDownOptions.collapseOn = ops.collapseOn;
+        }
+
+        dropDown = wrapperElm.juiScrollableDropDown(dropDownOptions);
+        dropDown.juiScrollableDropDown('getAnimationTimeline').seek(0);
 
         scrollbar.elm = $('.scrollbar', this.element);
     },
@@ -213,10 +213,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this.setLabelText();
         this.element.val(null)
             .trigger('change');
-    },
-
-    refresh: function () {
-        this.refreshOptions();
     },
 
     setSelectedItemLabelText: function (text, textType, usePrefixAndSuffix) {
@@ -246,8 +242,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     setLabelText: function (text, textType) {
         textType = textType || 'text';
-        text = text || (!empty(this.options.ui.labelElm.text)
-            ? this.options.ui.labelElm.text
+        text = text || (!empty(this.options.ui.buttonElm.text)
+            ? this.options.ui.buttonElm.text
             : (!empty(this.options.labelText) ? this.options.labelText :
             this.element.find('option[value]').eq(0).text()));
         this.getUiElement('labelElm').eq(0)[textType](text);
