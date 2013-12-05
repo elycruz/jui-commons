@@ -9,6 +9,11 @@ function (Backbone, tmpl) {
     /* Return a ItemView class definition */
     return Backbone.Marionette.ItemView.extend({
 
+        ui: {
+            catSelectElm: '#categories',
+            otherSelectElm: '#other-options'
+        },
+
         initialize: function () {
             console.log("initialize a Juiselectpickerview ItemView");
         },
@@ -18,14 +23,16 @@ function (Backbone, tmpl) {
         onShow: function () {
 
             // Expands on click
-            var $cats = $('#categories', this.$el).juiSelectPicker({
+            var ui = this.ui,
+
+                $cats = ui.catSelectElm.juiSelectPicker({
                     labelText: 'Select a Category:',
                     expandOn: 'click',
                     collapseOn: 'click'
                 }),
 
             // Expands on hover
-            $otherOptions = $('#other-options').juiSelectPicker({
+            $otherOptions = ui.otherSelectElm.juiSelectPicker({
                 wrapperElm: {
                     selector: '.jui-select-picker-example-1',
                     attribs: {
@@ -49,7 +56,14 @@ function (Backbone, tmpl) {
                     selElm.css('display', 'none');
                 }
             });
+        },
 
+        onClose: function () {
+            var ui = this.ui;
+            ui.catSelectElm.juiSelectPicker('destory');
+            ui.otherSelectElm.juiSelectPicker('destory');
+            delete ui.catSelectElm;
+            delete ui.otherSelectElm;
         }
     });
 

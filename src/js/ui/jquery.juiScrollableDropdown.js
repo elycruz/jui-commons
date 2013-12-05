@@ -70,6 +70,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _create: function () {
         var ops = this.options;
 
+        this.timeline = new TimelineMax();
+
         // Add event class names
         this.element
             .addClass(ops.className)
@@ -115,18 +117,19 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             collapseOnMouseEvent = this._getCollapseOnEventStringName(),
             expandOnMouseEvent = this._getExpandOnEventStringName();
 
+        console.log(self.timeline);
         // If expand and collapse events are the same (use toggle pattern)
 
         if (expandOnMouseEvent === collapseOnMouseEvent) {
             this.element.on(expandOnMouseEvent, function (e) {
                 if (self.options.state === states.COLLAPSED) {
                     self.ensureAnimationFunctionality();
-                    self.options.timeline.play();
+                    self.timeline.play();
                     self.options.state = states.EXPANDED;
                 }
                 else {
                     self.ensureAnimationFunctionality();
-                    self.options.timeline.reverse();
+                    self.timeline.reverse();
                     self.options.state = states.COLLAPSED;
                 }
             });
@@ -135,13 +138,13 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             // On expand event
             this.element.on(expandOnMouseEvent, function (e) {
                 self.ensureAnimationFunctionality();
-                self.options.timeline.play();
+                self.timeline.play();
                 self.options.state = states.EXPANDED;
             })
                 // On collapse event
                 .on(collapseOnMouseEvent, function (e) {
                     self.ensureAnimationFunctionality();
-                    self.options.timeline.reverse();
+                    self.timeline.reverse();
                     self.options.state = states.COLLAPSED;
                 });
         }
@@ -174,12 +177,11 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     },
 
     _initAnimationTimeline: function () {
-        var timeline = this.getAnimationTimeline();
-        this.initAnimationTimeline(timeline);
+        this.initAnimationTimeline(this.timeline);
     },
 
     _initTimeline: function () {
-        if (empty(this.options.timeline)) {
+        if (empty(this.timeline)) {
             this._initAnimationTimeline()
         }
     },
@@ -192,7 +194,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     destroy: function () {
         this._removeCreatedElements();
         this._removeEventListeners();
-        this._destroy();
+        this._super();
     },
 
     refreshOptions: function () {

@@ -10,6 +10,11 @@ define([
         /* Return a ItemView class definition */
         return Backbone.Marionette.ItemView.extend({
 
+            ui: {
+                test1Elm: '.test-scrollable-dropdown',
+                test2Elm: '.clipped-drop-down'
+            },
+
             initialize: function () {
                 console.log("initialize a Juiscrollabledropdownview ItemView");
             },
@@ -17,10 +22,11 @@ define([
             template: tmpl,
 
             onShow: function () {
+                var ui = this.ui;
+
                 // Example drop down using the height element property
-                $('.test-scrollable-dropdown', this.$el)
+                ui.test1Elm
                     .juiScrollableDropDown({
-                        state: 'expanded',
                         animations: [
                             {
                                 type: 'to',
@@ -42,7 +48,7 @@ define([
                         ]
                     });
 
-                $('.clipped-drop-down', this.$el)
+                ui.test2Elm
                     .juiScrollableDropDown({
                         animations: [
                             {
@@ -65,6 +71,14 @@ define([
                     });
 
 
+            },
+
+            onClose: function () {
+                var ui = this.ui;
+                ui.test1Elm.juiSelectPicker('destory');
+                ui.test2Elm.juiSelectPicker('destory');
+                delete ui.test2Elm;
+                delete ui.test1Elm;
             }
         });
 

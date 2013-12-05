@@ -256,11 +256,10 @@ $.widget('jui.juiBase', {
      * @returns {TimelineMax|TimelineLite}
      */
     getAnimationTimeline: function () {
-        var ops = this.options;
-        if (empty(ops.timeline)) {
-            ops.timeline = new window[this.options.defaultTimelineClass];
+        if (empty(this.timeline)) {
+            this.timeline = new window[this.options.defaultTimelineClass];
         }
-        return ops.timeline;
+        return this.timeline;
     },
 
     /**
@@ -269,7 +268,9 @@ $.widget('jui.juiBase', {
      * @returns default
      */
     initAnimationTimeline: function (timeline) {
+
         timeline = timeline || this.getAnimationTimeline();
+
         var self = this,
             ops = self.options,
             i, config, elm, dur, props,

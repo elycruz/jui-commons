@@ -178,7 +178,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         }
 
         dropDownOptions = {
-            state: 'expanded',
             ui: {
                 contentElm: {
                     elm: this.getUiElement('optionsElm'),
@@ -196,7 +195,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         }
 
         dropDown = wrapperElm.juiScrollableDropDown(dropDownOptions);
-        dropDown.juiScrollableDropDown('getAnimationTimeline').seek(0);
+//        dropDown.juiScrollableDropDown('getAnimationTimeline').reverse();
 
         scrollbar.elm = $('.scrollbar', this.element);
     },
@@ -204,7 +203,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     destroy: function () {
         this.element.removeAttr('hidden');
         this._removeCreatedOptions();
-        this._destroy();
+        this._super();
     },
 
     refreshOptions: function () {

@@ -26,7 +26,7 @@
 
     .content {
         position: absolute;
-        width: 100%;
+        width: 100% !important;
         overflow: hidden;
         max-height: 240px;
         outline: solid #000 1px;

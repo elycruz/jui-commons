@@ -61,7 +61,7 @@ $.widget('jui.juiBase', {
      */
     _namespace: function (ns_string, extendObj) {
         var parts = ns_string.split('.'),
-            parent = extendObj || this.options,
+            parent = isset(extendObj) ? extendObj : this.options,
             i;
 
         for (i = 0; i &lt; parts.length; i += 1) {
@@ -248,31 +248,10 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Gets a value from the options hash.  If that value is a function
-     * calls the function and returns it's result unless raw is passed
-     * in which case this function will return the function.
-     * @param key {String}
-     * @param args {Array} optional
-     * @param raw {Boolean} optional
-     * @returns {*}
-     */
-    getFromOptions: function (key, args, raw) {
-        var retVal = null;
-        if (typeof key === 'string') {
-            retVal = this._namespace(key);
-        }
-        if (typeof retVal === 'function' && empty(raw)) {
-            retVal = retVal.apply(this, args);
-        }
-        return retVal;
-    },
-
-    /**
      * Pulls a ui element from the options -> ui hash else uses
      * getElementFromOptions to create/fetch it.
      * @param {string} alias
      * @returns {*}
-     *
      */
     getUiElement: function (alias) {
         var ops = this.options;
@@ -320,39 +299,79 @@ $.widget('jui.juiBase', {
         timeline = timeline || this.getAnimationTimeline();
         var self = this,
             ops = self.options,
-            i, config, elm, dur, props;
+            i, config, elm, dur, props,
+            animations;
 
-        // If this.options.animations not an array, bail
-        if (empty(ops.animations) || !ops.animations instanceof Array) {
+        // If default animations, use them
+        if (isset(ops.defaultAnimations)
+            && ops.defaultAnimations instanceof Array) {
+            animations = ops.defaultAnimations;
+        }
+
+        // If animations, use them (also override defaults if any)
+        if (isset(ops.animations)
+            && ops.animations instanceof Array) {
+            animations = isset(animations)
+                ? $.extend(animations, ops.animations) : ops.animations;
+        }
+
+        // If no animations, bail
+        if (!isset(animations)) {
             return;
         }
 
         // Add animations to timeline
-        for (i = 0; i &lt; ops.animations.length; i += 1) {
-            config = ops.animations[i];
+        for (i = 0; i &lt; animations.length; i += 1) {
+            config = animations[i];
             elm = self.getUiElement(config.elmAlias);
             dur = config.duration;
             props = config.props;
-            timeline[config.type](elm.get(0), dur, props);
+
+            // Pre init function
+            if (isset(config.preInit) && typeof config.preInit === 'function') {
+                config.preInit.apply(this);
+            }
+
+            // Init timeline
+            timeline[config.type](elm, dur, props);
+
+            // Post init function
+            if (isset(config.postInit) && typeof config.postInit === 'function') {
+                config.postInit.apply(this);
+            }
         }
     },
 
     /**
-     * Gets an option value from the options hash.  If the option
-     * value is a function returns the functions return value.
+     * Gets an option value from the options hash.  This function is a
+     * proxy for `getValueFromHash` and it just sets the hash to `this.options`.
+     * @see getValueFromHash
      * @param key
      * @returns {Object}
-     * @todo decide which one to keep between getFromOptions and this method
      */
-    getOptionValue: function (key) {
-        var value = this._namespace(key);
-        return typeof value === 'function' ? value.call(this) : value;
+    getValueFromOptions: function (key, args, raw) {
+        return this.getValueFromHash (key, this.options, args, raw);
     },
 
-    // @todo finish this method
+    /**
+     * Searches hash for key and returns it's value.  If value is a function
+     * calls function, with optional `args`, and returns it's return value.
+     * If `raw` is true returns the actual function if value is a function.
+     * @param key {string} The hash key to search for
+     * @param hash {object} optional, the hash to search within
+     * @param args {array} optional the arrays to pass to value if it is a function
+     * @param raw {boolean} optional whether to return value even if it is a function
+     * @returns {*}
+     */
     getValueFromHash: function (key, hash, args, raw) {
-        var value = this._namespace(key, hash);
-        return typeof value === 'function' ? value.call(this, args) : value;
+        var retVal = null;
+        if (typeof key === 'string' && $.isPlainObject(hash)) {
+            retVal = this._namespace(key, hash);
+            if (typeof retVal === 'function' && empty(raw)) {
+                retVal = retVal.apply(this, args);
+            }
+        }
+        return retVal;
     }
 
 });
@@ -372,7 +391,7 @@ $.widget('jui.juiBase', {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Dec 04 2013 17:20:34 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Dec 04 2013 22:08:29 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
