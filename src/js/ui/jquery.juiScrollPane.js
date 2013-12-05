@@ -1,31 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: ui/jquery.juiScrollPane.js</title>
-    
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-    
-    <h1 class="page-title">Source: ui/jquery.juiScrollPane.js</h1>
-    
-    
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source"><code>    /**
+    /**
  * Makes a content area scrollable with custom
  * scrollbars whose elements are fetched or created depending on the
  * flags passed in/or not passed in by the user.
@@ -47,7 +20,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             contentHolder: {
                 elm: null,
                 selector: '.content',
-                html: '&lt;div>&lt;/div>',
+                html: '<div></div>',
                 attribs: {
                     'class': 'content'
                 }
@@ -55,7 +28,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             vertScrollbar: {
                 elm: null,
                 selector: '.vertical.scrollbar',
-                html: '&lt;div>&lt;/div>',
+                html: '<div></div>',
                 appendTo: 'this.element',
                 attribs: {
                     'class': 'vertical scrollbar'
@@ -65,7 +38,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             vertHandle: {
                 elm: null,
                 selector: '.handle',
-                html: '&lt;div>&lt;/div>',
+                html: '<div></div>',
                 appendTo: 'vertScrollbar',
                 attribs: {
                     'class': 'handle'
@@ -75,7 +48,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             horizScrollbar: {
                 elm: null,
                 selector: '.horizontal.scrollbar',
-                html: '&lt;div>&lt;/div>',
+                html: '<div></div>',
                 appendTo: 'this.element',
                 attribs: {
                     'class': 'horizontal scrollbar'
@@ -85,7 +58,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             horizHandle: {
                 elm: null,
                 selector: '.handle',
-                html: '&lt;div>&lt;/div>',
+                html: '<div></div>',
                 appendTo: 'horizScrollbar',
                 attribs: {
                     'class': 'handle'
@@ -148,7 +121,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             }
 
             // Prelims
-            var incrementer = delta &lt; 1 ? 10 : -10,
+            var incrementer = delta < 1 ? 10 : -10,
                 scrollTo = contentHolder.scrollTop() + incrementer,
                 handleOffsetTop = handle.position().top + incrementer;
 
@@ -183,7 +156,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             return;
         }
 
-        if (value &lt;= scrollTotal && value >= 0) {
+        if (value <= scrollTotal && value >= 0) {
             contentHolder.scrollTop(value);
             scrollPercent = value / scrollTotal;
             handle.css(dir, scrollbar[dimProp]() * scrollPercent);
@@ -191,7 +164,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         else if (value > scrollTotal) {
             handle.css(dir, scrollbar[dimProp]() - handle[dimProp]());
         }
-        else if (value &lt; 0) {
+        else if (value < 0) {
             handle.css(dir, 0);
         }
         this.scrollContentHolder(layout);
@@ -216,13 +189,13 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             contentHolderScrollFunc = 'scroll' + ucaseFirst(dir);
 
         // Scroll only if limits haven't been reached
-        if (scrollPos >= 0 && scrollPos &lt;= scrollAmountTotal) {
+        if (scrollPos >= 0 && scrollPos <= scrollAmountTotal) {
             contentHolder[contentHolderScrollFunc]
                 (percentScroll * scrollAmountTotal);
         }
 
         // Constrain scroll limits
-        else if (scrollPos &lt; 0) {
+        else if (scrollPos < 0) {
             contentHolder[contentHolderScrollFunc](0);
         }
         else if (scrollPos > scrollAmountTotal) {
@@ -239,7 +212,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             dir = vars.cssCalcDir;
 
         // Limit handle position within scroll bar
-        if (handle.position()[dir] &lt; 0) {
+        if (handle.position()[dir] < 0) {
             handle.css(dir, 0);
         }
         else if (handle.position()[dir]
@@ -358,26 +331,3 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     }
 
 });
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="juiScrollableDropdown.html">juiScrollableDropdown</a></li><li><a href="juiScrollPane.html">juiScrollPane</a></li><li><a href="juiSplitText.html">juiSplitText</a></li><li><a href="juiBase.html">juiBase</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_create">_create</a></li></ul>
-</nav>
-
-<br clear="both">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Dec 04 2013 17:20:34 GMT-0500 (EST)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>

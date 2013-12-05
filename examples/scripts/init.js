@@ -36,12 +36,12 @@ require.config({
         'es5-shim':             '../bower_components/es5-shim/es5-shim',
         'es5-sham':             '../bower_components/es5-shim/es5-sham',
         'phpjs':                '../bower_components/phpjs/phpjs-shim',
-        'TweenMax':             '../bower_components/gsap/src/uncompressed/TweenMax',
+        'TweenMax':             '../bower_components/greensock/src/minified/TweenMax.min',
 
         'jui-commons':          '../../distro/jui-commons.min',
         'juiBase':              '../../src/js/jquery.juiBase',
         'juiScrollPane':        '../../src/js/ui/jquery.juiScrollPane',
-        'juiSelectPicker':      '../../src/js/ui/jquery.juiSelectPicker2',
+        'juiSelectPicker':      '../../src/js/ui/jquery.juiSelectPicker',
         'juiScrollableDropDown':'../../src/js/ui/jquery.juiScrollableDropDown',
 
         'jquery':       '../bower_components/jquery/jquery',

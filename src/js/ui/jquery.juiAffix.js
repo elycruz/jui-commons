@@ -34,10 +34,10 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             scrollableElm = ops.scrollableElm,
             posFixedSupport = false,
             affixOffset = {
-                top: self.getOptionValue('offset.top'),
-                right: self.getOptionValue('offset.right'),
-                bottom: self.getOptionValue('offset.bottom'),
-                left: self.getOptionValue('offset.left')
+                top: self.getValueFromOptions('offset.top'),
+                right: self.getValueFromOptions('offset.right'),
+                bottom: self.getValueFromOptions('offset.bottom'),
+                left: self.getValueFromOptions('offset.left')
             };
 
         // Add plugin class

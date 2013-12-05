@@ -30,6 +30,7 @@
 
     .options {
         position: absolute;
+        top: 41px;
         width: 100%;
         overflow: hidden;
         max-height: 240px;
@@ -58,7 +59,8 @@
 
     .vertical.scrollbar {
         position: absolute;
-        top: 42px;
+        top: 40px;
+        @include opacity(0);
         height: 240px !important;
         z-index: 99;
     }
