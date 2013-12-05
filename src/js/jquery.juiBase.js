@@ -9,6 +9,9 @@
  * @requires jQuery
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
+ * @todo Resolve issue with non-unique timeline object -
+ * Timeline object seems to be only one instance not new instances on
+ * new calls of the extending plugins.
  */
 $.widget('jui.juiBase', {
 
@@ -18,6 +21,7 @@ $.widget('jui.juiBase', {
      */
     options: {
         defaultTimelineClass: 'TimelineMax',
+        timeline: null,
         ui: {}
     },
 
@@ -256,10 +260,13 @@ $.widget('jui.juiBase', {
      * @returns {TimelineMax|TimelineLite}
      */
     getAnimationTimeline: function () {
-        if (empty(this.timeline)) {
-            this.timeline = new window[this.options.defaultTimelineClass];
+        var timeline = this.options.timeline;
+        if (empty(timeline)) {
+            timeline =
+                this.options.timeline =
+                    new window[this.options.defaultTimelineClass];
         }
-        return this.timeline;
+        return timeline;
     },
 
     /**
@@ -267,9 +274,9 @@ $.widget('jui.juiBase', {
      * @param timeline optional
      * @returns default
      */
-    initAnimationTimeline: function (timeline) {
+    _initAnimationTimeline: function (timeline) {
 
-        timeline = timeline || this.getAnimationTimeline();
+        timeline = !isset(timeline) ? this.getAnimationTimeline() : timeline;
 
         var self = this,
             ops = self.options,

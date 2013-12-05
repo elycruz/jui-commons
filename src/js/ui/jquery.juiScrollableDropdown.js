@@ -70,8 +70,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _create: function () {
         var ops = this.options;
 
-        this.timeline = new TimelineMax();
-
         // Add event class names
         this.element
             .addClass(ops.className)
@@ -80,6 +78,10 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
         // Populate ui elements on this (this.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
+    },
+
+    _init: function () {
+        var ops = this.options;
 
         // Add event listeners
         this._addEventListeners();
@@ -87,7 +89,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         // Set collapsed state
         ops.state = ops.state || ops.states.COLLAPSED;
 
+        // Ensure animation functionality
         this.ensureAnimationFunctionality();
+
+        // Start initial animation
+        ops.state === ops.states.COLLAPSED ? ops.timeline.reverse() :
+            ops.timeline.play();
     },
 
     _getExpandOnClassName: function () {
@@ -117,19 +124,19 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             collapseOnMouseEvent = this._getCollapseOnEventStringName(),
             expandOnMouseEvent = this._getExpandOnEventStringName();
 
-        console.log(self.timeline);
-        // If expand and collapse events are the same (use toggle pattern)
+        console.log(ops.timeline);
 
+        // If expand and collapse events are the same (use toggle pattern)
         if (expandOnMouseEvent === collapseOnMouseEvent) {
             this.element.on(expandOnMouseEvent, function (e) {
                 if (self.options.state === states.COLLAPSED) {
                     self.ensureAnimationFunctionality();
-                    self.timeline.play();
+                    ops.timeline.play();
                     self.options.state = states.EXPANDED;
                 }
                 else {
                     self.ensureAnimationFunctionality();
-                    self.timeline.reverse();
+                    ops.timeline.reverse();
                     self.options.state = states.COLLAPSED;
                 }
             });
@@ -138,13 +145,13 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             // On expand event
             this.element.on(expandOnMouseEvent, function (e) {
                 self.ensureAnimationFunctionality();
-                self.timeline.play();
+                ops.timeline.play();
                 self.options.state = states.EXPANDED;
             })
                 // On collapse event
                 .on(collapseOnMouseEvent, function (e) {
                     self.ensureAnimationFunctionality();
-                    self.timeline.reverse();
+                    ops.timeline.reverse();
                     self.options.state = states.COLLAPSED;
                 });
         }
@@ -176,13 +183,13 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         scrollbar.elm = $('.scrollbar', this.element);
     },
 
-    _initAnimationTimeline: function () {
-        this.initAnimationTimeline(this.timeline);
+    initAnimationTimeline: function () {
+        this._initAnimationTimeline();
     },
 
     _initTimeline: function () {
-        if (empty(this.timeline)) {
-            this._initAnimationTimeline()
+        if (empty(this.options.timeline)) {
+            this.initAnimationTimeline()
         }
     },
 
