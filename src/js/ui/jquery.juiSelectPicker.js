@@ -26,6 +26,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 appendTo: 'wrapperElm',
                 create: true
             },
+            buttonArrowElm: {
+                elm: null,
+                attribs: {
+                    'class': 'arrow'
+                },
+                selector: '> .arrow',
+                html: '<div></div>',
+                appendTo: 'buttonElm',
+                create: true
+            },
             labelElm: {
                 elm: null,
                 attribs: {
@@ -74,6 +84,12 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         if ($('html').hasClass('touch')) {
             return;
         }
+    },
+
+    _init: function () {
+
+        // Timeline
+        this.options.timeline = new TimelineMax({paused: true});
 
         // Hide this element and append new markup beside where it used
         // to be
@@ -81,14 +97,15 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
-    },
 
-    _init: function () {
         // Set button text/label
         this.setLabelText();
 
         // Draw select options from this element onto our element
         this._drawSelectOptions();
+
+        // Init Arrow Animation
+        this._initArrowAnimation();
 
         // Scrollable Drop Down
         this._initScrollableDropDown();
@@ -145,14 +162,20 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _addEventListeners: function () {
         var self = this,
-        ops = this.options;
+        ops = this.options,
+        wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        self.getUiElement('wrapperElm').on('click', 'a[data-value]', function (e) {
+        wrapperElm.on('click', function () {
+            ops.timeline.play();
+        });
+
+        wrapperElm.on('click', 'a[data-value]', function (e) {
 //            e.stopPropagation();
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
+            ops.timeline.reverse();
         });
 
         // On select element change set it's selected item label text
@@ -202,6 +225,15 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         dropDown.juiScrollableDropDown('getAnimationTimeline').seek(0);
 
         scrollbar.elm = $('.scrollbar', this.element);
+    },
+
+    _initArrowAnimation: function () {
+        var self = this,
+            ops = self.options,
+            timeline = ops.timeline,
+            elm = self.getUiElement('buttonArrowElm'),
+            duration = 0.38;
+        timeline.to(elm, duration, {rotation: -180, top: - elm.height() / 2 + 'px'});
     },
 
     destroy: function () {

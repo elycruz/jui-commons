@@ -271,33 +271,45 @@ $.widget('jui.juiBase', {
 
     /**
      * Adds animations to our animation timeline.
-     * @param timeline optional
+     * @param timeline {TimelineLite|TimelineMax} optional
+     * @param animations {array} optional animations array
+     * @param options {object] optional options hash to search on
      * @returns default
      */
-    _initAnimationTimeline: function (timeline) {
+    _initAnimationTimeline: function (timeline, animations, options) {
+        var self = this,
+            ops,
+            i, config, elm, dur, props,
+            _animations;
 
         timeline = !isset(timeline) ? this.getAnimationTimeline() : timeline;
+        options = options  || self.options;
+        animations = animations || null;
 
-        var self = this,
-            ops = self.options,
-            i, config, elm, dur, props,
-            animations;
+        ops = options;
 
         // If default animations, use them
         if (isset(ops.defaultAnimations)
             && ops.defaultAnimations instanceof Array) {
-            animations = ops.defaultAnimations;
+            _animations = ops.defaultAnimations;
         }
 
         // If animations, use them (also override defaults if any)
         if (isset(ops.animations)
             && ops.animations instanceof Array) {
-            animations = isset(animations)
-                ? $.extend(animations, ops.animations) : ops.animations;
+            _animations = isset(animations)
+                ? $.extend(true, _animations, ops.animations) : ops.animations;
         }
 
+        // Set animations variable
+        if (isset(animations)) {
+            animations = $.extend(true, _animations, animations);
+        }
+        else if (isset(_animations)) {
+            animations = _animations;
+        }
         // If no animations, bail
-        if (!isset(animations)) {
+        else {
             return;
         }
 

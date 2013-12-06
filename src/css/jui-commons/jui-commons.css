@@ -31,7 +31,18 @@
 .jui-select-picker .button .label {
   margin: 1em;
 }
-/* line 31, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 29, ../../sass/jui-commons/_jui-select-picker.scss */
+.jui-select-picker .button .arrow {
+  position: relative;
+  float: right;
+  width: 0;
+  height: 0;
+  margin: 10px;
+  border-width: 5px;
+  border-color: black transparent transparent transparent;
+  border-style: solid;
+}
+/* line 41, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options {
   position: absolute;
   top: 41px;
@@ -42,26 +53,26 @@
   background: #fff;
   z-index: 97;
 }
-/* line 42, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 52, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li {
   width: 100%;
   border-top: 1px solid #888;
   border-bottom: 1px solid #888;
 }
-/* line 47, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 57, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li a {
   display: block;
   padding: 10px;
 }
-/* line 51, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 61, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.first {
   border-top: none !important;
 }
-/* line 54, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 64, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.last {
   border-bottom: none;
 }
-/* line 60, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 70, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar {
   position: absolute;
   top: 40px;
@@ -174,24 +185,24 @@
   z-index: 99;
 }
 
-/* line 2, ../../sass/jui-commons/jui-floating-scroll-indicators.scss */
+/* line 2, ../../sass/jui-commons/_jui-floating-scroll-indicators.scss */
 .jui-floating-scroll-indicator > .indicator-wrapper {
   position: absolute;
   right: 20px;
   height: 100%;
   top: 0;
 }
-/* line 7, ../../sass/jui-commons/jui-floating-scroll-indicators.scss */
+/* line 7, ../../sass/jui-commons/_jui-floating-scroll-indicators.scss */
 .jui-floating-scroll-indicator > .indicator-wrapper .indicator {
   position: relative;
   background: #FF0000;
   width: 10px;
   height: 10px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  border-radius: 10px;
 }
 
 /* line 7, ../../sass/jui-commons/jui-commons.scss */

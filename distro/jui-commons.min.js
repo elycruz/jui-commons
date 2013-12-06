@@ -1,4 +1,4 @@
-/*! jui-commons 2013-12-05 */
+/*! jui-commons 2013-12-06 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineMax",
@@ -54,14 +54,18 @@ $.widget("jui.juiBase", {
         return empty(a) && (a = this.options.timeline = new window[this.options.defaultTimelineClass]()), 
         a;
     },
-    _initAnimationTimeline: function(a) {
-        a = isset(a) ? a : this.getAnimationTimeline();
-        var b, c, d, e, f, g, h = this, i = h.options;
-        if (isset(i.defaultAnimations) && i.defaultAnimations instanceof Array && (g = i.defaultAnimations), 
-        isset(i.animations) && i.animations instanceof Array && (g = isset(g) ? $.extend(g, i.animations) : i.animations), 
-        isset(g)) for (b = 0; b < g.length; b += 1) c = g[b], d = h.getUiElement(c.elmAlias), 
-        e = c.duration, f = c.props, isset(c.preInit) && "function" == typeof c.preInit && c.preInit.apply(this), 
-        a[c.type](d, e, f), isset(c.postInit) && "function" == typeof c.postInit && c.postInit.apply(this);
+    _initAnimationTimeline: function(a, b, c) {
+        var d, e, f, g, h, i, j, k = this;
+        if (a = isset(a) ? a : this.getAnimationTimeline(), c = c || k.options, 
+        b = b || null, d = c, isset(d.defaultAnimations) && d.defaultAnimations instanceof Array && (j = d.defaultAnimations), 
+        isset(d.animations) && d.animations instanceof Array && (j = isset(b) ? $.extend(!0, j, d.animations) : d.animations), 
+        isset(b)) b = $.extend(!0, j, b); else {
+            if (!isset(j)) return;
+            b = j;
+        }
+        for (e = 0; e < b.length; e += 1) f = b[e], g = k.getUiElement(f.elmAlias), 
+        h = f.duration, i = f.props, isset(f.preInit) && "function" == typeof f.preInit && f.preInit.apply(this), 
+        a[f.type](g, h, i), isset(f.postInit) && "function" == typeof f.postInit && f.postInit.apply(this);
     },
     getValueFromOptions: function(a, b, c) {
         return this.getValueFromHash(a, this.options, b, c);
@@ -606,6 +610,16 @@ $.widget("jui.juiBase", {
                 appendTo: "wrapperElm",
                 create: !0
             },
+            buttonArrowElm: {
+                elm: null,
+                attribs: {
+                    "class": "arrow"
+                },
+                selector: "> .arrow",
+                html: "<div></div>",
+                appendTo: "buttonElm",
+                create: !0
+            },
             labelElm: {
                 elm: null,
                 attribs: {
@@ -644,12 +658,14 @@ $.widget("jui.juiBase", {
         labelText: ""
     },
     _create: function() {
-        this.options, $("html").hasClass("touch") || (this.element.attr("hidden", "hidden").css("display", "none"), 
-        this._populateUiElementsFromOptions());
+        this.options, $("html").hasClass("touch");
     },
     _init: function() {
-        this.setLabelText(), this._drawSelectOptions(), this._initScrollableDropDown(), 
-        this._addEventListeners();
+        this.options.timeline = new TimelineMax({
+            paused: !0
+        }), this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
+        this.setLabelText(), this._drawSelectOptions(), this._initArrowAnimation(), 
+        this._initScrollableDropDown(), this._addEventListeners();
     },
     _drawSelectOptions: function() {
         var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
@@ -662,10 +678,12 @@ $.widget("jui.juiBase", {
         }), b.append(d);
     },
     _addEventListeners: function() {
-        var a = this;
-        this.options, a.getUiElement("wrapperElm").on("click", "a[data-value]", function(b) {
-            var c = $(b.currentTarget);
-            a.clearSelected(), a.setSelected(c);
+        var a = this, b = this.options, c = a.getUiElement("wrapperElm");
+        c.on("click", function() {
+            b.timeline.play();
+        }), c.on("click", "a[data-value]", function(c) {
+            var d = $(c.currentTarget);
+            a.clearSelected(), a.setSelected(d), b.timeline.reverse();
         }), this.element.on("change", function() {
             var b = $(this);
             isset(b.val()) && a.setSelectedItemLabelText(b.val());
@@ -688,6 +706,13 @@ $.widget("jui.juiBase", {
         }, isset(c.expandOn) && (b.expandOn = c.expandOn), isset(c.collapseOn) && (b.collapseOn = c.collapseOn), 
         a = e.juiScrollableDropDown(b), a.juiScrollableDropDown("getAnimationTimeline").seek(0), 
         d.elm = $(".scrollbar", this.element));
+    },
+    _initArrowAnimation: function() {
+        var a = this, b = a.options, c = b.timeline, d = a.getUiElement("buttonArrowElm"), e = .38;
+        c.to(d, e, {
+            rotation: -180,
+            top: -d.height() / 2 + "px"
+        });
     },
     destroy: function() {
         this.element.removeAttr("hidden"), this._removeCreatedOptions(), this._super();

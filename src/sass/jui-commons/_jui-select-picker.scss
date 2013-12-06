@@ -26,6 +26,16 @@
         .label {
             margin: 1em;
         }
+        .arrow {
+            position: relative;
+            float: right;
+            width: 0;
+            height: 0;
+            margin: 10px;
+            border-width: 5px;
+            border-color: black transparent transparent transparent;
+            border-style: solid;
+        }
     }
 
     .options {

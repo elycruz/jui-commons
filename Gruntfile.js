@@ -95,4 +95,8 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'compass', 'uglify', 'jsdoc']);
 
+    // Development task
+    grunt.registerTask('develop', [
+        'compass', 'uglify', 'connect', 'watch']);
+
 };
