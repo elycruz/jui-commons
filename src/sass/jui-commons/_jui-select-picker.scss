@@ -17,21 +17,28 @@
         position: relative;
         display: border-box;
         width: 100% !important;
-        height: 2em;
+        height: auto;
         background: #fff;
         border: none;
         text-align: left;
         vertical-align: center;
         z-index: 98;
-        .label {
-            margin: 1em;
-        }
+
+        > span,
+        > div,
+        .label,
+        .selected-item-value,
         .arrow {
             position: relative;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .arrow {
+            top: 8px;
             float: right;
             width: 0;
             height: 0;
-            margin: 10px;
             border-width: 5px;
             border-color: black transparent transparent transparent;
             border-style: solid;
@@ -40,7 +47,6 @@
 
     .options {
         position: absolute;
-        top: 41px;
         width: 100% !important;
         overflow: hidden;
         max-height: 240px;

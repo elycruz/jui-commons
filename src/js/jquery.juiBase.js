@@ -296,13 +296,13 @@ $.widget('jui.juiBase', {
 
         // If animations, use them (also override defaults if any)
         if (isset(ops.animations)
-            && ops.animations instanceof Array) {
+            && ops.animations instanceof Array && isset(_animations)) {
             _animations = isset(animations)
                 ? $.extend(true, _animations, ops.animations) : ops.animations;
         }
 
         // Set animations variable
-        if (isset(animations)) {
+        if (isset(animations) && isset(_animations)) {
             animations = $.extend(true, _animations, animations);
         }
         else if (isset(_animations)) {

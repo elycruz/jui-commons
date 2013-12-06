@@ -22,7 +22,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                     'class': 'button'
                 },
                 selector: '> .button',
-                html: '<button></button>',
+                html: '<div></div>',
                 appendTo: 'wrapperElm',
                 create: true
             },
@@ -105,7 +105,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._drawSelectOptions();
 
         // Init Arrow Animation
-        this._initArrowAnimation();
+//        this._initArrowAnimation();
 
         // Scrollable Drop Down
         this._initScrollableDropDown();

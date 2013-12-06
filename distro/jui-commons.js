@@ -58,8 +58,8 @@ $.widget("jui.juiBase", {
         var d, e, f, g, h, i, j, k = this;
         if (a = isset(a) ? a : this.getAnimationTimeline(), c = c || k.options, 
         b = b || null, d = c, isset(d.defaultAnimations) && d.defaultAnimations instanceof Array && (j = d.defaultAnimations), 
-        isset(d.animations) && d.animations instanceof Array && (j = isset(b) ? $.extend(!0, j, d.animations) : d.animations), 
-        isset(b)) b = $.extend(!0, j, b); else {
+        isset(d.animations) && d.animations instanceof Array && isset(j) && (j = isset(b) ? $.extend(!0, j, d.animations) : d.animations), 
+        isset(b) && isset(j)) b = $.extend(!0, j, b); else {
             if (!isset(j)) return;
             b = j;
         }
@@ -606,7 +606,7 @@ $.widget("jui.juiBase", {
                     "class": "button"
                 },
                 selector: "> .button",
-                html: "<button></button>",
+                html: "<div></div>",
                 appendTo: "wrapperElm",
                 create: !0
             },
@@ -664,8 +664,8 @@ $.widget("jui.juiBase", {
         this.options.timeline = new TimelineMax({
             paused: !0
         }), this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
-        this.setLabelText(), this._drawSelectOptions(), this._initArrowAnimation(), 
-        this._initScrollableDropDown(), this._addEventListeners();
+        this.setLabelText(), this._drawSelectOptions(), this._initScrollableDropDown(), 
+        this._addEventListeners();
     },
     _drawSelectOptions: function() {
         var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
