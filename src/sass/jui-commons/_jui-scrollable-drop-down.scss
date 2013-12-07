@@ -53,8 +53,15 @@
     .vertical.scrollbar {
         position: absolute;
         top: 40px;
-        height: 240px;
+        right: 10px;
+        width: 8px;
+        height: 220px;
         @include opacity(0);
+        @include border-radius(8px);
+        .handle {
+            width: 8px;
+            @include border-radius(8px);
+        }
         z-index: 99;
     }
 }

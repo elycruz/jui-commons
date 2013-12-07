@@ -22,6 +22,7 @@
         border: none;
         text-align: left;
         vertical-align: center;
+        cursor: pointer;
         z-index: 98;
 
         > span,
@@ -55,9 +56,11 @@
         z-index: 97;
 
         ul {
+            width: 85%;
+            margin: 5%;
             li {
                 width: 100%;
-                border-top: 1px solid #888;
+//                border-top: 1px solid #888;
                 border-bottom: 1px solid #888;
             }
             li a {
@@ -76,8 +79,15 @@
     .vertical.scrollbar {
         position: absolute;
         top: 40px;
+        right: 10px;
+        width: 8px;
+        height: 230px;
         @include opacity(0);
-        height: 240px !important;
+        @include border-radius(8px);
         z-index: 99;
+        .handle {
+            width: 8px;
+            @include border-radius(8px);
+        }
     }
 }

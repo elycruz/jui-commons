@@ -69,6 +69,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 appendTo: 'wrapperElm',
                 create: true,
                 optionSelectedClassName: 'selected'
+            },
+            footerElm: {
+                elm: null,
+                attribs: {
+                    'class': 'footer'
+                },
+                selector: '> .footer',
+                html: '<div></div>',
+                create: true,
+                appendTo: 'wrapperElm'
             }
         },
 

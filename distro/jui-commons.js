@@ -134,8 +134,11 @@ $.widget("jui.juiBase", {
             left: a.getValueFromOptions("offset.left")
         };
         c.addClass(b["class"]), f.bind("scroll resize orientationchange load", function() {
-            var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
-            f.width() + g.right, d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
+            {
+                var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
+                f.width() + g.right;
+            }
+            d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
                 position: "fixed",
                 top: g.top,
                 bottom: "auto"
@@ -200,7 +203,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 offset: {
                     top: (b + 1) * d.height(),
@@ -653,12 +656,23 @@ $.widget("jui.juiBase", {
                 appendTo: "wrapperElm",
                 create: !0,
                 optionSelectedClassName: "selected"
+            },
+            footerElm: {
+                elm: null,
+                attribs: {
+                    "class": "footer"
+                },
+                selector: "> .footer",
+                html: "<div></div>",
+                create: !0,
+                appendTo: "wrapperElm"
             }
         },
         labelText: ""
     },
     _create: function() {
-        this.options, $("html").hasClass("touch");
+        this.options;
+        $("html").hasClass("touch");
     },
     _init: function() {
         this.options.timeline = new TimelineMax({
