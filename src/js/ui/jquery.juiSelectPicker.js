@@ -5,6 +5,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     options: {
 
+        animation: {
+            duration: 0.30
+        },
+
         ui: {
             wrapperElm: {
                 elm: null,
@@ -14,7 +18,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 appendTo: "after this.element",
                 selector: '.jui-select-picker',
                 html: '<div></div>',
-                create: true
+                create: true,
+                timeline: new TimelineMax()
             },
             buttonElm: {
                 elm: null,
@@ -59,26 +64,26 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 appendTo: 'buttonElm',
                 create: true
             },
+            bodyElm: {
+                elm: null,
+                attribs: {
+                    'class': 'body'
+                },
+                selector: '> .body',
+                html: '<div></div>',
+                appendTo: 'wrapperElm',
+                create: true
+            },
             optionsElm: {
                 elm: null,
                 attribs: {
                     'class': 'options'
                 },
-                selector: '> .options',
+                selector: '.options',
                 html: '<div></div>',
-                appendTo: 'wrapperElm',
+                appendTo: 'bodyElm',
                 create: true,
                 optionSelectedClassName: 'selected'
-            },
-            footerElm: {
-                elm: null,
-                attribs: {
-                    'class': 'footer'
-                },
-                selector: '> .footer',
-                html: '<div></div>',
-                create: true,
-                appendTo: 'wrapperElm'
             }
         },
 
@@ -113,9 +118,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Draw select options from this element onto our element
         this._drawSelectOptions();
-
-        // Init Arrow Animation
-//        this._initArrowAnimation();
 
         // Scrollable Drop Down
         this._initScrollableDropDown();
@@ -172,12 +174,21 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _addEventListeners: function () {
         var self = this,
-        ops = this.options,
-        wrapperElm = self.getUiElement('wrapperElm');
+            ops = this.options,
+            wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        wrapperElm.on('click', function () {
-            ops.timeline.play();
+        wrapperElm.on('mouseup', function () {
+            var collapsed = wrapperElm
+                .juiScrollableDropDown('getState')
+                .indexOf('collapsed') > -1 ? true : false;
+            console.log('hello2');
+            if (collapsed) {
+                self.playAnimation();
+            }
+            else {
+                self.reverseAnimation();
+            }
         });
 
         wrapperElm.on('click', 'a[data-value]', function (e) {
@@ -202,18 +213,17 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     _initScrollableDropDown: function () {
-        var ops = this.options,
-            scrollbar = this._namespace('ui.scrollbar'),
-            wrapperElm = this.getUiElement('wrapperElm'),
-            dropDown,
-            dropDownOptions;
+        var self = this,
+            ops = self.options,
+            wrapperElm = self.getUiElement('wrapperElm'),
+            contentElm = self.getUiElement('optionsElm'),
+            duration = ops.animation.duration,
+            scrollbarElm,
+            timeline,
+            dropDown, dropDownOptions;
 
-        if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
-            return;
-        }
-
+        // Scrollable drop down options
         dropDownOptions = {
-//            timeline: new TimelineMax(),
             state: 'collapsed',
             ui: {
                 contentElm: {
@@ -223,27 +233,35 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 }
             }};
 
+        // Set expands on event value
         if (isset(ops.expandOn)) {
             dropDownOptions.expandOn = ops.expandOn;
         }
 
+        // Set collapses on event value
         if (isset(ops.collapseOn)) {
             dropDownOptions.collapseOn = ops.collapseOn;
         }
 
+        // Apply scrollable drop down on wrapper element
         dropDown = wrapperElm.juiScrollableDropDown(dropDownOptions);
-        dropDown.juiScrollableDropDown('getAnimationTimeline').seek(0);
 
-        scrollbar.elm = $('.scrollbar', this.element);
-    },
+        // Get the dropdowns timeline
+        timeline = dropDown.juiScrollableDropDown('getAnimationTimeline');
+        timeline.seek(0); timeline.clear(); timeline.pause();
 
-    _initArrowAnimation: function () {
-        var self = this,
-            ops = self.options,
-            timeline = ops.timeline,
-            elm = self.getUiElement('buttonArrowElm'),
-            duration = 0.38;
-        timeline.to(elm, duration, {rotation: -180, top: - elm.height() / 2 + 'px'});
+        // Get scrollbar element
+        scrollbarElm = $('.vertical.scrollbar', wrapperElm);
+
+        // Supply new tweens
+        [
+            TweenLite.to(wrapperElm, duration, {height: wrapperElm.css('max-height')}),
+            TweenLite.to(contentElm, duration, {height: contentElm.css('max-height'), autoAlpha: 1, delay: - 0.30}),
+            TweenLite.to(scrollbarElm, duration, {autoAlpha: 1, delay: - 0.20})
+        ]
+            .forEach(function (tween) {
+                timeline.add(tween);
+        });
     },
 
     destroy: function () {
@@ -305,6 +323,18 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this.getUiElement('optionsElm')
             .find('> ul > li').removeClass(
                 this.options.ui.optionsElm.optionSelectedClassName);
+    },
+
+    playAnimation: function () {
+        var self = this,
+            ops = self.options;
+        ops.timeline.play();
+    },
+
+    reverseAnimation: function () {
+        var self = this,
+            ops = self.options;
+        ops.timeline.reverse();
     }
 
 });

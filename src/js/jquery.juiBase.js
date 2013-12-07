@@ -20,7 +20,7 @@ $.widget('jui.juiBase', {
      * @type {Object}
      */
     options: {
-        defaultTimelineClass: 'TimelineMax',
+        defaultTimelineClass: 'TimelineLite',
         timeline: null,
         ui: {}
     },

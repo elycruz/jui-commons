@@ -1,7 +1,7 @@
-/*! jui-commons 2013-12-06 */
+/*! jui-commons 2013-12-07 */
 $.widget("jui.juiBase", {
     options: {
-        defaultTimelineClass: "TimelineMax",
+        defaultTimelineClass: "TimelineLite",
         timeline: null,
         ui: {}
     },
@@ -491,8 +491,7 @@ $.widget("jui.juiBase", {
                     "class": "content"
                 },
                 selector: "> .content",
-                html: "<div></div>",
-                appendTo: "this.element"
+                html: "<div></div>"
             }
         },
         defaultAnimations: [ {
@@ -589,9 +588,15 @@ $.widget("jui.juiBase", {
     },
     refreshOptions: function() {
         this._removeEventListeners(), this._addEventListeners();
+    },
+    getState: function() {
+        return this.options.state;
     }
 }), $.widget("jui.juiSelectPicker", $.jui.juiBase, {
     options: {
+        animation: {
+            duration: .3
+        },
         ui: {
             wrapperElm: {
                 elm: null,
@@ -601,7 +606,8 @@ $.widget("jui.juiBase", {
                 appendTo: "after this.element",
                 selector: ".jui-select-picker",
                 html: "<div></div>",
-                create: !0
+                create: !0,
+                timeline: new TimelineMax()
             },
             buttonElm: {
                 elm: null,
@@ -646,26 +652,26 @@ $.widget("jui.juiBase", {
                 appendTo: "buttonElm",
                 create: !0
             },
+            bodyElm: {
+                elm: null,
+                attribs: {
+                    "class": "body"
+                },
+                selector: "> .body",
+                html: "<div></div>",
+                appendTo: "wrapperElm",
+                create: !0
+            },
             optionsElm: {
                 elm: null,
                 attribs: {
                     "class": "options"
                 },
-                selector: "> .options",
+                selector: ".options",
                 html: "<div></div>",
-                appendTo: "wrapperElm",
+                appendTo: "bodyElm",
                 create: !0,
                 optionSelectedClassName: "selected"
-            },
-            footerElm: {
-                elm: null,
-                attribs: {
-                    "class": "footer"
-                },
-                selector: "> .footer",
-                html: "<div></div>",
-                create: !0,
-                appendTo: "wrapperElm"
             }
         },
         labelText: ""
@@ -693,8 +699,9 @@ $.widget("jui.juiBase", {
     },
     _addEventListeners: function() {
         var a = this, b = this.options, c = a.getUiElement("wrapperElm");
-        c.on("click", function() {
-            b.timeline.play();
+        c.on("mouseup", function() {
+            var b = c.juiScrollableDropDown("getState").indexOf("collapsed") > -1 ? !0 : !1;
+            console.log("hello2"), b ? a.playAnimation() : a.reverseAnimation();
         }), c.on("click", "a[data-value]", function(c) {
             var d = $(c.currentTarget);
             a.clearSelected(), a.setSelected(d), b.timeline.reverse();
@@ -707,25 +714,29 @@ $.widget("jui.juiBase", {
         this.getUiElement("optionsElm").find("ul").remove();
     },
     _initScrollableDropDown: function() {
-        var a, b, c = this.options, d = this._namespace("ui.scrollbar"), e = this.getUiElement("wrapperElm");
-        !empty(d.elm) && d.elm.length > 0 || (b = {
+        var a, b, c, d, e = this, f = e.options, g = e.getUiElement("wrapperElm"), h = e.getUiElement("optionsElm"), i = f.animation.duration;
+        d = {
             state: "collapsed",
             ui: {
                 contentElm: {
                     elm: this.getUiElement("optionsElm"),
-                    attribs: c.ui.optionsElm.attribs,
-                    selector: c.ui.optionsElm.selector + ""
+                    attribs: f.ui.optionsElm.attribs,
+                    selector: f.ui.optionsElm.selector + ""
                 }
             }
-        }, isset(c.expandOn) && (b.expandOn = c.expandOn), isset(c.collapseOn) && (b.collapseOn = c.collapseOn), 
-        a = e.juiScrollableDropDown(b), a.juiScrollableDropDown("getAnimationTimeline").seek(0), 
-        d.elm = $(".scrollbar", this.element));
-    },
-    _initArrowAnimation: function() {
-        var a = this, b = a.options, c = b.timeline, d = a.getUiElement("buttonArrowElm"), e = .38;
-        c.to(d, e, {
-            rotation: -180,
-            top: -d.height() / 2 + "px"
+        }, isset(f.expandOn) && (d.expandOn = f.expandOn), isset(f.collapseOn) && (d.collapseOn = f.collapseOn), 
+        c = g.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
+        b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", g), [ TweenLite.to(g, i, {
+            height: g.css("max-height")
+        }), TweenLite.to(h, i, {
+            height: h.css("max-height"),
+            autoAlpha: 1,
+            delay: -.3
+        }), TweenLite.to(a, i, {
+            autoAlpha: 1,
+            delay: -.2
+        }) ].forEach(function(a) {
+            b.add(a);
         });
     },
     destroy: function() {
@@ -759,5 +770,13 @@ $.widget("jui.juiBase", {
     },
     clearSelected: function() {
         this.getUiElement("optionsElm").find("> ul > li").removeClass(this.options.ui.optionsElm.optionSelectedClassName);
+    },
+    playAnimation: function() {
+        var a = this, b = a.options;
+        b.timeline.play();
+    },
+    reverseAnimation: function() {
+        var a = this, b = a.options;
+        b.timeline.reverse();
     }
 });

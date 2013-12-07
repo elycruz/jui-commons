@@ -21,13 +21,11 @@
         text-align: left;
         z-index: 98;
     }
-
     .content {
         position: absolute;
         width: 100% !important;
         overflow: hidden;
-        max-height: 240px;
-        outline: solid #000 1px;
+        max-height: 220px;
         @include opacity(1);
         background: #fff;
         z-index: 97;
@@ -52,7 +50,7 @@
 
     .vertical.scrollbar {
         position: absolute;
-        top: 40px;
+        top: auto !important;
         right: 10px;
         width: 8px;
         height: 220px;
@@ -64,4 +62,4 @@
         }
         z-index: 99;
     }
-}
+    }

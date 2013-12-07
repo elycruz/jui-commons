@@ -7,11 +7,11 @@
     }
 
     position: relative;
-    outline: solid #888 1px;
-    background: #fff;
     width: 320px;
     max-height: 280px;
     color: #888;
+    background: #fff;
+    outline: solid #888 1px;
 
     .button {
         position: relative;
@@ -21,7 +21,6 @@
         background: #fff;
         border: none;
         text-align: left;
-        vertical-align: center;
         cursor: pointer;
         z-index: 98;
 
@@ -46,26 +45,44 @@
         }
     }
 
+    .body {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
     .options {
         position: absolute;
         width: 100% !important;
         overflow: hidden;
-        max-height: 240px;
-        outline: solid #888 1px;
+        max-height: 220px;
         background: #fff;
         z-index: 97;
+        @include opacity(0);
 
         ul {
             width: 85%;
-            margin: 5%;
+            margin: 0 5%;
             li {
                 width: 100%;
-//                border-top: 1px solid #888;
-                border-bottom: 1px solid #888;
+                border-bottom: 1px solid #ccc;
+                @include single-transition(background, 0.16s, linear);
             }
             li a {
                 display: block;
                 padding: 10px;
+                text-decoration: none;
+                @include single-transition(background, 0.16s, linear);
+            }
+            li a:hover {
+                background: #ddd;
+            }
+            li a:active,
+            li a.selected,
+            li a.active,
+            li.selected,
+            li.active {
+                background: #ccc;
             }
             li.first {
                 border-top: none !important;
@@ -78,13 +95,14 @@
 
     .vertical.scrollbar {
         position: absolute;
-        top: 40px;
+        top: auto !important;
         right: 10px;
         width: 8px;
-        height: 230px;
+        height: 220px;
         @include opacity(0);
         @include border-radius(8px);
         z-index: 99;
+
         .handle {
             width: 8px;
             @include border-radius(8px);

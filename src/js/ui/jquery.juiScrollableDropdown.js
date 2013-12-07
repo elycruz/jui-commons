@@ -27,8 +27,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                     'class': 'content'
                 },
                 selector: '> .content',
-                html: '<div></div>',
-                appendTo: 'this.element'
+                html: '<div></div>'
             }
         },
 
@@ -207,6 +206,10 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     refreshOptions: function () {
         this._removeEventListeners();
         this._addEventListeners();
+    }
+
+    , getState: function () {
+        return this.options.state;
     }
 
 });
