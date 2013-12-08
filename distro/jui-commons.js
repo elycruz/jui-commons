@@ -105,10 +105,78 @@ $.widget("jui.juiBase", {
     getOriginalText: function() {
         return this.options.originalText;
     }
+}), $.widget("jui.juiAbstractPaginator", $.jui.juiBase, {
+    options: {
+        ui: {
+            itemsContainer: {
+                selector: "> .items"
+            },
+            items: {
+                elm: null,
+                selector: "> .items > .item",
+                firstInRange: 0,
+                lastInRange: 0,
+                perPage: 0
+            }
+        },
+        pages: {
+            prev: 0,
+            pointer: 0,
+            next: 0,
+            last: 0,
+            length: 0,
+            direction: 1
+        },
+        onGotoPageNum: null,
+        skipPagesCalculation: !1,
+        debug_output: "",
+        debug: !0
+    },
+    _create: function() {
+        this._gotoPageNum(this.options.pages.pointer);
+    },
+    _nextPage: function() {
+        var a = this.options;
+        a.pages.pointer_direction = 1, a.pages.pointer < a.pages.length - 1 ? a.pages.pointer += 1 : a.pages.pointer = 0, 
+        this._gotoPageNum(a.pages.pointer), this.element.trigger(this.widgetName + ":nextPage", {
+            pointer: a.pages.pointer
+        });
+    },
+    _prevPage: function() {
+        var a = this.options;
+        a.pages.pointer > 0 ? a.pages.pointer -= 1 : a.pages.pointer = a.pages.length - 1, 
+        a.pages.pointer_direction = -1, this._gotoPageNum(a.pages.pointer), this.element.trigger(this.widgetName + ":prevPage", {
+            pointer: a.pages.pointer
+        });
+    },
+    _gotoPageNum: function(a) {
+        var b = this.options;
+        b.pages.prev = a - 1, b.pages.next = a + 1, a > b.pages.length - 1 && (a = b.pages.length - 1), 
+        0 > a && (a = 0), b.pages.pointer = a, null !== b.onGotoPageNum && "function" == typeof b.onGotoPageNum && b.onGotoPageNum.apply(this), 
+        this.element.trigger(this.widgetName + ":gotoPageNum", {
+            pointer: a
+        });
+    },
+    _calculateNumberOfPages: function(a) {
+        var b, c = a || this.options, d = this.getItems();
+        b = this.getValueFromHash("ui.items.perPage", c), c.pages.length = Math.ceil(d.length / b), 
+        c.pages.length = 0/0 !== c.pages.length ? c.pages.length : 0, this.element.trigger(this.widgetName + ":numbersCalculated", {
+            pointer: c.pages.pointer
+        });
+    },
+    getItems: function() {
+        return this.getUiElement("items");
+    },
+    getItemsContainer: function() {
+        return this.getUiElement("itemsContainer");
+    },
+    getPointer: function() {
+        return this.options.pages.pointer;
+    }
 }), $.widget("jui.juiAffix", $.jui.juiBase, {
     options: {
         "class": "jui-afix",
-        scrollableElm: $(window),
+        scrollableElm: $("body, html"),
         affixVertically: !0,
         affixHorizontally: !1,
         offset: {
@@ -149,6 +217,104 @@ $.widget("jui.juiBase", {
                 bottom: -g.bottom
             }));
         }), f.scroll();
+    }
+}), $.widget("jui.juiBasicPaginator", $.jui.juiAbstractPaginator, {
+    options: {
+        template: null,
+        className: "jui-basic-paginator",
+        ui: {
+            firstBtn: {
+                elm: null,
+                selector: "> .first-btn.btn",
+                attribs: {
+                    "class": "first-btn btn",
+                    href: "#"
+                },
+                appendTo: "this.element",
+                enabled: !0,
+                html: "<a>&#124;&lt; First</a>",
+                create: !0
+            },
+            prevBtn: {
+                elm: null,
+                selector: "> .prev-btn.btn",
+                attribs: {
+                    "class": "prev-btn btn",
+                    href: "#"
+                },
+                appendTo: "this.element",
+                enabled: !0,
+                html: "<a>&lt;&lt; Prev</a>",
+                create: !0
+            },
+            nextBtn: {
+                elm: null,
+                selector: "> .next-btn.btn",
+                attribs: {
+                    "class": "next-btn btn",
+                    href: "#"
+                },
+                appendTo: "this.element",
+                enabled: !0,
+                html: "<a>Next &gt;&gt;</a>",
+                create: !0
+            },
+            lastBtn: {
+                elm: null,
+                selector: "> .last-btn.btn",
+                attribs: {
+                    "class": "last-btn btn",
+                    href: "#"
+                },
+                appendTo: "this.element",
+                enabled: !0,
+                html: "<a>Last &gt;&#124;</a>",
+                create: !0
+            }
+        }
+    },
+    _create: function() {
+        var a = this, b = a.options;
+        "string" == typeof b.className && b.className.length > 0 && a.element.addClass(b.className), 
+        "string" == typeof b.template && b.template.length > 0 && a.element.append(b.template), 
+        a._populateUiElementsFromOptions(b), a._addEventListeners(), empty(b.skipPagesCalculation) && a._calculateNumberOfPages(b), 
+        a._super();
+    },
+    _addEventListeners: function() {
+        var a = this;
+        a.getFirstBtnElm().on("click", function(b) {
+            b.preventDefault(), a.firstPage();
+        }), a.getNextBtnElm().on("click", function(b) {
+            b.preventDefault(), a.nextPage();
+        }), a.getPrevBtnElm().on("click", function(b) {
+            b.preventDefault(), a.prevPage();
+        }), a.getLastBtnElm().on("click", function(b) {
+            b.preventDefault(), a.lastPage();
+        });
+    },
+    firstPage: function() {
+        this._gotoPageNum(0), this.element.trigger(this.widgetName + ":firstPage");
+    },
+    prevPage: function() {
+        this._prevPage(), this.element.trigger(this.widgetName + ":prevPage", this.options.pages);
+    },
+    nextPage: function() {
+        this._nextPage(), this.element.trigger(this.widgetName + ":nextPage", this.options.pages);
+    },
+    lastPage: function() {
+        this._gotoPageNum(this.options.pages.length - 1), this.element.trigger(this.widgetName + ":lastPage");
+    },
+    getFirstBtnElm: function() {
+        return this.getUiElement("firstBtn");
+    },
+    getPrevBtnElm: function() {
+        return this.getUiElement("prevBtn");
+    },
+    getNextBtnElm: function() {
+        return this.getUiElement("nextBtn");
+    },
+    getLastBtnElm: function() {
+        return this.getUiElement("lastBtn");
     }
 }), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
     options: {
@@ -217,135 +383,60 @@ $.widget("jui.juiBase", {
             });
         }));
     }
-}), $.widget("jui.paginator", $.jui.juiBase, {
+}), $.widget("jui.juiPaginatorWithTextField", $.jui.juiBasicPaginator, {
     options: {
-        items: {
-            elm: null,
-            selector: "> .items > .item",
-            firstInRange: 0,
-            lastInRange: 0,
-            perPage: 0
-        },
-        pages: {
-            prev: 0,
-            pointer: 0,
-            next: 0,
-            last: 0,
-            length: 0,
-            direction: 1
-        },
-        eventsPrefix: "jui.paginator",
-        onGotoPageNum: null,
-        debug_output: "",
-        debug: !0
+        template: '<a href="#" class="first-btn btn">&#124;&lt; First</a><a href="#" class="prev-btn btn">&lt; Prev</a><input type="text" size="4" class="text-field btn" /><a href="#" class="next-btn btn">Next &gt;</a><a href="#" class="last-btn btn">Last &gt;&#124;</a>',
+        className: "jui-paginator-with-text-field jui-basic-paginator",
+        ui: {
+            items: {
+                elm: null,
+                selector: "> .items > .item",
+                perPage: 12
+            },
+            textField: {
+                elm: null,
+                selector: "> .text-field",
+                enabled: !0
+            },
+            firstBtn: {
+                create: !1
+            },
+            prevBtn: {
+                create: !1
+            },
+            nextBtn: {
+                create: !1
+            },
+            lastBtn: {
+                create: !1
+            }
+        }
     },
     _create: function() {
-        this._gotoPageNum(this.options.pages.pointer);
+        {
+            var a = this;
+            a.options;
+        }
+        a.element.addClass(a.options.className), a._super();
     },
-    _nextPage: function() {
-        var a = this.options;
-        a.pages.pointer_direction = 1, a.pages.pointer < a.pages.length - 1 ? a.pages.pointer += 1 : a.pages.pointer = 0, 
-        this._gotoPageNum(a.pages.pointer);
+    _addEventListeners: function() {
+        var a = this, b = a.options, c = a.getUiElement("textField");
+        a.element.on("juiPaginatorWithTextField:gotoPageNum", function(a, b) {
+            parseInt(c.val(), 10) !== parseInt(b.pointer, 10) + 1 && c.val(b.pointer + 1);
+        }), a.getTextFieldElm().bind("keyup", function(c) {
+            var d = ($(this), {});
+            if (13 == c.keyCode) {
+                var e = $(this), f = e.val();
+                /\d+/.test(f) ? (f - 1 > b.pages.length ? (console.log("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page."), 
+                a._gotoPageNum(b.pages.length)) : 0 > f - 1 && (console.log("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page."), 
+                a._gotoPageNum(0)), a._gotoPageNum(f - 1)) : d.messages = [ "Only numbers are allowed in the paginator textfield." ], 
+                "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
+                b.ui.textField.callback(d));
+            }
+        }), a._super();
     },
-    _prevPage: function() {
-        var a = this.options;
-        a.pages.pointer > 0 ? a.pages.pointer -= 1 : a.pages.pointer = a.pages.length - 1, 
-        a.pages.pointer_direction = -1, this._gotoPageNum(a.pages.pointer);
-    },
-    _gotoPageNum: function(a) {
-        var b = this.options;
-        b.pages.prev = a - 1, b.pages.next = a + 1, b.pages.pointer = a, this.element.trigger(b.eventsPrefix + ":gotoPageNum", {
-            pointer: a
-        }), null !== b.onGotoPageNum && "function" == typeof b.onGotoPageNum && b.onGotoPageNum.call(this, {
-            pointer: a
-        });
-    },
-    _calculateNumberOfPages: function() {
-        var a, b = this.options, c = this.getItems();
-        a = "function" == typeof b.items.perPage ? a = b.items.perPage.apply(this) : b.items.PerPage, 
-        b.pages.length = Math.ceil(c.length / a), b.pages.length = 0/0 !== b.pages.length ? b.pages.length : 0;
-    },
-    getItems: function() {
-        return this._getElementFromOptions("items");
-    },
-    getItemsContainer: function() {
-        return this._getElementFromOptions("itemsContainer");
-    },
-    getPointer: function() {
-        return this.options.pages.pointer;
-    }
-}), $.widget("jui.paginatorWithTextField", $.jui.paginator, {
-    options: {
-        pages: {
-            selector: null,
-            length: 100
-        },
-        items: {
-            elm: null,
-            selector: "> .items > .item",
-            perPage: 1
-        },
-        firstBtn: {
-            elm: null,
-            selector: "> .controls > .first-btn",
-            enabled: !0,
-            html: ""
-        },
-        prevBtn: {
-            elm: null,
-            selector: "> .controls > .prev-btn",
-            enabled: !0,
-            html: ""
-        },
-        textField: {
-            elm: null,
-            selector: "> .controls > .text-field",
-            enabled: !0,
-            html: ""
-        },
-        nextBtn: {
-            elm: null,
-            selector: "> .controls > .next-btn",
-            enabled: !0,
-            html: ""
-        },
-        lastBtn: {
-            elm: null,
-            selector: "> .controls > .last-btn",
-            enabled: !0,
-            html: ""
-        },
-        eventsPrefix: "jui.paginatorWithTextField"
-    },
-    _create: function() {
-        this._super();
-    },
-    firstPage: function() {
-        this._gotoPageNum(0), console.log("Page: " + this.getPointer());
-    },
-    prevPage: function() {
-        this._prevPage(), console.log("Page: " + this.getPointer());
-    },
-    nextPage: function() {
-        this._nextPage(), console.log("Page: " + this.getPointer());
-    },
-    lastPage: function() {
-        this._gotoPageNum(this.options.pages.length - 1), console.log("Page: " + this.getPointer());
-    },
-    getFirstBtn: function() {
-        return this._getElementFromOptions("firstBtn");
-    },
-    getPrevBtn: function() {
-        return this._getElementFromOptions("prevBtn");
-    },
-    getNextBtn: function() {
-        return this._getElementFromOptions("nextBtn");
-    },
-    getLastBtn: function() {
-        return this._getElementFromOptions("lastBtn");
-    },
-    getTextField: function() {
-        return this._getElementFromOptions("textField");
+    getTextFieldElm: function() {
+        return this.getUiElement("textField");
     }
 }), $.widget("jui.juiScrollPane", $.jui.juiBase, {
     options: {
@@ -487,11 +578,7 @@ $.widget("jui.juiBase", {
         ui: {
             contentElm: {
                 elm: null,
-                attribs: {
-                    "class": "content"
-                },
-                selector: "> .content",
-                html: "<div></div>"
+                selector: "> .content"
             }
         },
         defaultAnimations: [ {

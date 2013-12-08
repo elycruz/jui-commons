@@ -23,11 +23,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         ui: {
             contentElm: {
                 elm: null,
-                attribs: {
-                    'class': 'content'
-                },
-                selector: '> .content',
-                html: '<div></div>'
+                selector: '> .content'
             }
         },
 

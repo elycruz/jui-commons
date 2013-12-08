@@ -1,0 +1,35 @@
+.jui-paginators-example {
+
+    .content-pane {
+        position: relative;
+        border: 1px solid #888;
+        width: 320px;
+        height: 240px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .items {
+        position: relative;
+        width: 320px;
+        height: 240px;
+        overflow: hidden;
+
+        .item {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin: 10px;
+            outline: #000 solid 3px;
+            font-weight: bold;
+            float: left;
+            background: #ffff00;
+
+            span {
+                display: inline-block;
+                font-size: 30px;
+                text-align: center;
+            }
+        }
+    }
+
+}

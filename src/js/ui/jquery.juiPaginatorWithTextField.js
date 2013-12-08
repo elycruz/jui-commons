@@ -5,89 +5,127 @@
  * Time: 1:15 AM
  * To change this template use File | Settings | File Templates.
  */
-$.widget('jui.paginatorWithTextField', $.jui.paginator, {
+
+$.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
+
+    // Options
     options: {
-        pages: {
-            selector: null,
-            length: 100
-        },
-        items: {
-            elm: null,
-            selector: '> .items > .item',
-            perPage: 1
-        },
-        firstBtn: {
-            elm: null,
-            selector: '> .controls > .first-btn',
-            enabled: true,
-            html: ''
-        },
-        prevBtn: {
-            elm: null,
-            selector: '> .controls > .prev-btn',
-            enabled: true,
-            html: ''
-        },
-        textField: {
-            elm: null,
-            selector: '> .controls > .text-field',
-            enabled: true,
-            html: ''
-        },
-        nextBtn: {
-            elm: null,
-            selector: '> .controls > .next-btn',
-            enabled: true,
-            html: ''
-        },
-        lastBtn: {
-            elm: null,
-            selector: '> .controls > .last-btn',
-            enabled: true,
-            html: ''
-        },
-        eventsPrefix: 'jui.paginatorWithTextField'
-    },
-    _create: function () {
-        // Determine number of pages
-        this._super();
+        template:
+            '<a href="#" class="first-btn btn">&#124;&lt; First</a>' +
+            '<a href="#" class="prev-btn btn">&lt; Prev</a>' +
+            '<input type="text" size="4" class="text-field btn" />' +
+            '<a href="#" class="next-btn btn">Next &gt;</a>' +
+            '<a href="#" class="last-btn btn">Last &gt;&#124;</a>',
+
+        className: 'jui-paginator-with-text-field jui-basic-paginator',
+
+        ui: {
+            items: {
+                elm: null,
+                selector: '> .items > .item',
+                perPage: 12
+            },
+            textField: {
+                elm: null,
+                selector: '> .text-field',
+                enabled: true
+            },
+            firstBtn: {
+                create: false
+            },
+            prevBtn: {
+                create: false
+            },
+            nextBtn: {
+                create: false
+            },
+            lastBtn: {
+                create: false
+            }
+        }
     },
 
-    // Actions
-    firstPage: function () {
-        this._gotoPageNum(0);
-        console.log('Page: ' + this.getPointer());
+    // Creation
+    _create: function () {
+        var self = this,
+            ops = self.options;
+        self.element.addClass(self.options.className);
+        // Call parent class' _create method
+        self._super();
     },
-    prevPage: function () {
-        this._prevPage();
-        console.log('Page: ' + this.getPointer());
-    },
-    nextPage: function () {
-        this._nextPage();
-        console.log('Page: ' + this.getPointer());
-    },
-    lastPage: function () {
-        this._gotoPageNum(this.options.pages.length - 1);
-        console.log('Page: ' + this.getPointer());
+
+    // ========================================================
+    // Private
+    // ========================================================
+    _addEventListeners: function () {
+        var self = this,
+            ops = self.options,
+            textFieldElm = self.getUiElement('textField');
+
+        // Listen to calls on gotoPageNum and set the text
+        self.element.on('juiPaginatorWithTextField:gotoPageNum', function (e, data) {
+            if (parseInt(textFieldElm.val(), 10)
+                !== parseInt(data.pointer, 10) + 1) {
+                    textFieldElm.val(data.pointer + 1);
+            }
+        });
+
+        // Text Field Element
+        self.getTextFieldElm().bind('keyup', function (e) {
+            var o = $(this), outgoing = {};
+
+            // If the enter key was not pressed bail
+            if (e.keyCode != 13) {
+                return;
+            }
+
+            // Prelims
+            var field = $(this), value = field.val();
+
+            if (/\d+/.test(value)) {
+                // goto page number
+                if ((value - 1) > ops.pages.length) {
+                    console.log('Range Exception: Paginator value entered is ' +
+                        'out of range.  Value entered: ' + value + '\n\n' +
+                        'proceeding to last page.');
+
+                    // Proceed to greates page number
+                    self._gotoPageNum(ops.pages.length);
+                }
+                else if ((value - 1) < 0) {
+                    console.log('Range Exception: Paginator value entered is ' +
+                        'out of range.  Value entered: ' + value + '\n\n' +
+                        'Proceeding to first page.');
+
+                    // Proceed to first page
+                    self._gotoPageNum(0);
+                }
+
+                // Proceed to passed in page number
+                self._gotoPageNum(value - 1);
+            }
+            else {
+                outgoing.messages = ['Only numbers are allowed in the ' +
+                    'paginator textfield.'];
+            }
+
+            if (typeof ops.ui.textField.callback === 'function') {
+                // Set up some outgoing data for callbacks
+                outgoing.items = ops.ui.items;
+                outgoing.pages = ops.pages;
+                ops.ui.textField.callback(outgoing);
+            }
+        });
+
+        // Call the super classes add event listener method
+        self._super();
     },
 
     // ========================================================
     // Getters and Setters
     // ========================================================
-    getFirstBtn: function () {
-        return this._getElementFromOptions('firstBtn');
-    },
-    getPrevBtn: function () {
-        return this._getElementFromOptions('prevBtn');
-    },
-    getNextBtn: function () {
-        return this._getElementFromOptions('nextBtn');
-    },
-    getLastBtn: function () {
-        return this._getElementFromOptions('lastBtn');
-    },
-    getTextField: function () {
-        return this._getElementFromOptions('textField');
+    getTextFieldElm: function () {
+        return this.getUiElement('textField');
     }
 
 });

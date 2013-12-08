@@ -925,6 +925,40 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   margin: 20px 0;
 }
 
+/* line 3, ../sass/_jui-paginators-example.scss */
+.jui-paginators-example .content-pane {
+  position: relative;
+  border: 1px solid #888;
+  width: 320px;
+  height: 240px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+/* line 11, ../sass/_jui-paginators-example.scss */
+.jui-paginators-example .items {
+  position: relative;
+  width: 320px;
+  height: 240px;
+  overflow: hidden;
+}
+/* line 17, ../sass/_jui-paginators-example.scss */
+.jui-paginators-example .items .item {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin: 10px;
+  outline: #000 solid 3px;
+  font-weight: bold;
+  float: left;
+  background: #ffff00;
+}
+/* line 27, ../sass/_jui-paginators-example.scss */
+.jui-paginators-example .items .item span {
+  display: inline-block;
+  font-size: 30px;
+  text-align: center;
+}
+
 /* line 1, ../sass/_effects-example.scss */
 section p.ticking-text.paragraph {
   width: 550px;
@@ -935,22 +969,23 @@ p.ticking-text span {
   display: inline-block;
 }
 
-/* line 21, ../sass/screen.scss */
+/* line 22, ../sass/screen.scss */
 html, body {
   background: #ccc;
 }
 
-/* line 25, ../sass/screen.scss */
+/* line 26, ../sass/screen.scss */
 h1, h3 {
   font: bold 122% "Helvetica Neue", Arial, Helvetica, sans-serif !important;
+  margin-bottom: 10px;
 }
 
-/* line 29, ../sass/screen.scss */
+/* line 31, ../sass/screen.scss */
 h1 {
   font-size: 200% !important;
 }
 
-/* line 32, ../sass/screen.scss */
+/* line 34, ../sass/screen.scss */
 textarea {
   padding: 10px;
   -webkit-border-radius: 20px;
@@ -960,13 +995,13 @@ textarea {
   border-radius: 20px;
 }
 
-/* line 37, ../sass/screen.scss */
+/* line 39, ../sass/screen.scss */
 header, section, nav,
 section > div {
   margin: 10px;
 }
 
-/* line 41, ../sass/screen.scss */
+/* line 43, ../sass/screen.scss */
 nav > ul {
   margin: 0;
   padding: 0;
@@ -997,19 +1032,19 @@ nav > ul li:last-child {
 nav > ul li.last {
   padding-right: 0;
 }
-/* line 44, ../sass/screen.scss */
+/* line 46, ../sass/screen.scss */
 nav > ul > li a {
   padding: 10px;
   display: block;
 }
 
-/* line 51, ../sass/screen.scss */
+/* line 53, ../sass/screen.scss */
 label {
   font: normal 100% "Arial Black", Arial, Verdana, "Sans-serif";
   margin-bottom: 10px;
 }
 
-/* line 55, ../sass/screen.scss */
+/* line 57, ../sass/screen.scss */
 select {
   margin-bottom: 10px;
 }

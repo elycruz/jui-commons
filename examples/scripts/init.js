@@ -35,6 +35,15 @@ require.config({
         },
         'juiSelectPicker': {
             deps: ['juiBase']
+        },
+        'juiAbstractPaginator': {
+            deps: ['juiBase']
+        },
+        'juiBasicPaginator': {
+            deps: ['juiAbstractPaginator']
+        },
+        'juiPaginatorWithTextField': {
+            deps: ['juiBasicPaginator']
         }
     },
 
@@ -50,6 +59,9 @@ require.config({
         'juiScrollPane': '../../src/js/ui/jquery.juiScrollPane',
         'juiSelectPicker': '../../src/js/ui/jquery.juiSelectPicker',
         'juiScrollableDropDown': '../../src/js/ui/jquery.juiScrollableDropDown',
+        'juiAbstractPaginator': '../../src/js/ui/jquery.juiAbstractPaginator',
+        'juiBasicPaginator': '../../src/js/ui/jquery.juiBasicPaginator',
+        'juiPaginatorWithTextField': '../../src/js/ui/jquery.juiPaginatorWithTextField',
 
         'jquery': '../bower_components/jquery/jquery',
         'jquery-ui': '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
@@ -75,7 +87,6 @@ require.config({
         i18nprecompile: '../bower_components/require-handlebars-plugin/hbs/i18nprecompile',
         json2: '../bower_components/require-handlebars-plugin/hbs/json2',
         hbs: '../bower_components/require-handlebars-plugin/hbs'
-
     },
 
     hbs: {

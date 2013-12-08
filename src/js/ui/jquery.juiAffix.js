@@ -4,7 +4,7 @@
 $.widget('jui.juiAffix', $.jui.juiBase, {
     options: {
         'class': 'jui-afix',
-        scrollableElm: $(window),
+        scrollableElm: $('body, html'),
         affixVertically: true,
         affixHorizontally: false,
         offset: {

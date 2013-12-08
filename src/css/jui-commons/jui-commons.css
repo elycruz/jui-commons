@@ -270,7 +270,19 @@
   border-radius: 10px;
 }
 
-/* line 7, ../../sass/jui-commons/jui-commons.scss */
+/* line 2, ../../sass/jui-commons/_jui-basic-paginator.scss */
+.jui-basic-paginator .btn {
+  padding: 5px;
+  margin: 5px;
+  text-decoration: none;
+}
+
+/* line 2, ../../sass/jui-commons/_jui-paginator-with-text-field.scss */
+.jui-paginator-with-text-field .text-field {
+  text-align: center;
+}
+
+/* line 9, ../../sass/jui-commons/jui-commons.scss */
 .selected {
   color: green;
 }

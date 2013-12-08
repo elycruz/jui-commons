@@ -34,6 +34,10 @@ define([
                 this.showView();
             },
 
+            juiBasicPaginatorAction: function () {
+                this.showView();
+            },
+
             effectsAction: function () {
                 this.showView();
             },
