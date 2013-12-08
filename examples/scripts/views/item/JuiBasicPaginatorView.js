@@ -1,6 +1,7 @@
 define([
     'backbone',
     'hbs!tmpl/item/jui-basic-paginator-view',
+    'gsap-scrollto-plugin',
     'juiScrollPane',
     'juiBasicPaginator',
     'juiPaginatorWithTextField'
@@ -31,10 +32,17 @@ define([
             onShow: function () {
                 var self = this,
                     contentPanes = $('.content-pane', this.$el),
-                    contentPane1,
-                    contentPane2,
                     items = $('.items', contentPanes),
-                    paginator1 = null, //self.ui.example1.juiBasicPaginator(),
+                    paginator1 = self.ui.example1.juiBasicPaginator({
+                        skipPagesCalculation: true,
+                        pages: {length: 11},
+                        ui: {
+                            items: {
+                                elm: items.eq(0),
+                                perPage: 9
+                            }
+                        }
+                    }),
                     paginator2 = self.ui.example2.juiPaginatorWithTextField({
                         skipPagesCalculation: true,
                         pages: {length: 9},
@@ -44,24 +52,25 @@ define([
                                 perPage: 12
                             }
                         }
-                    });
+                    }),
+                    contentPane1,
+                    contentPane2;
 
-                contentPane2 = contentPanes.eq(1).juiScrollPane({ ui: {
-                    contentHolder: {
-                        selector: ' .items'
-                    }
-                } });
-//
-//                paginator1.bind('juiBasicPaginator:gotoPageNum', function (e, data) {
-//                    console.log('result', data);
-//                });
+                contentPane1 = items.eq(0);
+                contentPane1.css('overflow', 'auto');
+                contentPane2 = items.eq(1);
+                contentPane2.css('overflow', 'hidden');
 
-                paginator2.bind('juiPaginatorWithTextField:gotoPageNum', function (e, data) {
-                    contentPane2.juiScrollPane('scrollVertically',
-                        data.pointer * contentPane2.height());
+                paginator1.bind('juiBasicPaginator:gotoPageNum', function (e, data) {
+                    TweenMax.to(contentPane1, 0.38,
+                        {scrollTo: {y: data.pointer * contentPane1.height()}});
                 });
 
+                paginator2.bind('juiPaginatorWithTextField:gotoPageNum', function (e, data) {
+                    TweenMax.to(contentPane2, 0.38,
+                        {scrollTo: {y: data.pointer * contentPane2.height()}});
+                });
             }
-        });
 
+        });
     });

@@ -7,11 +7,11 @@ module.exports = function (grunt) {
             options: {
                 banner: '/*! ' +
                     '<%= pkg.name %> ' +
-                    '<%= grunt.template.today("yyyy-mm-dd") %> */\n',
-                beautify: {
-                    beautify: true,
-                    width: 72
-                }
+                    '<%= grunt.template.today("yyyy-mm-dd") %> */\n'
+//                beautify: {
+//                    beautify: true,
+//                    width: 72
+//                }
             },
             build: {
                 src: [
