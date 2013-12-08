@@ -39,7 +39,7 @@ function (Backbone, tmpl) {
                         'class': 'jui-select-picker jui-select-picker-example-1'
                     }
                 },
-                labelText: 'Select an "Other Option":',
+                labelText: '"Other Option":',
                 expandOn: 'mouseenter',
                 collapseOn: 'mouseleave'
             });

@@ -19,9 +19,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
                 attribs: {
                     'class': 'indicator-wrapper'
                 },
-                append: false,
-                prepend: true,
-                appendTo: 'this.element',
+                appendTo: 'prepend to this.element',
                 selector: '> .indicator-wrapper',
                 html: '<div></div>',
                 create: true
@@ -52,14 +50,17 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
 
         // Populate initial ui elements
         self._populateUiElementsFromOptions();
+
         self._createInidicators();
-        self.getUiElement('scrollableElm').on('debouncedresize', function (e) {
-            var wrapper = self.getUiElement('wrapperElm'),
-                indElms = ops.ui.inidicatorsNeededElms.elm,
-                inds = $('.indicator', wrapper);
+
+        // On resize reposition
+        $(window).on('resize', function (e) {
+            var indElms = self.getUiElement('inidicatorsNeededElms'),
+                inds = self.getUiElement('indicatorElms');
+
+            // Reposition indicator
             indElms.each(function (index, elm) {
-                elm = $(elm);
-                inds.eq(index).css('top', elm.offset().top);
+                inds.eq(index).css('top', $(elm).offset().top);
             });
         });
     },
@@ -73,12 +74,10 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
             indNeededElm,
             indElms;
 
-        // By Selector
-        // -------------------------------------------------------
-        // -------------------------------------------------------
         // Get elements that need a floating scroll indicator
         createOps.elm =
-            indNeededElm = $(createOps.selector, this.element);
+            indNeededElm =
+                $(createOps.selector, this.element);
 
         // If no elements need floating scroll indicators, bail
         if (indNeededElm.length === 0) {
@@ -88,14 +87,22 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         // Add indicators
         indNeededElm.each(function (index, elm) {
             elm = $(elm);
+
+            // Inidicator template
             var nuIndElm = $('<div ' +
                 'class="indicator" ' +
                 'title="' + elm.text() + '"' +
                 'data-index="' + index + '"></div>');
+
+            // Append indicator
             wrapper.append(nuIndElm);
+
+            // Position this indicator
             $('.indicator', wrapper).eq(index)
                     .css('top', elm.offset().top);
+
             nuIndElm.juiAffix({
+                scrollableElm: scrollableElm,
                 offset: {
                     top: (index + 1) * nuIndElm.height(),
                     bottom: -((indNeededElm.length - index)
@@ -105,15 +112,15 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         });
 
         // Get indicators
-        indElms = ops.ui.indicatorElms.elm =
-            $(ops.ui.indicatorElms.selector, wrapper);
+        indElms =
+            ops.ui.indicatorElms.elm =
+                $(ops.ui.indicatorElms.selector, wrapper);
 
         // Add click listener to indicator
         indElms.click(function (e) {
             var elm = $(this),
-            toElm = indNeededElm.eq(elm.attr('data-index')),
+                toElm = indNeededElm.eq(elm.attr('data-index')),
                 val = parseInt(toElm.offset().top);
-            console.log(scrollableElm, val, ops.animation);
             TweenMax.to(scrollableElm, ops.animation.duration,
                 {scrollTo: val});
         });

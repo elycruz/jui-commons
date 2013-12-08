@@ -60,14 +60,22 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
                 enabled: true,
                 html: '<a>Last &gt;&#124;</a>',
                 create: true
+            },
+            itemsContainer: {
+                selector: '> .items'
+            },
+            items: {
+                elm: null,
+                selector: '> .items > .item',
+                firstInRange: 0,
+                lastInRange: 0,
+                perPage: 0
             }
-        }
+        },
+
+        skipPagesCalculation: false
     },
 
-    /**
-     * Goes to page 1 which fires jquery-jui-paginator:gotoPageNum event.
-     * @type Function
-     */
     _create: function () {
         var self = this,
             ops = self.options;
@@ -91,31 +99,60 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
     },
 
     _addEventListeners: function () {
-        var self = this;
+        var self = this,
+            firstBtn = self.getFirstBtnElm(),
+            nextBtn = self.getNextBtnElm(),
+            prevBtn = self.getPrevBtnElm(),
+            lastBtn = self.getLastBtnElm();
 
         // First Page Button
-        self.getFirstBtnElm().on('click', function (e) {
-            e.preventDefault();
-            self.firstPage();
-        });
-
-        // Next Page button
-        self.getNextBtnElm().on('click', function (e) {
-            e.preventDefault();
-            self.nextPage();
-        });
+        if (isset(firstBtn) && firstBtn.length > 0) {
+            firstBtn.on('click', function (e) {
+                e.preventDefault();
+                self.firstPage();
+            });
+        }
 
         // Previous Page button
-        self.getPrevBtnElm().on('click', function (e) {
-            e.preventDefault();
-            self.prevPage();
-        });
+        if (isset(prevBtn) && prevBtn.length > 0) {
+            prevBtn.on('click', function (e) {
+                e.preventDefault();
+                self.prevPage();
+            });
+        }
+
+        // Next Page button
+        if (isset(nextBtn) && nextBtn.length > 0) {
+            nextBtn.on('click', function (e) {
+                e.preventDefault();
+                self.nextPage();
+            });
+        }
 
         // Last Page button
-        self.getLastBtnElm().on('click', function (e) {
-            e.preventDefault();
-            self.lastPage();
-        });
+        if (isset(lastBtn) && lastBtn.length > 0) {
+            lastBtn.on('click', function (e) {
+                e.preventDefault();
+                self.lastPage();
+            });
+        }
+    },
+
+    _calculateNumberOfPages: function (options) {
+        var ops = options || this.options,
+            items = this.getItemsElm(),
+            itemsPerPage;
+
+        // If items per page is a function
+        itemsPerPage = this.getValueFromHash('ui.items.perPage', ops);
+
+        // Pages length
+        ops.pages.length = Math.ceil(items.length / itemsPerPage);
+        ops.pages.length = ops.pages.length !== NaN ? ops.pages.length : 0;
+
+        // Trigger event
+        this.element.trigger(this.widgetName + ':numbersCalculated',
+            {pointer: ops.pages.pointer});
     },
 
     // Actions
@@ -150,6 +187,9 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
     },
     getLastBtnElm: function () {
         return this.getUiElement('lastBtn');
+    },
+    getItemsElm: function () {
+        return this.getUiElement('items');
     }
 
 });

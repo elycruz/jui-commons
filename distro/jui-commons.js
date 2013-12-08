@@ -14,7 +14,10 @@ $.widget("jui.juiBase", {
     _populateUiElementsFromOptions: function(a) {
         var b = this, c = isset(a) ? a : this.options;
         isset(c.ui) || (c.ui = {}), c = c.ui, Object.keys(c).forEach(function(a) {
-            "string" == typeof c[a] && (c[a] = c[a] = $(c[a], b.element)), $.isPlainObject(c[a]) && (c[a].elm = b._getElementFromOptions(c[a]));
+            if ("string" == typeof c[a] && (c[a] = c[a] = $(c[a], b.element)), $.isPlainObject(c[a])) {
+                if (isset(c[a].elm) && c[a].elm.length > 0) return;
+                c[a].elm = b._getElementFromOptions(c[a]);
+            }
         });
     },
     _getElementFromOptions: function(a) {
@@ -107,18 +110,6 @@ $.widget("jui.juiBase", {
     }
 }), $.widget("jui.juiAbstractPaginator", $.jui.juiBase, {
     options: {
-        ui: {
-            itemsContainer: {
-                selector: "> .items"
-            },
-            items: {
-                elm: null,
-                selector: "> .items > .item",
-                firstInRange: 0,
-                lastInRange: 0,
-                perPage: 0
-            }
-        },
         pages: {
             prev: 0,
             pointer: 0,
@@ -127,10 +118,7 @@ $.widget("jui.juiBase", {
             length: 0,
             direction: 1
         },
-        onGotoPageNum: null,
-        skipPagesCalculation: !1,
-        debug_output: "",
-        debug: !0
+        onGotoPageNum: null
     },
     _create: function() {
         this._gotoPageNum(this.options.pages.pointer);
@@ -152,23 +140,10 @@ $.widget("jui.juiBase", {
     _gotoPageNum: function(a) {
         var b = this.options;
         b.pages.prev = a - 1, b.pages.next = a + 1, a > b.pages.length - 1 && (a = b.pages.length - 1), 
-        0 > a && (a = 0), b.pages.pointer = a, null !== b.onGotoPageNum && "function" == typeof b.onGotoPageNum && b.onGotoPageNum.apply(this), 
+        0 > a && (a = 0), b.pages.pointer = a, this.getValueFromOptions("onGotoPageNum"), 
         this.element.trigger(this.widgetName + ":gotoPageNum", {
             pointer: a
         });
-    },
-    _calculateNumberOfPages: function(a) {
-        var b, c = a || this.options, d = this.getItems();
-        b = this.getValueFromHash("ui.items.perPage", c), c.pages.length = Math.ceil(d.length / b), 
-        c.pages.length = 0/0 !== c.pages.length ? c.pages.length : 0, this.element.trigger(this.widgetName + ":numbersCalculated", {
-            pointer: c.pages.pointer
-        });
-    },
-    getItems: function() {
-        return this.getUiElement("items");
-    },
-    getItemsContainer: function() {
-        return this.getUiElement("itemsContainer");
     },
     getPointer: function() {
         return this.options.pages.pointer;
@@ -176,7 +151,7 @@ $.widget("jui.juiBase", {
 }), $.widget("jui.juiAffix", $.jui.juiBase, {
     options: {
         "class": "jui-afix",
-        scrollableElm: $("body, html"),
+        scrollableElm: $("html,body"),
         affixVertically: !0,
         affixHorizontally: !1,
         offset: {
@@ -191,10 +166,10 @@ $.widget("jui.juiBase", {
         var a = this, b = a.options, c = a.element, d = b.affixVertically, e = (b.affixHorizontally, 
         {
             position: c.css("position"),
-            top: c.offset().top,
-            right: c.offset().right,
-            bottom: c.offset().bottom,
-            left: c.offset().left
+            top: c.position().top,
+            right: c.position().right,
+            bottom: c.position().bottom,
+            left: c.position().left
         }), f = b.scrollableElm, g = {
             top: a.getValueFromOptions("offset.top"),
             right: a.getValueFromOptions("offset.right"),
@@ -202,11 +177,8 @@ $.widget("jui.juiBase", {
             left: a.getValueFromOptions("offset.left")
         };
         c.addClass(b["class"]), f.bind("scroll resize orientationchange load", function() {
-            {
-                var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
-                f.width() + g.right;
-            }
-            d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
+            var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
+            f.width() + g.right, d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
                 position: "fixed",
                 top: g.top,
                 bottom: "auto"
@@ -270,8 +242,19 @@ $.widget("jui.juiBase", {
                 enabled: !0,
                 html: "<a>Last &gt;&#124;</a>",
                 create: !0
+            },
+            itemsContainer: {
+                selector: "> .items"
+            },
+            items: {
+                elm: null,
+                selector: "> .items > .item",
+                firstInRange: 0,
+                lastInRange: 0,
+                perPage: 0
             }
-        }
+        },
+        skipPagesCalculation: !1
     },
     _create: function() {
         var a = this, b = a.options;
@@ -281,15 +264,22 @@ $.widget("jui.juiBase", {
         a._super();
     },
     _addEventListeners: function() {
-        var a = this;
-        a.getFirstBtnElm().on("click", function(b) {
+        var a = this, b = a.getFirstBtnElm(), c = a.getNextBtnElm(), d = a.getPrevBtnElm(), e = a.getLastBtnElm();
+        isset(b) && b.length > 0 && b.on("click", function(b) {
             b.preventDefault(), a.firstPage();
-        }), a.getNextBtnElm().on("click", function(b) {
-            b.preventDefault(), a.nextPage();
-        }), a.getPrevBtnElm().on("click", function(b) {
+        }), isset(d) && d.length > 0 && d.on("click", function(b) {
             b.preventDefault(), a.prevPage();
-        }), a.getLastBtnElm().on("click", function(b) {
+        }), isset(c) && c.length > 0 && c.on("click", function(b) {
+            b.preventDefault(), a.nextPage();
+        }), isset(e) && e.length > 0 && e.on("click", function(b) {
             b.preventDefault(), a.lastPage();
+        });
+    },
+    _calculateNumberOfPages: function(a) {
+        var b, c = a || this.options, d = this.getItemsElm();
+        b = this.getValueFromHash("ui.items.perPage", c), c.pages.length = Math.ceil(d.length / b), 
+        c.pages.length = 0/0 !== c.pages.length ? c.pages.length : 0, this.element.trigger(this.widgetName + ":numbersCalculated", {
+            pointer: c.pages.pointer
         });
     },
     firstPage: function() {
@@ -315,6 +305,9 @@ $.widget("jui.juiBase", {
     },
     getLastBtnElm: function() {
         return this.getUiElement("lastBtn");
+    },
+    getItemsElm: function() {
+        return this.getUiElement("items");
     }
 }), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
     options: {
@@ -332,9 +325,7 @@ $.widget("jui.juiBase", {
                 attribs: {
                     "class": "indicator-wrapper"
                 },
-                append: !1,
-                prepend: !0,
-                appendTo: "this.element",
+                appendTo: "prepend to this.element",
                 selector: "> .indicator-wrapper",
                 html: "<div></div>",
                 create: !0
@@ -358,10 +349,10 @@ $.widget("jui.juiBase", {
     _create: function() {
         var a = this, b = a.options;
         a.element.addClass(b["class"]), a._populateUiElementsFromOptions(), a._createInidicators(), 
-        a.getUiElement("scrollableElm").on("debouncedresize", function() {
-            var c = a.getUiElement("wrapperElm"), d = b.ui.inidicatorsNeededElms.elm, e = $(".indicator", c);
-            d.each(function(a, b) {
-                b = $(b), e.eq(a).css("top", b.offset().top);
+        $(window).on("resize", function() {
+            var b = a.getUiElement("inidicatorsNeededElms"), c = a.getUiElement("indicatorElms");
+            b.each(function(a, b) {
+                c.eq(a).css("top", $(b).offset().top);
             });
         });
     },
@@ -369,8 +360,9 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
+                scrollableElm: g,
                 offset: {
                     top: (b + 1) * d.height(),
                     bottom: -((a.length - b) * d.height())
@@ -378,7 +370,7 @@ $.widget("jui.juiBase", {
             });
         }), b = d.ui.indicatorElms.elm = $(d.ui.indicatorElms.selector, f), b.click(function() {
             var b = $(this), c = a.eq(b.attr("data-index")), e = parseInt(c.offset().top);
-            console.log(g, e, d.animation), TweenMax.to(g, d.animation.duration, {
+            TweenMax.to(g, d.animation.duration, {
                 scrollTo: e
             });
         }));
@@ -391,12 +383,14 @@ $.widget("jui.juiBase", {
             items: {
                 elm: null,
                 selector: "> .items > .item",
-                perPage: 12
+                perPage: 12,
+                create: !1
             },
             textField: {
                 elm: null,
                 selector: "> .text-field",
-                enabled: !0
+                enabled: !0,
+                create: !1
             },
             firstBtn: {
                 create: !1
@@ -413,11 +407,8 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        {
-            var a = this;
-            a.options;
-        }
-        a.element.addClass(a.options.className), a._super();
+        var a = this;
+        a.options, a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -427,8 +418,8 @@ $.widget("jui.juiBase", {
             var d = ($(this), {});
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
-                /\d+/.test(f) ? (f - 1 > b.pages.length ? (console.log("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page."), 
-                a._gotoPageNum(b.pages.length)) : 0 > f - 1 && (console.log("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page."), 
+                /\d+/.test(f) ? (f - 1 > b.pages.length ? (console.log("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page."), 
+                a._gotoPageNum(b.pages.length)) : 0 > f - 1 && (console.log("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page."), 
                 a._gotoPageNum(0)), a._gotoPageNum(f - 1)) : d.messages = [ "Only numbers are allowed in the paginator textfield." ], 
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
                 b.ui.textField.callback(d));
@@ -764,8 +755,7 @@ $.widget("jui.juiBase", {
         labelText: ""
     },
     _create: function() {
-        this.options;
-        $("html").hasClass("touch");
+        this.options, $("html").hasClass("touch");
     },
     _init: function() {
         this.options.timeline = new TimelineMax({

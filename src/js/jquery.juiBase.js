@@ -80,6 +80,11 @@ $.widget('jui.juiBase', {
 
             // If key is plain object
             if ($.isPlainObject(ops[key])) {
+                // If element already is populated, skip it
+                if (isset(ops[key].elm) && ops[key].elm.length > 0) {
+                    return;
+                }
+                // Create/fetch element
                 ops[key].elm = self._getElementFromOptions(ops[key]);
             }
 

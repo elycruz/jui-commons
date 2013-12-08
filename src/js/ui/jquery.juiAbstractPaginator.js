@@ -11,18 +11,7 @@
 $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
 
     options: {
-        ui: {
-            itemsContainer: {
-                selector: '> .items'
-            },
-            items: {
-                elm: null,
-                selector: '> .items > .item',
-                firstInRange: 0,
-                lastInRange: 0,
-                perPage: 0
-            }
-        },
+
         pages: {
             prev: 0,
             pointer: 0,
@@ -31,10 +20,8 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
             length: 0,
             direction: 1
         },
-        onGotoPageNum: null,
-        skipPagesCalculation: false,
-        debug_output: '',
-        debug: true
+
+        onGotoPageNum: null
     },
 
     _create: function () {
@@ -103,39 +90,11 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
         ops.pages.pointer = num;
 
         // If callback is set call it
-        if (ops.onGotoPageNum !== null
-            && typeof ops.onGotoPageNum === 'function') {
-            ops.onGotoPageNum.apply(this);
-        }
+        this.getValueFromOptions('onGotoPageNum');
 
         // Trigger gotoPageNum
         this.element.trigger(this.widgetName + ':gotoPageNum',
             {pointer: num});
-    },
-
-    _calculateNumberOfPages: function (options) {
-        var ops = options || this.options,
-            items = this.getItems(),
-            itemsPerPage;
-
-        // If items per page is a function
-        itemsPerPage = this.getValueFromHash('ui.items.perPage', ops);
-
-        // Pages length
-        ops.pages.length = Math.ceil(items.length / itemsPerPage);
-        ops.pages.length = ops.pages.length !== NaN ? ops.pages.length : 0;
-
-        // Trigger event
-        this.element.trigger(this.widgetName + ':numbersCalculated',
-            {pointer: ops.pages.pointer});
-    },
-
-    getItems: function () {
-        return this.getUiElement('items');
-    },
-
-    getItemsContainer: function () {
-        return this.getUiElement('itemsContainer');
     },
 
     getPointer: function () {

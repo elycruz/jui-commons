@@ -34,27 +34,24 @@ define([
                     contentPanes = $('.content-pane', this.$el),
                     items = $('.items', contentPanes),
                     paginator1 = self.ui.example1.juiBasicPaginator({
-                        skipPagesCalculation: true,
-                        pages: {length: 11},
                         ui: {
                             items: {
-                                elm: items.eq(0),
+                                elm: $('> .item', items.eq(1)),
                                 perPage: 9
                             }
                         }
                     }),
                     paginator2 = self.ui.example2.juiPaginatorWithTextField({
-                        skipPagesCalculation: true,
-                        pages: {length: 9},
                         ui: {
                             items: {
-                                elm: items.eq(1),
+                                elm:  $('> .item', items.eq(1)),
                                 perPage: 12
                             }
                         }
                     }),
                     contentPane1,
                     contentPane2;
+
 
                 contentPane1 = items.eq(0);
                 contentPane1.css('overflow', 'auto');

@@ -23,12 +23,14 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
             items: {
                 elm: null,
                 selector: '> .items > .item',
-                perPage: 12
+                perPage: 12,
+                create: false
             },
             textField: {
                 elm: null,
                 selector: '> .text-field',
-                enabled: true
+                enabled: true,
+                create: false
             },
             firstBtn: {
                 create: false

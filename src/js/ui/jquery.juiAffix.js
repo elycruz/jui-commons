@@ -4,7 +4,7 @@
 $.widget('jui.juiAffix', $.jui.juiBase, {
     options: {
         'class': 'jui-afix',
-        scrollableElm: $('body, html'),
+        scrollableElm: $('html,body'),
         affixVertically: true,
         affixHorizontally: false,
         offset: {
@@ -26,10 +26,10 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
         // @todo put the t r b l into an offset object
             original = {
                 position: elm.css('position'),
-                top: elm.offset().top,
-                right: elm.offset().right,
-                bottom: elm.offset().bottom,
-                left: elm.offset().left
+                top: elm.position().top,
+                right: elm.position().right,
+                bottom: elm.position().bottom,
+                left: elm.position().left
             },
             scrollableElm = ops.scrollableElm,
             posFixedSupport = false,
