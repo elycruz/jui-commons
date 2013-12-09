@@ -43,6 +43,9 @@ module.exports = function (grunt) {
                 }
             }
         },
+        cssmin: {
+            'distro/css/jui-commons.css': 'src/css/jui-commons/jui-commons.css'
+        },
         watch: {
             compass: {
                 files: ['./src/sass/**/*.scss'],
@@ -81,6 +84,7 @@ module.exports = function (grunt) {
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
@@ -89,14 +93,14 @@ module.exports = function (grunt) {
 
     // Default task(s).
     grunt.registerTask('default', [
-        'compass', 'uglify', 'jsdoc', 'connect', 'watch']);
+        'compass', 'cssmin', 'uglify', 'jsdoc', 'connect', 'watch']);
 
     // Build task
     grunt.registerTask('build', [
-        'compass', 'uglify', 'jsdoc']);
+        'compass', 'cssmin', 'uglify', 'jsdoc']);
 
     // Development task
     grunt.registerTask('develop', [
-        'compass', 'uglify', 'connect', 'watch']);
+        'compass', 'cssmin', 'uglify', 'connect', 'watch']);
 
 };
