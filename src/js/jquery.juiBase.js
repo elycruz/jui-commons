@@ -236,11 +236,12 @@ $.widget('jui.juiBase', {
      * @returns {*}
      */
     getUiElement: function (alias) {
-        var ops = this.options;
+        var ops = this.options,
+            elm = null;
         if (isset(ops.ui[alias])) {
-            alias = ops.ui[alias].elm;
-            if (alias instanceof $ && alias.length > 0) {
-                return alias;
+            elm = ops.ui[alias].elm;
+            if (elm instanceof $ && elm.length > 0) {
+                return elm;
             }
         }
         return this._getElementFromOptions('ui.' + alias);

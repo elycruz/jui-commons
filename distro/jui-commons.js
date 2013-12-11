@@ -1,4 +1,4 @@
-/*! jui-commons 2013-12-09 */
+/*! jui-commons 2013-12-11 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -45,8 +45,8 @@ $.widget("jui.juiBase", {
         });
     },
     getUiElement: function(a) {
-        var b = this.options;
-        return isset(b.ui[a]) && (a = b.ui[a].elm, a instanceof $ && a.length > 0) ? a : this._getElementFromOptions("ui." + a);
+        var b = this.options, c = null;
+        return isset(b.ui[a]) && (c = b.ui[a].elm, c instanceof $ && c.length > 0) ? c : this._getElementFromOptions("ui." + a);
     },
     setCssOnUiElement: function(a, b) {
         var c = this.getUiElement(a);
@@ -494,7 +494,7 @@ $.widget("jui.juiBase", {
         "hidden" !== b.css("overflow") && b.css("overflow", "hidden"), f.element.addClass("jui-scroll-pane"), 
         d > b.height() && f.initScrollbar(a.scrollbarOriented.VERTICALLY), c > b.width() ? f.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : this.getUiElement("horizScrollbar").css("display", "none"), 
         f.element.mousewheel(function(c, d, g, h) {
-            if (c.stopPropagation(), d = void 0 !== d || null !== d ? d : h, null !== d && void 0 !== d) {
+            if (c.preventDefault(), d = void 0 !== d || null !== d ? d : h, null !== d && void 0 !== d) {
                 var i = 1 > d ? 10 : -10, j = (b.scrollTop() + i, e.position().top + i);
                 e.css("top", j), f.constrainHandle(a.scrollbarOriented.VERTICALLY), f.constrainHandle(a.scrollbarOriented.HORIZONTALLY), 
                 f.scrollContentHolder(a.scrollbarOriented.VERTICALLY), f.scrollContentHolder(a.scrollbarOriented.HORIZONTALLY);
@@ -838,7 +838,7 @@ $.widget("jui.juiBase", {
         });
     },
     setLabelText: function(a, b) {
-        b = b || "text", a = a || (empty(this.options.ui.buttonElm.text) ? empty(this.options.labelText) ? this.element.find("option[value]").eq(0).text() : this.options.labelText : this.options.ui.buttonElm.text), 
+        b = b || "text", a = a || (empty(this.options.ui.buttonElm.text) ? empty(this.options.labelText) ? this.element.find("option").eq(0).text() : this.options.labelText : this.options.ui.buttonElm.text), 
         this.getUiElement("labelElm").eq(0)[b](a);
     },
     setSelected: function(a) {

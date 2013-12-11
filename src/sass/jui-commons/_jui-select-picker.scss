@@ -1,17 +1,18 @@
 .jui-select-picker {
+
+    position: absolute;
+    width: 320px;
+    max-height: 280px;
+    color: #888;
+    background: #fff;
+    outline: solid #888 1px;
+
     &.expanded {
         .options {
             outline: solid #000 1px;
         }
         outline: solid #000 1px;
     }
-
-    position: relative;
-    width: 320px;
-    max-height: 280px;
-    color: #888;
-    background: #fff;
-    outline: solid #888 1px;
 
     .button {
         position: relative;
@@ -66,6 +67,7 @@
             li {
                 width: 100%;
                 border-bottom: 1px solid #ccc;
+                list-style: none;
                 @include single-transition(background, 0.16s, linear);
             }
             li a {

@@ -111,7 +111,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         plugin.element.mousewheel(function (e, delta, deltaX, deltaY) {
 
             // Scroll this element individually
-            e.stopPropagation();
+            e.preventDefault();
 
             delta = delta !== undefined || delta !== null ? delta : deltaY;
 

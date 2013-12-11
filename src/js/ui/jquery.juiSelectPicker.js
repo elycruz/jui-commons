@@ -308,7 +308,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         text = text || (!empty(this.options.ui.buttonElm.text)
             ? this.options.ui.buttonElm.text
             : (!empty(this.options.labelText) ? this.options.labelText :
-            this.element.find('option[value]').eq(0).text()));
+            this.element.find('option').eq(0).text()));
         this.getUiElement('labelElm').eq(0)[textType](text);
     },
 
