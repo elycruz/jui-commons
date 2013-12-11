@@ -5,6 +5,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     options: {
 
+        className: 'jui-select-picker',
+
         animation: {
             duration: 0.30
         },
@@ -102,6 +104,21 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     _init: function () {
+        var self = this,
+            ops = this.options,
+            className = self.getValueFromHash('className', ops),
+            currentClassName = self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
+
+        // Resolve class name
+        if (!empty(className)) {
+            if (!empty(currentClassName)
+                && typeof currentClassName === 'string') {
+                ops.ui.wrapperElm.attribs['class'] +=' ' + className;
+            }
+            else {
+                ops.ui.wrapperElm.attribs['class'] = className;
+            }
+        }
 
         // Timeline
         this.options.timeline = new TimelineMax({paused: true});

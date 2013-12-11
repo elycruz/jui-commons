@@ -672,6 +672,7 @@ $.widget("jui.juiBase", {
     }
 }), $.widget("jui.juiSelectPicker", $.jui.juiBase, {
     options: {
+        className: "jui-select-picker",
         animation: {
             duration: .3
         },
@@ -758,6 +759,8 @@ $.widget("jui.juiBase", {
         this.options, $("html").hasClass("touch");
     },
     _init: function() {
+        var a = this, b = this.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
+        empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
         this.options.timeline = new TimelineMax({
             paused: !0
         }), this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
