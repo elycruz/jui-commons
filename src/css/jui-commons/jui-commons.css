@@ -209,23 +209,24 @@
 /* line 33, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li {
   width: 100%;
+  list-style: none;
   border-top: 1px solid #888;
   border-bottom: 1px solid #888;
 }
-/* line 38, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 39, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li a {
   display: block;
   padding: 10px;
 }
-/* line 42, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 43, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li.first {
   border-top: none !important;
 }
-/* line 45, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 46, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li.last {
   border-bottom: none;
 }
-/* line 51, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 52, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .vertical.scrollbar {
   position: absolute;
   top: auto !important;
@@ -241,7 +242,7 @@
   border-radius: 8px;
   z-index: 99;
 }
-/* line 59, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
+/* line 60, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .vertical.scrollbar .handle {
   width: 8px;
   -webkit-border-radius: 8px;
