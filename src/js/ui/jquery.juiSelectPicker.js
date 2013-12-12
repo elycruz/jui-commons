@@ -107,7 +107,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         var self = this,
             ops = this.options,
             className = self.getValueFromHash('className', ops),
-            currentClassName = self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
+            currentClassName =
+                self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
 
         // Resolve class name
         if (!empty(className)) {
@@ -162,9 +163,17 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 return;
             }
 
+            var value = option.attr('value'),
+                dataValue = option.attr('data-value'),
+                classValue = option.attr('class');
+
+            classValue = !empty(classValue) ? 'class="' + classValue + '" ' : '';
+            value = empty(value) ?
+                (empty(dataValue) ? '' : 'data-value="' + dataValue + '" ') :
+                ' data-value="' + dataValue + '"';
+
             // Build list element
-            var li = $('<li><a href="javascript: void(0);" data-value="'
-                + option.attr('value') + '">' + option.text()
+            var li = $('<li><a '+ classValue + 'href="javascript: void(0);"' + value + '>' + option.text()
                 + '</a></li>');
 
             // Add first class
@@ -199,7 +208,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             var collapsed = wrapperElm
                 .juiScrollableDropDown('getState')
                 .indexOf('collapsed') > -1 ? true : false;
-            console.log('hello2');
             if (collapsed) {
                 self.playAnimation();
             }

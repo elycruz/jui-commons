@@ -119,8 +119,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             collapseOnMouseEvent = this._getCollapseOnEventStringName(),
             expandOnMouseEvent = this._getExpandOnEventStringName();
 
-        console.log(ops.timeline);
-
         // If expand and collapse events are the same (use toggle pattern)
         if (expandOnMouseEvent === collapseOnMouseEvent) {
             this.element.on(expandOnMouseEvent, function (e) {
@@ -150,6 +148,14 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                     self.options.state = states.COLLAPSED;
                 });
         }
+
+        // When clicking outside of drop down close it
+//        $(window).on('click', function (e) {
+//            if (self.options.state === states.EXPANDED) {
+//                self.element.trigger(collapseOnMouseEvent);
+//            }
+//        });
+
     },
 
     _removeEventListeners: function () {

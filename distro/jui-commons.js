@@ -1,4 +1,4 @@
-/*! jui-commons 2013-12-11 */
+/*! jui-commons 2013-12-12 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -628,7 +628,7 @@ $.widget("jui.juiBase", {
     },
     _addEventListeners: function() {
         var a = this, b = a.options.states, c = this.options, d = this._getCollapseOnEventStringName(), e = this._getExpandOnEventStringName();
-        console.log(c.timeline), e === d ? this.element.on(e, function() {
+        e === d ? this.element.on(e, function() {
             a.options.state === b.COLLAPSED ? (a.ensureAnimationFunctionality(), c.timeline.play(), 
             a.options.state = b.EXPANDED) : (a.ensureAnimationFunctionality(), c.timeline.reverse(), 
             a.options.state = b.COLLAPSED);
@@ -771,9 +771,11 @@ $.widget("jui.juiBase", {
         var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
         c.each(function(a, b) {
             if (b = $(b), 0 !== a || !empty(e.ui.buttonElm.text)) {
-                var f = $('<li><a href="javascript: void(0);" data-value="' + b.attr("value") + '">' + b.text() + "</a></li>");
-                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && f.addClass("first") : f.addClass("first"), 
-                a === c.length - 1 && f.addClass("last"), d.append(f);
+                var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class");
+                h = empty(h) ? "" : 'class="' + h + '" ', f = empty(f) ? empty(g) ? "" : 'data-value="' + g + '" ' : ' data-value="' + g + '"';
+                var i = $("<li><a " + h + 'href="javascript: void(0);"' + f + ">" + b.text() + "</a></li>");
+                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && i.addClass("first") : i.addClass("first"), 
+                a === c.length - 1 && i.addClass("last"), d.append(i);
             }
         }), b.append(d);
     },
@@ -781,7 +783,7 @@ $.widget("jui.juiBase", {
         var a = this, b = this.options, c = a.getUiElement("wrapperElm");
         c.on("mouseup", function() {
             var b = c.juiScrollableDropDown("getState").indexOf("collapsed") > -1 ? !0 : !1;
-            console.log("hello2"), b ? a.playAnimation() : a.reverseAnimation();
+            b ? a.playAnimation() : a.reverseAnimation();
         }), c.on("click", "a[data-value]", function(c) {
             var d = $(c.currentTarget);
             a.clearSelected(), a.setSelected(d), b.timeline.reverse();

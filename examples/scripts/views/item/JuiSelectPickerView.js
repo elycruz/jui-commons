@@ -3,6 +3,7 @@ define([
     'hbs!tmpl/item/jui-select-picker-view',
     'juiSelectPicker'
 ],
+    // @todo select picker needs to close when you click outside of it
 function (Backbone, tmpl) {
     'use strict';
 
