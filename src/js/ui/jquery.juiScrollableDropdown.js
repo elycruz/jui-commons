@@ -40,7 +40,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 duration: 0.30,
                 elmAlias: 'scrollbar',
                 props: {css: {opacity: 1},
-                delay: -0.10}
+                    delay: -0.10}
             }
         ],
 
@@ -150,11 +150,16 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         }
 
         // When clicking outside of drop down close it
-//        $(window).on('click', function (e) {
-//            if (self.options.state === states.EXPANDED) {
-//                self.element.trigger(collapseOnMouseEvent);
-//            }
-//        });
+        $(window).on('click', function (e) {
+            if ($.contains(self.element, e.target) === false
+                && ops.timeline.progress === 1) {
+                if (self.options.state === states.EXPANDED) {
+                    self.ensureAnimationFunctionality();
+                    ops.timeline.reverse();
+                    self.options.state = states.COLLAPSED;
+                }
+            }
+        });
 
     },
 
@@ -208,9 +213,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     refreshOptions: function () {
         this._removeEventListeners();
         this._addEventListeners();
-    }
-
-    , getState: function () {
+    }, getState: function () {
         return this.options.state;
     }
 

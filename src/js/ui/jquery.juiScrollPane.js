@@ -108,7 +108,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             this.getUiElement('horizScrollbar').css('display', 'none');
         }
 
-        plugin.element.mousewheel(function (e, delta, deltaX, deltaY) {
+        contentHolder.mousewheel(function (e, delta, deltaX, deltaY) {
 
             // Scroll this element individually
             e.preventDefault();
@@ -248,11 +248,6 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
                 contentHolder['scroll' + ucaseFirst(dir)]
                     (percentScroll * scrollVars.scrollAmountTotal);
-
-//                if (ops.debug) {
-//                    console.log('top: ' +
-//                        ui.position.top, 'left: ' + ui.position.left);
-//                }
             }
         });
 

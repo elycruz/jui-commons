@@ -1,4 +1,4 @@
-/*! jui-commons 2013-12-12 */
+/*! jui-commons 2013-12-13 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -493,7 +493,7 @@ $.widget("jui.juiBase", {
         var a = this.options, b = this.getUiElement("contentHolder"), c = b.get(0).scrollWidth, d = b.get(0).scrollHeight, e = this.getUiElement("vertHandle"), f = this;
         "hidden" !== b.css("overflow") && b.css("overflow", "hidden"), f.element.addClass("jui-scroll-pane"), 
         d > b.height() && f.initScrollbar(a.scrollbarOriented.VERTICALLY), c > b.width() ? f.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : this.getUiElement("horizScrollbar").css("display", "none"), 
-        f.element.mousewheel(function(c, d, g, h) {
+        b.mousewheel(function(c, d, g, h) {
             if (c.preventDefault(), d = void 0 !== d || null !== d ? d : h, null !== d && void 0 !== d) {
                 var i = 1 > d ? 10 : -10, j = (b.scrollTop() + i, e.position().top + i);
                 e.css("top", j), f.constrainHandle(a.scrollbarOriented.VERTICALLY), f.constrainHandle(a.scrollbarOriented.HORIZONTALLY), 
@@ -636,6 +636,9 @@ $.widget("jui.juiBase", {
             a.ensureAnimationFunctionality(), c.timeline.play(), a.options.state = b.EXPANDED;
         }).on(d, function() {
             a.ensureAnimationFunctionality(), c.timeline.reverse(), a.options.state = b.COLLAPSED;
+        }), $(window).on("click", function(d) {
+            $.contains(a.element, d.target) === !1 && 1 === c.timeline.progress && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
+            c.timeline.reverse(), a.options.state = b.COLLAPSED);
         });
     },
     _removeEventListeners: function() {
@@ -772,7 +775,7 @@ $.widget("jui.juiBase", {
         c.each(function(a, b) {
             if (b = $(b), 0 !== a || !empty(e.ui.buttonElm.text)) {
                 var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class");
-                h = empty(h) ? "" : 'class="' + h + '" ', f = empty(f) ? empty(g) ? "" : 'data-value="' + g + '" ' : ' data-value="' + g + '"';
+                h = empty(h) ? "" : 'class="' + h + '" ', f = empty(f) ? empty(g) ? "" : 'data-value="' + g + '" ' : ' data-value="' + f + '"';
                 var i = $("<li><a " + h + 'href="javascript: void(0);"' + f + ">" + b.text() + "</a></li>");
                 0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && i.addClass("first") : i.addClass("first"), 
                 a === c.length - 1 && i.addClass("last"), d.append(i);
@@ -848,7 +851,7 @@ $.widget("jui.juiBase", {
     },
     setSelected: function(a) {
         a.parent().addClass(this.options.ui.optionsElm.optionSelectedClassName), 
-        this.element.val(a.attr("data-value")).trigger("change"), console.log(this.element.val());
+        this.element.val(a.attr("data-value")).trigger("change");
     },
     clearSelected: function() {
         this.getUiElement("optionsElm").find("> ul > li").removeClass(this.options.ui.optionsElm.optionSelectedClassName);

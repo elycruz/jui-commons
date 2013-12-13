@@ -283,8 +283,3 @@
 .jui-paginator-with-text-field .text-field {
   text-align: center;
 }
-
-/* line 9, ../../sass/jui-commons/jui-commons.scss */
-.selected {
-  color: green;
-}

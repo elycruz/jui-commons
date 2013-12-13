@@ -1,5 +1,6 @@
 /**
  * Created by ElyDeLaCruz on 10/1/13.
+ * @todo allow only scrolling on scrollable options elm
  */
 $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
@@ -168,13 +169,13 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 classValue = option.attr('class');
 
             classValue = !empty(classValue) ? 'class="' + classValue + '" ' : '';
-            value = empty(value) ?
-                (empty(dataValue) ? '' : 'data-value="' + dataValue + '" ') :
-                ' data-value="' + dataValue + '"';
+            value = empty(value) ? (empty(dataValue) ?
+                    '' : 'data-value="' + dataValue + '" ') :
+                        ' data-value="' + value + '"';
 
             // Build list element
-            var li = $('<li><a '+ classValue + 'href="javascript: void(0);"' + value + '>' + option.text()
-                + '</a></li>');
+            var li = $('<li><a '+ classValue + 'href="javascript: void(0);"'
+                + value + '>' + option.text() + '</a></li>');
 
             // Add first class
             if (i === 0 && !empty(ops.ui.buttonElm.text)) {
@@ -195,7 +196,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Append unordered list element
         optionsElm.append(ul);
-
     },
 
     _addEventListeners: function () {
@@ -341,7 +341,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         elm.parent().addClass(
             this.options.ui.optionsElm.optionSelectedClassName);
         this.element.val(elm.attr('data-value')).trigger('change');
-        console.log(this.element.val());
     },
 
     clearSelected: function () {

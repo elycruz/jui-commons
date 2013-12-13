@@ -54,7 +54,7 @@ require.config({
         'TweenMax': '../bower_components/greensock/src/uncompressed/TweenMax',
         'gsap-scrollto-plugin': '../bower_components/greensock/src/uncompressed/plugins/ScrollToPlugin',
 
-        'jui-commons': '../../distro/jui-commons.min',
+        'jui-commons': '../../distro/jui-commons',
         'juiBase': '../../src/js/jquery.juiBase',
         'juiScrollPane': '../../src/js/ui/jquery.juiScrollPane',
         'juiSelectPicker': '../../src/js/ui/jquery.juiSelectPicker',
