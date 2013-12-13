@@ -637,7 +637,7 @@ $.widget("jui.juiBase", {
         }).on(d, function() {
             a.ensureAnimationFunctionality(), c.timeline.reverse(), a.options.state = b.COLLAPSED;
         }), $(window).on("click", function(d) {
-            $.contains(a.element, d.target) === !1 && 1 === c.timeline.progress && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
+            $.contains(a.element, $(d.target)) === !1 && 1 === c.timeline.progress() && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
             c.timeline.reverse(), a.options.state = b.COLLAPSED);
         });
     },

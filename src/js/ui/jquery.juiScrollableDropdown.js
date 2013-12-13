@@ -151,8 +151,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
         // When clicking outside of drop down close it
         $(window).on('click', function (e) {
-            if ($.contains(self.element, e.target) === false
-                && ops.timeline.progress === 1) {
+            if ($.contains(self.element, $(e.target)) === false
+                && ops.timeline.progress() === 1) {
                 if (self.options.state === states.EXPANDED) {
                     self.ensureAnimationFunctionality();
                     ops.timeline.reverse();
