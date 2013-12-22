@@ -12,7 +12,6 @@ function( Backbone, JuiFloatingScrollIndicatorsView  ) {
 	return Backbone.Marionette.ItemView.extend({
 
 		initialize: function() {
-			console.log("initialize a JuiFloatingScrollIndicatorsView ItemView");
 		},
 		
     	template: JuiFloatingScrollIndicatorsView,
@@ -25,7 +24,6 @@ function( Backbone, JuiFloatingScrollIndicatorsView  ) {
 
 		/* on show callback */
 		onShow: function() {
-            console.log("floating scroll ind");
             var indTestElm = $('.floating-scroll-indicators-test')
                 .juiFloatingScrollIndicators();
         }

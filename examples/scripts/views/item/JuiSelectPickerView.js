@@ -16,7 +16,6 @@ function (Backbone, tmpl) {
         },
 
         initialize: function () {
-            console.log("initialize a Juiselectpickerview ItemView");
         },
 
         template: tmpl,

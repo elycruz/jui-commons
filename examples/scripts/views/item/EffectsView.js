@@ -9,7 +9,6 @@ define([
         return Backbone.Marionette.ItemView.extend({
 
             initialize: function () {
-                console.log("initialize a Effectsview ItemView");
             },
 
             template: Effectsview,

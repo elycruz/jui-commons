@@ -16,7 +16,6 @@ define([
             },
 
             initialize: function () {
-                console.log("initialize a Juiscrollabledropdownview ItemView");
             },
 
             template: tmpl,
@@ -36,7 +35,6 @@ define([
                                 preInit: function () {
                                     this.getUiElement('contentElm')
                                         .height(0);
-                                    console.log('hello')
                                 }
                             },
                             {
