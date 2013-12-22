@@ -19,6 +19,15 @@ define(['backbone.marionette'], function(Marionette) {
         getViewClassName: function () {
             return strToCamelCase(this.requestParams.action
                 + this.viewClassSuffix);
+        },
+
+        dispatch: function (actionName) {
+            if (isset(this[actionName]) && typeof this[actionName] === 'function') {
+                this[actionName]();
+            }
+            if (isset(this.showView) && typeof this.showView === 'function') {
+                this.showView();
+            }
         }
 
     });
