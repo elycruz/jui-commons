@@ -12,6 +12,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             duration: 0.30
         },
 
+        // Label text for select picker
+        labelText: '',
+
+        skipFirstOptionItem: false,
+
         ui: {
             wrapperElm: {
                 elm: null,
@@ -88,10 +93,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 create: true,
                 optionSelectedClassName: 'selected'
             }
-        },
+        }
 
-        // Label text for select picker
-        labelText: ''
     },
 
     _create: function () {
@@ -160,7 +163,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
             // If button label is using first option from options list
             // Don't redraw this first option
-            if (i === 0 && empty(ops.ui.buttonElm.text)) {
+            if (i === 0 && ops.skipFirstOptionItem) {
                 return;
             }
 

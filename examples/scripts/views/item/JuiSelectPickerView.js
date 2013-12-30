@@ -27,6 +27,7 @@ function (Backbone, tmpl) {
 
                 $cats = ui.catSelectElm.juiSelectPicker({
                     labelText: 'Select a Category:',
+                    skipFirstOptionItem: true,
                     expandOn: 'click',
                     collapseOn: 'click'
                 }),
@@ -39,6 +40,7 @@ function (Backbone, tmpl) {
                         'class': 'jui-select-picker jui-select-picker-example-1'
                     }
                 },
+                skipFirstOptionItem: true,
                 labelText: '"Other Option":',
                 expandOn: 'mouseenter',
                 collapseOn: 'mouseleave'
