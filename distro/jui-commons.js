@@ -838,7 +838,7 @@ $.widget("jui.juiBase", {
         this._drawSelectOptions(), this.setLabelText(), this.element.trigger("change");
     },
     setSelectedItemLabelText: function(a, b, c) {
-        a = a || "", b = b || "text", c = c || !0;
+        a = a || "", b = b || "text", c = isset(c) ? c : !0;
         var d = this.options.ui.selectedItemLabelElm, e = this.getUiElement("selectedItemLabelElm").eq(0);
         c && (a = d.prefixText + a + d.suffixText), TweenMax.to(e, .16, {
             opacity: 0,

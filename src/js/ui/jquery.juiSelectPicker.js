@@ -329,9 +329,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     setSelectedItemLabelText: function (text, textType, usePrefixAndSuffix) {
         text = text || '';
         textType = textType || 'text';
-        usePrefixAndSuffix = usePrefixAndSuffix || true;
+        usePrefixAndSuffix = isset(usePrefixAndSuffix)  ? usePrefixAndSuffix : true;
         var config = this.options.ui.selectedItemLabelElm,
             elm = this.getUiElement('selectedItemLabelElm').eq(0);
+
         if (usePrefixAndSuffix) {
             text = config.prefixText + text + config.suffixText;
         }
@@ -364,7 +365,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         if (elm.length === 0) {
             return;
         }
-
         elm.parent().addClass(
             this.options.ui.optionsElm.optionSelectedClassName);
         this.element.val(elm.attr('data-value')).trigger('change');
