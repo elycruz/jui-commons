@@ -58,6 +58,11 @@ function (Backbone, tmpl) {
                     selElm.css('display', 'none');
                 }
             });
+
+            $('.add-items-to-select-element').click(function () {
+                $cats.append('<option> Random element' + Math.random() + '</option>')
+                $cats.juiSelectPicker('refreshOptions');
+            });
         },
 
         onClose: function () {

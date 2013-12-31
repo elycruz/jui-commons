@@ -17,6 +17,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         skipFirstOptionItem: false,
 
+        selectedValue: null,
+
         ui: {
             wrapperElm: {
                 elm: null,
@@ -118,7 +120,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         if (!empty(className)) {
             if (!empty(currentClassName)
                 && typeof currentClassName === 'string') {
-                ops.ui.wrapperElm.attribs['class'] +=' ' + className;
+                ops.ui.wrapperElm.attribs['class'] += ' ' + className;
             }
             else {
                 ops.ui.wrapperElm.attribs['class'] = className;
@@ -171,13 +173,27 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 dataValue = option.attr('data-value'),
                 classValue = option.attr('class');
 
+            // Preselect item if necessary
+            if (ops.selectedValue === value || ops.selectedValue === dataValue) {
+                if (isset(classValue)) {
+                    if (classValue.length > 0) {
+                        classValue += ' ';
+                    }
+                    classValue += ops.ui.optionsElm.optionSelectedClassName;
+                }
+                else {
+                    classValue = ops.ui.optionsElm.optionSelectedClassName;
+                }
+            }
+
+            // Resolve class attribute and data-value attribute
             classValue = !empty(classValue) ? 'class="' + classValue + '" ' : '';
             value = empty(value) ? (empty(dataValue) ?
-                    '' : 'data-value="' + dataValue + '" ') :
-                        ' data-value="' + value + '"';
+                '' : 'data-value="' + dataValue + '" ') :
+                ' data-value="' + value + '"';
 
             // Build list element
-            var li = $('<li><a '+ classValue + 'href="javascript: void(0);"'
+            var li = $('<li><a ' + classValue + 'href="javascript: void(0);"'
                 + value + '>' + option.text() + '</a></li>');
 
             // Add first class
@@ -229,9 +245,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // On select element change set it's selected item label text
         this.element.on('change', function (e) {
-            var elm = $(this);
-            if (isset(elm.val())) {
-                self.setSelectedItemLabelText(elm.val());
+            var elm = $(this),
+                val = elm.val();
+            if (isset(val)) {
+                self.setSelectedItemLabelText(val);
+//                self.setSelected(self.getOptionElementByValue(val));
             }
         });
     },
@@ -276,7 +294,9 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Get the dropdowns timeline
         timeline = dropDown.juiScrollableDropDown('getAnimationTimeline');
-        timeline.seek(0); timeline.clear(); timeline.pause();
+        timeline.seek(0);
+        timeline.clear();
+        timeline.pause();
 
         // Get scrollbar element
         scrollbarElm = $('.vertical.scrollbar', wrapperElm);
@@ -284,12 +304,12 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Supply new tweens
         [
             TweenLite.to(wrapperElm, duration, {height: wrapperElm.css('max-height')}),
-            TweenLite.to(contentElm, duration, {height: contentElm.css('max-height'), autoAlpha: 1, delay: - 0.30}),
-            TweenLite.to(scrollbarElm, duration, {autoAlpha: 1, delay: - 0.20})
+            TweenLite.to(contentElm, duration, {height: contentElm.css('max-height'), autoAlpha: 1, delay: -0.30}),
+            TweenLite.to(scrollbarElm, duration, {autoAlpha: 1, delay: -0.20})
         ]
             .forEach(function (tween) {
                 timeline.add(tween);
-        });
+            });
     },
 
     destroy: function () {
@@ -299,11 +319,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     refreshOptions: function () {
+        this.options.selectedValue = this.getSelectedOptionValue();
         this._removeCreatedOptions();
         this._drawSelectOptions();
         this.setLabelText();
-        this.element.val(null)
-            .trigger('change');
+        this.element.trigger('change');
     },
 
     setSelectedItemLabelText: function (text, textType, usePrefixAndSuffix) {
@@ -341,15 +361,21 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     setSelected: function (elm) {
+        if (elm.length === 0) {
+            return;
+        }
+
         elm.parent().addClass(
             this.options.ui.optionsElm.optionSelectedClassName);
         this.element.val(elm.attr('data-value')).trigger('change');
+        this.options.selectedValue = elm.attr('data-value');
     },
 
     clearSelected: function () {
         this.getUiElement('optionsElm')
             .find('> ul > li').removeClass(
                 this.options.ui.optionsElm.optionSelectedClassName);
+        this.options.selectedValue = null;
     },
 
     playAnimation: function () {
@@ -362,6 +388,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         var self = this,
             ops = self.options;
         ops.timeline.reverse();
+    },
+
+    getOptionElementByValue: function (value) {
+        this.getUiElement('optionsElm')
+            .find('[data-value="' + value +'"]');
+    },
+
+    getSelectedOptionValue: function () {
+        return this.getUiElement('optionsElm')
+            .find('.selected').find('a').attr('data-value');
     }
 
 });
