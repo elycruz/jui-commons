@@ -15,9 +15,6 @@ function (Backbone, tmpl) {
             otherSelectElm: '#other-options'
         },
 
-        initialize: function () {
-        },
-
         template: tmpl,
 
         onShow: function () {
@@ -26,6 +23,7 @@ function (Backbone, tmpl) {
             var ui = this.ui,
 
                 $cats = ui.catSelectElm.juiSelectPicker({
+                    useSelectedLabelPrefixAndSuffix: true,
                     labelText: 'Select a Category:',
                     skipFirstOptionItem: true,
                     expandOn: 'click',
@@ -40,8 +38,11 @@ function (Backbone, tmpl) {
                         'class': 'jui-select-picker jui-select-picker-example-1'
                     }
                 },
+                useSelectedLabelPrefixAndSuffix: true,
+                selectedLabelPrefix: '< "',
+                selectedLabelSuffix: '" >',
                 skipFirstOptionItem: true,
-                labelText: '"Other Option":',
+//                labelText: '"Other Option":',
                 expandOn: 'mouseenter',
                 collapseOn: 'mouseleave'
             });

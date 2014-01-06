@@ -12,8 +12,13 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             duration: 0.30
         },
 
-        // Label text for select picker
         labelText: '',
+
+        selectedLabelPrefix: '',
+
+        selectedLabelSuffix: '',
+
+        useSelectedLabelPrefixAndSuffix: false,
 
         skipFirstOptionItem: false,
 
@@ -101,7 +106,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     _create: function () {
         var ops = this.options;
-
         // If using modernizr and is touch enabled device use native
         // select picker/element
         if ($('html').hasClass('touch')) {
@@ -327,14 +331,20 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     },
 
     setSelectedItemLabelText: function (text, textType, usePrefixAndSuffix) {
+        var ops = this.options,
+            config = ops.ui.selectedItemLabelElm,
+            elm = this.getUiElement('selectedItemLabelElm').eq(0),
+            prefixText, suffixText;
+
         text = text || '';
         textType = textType || 'text';
-        usePrefixAndSuffix = isset(usePrefixAndSuffix)  ? usePrefixAndSuffix : true;
-        var config = this.options.ui.selectedItemLabelElm,
-            elm = this.getUiElement('selectedItemLabelElm').eq(0);
+        usePrefixAndSuffix = isset(usePrefixAndSuffix)
+            ? usePrefixAndSuffix : ops.useSelectedLabelPrefixAndSuffix;
 
         if (usePrefixAndSuffix) {
-            text = config.prefixText + text + config.suffixText;
+            prefixText = ops.selectedLabelPrefix || config.prefixText || '';
+            suffixText = ops.selectedLabelSuffix || config.suffixText || '';
+            text = prefixText + text + suffixText;
         }
 
         // @todo move this declaration to the add event listeners

@@ -1,4 +1,4 @@
-/*! jui-commons 2013-12-31 */
+/*! jui-commons 2014-01-06 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -682,6 +682,9 @@ $.widget("jui.juiBase", {
             duration: .3
         },
         labelText: "",
+        selectedLabelPrefix: "",
+        selectedLabelSuffix: "",
+        useSelectedLabelPrefixAndSuffix: !1,
         skipFirstOptionItem: !1,
         selectedValue: null,
         ui: {
@@ -838,11 +841,12 @@ $.widget("jui.juiBase", {
         this._drawSelectOptions(), this.setLabelText(), this.element.trigger("change");
     },
     setSelectedItemLabelText: function(a, b, c) {
-        a = a || "", b = b || "text", c = isset(c) ? c : !0;
-        var d = this.options.ui.selectedItemLabelElm, e = this.getUiElement("selectedItemLabelElm").eq(0);
-        c && (a = d.prefixText + a + d.suffixText), TweenMax.to(e, .16, {
+        var d, e, f = this.options, g = f.ui.selectedItemLabelElm, h = this.getUiElement("selectedItemLabelElm").eq(0);
+        a = a || "", b = b || "text", c = isset(c) ? c : f.useSelectedLabelPrefixAndSuffix, 
+        c && (d = f.selectedLabelPrefix || g.prefixText || "", e = f.selectedLabelSuffix || g.suffixText || "", 
+        a = d + a + e), TweenMax.to(h, .16, {
             opacity: 0,
-            onCompleteParams: [ a, b, e ],
+            onCompleteParams: [ a, b, h ],
             onComplete: function() {
                 var a = arguments, b = a[0], c = a[1], d = a[2];
                 d[c](b), TweenMax.to(d, .16, {
