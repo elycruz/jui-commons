@@ -1,6 +1,5 @@
 /**
  * Created by ElyDeLaCruz on 10/1/13.
- * @todo allow only scrolling on scrollable options elm
  */
 $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
