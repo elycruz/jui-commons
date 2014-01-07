@@ -781,13 +781,13 @@ $.widget("jui.juiBase", {
         var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
         c.each(function(a, b) {
             if (b = $(b), 0 !== a || !e.skipFirstOptionItem) {
-                var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class");
-                !isset(e.selectedValue) || e.selectedValue !== f && e.selectedValue !== g || (isset(h) ? (h.length > 0 && (h += " "), 
-                h += e.ui.optionsElm.optionSelectedClassName) : h = e.ui.optionsElm.optionSelectedClassName), 
+                var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class"), i = b.parent().attr("class") || "";
+                !isset(e.selectedValue) || e.selectedValue !== f && e.selectedValue !== g || (empty(i) ? i = e.ui.optionsElm.optionSelectedClassName : (i.length > 0 && (i += " "), 
+                i += e.ui.optionsElm.optionSelectedClassName), i = ' class="' + i + '"'), 
                 h = empty(h) ? "" : 'class="' + h + '" ', f = empty(f) ? empty(g) ? "" : 'data-value="' + g + '" ' : ' data-value="' + f + '"';
-                var i = $("<li><a " + h + 'href="javascript: void(0);"' + f + ">" + b.text() + "</a></li>");
-                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && i.addClass("first") : i.addClass("first"), 
-                a === c.length - 1 && i.addClass("last"), d.append(i);
+                var j = $("<li" + i + "><a " + h + 'href="javascript: void(0);"' + f + ">" + b.text() + "</a></li>");
+                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && j.addClass("first") : j.addClass("first"), 
+                a === c.length - 1 && j.addClass("last"), d.append(j);
             }
         }), b.append(d);
     },
@@ -879,6 +879,6 @@ $.widget("jui.juiBase", {
         this.getUiElement("optionsElm").find('[data-value="' + a + '"]');
     },
     getSelectedOptionValue: function() {
-        return this.getUiElement("optionsElm").find(".selected").find("a").attr("data-value");
+        return this.getUiElement("optionsElm").find("." + this.options.ui.optionsElm.optionSelectedClassName).find("a").attr("data-value");
     }
 });

@@ -175,20 +175,23 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
             var value = option.attr('value'),
                 dataValue = option.attr('data-value'),
-                classValue = option.attr('class');
+                classValue = option.attr('class'),
+                liClassValue = option.parent().attr('class') || '';
 
             // Preselect item if necessary
             if (isset(ops.selectedValue) &&
                 (ops.selectedValue === value || ops.selectedValue === dataValue)) {
-                if (isset(classValue)) {
-                    if (classValue.length > 0) {
-                        classValue += ' ';
+                if (!empty(liClassValue)) {
+                    if (liClassValue.length > 0) {
+                        liClassValue += ' ';
                     }
-                    classValue += ops.ui.optionsElm.optionSelectedClassName;
+                    liClassValue += ops.ui.optionsElm.optionSelectedClassName;
                 }
                 else {
-                    classValue = ops.ui.optionsElm.optionSelectedClassName;
+                    liClassValue = ops.ui.optionsElm.optionSelectedClassName;
                 }
+
+                liClassValue = ' class="' + liClassValue + '"';
             }
 
             // Resolve class attribute and data-value attribute
@@ -198,7 +201,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 ' data-value="' + value + '"';
 
             // Build list element
-            var li = $('<li><a ' + classValue + 'href="javascript: void(0);"'
+            var li = $('<li' + liClassValue + '><a ' + classValue + 'href="javascript: void(0);"'
                 + value + '>' + option.text() + '</a></li>');
 
             // Add first class
@@ -408,7 +411,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     getSelectedOptionValue: function () {
         return this.getUiElement('optionsElm')
-            .find('.selected').find('a').attr('data-value');
+            .find('.' + this.options.ui.optionsElm.optionSelectedClassName)
+            .find('a').attr('data-value');
     }
 
 });
