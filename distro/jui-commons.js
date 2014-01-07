@@ -1,4 +1,4 @@
-/*! jui-commons 2014-01-06 */
+/*! jui-commons 2014-01-07 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -782,7 +782,7 @@ $.widget("jui.juiBase", {
         c.each(function(a, b) {
             if (b = $(b), 0 !== a || !e.skipFirstOptionItem) {
                 var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class");
-                (e.selectedValue === f || e.selectedValue === g) && (isset(h) ? (h.length > 0 && (h += " "), 
+                !isset(e.selectedValue) || e.selectedValue !== f && e.selectedValue !== g || (isset(h) ? (h.length > 0 && (h += " "), 
                 h += e.ui.optionsElm.optionSelectedClassName) : h = e.ui.optionsElm.optionSelectedClassName), 
                 h = empty(h) ? "" : 'class="' + h + '" ', f = empty(f) ? empty(g) ? "" : 'data-value="' + g + '" ' : ' data-value="' + f + '"';
                 var i = $("<li><a " + h + 'href="javascript: void(0);"' + f + ">" + b.text() + "</a></li>");
