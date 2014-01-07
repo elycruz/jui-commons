@@ -781,7 +781,7 @@ $.widget("jui.juiBase", {
         var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
         c.each(function(a, b) {
             if (b = $(b), 0 !== a || !e.skipFirstOptionItem) {
-                var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class"), i = b.parent().attr("class") || "";
+                var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class"), i = "";
                 !isset(e.selectedValue) || e.selectedValue !== f && e.selectedValue !== g || (empty(i) ? i = e.ui.optionsElm.optionSelectedClassName : (i.length > 0 && (i += " "), 
                 i += e.ui.optionsElm.optionSelectedClassName), i = ' class="' + i + '"'), 
                 h = empty(h) ? "" : 'class="' + h + '" ', f = empty(f) ? empty(g) ? "" : 'data-value="' + g + '" ' : ' data-value="' + f + '"';

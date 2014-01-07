@@ -175,7 +175,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             var value = option.attr('value'),
                 dataValue = option.attr('data-value'),
                 classValue = option.attr('class'),
-                liClassValue = option.parent().attr('class') || '';
+                liClassValue = '';
 
             // Preselect item if necessary
             if (isset(ops.selectedValue) &&
