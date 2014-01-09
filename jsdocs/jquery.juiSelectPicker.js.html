@@ -1,4 +1,31 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/jquery.juiSelectPicker.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: ui/jquery.juiSelectPicker.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/**
  * Created by ElyDeLaCruz on 10/1/13.
  *
  * Hides a Select Element and Replaces it with a scrollable Select Picker element
@@ -80,6 +107,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         /**
          * Ui Hash.
          * @type {Object}
+         * @inner
          */
         ui: {
             wrapperElm: {
@@ -89,7 +117,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 },
                 appendTo: "after this.element",
                 selector: '.jui-select-picker',
-                html: '<div></div>',
+                html: '&lt;div>&lt;/div>',
                 create: true,
                 timeline: new TimelineMax()
             },
@@ -99,7 +127,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                     'class': 'button'
                 },
                 selector: '> .button',
-                html: '<div></div>',
+                html: '&lt;div>&lt;/div>',
                 appendTo: 'wrapperElm',
                 create: true
             },
@@ -109,7 +137,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                     'class': 'arrow'
                 },
                 selector: '> .arrow',
-                html: '<div></div>',
+                html: '&lt;div>&lt;/div>',
                 appendTo: 'buttonElm',
                 create: true
             },
@@ -120,7 +148,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 },
                 text: '',
                 selector: '> .label',
-                html: '<span></span>',
+                html: '&lt;span>&lt;/span>',
                 appendTo: 'buttonElm',
                 create: true
             },
@@ -132,7 +160,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 prefixText: 'You\'ve chosen "',
                 suffixText: '"',
                 selector: '> .selected-item-label',
-                html: '<span></span>',
+                html: '&lt;span>&lt;/span>',
                 appendTo: 'buttonElm',
                 create: true
             },
@@ -142,7 +170,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                     'class': 'body'
                 },
                 selector: '> .body',
-                html: '<div></div>',
+                html: '&lt;div>&lt;/div>',
                 appendTo: 'wrapperElm',
                 create: true
             },
@@ -152,7 +180,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                     'class': 'options'
                 },
                 selector: '.options',
-                html: '<div></div>',
+                html: '&lt;div>&lt;/div>',
                 appendTo: 'bodyElm',
                 create: true,
                 optionSelectedClassName: 'selected'
@@ -233,7 +261,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         var self = this,
             optionsElm = self.getUiElement('optionsElm'),
             options = self.element.find('option'),
-            ul = $('<ul></ul>'),
+            ul = $('&lt;ul>&lt;/ul>'),
             ops = self.options;
 
         // Loop through option elements and copy them over to our
@@ -276,8 +304,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 ' data-value="' + value + '"';
 
             // Build list element
-            var li = $('<li' + liClassValue + '><a ' + classValue + 'href="javascript: void(0);"'
-                + value + '>' + option.text() + '</a></li>');
+            var li = $('&lt;li' + liClassValue + '>&lt;a ' + classValue + 'href="javascript: void(0);"'
+                + value + '>' + option.text() + '&lt;/a>&lt;/li>');
 
             // Add first class
             if (i === 0 && !empty(ops.ui.buttonElm.text)) {
@@ -568,3 +596,26 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     }
 
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="juiScrollableDropdown.html">juiScrollableDropdown</a></li><li><a href="juiScrollPane.html">juiScrollPane</a></li><li><a href="juiSplitText.html">juiSplitText</a></li><li><a href="juiBase.html">juiBase</a></li><li><a href="juiSelectPicker.html">juiSelectPicker</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Jan 08 2014 22:28:24 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

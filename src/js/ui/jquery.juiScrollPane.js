@@ -1,20 +1,27 @@
-    /**
+/**
  * Makes a content area scrollable with custom
  * scrollbars whose elements are fetched or created depending on the
- * flags passed in/or not passed in by the user.
+ * flags passed in/or-not-passed in by the user.
  *
  * @module $.jui.juiScrollPane
+ *
  * @requires jquery.mousewheel (for crossbrowser mousewheel functionality)
  * @requires jquery
  * @requires jquery.ui (jquery ui core)
+ * @requires jquery.ui.widget
  * @requires jquery.juiBase
  * @requires TweenMax
  * @returns jquery selection
+ *
  * @author ElyDeLaCruz
  * @created 09/28/2013
-     * @todo make sure scroll event causes a stop propagation call on mouse wheel
+ *
  */
 $.widget('jui.juiScrollPane', $.jui.juiBase, {
+    /**
+     * Options Hash.
+     * @type {Object}
+     */
     options: {
         ui: {
             contentHolder: {
