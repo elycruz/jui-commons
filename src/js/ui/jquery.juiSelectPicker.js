@@ -11,12 +11,17 @@
  * @requires jquery.ui.widget
  * @requires jquery.juiScrollableDropdown
  *
+ * @todo convert all inline option docs to options doclet using the @ property tag
+ *
  */
 $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     /**
      * Options hash.
      * @type {Object}
+     * @property className {String}
+     * @property animation {Object}
+     * @property labelText {String}
      */
     options: {
 
@@ -75,7 +80,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
          * @type {Boolean}
          */
         disableOnTouchDevice: true,
-
 
         /**
          * Ui Hash.
