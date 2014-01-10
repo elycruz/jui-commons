@@ -13,7 +13,6 @@ define([
         return Backbone.Marionette.ItemView.extend({
 
             initialize: function () {
-                console.log("initialize a JuiBasicPaginator ItemView");
             },
 
             className: 'grid-100 jui-paginators-example',

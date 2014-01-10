@@ -1,7 +1,7 @@
-# jQuery Ui Commons - jui-commons
-----------
-Collection of commonly used/needed ui components built with
-extensibility in mind using the jquery ui library version 1.9 +.
+# Javascript Ui Commons - jui-commons
+
+A Collection of commonly used/needed ui components built with
+extensibility in mind using the jquery ui library (version 1.9.x +).
 
 ### The Base: jui.juiBase
 -----------
@@ -45,7 +45,7 @@ All jui plugins share the following naming conventions:
 * Modernizr
 * Gsap (Green Sock Animation Platform)
 * jquery 1.8 +
-* jquery-ui 1.8 +
+* jquery-ui 1.9 +
   * jquery-ui core
   * jquery-ui widget factory
 

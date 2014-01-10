@@ -15,10 +15,6 @@ function (Backbone, tmpl) {
             otherSelectElm: '#other-options'
         },
 
-        initialize: function () {
-            console.log("initialize a Juiselectpickerview ItemView");
-        },
-
         template: tmpl,
 
         onShow: function () {
@@ -27,7 +23,9 @@ function (Backbone, tmpl) {
             var ui = this.ui,
 
                 $cats = ui.catSelectElm.juiSelectPicker({
+                    useSelectedLabelPrefixAndSuffix: true,
                     labelText: 'Select a Category:',
+                    skipFirstOptionItem: true,
                     expandOn: 'click',
                     collapseOn: 'click'
                 }),
@@ -40,7 +38,11 @@ function (Backbone, tmpl) {
                         'class': 'jui-select-picker jui-select-picker-example-1'
                     }
                 },
-                labelText: '"Other Option":',
+                useSelectedLabelPrefixAndSuffix: true,
+                selectedLabelPrefix: '< "',
+                selectedLabelSuffix: '" >',
+                skipFirstOptionItem: true,
+//                labelText: '"Other Option":',
                 expandOn: 'mouseenter',
                 collapseOn: 'mouseleave'
             });
@@ -56,6 +58,11 @@ function (Backbone, tmpl) {
                     selElm.attr('hidden', 'hidden');
                     selElm.css('display', 'none');
                 }
+            });
+
+            $('.add-items-to-select-element').click(function () {
+                $cats.append('<option> Random element' + Math.random() + '</option>')
+                $cats.juiSelectPicker('refreshOptions');
             });
         },
 

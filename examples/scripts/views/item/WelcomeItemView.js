@@ -9,7 +9,6 @@ function( Backbone, tmpl  ) {
 	return Backbone.Marionette.ItemView.extend({
 
 		initialize: function() {
-			console.log("initialize a Welcomeitemview ItemView");
 		},
 		
     	template: tmpl,

@@ -6,7 +6,6 @@ define([
 
     app.module('ExamplesModule', function(mod, app) {
         mod.addInitializer(function() {
-	        console.log('ExamplesModule has been initialized.');
         });
     });
 

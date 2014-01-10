@@ -5,15 +5,15 @@
   max-height: 280px;
   color: #888;
   background: #fff;
-  outline: solid #888 1px;
+  border: 1px solid #888;
 }
 /* line 10, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker.expanded {
-  outline: solid #000 1px;
+  border: 1px solid #000;
 }
 /* line 11, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker.expanded .options {
-  outline: solid #000 1px;
+  border: 1px solid #000;
 }
 /* line 17, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .button {
@@ -172,7 +172,7 @@
 /* line 1, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down {
   position: absolute;
-  outline: solid #888 1px;
+  border: 1px solid #888;
   background: #fff;
   width: 320px;
   max-height: 280px;
@@ -180,11 +180,11 @@
 }
 /* line 2, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down.expanded {
-  outline: solid #000 1px;
+  border: 1px solid #000;
 }
 /* line 3, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down.expanded .options {
-  outline: solid #000 1px;
+  border: 1px solid #000;
 }
 /* line 16, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .button {

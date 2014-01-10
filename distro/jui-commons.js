@@ -1,4 +1,4 @@
-/*! jui-commons 2013-12-13 */
+/*! jui-commons 2014-01-07 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -418,9 +418,11 @@ $.widget("jui.juiBase", {
             var d = ($(this), {});
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
-                /\d+/.test(f) ? (f - 1 > b.pages.length ? (console.log("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page."), 
-                a._gotoPageNum(b.pages.length)) : 0 > f - 1 && (console.log("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page."), 
-                a._gotoPageNum(0)), a._gotoPageNum(f - 1)) : d.messages = [ "Only numbers are allowed in the paginator textfield." ], 
+                if (/\d+/.test(f)) {
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
+                    a._gotoPageNum(f - 1);
+                } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
                 b.ui.textField.callback(d));
             }
@@ -679,6 +681,12 @@ $.widget("jui.juiBase", {
         animation: {
             duration: .3
         },
+        labelText: "",
+        selectedLabelPrefix: "",
+        selectedLabelSuffix: "",
+        useSelectedLabelPrefixAndSuffix: !1,
+        skipFirstOptionItem: !1,
+        selectedValue: null,
         ui: {
             wrapperElm: {
                 elm: null,
@@ -755,8 +763,7 @@ $.widget("jui.juiBase", {
                 create: !0,
                 optionSelectedClassName: "selected"
             }
-        },
-        labelText: ""
+        }
     },
     _create: function() {
         this.options, $("html").hasClass("touch");
@@ -773,12 +780,14 @@ $.widget("jui.juiBase", {
     _drawSelectOptions: function() {
         var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
         c.each(function(a, b) {
-            if (b = $(b), 0 !== a || !empty(e.ui.buttonElm.text)) {
-                var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class");
+            if (b = $(b), 0 !== a || !e.skipFirstOptionItem) {
+                var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class"), i = "";
+                !isset(e.selectedValue) || e.selectedValue !== f && e.selectedValue !== g || (empty(i) ? i = e.ui.optionsElm.optionSelectedClassName : (i.length > 0 && (i += " "), 
+                i += e.ui.optionsElm.optionSelectedClassName), i = ' class="' + i + '"'), 
                 h = empty(h) ? "" : 'class="' + h + '" ', f = empty(f) ? empty(g) ? "" : 'data-value="' + g + '" ' : ' data-value="' + f + '"';
-                var i = $("<li><a " + h + 'href="javascript: void(0);"' + f + ">" + b.text() + "</a></li>");
-                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && i.addClass("first") : i.addClass("first"), 
-                a === c.length - 1 && i.addClass("last"), d.append(i);
+                var j = $("<li" + i + "><a " + h + 'href="javascript: void(0);"' + f + ">" + b.text() + "</a></li>");
+                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && j.addClass("first") : j.addClass("first"), 
+                a === c.length - 1 && j.addClass("last"), d.append(j);
             }
         }), b.append(d);
     },
@@ -791,8 +800,8 @@ $.widget("jui.juiBase", {
             var d = $(c.currentTarget);
             a.clearSelected(), a.setSelected(d), b.timeline.reverse();
         }), this.element.on("change", function() {
-            var b = $(this);
-            isset(b.val()) && a.setSelectedItemLabelText(b.val());
+            var b = $(this), c = b.val();
+            isset(c) && a.setSelectedItemLabelText(c);
         });
     },
     _removeCreatedOptions: function() {
@@ -828,15 +837,16 @@ $.widget("jui.juiBase", {
         this.element.removeAttr("hidden"), this._removeCreatedOptions(), this._super();
     },
     refreshOptions: function() {
-        this._removeCreatedOptions(), this._drawSelectOptions(), this.setLabelText(), 
-        this.element.val(null).trigger("change");
+        this.options.selectedValue = this.getSelectedOptionValue(), this._removeCreatedOptions(), 
+        this._drawSelectOptions(), this.setLabelText(), this.element.trigger("change");
     },
     setSelectedItemLabelText: function(a, b, c) {
-        a = a || "", b = b || "text", c = c || !0;
-        var d = this.options.ui.selectedItemLabelElm, e = this.getUiElement("selectedItemLabelElm").eq(0);
-        c && (a = d.prefixText + a + d.suffixText), TweenMax.to(e, .16, {
+        var d, e, f = this.options, g = f.ui.selectedItemLabelElm, h = this.getUiElement("selectedItemLabelElm").eq(0);
+        a = a || "", b = b || "text", c = isset(c) ? c : f.useSelectedLabelPrefixAndSuffix, 
+        c && (d = f.selectedLabelPrefix || g.prefixText || "", e = f.selectedLabelSuffix || g.suffixText || "", 
+        a = d + a + e), TweenMax.to(h, .16, {
             opacity: 0,
-            onCompleteParams: [ a, b, e ],
+            onCompleteParams: [ a, b, h ],
             onComplete: function() {
                 var a = arguments, b = a[0], c = a[1], d = a[2];
                 d[c](b), TweenMax.to(d, .16, {
@@ -850,11 +860,12 @@ $.widget("jui.juiBase", {
         this.getUiElement("labelElm").eq(0)[b](a);
     },
     setSelected: function(a) {
-        a.parent().addClass(this.options.ui.optionsElm.optionSelectedClassName), 
-        this.element.val(a.attr("data-value")).trigger("change");
+        0 !== a.length && (a.parent().addClass(this.options.ui.optionsElm.optionSelectedClassName), 
+        this.element.val(a.attr("data-value")).trigger("change"), this.options.selectedValue = a.attr("data-value"));
     },
     clearSelected: function() {
-        this.getUiElement("optionsElm").find("> ul > li").removeClass(this.options.ui.optionsElm.optionSelectedClassName);
+        this.getUiElement("optionsElm").find("> ul > li").removeClass(this.options.ui.optionsElm.optionSelectedClassName), 
+        this.options.selectedValue = null;
     },
     playAnimation: function() {
         var a = this, b = a.options;
@@ -863,5 +874,11 @@ $.widget("jui.juiBase", {
     reverseAnimation: function() {
         var a = this, b = a.options;
         b.timeline.reverse();
+    },
+    getOptionElementByValue: function(a) {
+        this.getUiElement("optionsElm").find('[data-value="' + a + '"]');
+    },
+    getSelectedOptionValue: function() {
+        return this.getUiElement("optionsElm").find("." + this.options.ui.optionsElm.optionSelectedClassName).find("a").attr("data-value");
     }
 });

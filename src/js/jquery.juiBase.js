@@ -264,6 +264,7 @@ $.widget('jui.juiBase', {
      * Lazy initializes a Timeline Lite or
      * Timeline Max animation timeline.
      * @returns {TimelineMax|TimelineLite}
+     * @todo move this out of here.
      */
     getAnimationTimeline: function () {
         var timeline = this.options.timeline;

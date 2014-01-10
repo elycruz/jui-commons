@@ -8,10 +8,6 @@ module.exports = function (grunt) {
                 banner: '/*! ' +
                     '<%= pkg.name %> ' +
                     '<%= grunt.template.today("yyyy-mm-dd") %> */\n'
-//                beautify: {
-//                    beautify: true,
-//                    width: 72
-//                }
             },
             build: {
                 src: [

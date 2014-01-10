@@ -31,18 +31,14 @@ define(['application', 'backbone.marionette'], function (app, Marionette) {
                     + '/' + controllerClassName;
 
             require([entrypoint], function (Entrypoint) {
-                
+
                 E = new Entrypoint({
                     requestParams: $.extend({
                         controller: controller,
                         action: action}, requestParams)
                 });
 
-                //                E.mergeRequestParams();
-
-                if (typeof E[actionName] === 'function') {
-                    E[actionName]();
-                }
+                E.dispatch(actionName);
             });
         },
 
