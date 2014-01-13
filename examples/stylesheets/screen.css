@@ -903,9 +903,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   border: 3px solid #000;
   float: left;
 }
-
-/* line 35, ../sass/_jui-scroll-pane-example.scss */
-.second.content-pane .content div.alphabet {
+/* line 25, ../sass/_jui-scroll-pane-example.scss */
+.content-pane .content div.alphabet {
   float: none;
   margin: 0;
   padding: 0;
@@ -914,6 +913,25 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   line-height: 78px;
   letter-spacing: 10px;
   width: 1000px;
+}
+
+/* line 42, ../sass/_jui-scroll-pane-example.scss */
+.nested-content-panes {
+  position: relative;
+  width: 640px !important;
+  height: 450px;
+  padding: 20px;
+}
+/* line 46, ../sass/_jui-scroll-pane-example.scss */
+.nested-content-panes > .content {
+  width: 640px;
+  height: 450px;
+  background: #eee;
+}
+/* line 51, ../sass/_jui-scroll-pane-example.scss */
+.nested-content-panes .content-pane {
+  display: inline-block !important;
+  float: left;
 }
 
 /* line 2, ../sass/_jui-floating-scroll-indicators-example.scss */

@@ -436,7 +436,7 @@ $.widget("jui.juiBase", {
         ui: {
             contentHolder: {
                 elm: null,
-                selector: ".content",
+                selector: ">.content",
                 html: "<div></div>",
                 attribs: {
                     "class": "content"
@@ -444,7 +444,7 @@ $.widget("jui.juiBase", {
             },
             vertScrollbar: {
                 elm: null,
-                selector: ".vertical.scrollbar",
+                selector: "> .vertical.scrollbar",
                 html: "<div></div>",
                 appendTo: "this.element",
                 attribs: {
@@ -454,7 +454,7 @@ $.widget("jui.juiBase", {
             },
             vertHandle: {
                 elm: null,
-                selector: ".handle",
+                selector: "> .handle",
                 html: "<div></div>",
                 appendTo: "vertScrollbar",
                 attribs: {
@@ -464,7 +464,7 @@ $.widget("jui.juiBase", {
             },
             horizScrollbar: {
                 elm: null,
-                selector: ".horizontal.scrollbar",
+                selector: "> .horizontal.scrollbar",
                 html: "<div></div>",
                 appendTo: "this.element",
                 attribs: {
@@ -474,7 +474,7 @@ $.widget("jui.juiBase", {
             },
             horizHandle: {
                 elm: null,
-                selector: ".handle",
+                selector: "> .handle",
                 html: "<div></div>",
                 appendTo: "horizScrollbar",
                 attribs: {
@@ -498,12 +498,15 @@ $.widget("jui.juiBase", {
         "hidden" !== b.css("overflow") && (a.originalOverflow = b.css("overflow"), 
         b.css("overflow", "hidden")), f.element.addClass(a.pluginClassName), d > b.height() && f.initScrollbar(a.scrollbarOriented.VERTICALLY), 
         c > b.width() ? f.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : f.getUiElement("horizScrollbar").css("display", "none"), 
-        b.mousewheel(function(c, d, g, h) {
-            if (c.preventDefault(), d = void 0 !== d || null !== d ? d : h, null !== d && void 0 !== d) {
-                var i = 1 > d ? 10 : -10, j = (b.scrollTop() + i, e.position().top + i);
-                e.css("top", j), f.constrainHandle(a.scrollbarOriented.VERTICALLY), f.constrainHandle(a.scrollbarOriented.HORIZONTALLY), 
-                f.scrollContentHolder(a.scrollbarOriented.VERTICALLY), f.scrollContentHolder(a.scrollbarOriented.HORIZONTALLY);
-            }
+        b.mousewheel(function(b, c, d, g) {
+            console.log("delta: ", c, "x: ", d, "y: ", g), b.preventDefault(), b.stopPropagation(), 
+            c = isset(c) ? c : isset(d) ? d : g;
+            var h, i = 1 > c ? 10 : -10;
+            0 !== d ? (e = f.getScrollbarHandleByOrientation(a.scrollbarOriented.HORIZONTALLY), 
+            h = e.position().left + i, e.css("left", h), f.constrainHandle(a.scrollbarOriented.HORIZONTALLY), 
+            f.scrollContentHolder(a.scrollbarOriented.HORIZONTALLY)) : (e = f.getScrollbarHandleByOrientation(a.scrollbarOriented.VERTICALLY), 
+            h = e.position().top + i, e.css("top", h), f.constrainHandle(a.scrollbarOriented.VERTICALLY), 
+            f.scrollContentHolder(a.scrollbarOriented.VERTICALLY));
         });
     },
     _scrollByOrientation: function(a, b) {

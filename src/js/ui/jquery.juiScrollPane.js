@@ -26,7 +26,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         ui: {
             contentHolder: {
                 elm: null,
-                selector: '.content',
+                selector: '>.content',
                 html: '<div></div>',
                 attribs: {
                     'class': 'content'
@@ -34,7 +34,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             },
             vertScrollbar: {
                 elm: null,
-                selector: '.vertical.scrollbar',
+                selector: '> .vertical.scrollbar',
                 html: '<div></div>',
                 appendTo: 'this.element',
                 attribs: {
@@ -44,7 +44,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             },
             vertHandle: {
                 elm: null,
-                selector: '.handle',
+                selector: '> .handle',
                 html: '<div></div>',
                 appendTo: 'vertScrollbar',
                 attribs: {
@@ -54,7 +54,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             },
             horizScrollbar: {
                 elm: null,
-                selector: '.horizontal.scrollbar',
+                selector: '> .horizontal.scrollbar',
                 html: '<div></div>',
                 appendTo: 'this.element',
                 attribs: {
@@ -64,7 +64,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             },
             horizHandle: {
                 elm: null,
-                selector: '.handle',
+                selector: '> .handle',
                 html: '<div></div>',
                 appendTo: 'horizScrollbar',
                 attribs: {
@@ -121,32 +121,52 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
 
         contentHolder.mousewheel(function (e, delta, deltaX, deltaY) {
+            console.log('delta: ', delta, 'x: ', deltaX, 'y: ', deltaY);
 
             // Scroll this element individually
             e.preventDefault();
 
-            delta = delta !== undefined || delta !== null ? delta : deltaY;
+            // Stop propagation for nested scroll panes
+            e.stopPropagation();
 
-            // If no delta bail
-            if (delta === null || delta === undefined) {
-                return;
-            }
+            delta = isset(delta) ? delta :
+                (isset(deltaX)? deltaX : deltaY);
 
             // Prelims
             var incrementer = delta < 1 ? 10 : -10,
-                scrollTo = contentHolder.scrollTop() + incrementer,
-                handleOffsetTop = handle.position().top + incrementer;
+                handleOffset;
 
-            // Position Handle
-            handle.css('top', handleOffsetTop);
+            // Scroll horizontally
+            if (deltaX !== 0) {
+                handle = plugin.getScrollbarHandleByOrientation(
+                    ops.scrollbarOriented.HORIZONTALLY);
 
-            // Constrain Handle
-            plugin.constrainHandle(ops.scrollbarOriented.VERTICALLY);
-            plugin.constrainHandle(ops.scrollbarOriented.HORIZONTALLY);
+                handleOffset = handle.position().left + incrementer;
 
-            // Scroll content holder
-            plugin.scrollContentHolder(ops.scrollbarOriented.VERTICALLY);
-            plugin.scrollContentHolder(ops.scrollbarOriented.HORIZONTALLY);
+                // Position Handle
+                handle.css('left', handleOffset);
+
+                // Constrain Handle
+                plugin.constrainHandle(ops.scrollbarOriented.HORIZONTALLY);
+
+                // Scroll content holder
+                plugin.scrollContentHolder(ops.scrollbarOriented.HORIZONTALLY);
+            }
+            // Assume vertical scrolling action
+            else {
+                handle = plugin.getScrollbarHandleByOrientation(
+                    ops.scrollbarOriented.VERTICALLY);
+                handleOffset = handle.position().top + incrementer;
+
+                // Position Handle
+                handle.css('top', handleOffset);
+
+                // Constrain handle
+                plugin.constrainHandle(ops.scrollbarOriented.VERTICALLY);
+
+                // Scroll content holder
+                plugin.scrollContentHolder(ops.scrollbarOriented.VERTICALLY);
+            }
         });
     },
 

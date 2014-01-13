@@ -8,9 +8,6 @@ function( Backbone, tmpl ) {
 	/* Return a ItemView class definition */
 	return Backbone.Marionette.ItemView.extend({
 
-		initialize: function() {
-        },
-		
     	template: tmpl,
 
         scrollPane1: null,

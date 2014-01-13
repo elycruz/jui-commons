@@ -22,16 +22,6 @@
             border: 3px solid #000;
             float: left;
         }
-    }
-
-    //.vertical.scrollbar {
-    //    position: absolute;
-    //    height: 240px;
-    //}
-}
-
-.second.content-pane {
-    .content {
         div.alphabet {
             float: none;
             margin: 0;
@@ -42,5 +32,25 @@
             letter-spacing: 10px;
             width: 1000px;
         }
+
     }
+
+
+
+}
+
+.nested-content-panes {
+    position: relative;
+    width: 640px !important;
+    height: 450px;
+    > .content {
+        width: 640px;
+        height: 450px;
+        background: #eee;
+    }
+    .content-pane {
+        display: inline-block !important;
+        float: left;
+    }
+    padding: 20px;
 }
