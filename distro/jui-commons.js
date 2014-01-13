@@ -1,4 +1,4 @@
-/*! jui-commons 2014-01-07 */
+/*! jui-commons 2014-01-13 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -483,18 +483,21 @@ $.widget("jui.juiBase", {
                 create: !0
             }
         },
+        pluginClassName: "jui-scroll-pane",
         scrollbarOriented: {
             VERTICALLY: "vertical",
             HORIZONTALLY: "horizontal"
         },
         autoHide: !1,
+        originalOverflow: null,
         debug: !1
     },
     _create: function() {
         this._populateUiElementsFromOptions();
         var a = this.options, b = this.getUiElement("contentHolder"), c = b.get(0).scrollWidth, d = b.get(0).scrollHeight, e = this.getUiElement("vertHandle"), f = this;
-        "hidden" !== b.css("overflow") && b.css("overflow", "hidden"), f.element.addClass("jui-scroll-pane"), 
-        d > b.height() && f.initScrollbar(a.scrollbarOriented.VERTICALLY), c > b.width() ? f.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : this.getUiElement("horizScrollbar").css("display", "none"), 
+        "hidden" !== b.css("overflow") && (a.originalOverflow = b.css("overflow"), 
+        b.css("overflow", "hidden")), f.element.addClass(a.pluginClassName), d > b.height() && f.initScrollbar(a.scrollbarOriented.VERTICALLY), 
+        c > b.width() ? f.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : f.getUiElement("horizScrollbar").css("display", "none"), 
         b.mousewheel(function(c, d, g, h) {
             if (c.preventDefault(), d = void 0 !== d || null !== d ? d : h, null !== d && void 0 !== d) {
                 var i = 1 > d ? 10 : -10, j = (b.scrollTop() + i, e.position().top + i);
@@ -564,6 +567,13 @@ $.widget("jui.juiBase", {
     },
     scrollHorizontally: function(a) {
         this._scrollByOrientation(a, this.options.scrollbarOriented.HORIZONTALLY);
+    },
+    _destroy: function() {
+        var a = this, b = a.options;
+        a.getUiElement("vertHandle").remove(), a.getUiElement("vertScrollbar").remove(), 
+        a.getUiElement("horizHandle").remove(), a.getUiElement("horizScrollbar").remove(), 
+        a.element.attr("overflow", b.originalOverflow), a.element.removeClass(b.pluginClassName), 
+        this._super();
     }
 }), $.widget("jui.juiScrollableDropDown", $.jui.juiBase, {
     options: {
@@ -687,6 +697,7 @@ $.widget("jui.juiBase", {
         useSelectedLabelPrefixAndSuffix: !1,
         skipFirstOptionItem: !1,
         selectedValue: null,
+        disableOnTouchDevice: !0,
         ui: {
             wrapperElm: {
                 elm: null,
@@ -766,7 +777,8 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        this.options, $("html").hasClass("touch");
+        var a = this.options;
+        $("html").hasClass("touch") && a.disableOnTouchDevice && (a.isTouchDevice = !0);
     },
     _init: function() {
         var a = this, b = this.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
@@ -869,11 +881,11 @@ $.widget("jui.juiBase", {
     },
     playAnimation: function() {
         var a = this, b = a.options;
-        b.timeline.play();
+        b.disableOnTouchDevice && b.isTouchDevice || b.timeline.play();
     },
     reverseAnimation: function() {
         var a = this, b = a.options;
-        b.timeline.reverse();
+        b.disableOnTouchDevice && b.isTouchDevice || b.timeline.reverse();
     },
     getOptionElementByValue: function(a) {
         this.getUiElement("optionsElm").find('[data-value="' + a + '"]');

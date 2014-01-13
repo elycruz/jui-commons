@@ -11,7 +11,7 @@
  * Import this file using the following HTML or equivalent:
  * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 
-@import "../../bower_components/unsemantic/assets/sass/unsemantic-grid-desktop";
+@import "../bower_components/unsemantic/assets/sass/unsemantic-grid-desktop";
 @import "../../src/css/jui-commons/jui-commons.css";
 @import "jui-scrollable-drop-down-example";
 @import "jui-scroll-pane-example";
@@ -25,6 +25,7 @@ html, body {
 
 h1, h3 {
     font: bold 122%"Helvetica Neue", Arial, Helvetica, sans-serif ! important;
+    margin-top: 10px;
     margin-bottom: 10px;
 }
 

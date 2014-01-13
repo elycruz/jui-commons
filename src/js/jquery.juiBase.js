@@ -9,9 +9,14 @@
  * @requires jQuery
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
+
  * @todo Resolve issue with non-unique timeline object -
  * Timeline object seems to be only one instance not new instances on
  * new calls of the extending plugins.
+ *
+ * @todo fix `_removeCreatedElements` (it currently uses config.create to
+ * check whether it should remove elements or not but `config.create` is deleted
+ * in `_getElementFromOptions`.
  */
 $.widget('jui.juiBase', {
 

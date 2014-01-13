@@ -13,8 +13,20 @@ function( Backbone, tmpl ) {
 		
     	template: tmpl,
 
+        scrollPane1: null,
+
         onShow: function () {
-            $('.content-pane', this.$el).juiScrollPane();
+            var self = this;
+            $('.toggle-example-1-state').click(function () {
+                if (!empty(self.scrollPane1)) {
+                    self.scrollPane1.juiScrollPane('destroy');
+                    self.scrollPane1 = null;
+                }
+                else {
+                    self.scrollPane1 =
+                        $('.content-pane', self.$el).juiScrollPane();
+                }
+            });
         }
 	});
 

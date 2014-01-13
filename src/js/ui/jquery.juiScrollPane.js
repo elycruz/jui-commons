@@ -74,12 +74,16 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             }
         },
 
+        pluginClassName: 'jui-scroll-pane',
+
         scrollbarOriented: {
             VERTICALLY: 'vertical',
             HORIZONTALLY: 'horizontal'
         },
 
         autoHide: false,
+
+        originalOverflow: null,
 
         debug: false
     },
@@ -95,11 +99,12 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
         // Conetnt Holder
         if (contentHolder.css('overflow') !== 'hidden') {
+            ops.originalOverflow = contentHolder.css('overflow');
             contentHolder.css('overflow', 'hidden');
         }
 
         // Add plugin class
-        plugin.element.addClass('jui-scroll-pane');
+        plugin.element.addClass(ops.pluginClassName);
 
         // Determine whether we need a horizontal and/or vertical scrollbar.
         // Init vertical scrollbar
@@ -112,7 +117,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             plugin.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
         }
         else {
-            this.getUiElement('horizScrollbar').css('display', 'none');
+            plugin.getUiElement('horizScrollbar').css('display', 'none');
         }
 
         contentHolder.mousewheel(function (e, delta, deltaX, deltaY) {
@@ -143,7 +148,6 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             plugin.scrollContentHolder(ops.scrollbarOriented.VERTICALLY);
             plugin.scrollContentHolder(ops.scrollbarOriented.HORIZONTALLY);
         });
-
     },
 
     _scrollByOrientation: function (value, orientation) {
@@ -330,6 +334,24 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     scrollHorizontally: function (value) {
         this._scrollByOrientation(value,
             this.options.scrollbarOriented.HORIZONTALLY);
+    },
+
+    _destroy: function () {
+        var self = this,
+            ops = self.options;
+
+        // Remove created elements
+        self.getUiElement('vertHandle').remove();
+        self.getUiElement('vertScrollbar').remove();
+        self.getUiElement('horizHandle').remove();
+        self.getUiElement('horizScrollbar').remove();
+
+        // Undo original element manipulations
+        self.element.attr('overflow', ops.originalOverflow);
+        self.element.removeClass(ops.pluginClassName);
+
+        // Call jquery.ui.widget's _destory method
+        this._super();
     }
 
 });
