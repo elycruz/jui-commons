@@ -3,7 +3,7 @@ require.config({
 
     deps: [
         'es5-shim', 'es5-sham', 'phpjs',
-        'backbone.marionette', 'jquery', 'main'],
+        'backbone.marionette', 'jquery', 'TweenMax', 'main'],
 
     shim: {
         'gsap-scrollto-plugin': {
