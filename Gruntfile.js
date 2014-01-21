@@ -55,7 +55,7 @@ module.exports = function (grunt) {
                 tasks: ['uglify'],
                 options: {
                     spawn: false,
-                    livereload: true
+                    livereload: 9000
                 }
             }
         },

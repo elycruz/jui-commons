@@ -2,12 +2,11 @@ require([
 	'backbone',
 	'application',
 	'regionManager',
-    'modules/ExamplesModule',
     'jquery',
     'jquery-ui',
     'TweenMax',
-    'jui-commons'
-
+    'jui-commons',
+    'mustache'
 ],
 function ( Backbone, App ) {
     'use strict';

@@ -20,7 +20,9 @@
     "require-handlebars-plugin": "~0.4.0",
     "sinon": "~1.7.3",
     "underscore-amd": "~1.4.4",
-    "unsemantic": "nathansmith/unsemantic"
+    "unsemantic": "nathansmith/unsemantic",
+    "requirejs-mustache": "*",
+    "mustache": "~0.8.1"
   },
   "devDependencies": {},
   "directory": "bower_components"

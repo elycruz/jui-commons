@@ -1,10 +1,7 @@
 define([
     'backbone',
-    'hbs!tmpl/item/jui-basic-paginator-view',
-    'gsap-scrollto-plugin',
-    'juiScrollPane',
-    'juiBasicPaginator',
-    'juiPaginatorWithTextField'
+    'stache!tmpl/item/jui-basic-paginator-view',
+    'gsap-scrollto-plugin'
 ],
     function (Backbone, tmpl) {
         'use strict';

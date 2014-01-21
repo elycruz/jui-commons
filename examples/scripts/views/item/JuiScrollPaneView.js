@@ -1,6 +1,6 @@
 define([
 	'backbone',
-	'hbs!tmpl/item/jui-scroll-pane-view'
+	'stache!tmpl/item/jui-scroll-pane-view'
 ],
 function( Backbone, tmpl ) {
     'use strict';

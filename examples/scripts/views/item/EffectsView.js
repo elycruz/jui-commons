@@ -1,6 +1,6 @@
 define([
     'backbone',
-    'hbs!tmpl/item/effects-view'
+    'stache!tmpl/item/effects-view'
 ],
     function (Backbone, Effectsview) {
         'use strict';

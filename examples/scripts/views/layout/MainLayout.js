@@ -1,6 +1,5 @@
 define([
-	'backbone',
-	'hbs!tmpl/layout/main-layout'
+	'backbone'
 ],
 function( Backbone, tmpl  ) {
     'use strict';
@@ -14,8 +13,6 @@ function( Backbone, tmpl  ) {
 			console.log("initialize a MainLayout Layout");
 		},
 		
-    	template: tmpl,
-
     	/* Layout sub regions */
     	regions: {
             leftColRegion: '#left-col',
