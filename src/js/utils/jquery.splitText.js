@@ -8,6 +8,7 @@
  * @triggers split-text:toggle
  * @triggers split-text:complete
  * @author ElyDeLaCruz
+ * @created 2013/12
  */
 
     $.widget('jui.splitText', {

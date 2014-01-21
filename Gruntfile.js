@@ -54,7 +54,8 @@ module.exports = function (grunt) {
                 files: ['./src/js/**/*.js'],
                 tasks: ['uglify'],
                 options: {
-                    spawn: false
+                    spawn: false,
+                    livereload: true
                 }
             }
         },
@@ -64,6 +65,11 @@ module.exports = function (grunt) {
                     port: 3000,
                     base: '.'
                 }
+            }
+        },
+        open: {
+            server: {
+                path: 'http://localhost:<%= connect.server.options.port %>/examples'
             }
         },
         jsdoc : {
@@ -83,20 +89,38 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-open');
 
     // Load the plugin that provides the "jsdoc" task.
     grunt.loadNpmTasks('grunt-jsdoc');
 
     // Default task(s).
     grunt.registerTask('default', [
-        'compass', 'cssmin', 'uglify', 'jsdoc', 'connect', 'watch']);
+        'compass',
+        'cssmin',
+        'uglify',
+        'jsdoc',
+        'connect',
+        'open',
+        'watch'
+    ]);
 
     // Build task
     grunt.registerTask('build', [
-        'compass', 'cssmin', 'uglify', 'jsdoc']);
+        'compass',
+        'cssmin',
+        'uglify',
+        'jsdoc'
+    ]);
 
     // Development task
     grunt.registerTask('develop', [
-        'compass', 'cssmin', 'uglify', 'connect', 'watch']);
+        'compass',
+        'cssmin',
+        'uglify',
+        'connect',
+        'open',
+        'watch'
+    ]);
 
 };
