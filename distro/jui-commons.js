@@ -1,4 +1,4 @@
-/*! jui-commons 2014-01-20 */
+/*! jui-commons 2014-01-22 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -26,7 +26,7 @@ $.widget("jui.juiBase", {
         empty(e) ? null : e instanceof $ && e.length > 0 ? e : isset(e.elm) && e.elm instanceof $ && e.length > 0 ? e.elm : (isset(e.selector) && empty(e.create) && "string" == typeof e.selector && (e.elm = "string" == typeof e.appendTo && e.appendTo.length > 0 && -1 === e.appendTo.indexOf("this") ? $(e.selector, c.getUiElement(e.appendTo)) : $(e.selector, c.element)), 
         !empty(e.html) && e.create && "string" == typeof e.html && (e.elm = this._createElementFromOptions(e), 
         isset(e.appendTo) && "string" == typeof e.appendTo && (b = this.element.parent(), 
-        "this.element" === e.appendTo ? e.elm = this.element.append(e.elm).find(e.selector) : "after this.element" === e.appendTo ? (this.element.after(e.elm), 
+        "body" === e.appendTo ? e.elm = $("body").eq(0).append(e.elm).find(e.selector) : "this.element" === e.appendTo ? e.elm = this.element.append(e.elm).find(e.selector) : "after this.element" === e.appendTo ? (this.element.after(e.elm), 
         e.elm = b.find(this.element.get(0).nodeName + " ~ " + e.selector)) : "before this.element" === e.appendTo ? (this.element.before(e.elm), 
         e.elm = b.find(e.selector + " ~ " + this.element.get(0).nodeName)) : "prepend to this.element" === e.appendTo ? (this.element.prepend(e.elm), 
         e.elm = this.element.children().first()) : e.elm = this.getUiElement(e.appendTo).append(e.elm).find(e.selector)), 
@@ -311,6 +311,136 @@ $.widget("jui.juiBase", {
     },
     getItemsElm: function() {
         return this.getUiElement("items");
+    }
+}), $.widget("jui.juiDialog", $.jui.juiBase, {
+    options: {
+        className: "",
+        animation: {
+            duration: .3
+        },
+        template: '<div class="jui-dialog"><header><div class="title"></div></header><section class="content"></section><footer></footer></div>',
+        useTemplate: !1,
+        ui: {
+            pageOverlay: {
+                elm: null,
+                attribs: {
+                    "class": "jui-page-overlay"
+                },
+                appendTo: "body",
+                selector: ".jui-page-overlay",
+                html: "<div></div>",
+                create: !0
+            },
+            wrapperElm: {
+                elm: null,
+                attribs: {
+                    "class": "jui-dialog"
+                },
+                appendTo: "body",
+                selector: ".jui-dialog",
+                html: "<div></div>",
+                create: !0
+            },
+            headerElm: {
+                elm: null,
+                selector: "> header",
+                html: "<header></header>",
+                appendTo: "wrapperElm",
+                create: !0
+            },
+            titleElm: {
+                elm: null,
+                attribs: {
+                    "class": "title"
+                },
+                text: "",
+                selector: "> .title",
+                html: "<div></div>",
+                appendTo: "headerElm",
+                create: !0
+            },
+            closeButtonElm: {
+                elm: null,
+                attribs: {
+                    "class": "close button"
+                },
+                selector: "> .close.button",
+                html: "<div>X</div>",
+                appendTo: "headerElm",
+                create: !0
+            },
+            contentElm: {
+                elm: null,
+                attribs: {
+                    "class": "content"
+                },
+                selector: "> .content",
+                html: "<section></section>",
+                appendTo: "wrapperElm",
+                create: !0
+            },
+            footerElm: {
+                elm: null,
+                selector: "> footer",
+                html: "<footer></footer>",
+                appendTo: "wrapperElm",
+                create: !0
+            }
+        }
+    },
+    _create: function() {
+        var a = this.options;
+        $("html").hasClass("touch") && a.disableOnTouchDevice && (a.isTouchDevice = !0);
+    },
+    _init: function() {
+        var a = this, b = a.options;
+        b.timeline = new TimelineMax({
+            paused: !0
+        }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setContentFromThisElement(), 
+        a._addEventListeners(), a.open();
+    },
+    _setClassNameFromOptions: function() {
+        var a = this, b = a.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
+        empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
+        a.getUiElement("wrapperElm").attr("class", b.ui.wrapperElm.attribs["class"]);
+    },
+    _setContentFromThisElement: function() {
+        this._clearContentElmContent().html(this.element.text());
+    },
+    _setTitleText: function() {},
+    _clearContentElmContent: function() {
+        return this.getUiElement("contentElm").html("");
+    },
+    _addEventListeners: function() {
+        var a = this, b = (a.options, a.getUiElement("wrapperElm"), a.getUiElement("pageOverlay"));
+        b.bind("click", function(b) {
+            b.preventDefault(), a.close();
+        });
+    },
+    close: function() {
+        this.getUiElement("pageOverlay").css({
+            display: "none"
+        }), this.getUiElement("wrapperElm").css({
+            display: "none"
+        });
+    },
+    open: function() {
+        this.getUiElement("pageOverlay").css({
+            display: "block"
+        }), this.getUiElement("wrapperElm").css({
+            display: "block"
+        });
+    },
+    destroy: function() {
+        this._super();
+    },
+    playAnimation: function() {
+        var a = this, b = a.options;
+        b.timeline.play();
+    },
+    reverseAnimation: function() {
+        var a = this, b = a.options;
+        b.timeline.reverse();
     }
 }), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
     options: {
