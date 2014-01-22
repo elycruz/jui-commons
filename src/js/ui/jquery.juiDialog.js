@@ -180,9 +180,6 @@ $.widget('jui.juiDialog', $.jui.juiBase, {
 
     /**
      * Adds event listeners for:
-     * - wrapper - mouseup;
-     * - wrapper - a[data-value] click;
-     * - select element - change;
      * @private
      */
     _addEventListeners: function () {
@@ -207,7 +204,6 @@ $.widget('jui.juiDialog', $.jui.juiBase, {
         this.getUiElement('pageOverlay').css({display: 'block'});
         this.getUiElement('wrapperElm').css({display: 'block'});
     },
-
 
     /**
      * Destroys `this` instance.
