@@ -1,3 +1,27 @@
+/* line 1, ../../sass/jui-commons/_jui-dialog.scss */
+.jui-dialog {
+  position: absolute;
+  width: 320px;
+  heigth: 240px;
+  background: #fff;
+  outline: solid #000 1px;
+  z-index: 9999;
+}
+
+/* line 10, ../../sass/jui-commons/_jui-dialog.scss */
+.jui-page-overlay {
+  position: absolute;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.38);
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9998;
+}
+
 /* line 1, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker {
   position: absolute;
