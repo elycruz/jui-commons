@@ -10,13 +10,20 @@
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
 
- * @todo Resolve issue with non-unique timeline object -
+ * @todo -- issue solved -- make sure all classes that need a timeline object
+ * implement their own `getTimeline` method.
+ * ~~~deprecated~~~
+ * Resolve issue with non-unique timeline object -
  * Timeline object seems to be only one instance not new instances on
  * new calls of the extending plugins.
  *
  * @todo fix `_removeCreatedElements` (it currently uses config.create to
  * check whether it should remove elements or not but `config.create` is deleted
  * in `_getElementFromOptions`.
+ *
+ * @todo add a setoptions and setoption methods to juibase
+ * @todo breakdown the _getElementFromOptions method further (create a new
+ * appendElementFromOptions method)
  */
 $.widget('jui.juiBase', {
 
@@ -157,7 +164,11 @@ $.widget('jui.juiBase', {
             if (isset(config.appendTo)
                 && typeof config.appendTo === 'string') {
                 parent = this.element.parent();
-                if (config.appendTo === 'this.element') {
+                if (config.appendTo === 'body') {
+                    config.elm = $('body').eq(0)
+                        .append(config.elm).find(config.selector);
+                }
+                else if (config.appendTo === 'this.element') {
                     config.elm = this.element
                         .append(config.elm).find(config.selector);
                 }
