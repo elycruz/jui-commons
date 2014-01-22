@@ -68,7 +68,6 @@ require.config({
         'jquery-mousewheel': '../bower_components/jquery-mousewheel/jquery.mousewheel',
         'jquery-smartresize': '../bower_components/jquery-smartresize/jquery.debouncedresize',
 
-
         backbone: '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',
 

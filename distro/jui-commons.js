@@ -5,11 +5,11 @@ $.widget("jui.juiBase", {
         timeline: null,
         ui: {}
     },
-    _namespace: function(a, b) {
-        var c, d = a.split("."), e = isset(b) ? b : this.options;
-        for (c = 0; c < d.length; c += 1) "undefined" == typeof e[d[c]] && (e[d[c]] = {}), 
-        e = e[d[c]];
-        return e;
+    _namespace: function(a, b, c) {
+        var d, e = a.split("."), f = isset(b) ? b : this.options;
+        for (d = 0; d < e.length; d += 1) "undefined" == typeof f[e[d]] && (f[e[d]] = d === e.length && void 0 !== c ? c : {}), 
+        f = f[e[d]];
+        return f;
     },
     _populateUiElementsFromOptions: function(a) {
         var b = this, c = isset(a) ? a : this.options;
@@ -21,28 +21,43 @@ $.widget("jui.juiBase", {
         });
     },
     _getElementFromOptions: function(a) {
-        var b, c = this, d = c.options, e = a;
-        return "string" == typeof e && (e = c._namespace(e, d)), "function" == typeof e && (e = e()), 
-        empty(e) ? null : e instanceof $ && e.length > 0 ? e : isset(e.elm) && e.elm instanceof $ && e.length > 0 ? e.elm : (isset(e.selector) && empty(e.create) && "string" == typeof e.selector && (e.elm = "string" == typeof e.appendTo && e.appendTo.length > 0 && -1 === e.appendTo.indexOf("this") ? $(e.selector, c.getUiElement(e.appendTo)) : $(e.selector, c.element)), 
-        !empty(e.html) && e.create && "string" == typeof e.html && (e.elm = this._createElementFromOptions(e), 
-        isset(e.appendTo) && "string" == typeof e.appendTo && (b = this.element.parent(), 
-        "body" === e.appendTo ? e.elm = $("body").eq(0).append(e.elm).find(e.selector) : "this.element" === e.appendTo ? e.elm = this.element.append(e.elm).find(e.selector) : "after this.element" === e.appendTo ? (this.element.after(e.elm), 
-        e.elm = b.find(this.element.get(0).nodeName + " ~ " + e.selector)) : "before this.element" === e.appendTo ? (this.element.before(e.elm), 
-        e.elm = b.find(e.selector + " ~ " + this.element.get(0).nodeName)) : "prepend to this.element" === e.appendTo ? (this.element.prepend(e.elm), 
-        e.elm = this.element.children().first()) : e.elm = this.getUiElement(e.appendTo).append(e.elm).find(e.selector)), 
-        delete e.create), empty(e.elm) ? null : e.elm);
+        var b = this, c = b.options, d = a;
+        return "string" == typeof d && (d = b._namespace(d, c)), "function" == typeof d && (d = d()), 
+        empty(d) ? null : d instanceof $ && d.length > 0 ? d : isset(d.elm) && d.elm instanceof $ && d.length > 0 ? d.elm : (isset(d.selector) && empty(d.elm) && "string" == typeof d.selector && (d.elm = "string" == typeof d.appendTo && d.appendTo.length > 0 && -1 === d.appendTo.indexOf("this") ? $(d.selector, b.getUiElement(d.appendTo)) : $(d.selector, b.element)), 
+        !empty(d.html) && d.create && "string" == typeof d.html && (d.elm = this._createElementFromOptions(d), 
+        isset(d.appendTo) && "string" == typeof d.appendTo && b._appendElementFromOptions(d)), 
+        empty(d.elm) ? null : d.elm);
+    },
+    _appendElementFromOptions: function(a) {
+        var b = this.element.parent();
+        "body" === a.appendTo ? a.elm = $("body").eq(0).append(a.elm).find(a.selector) : "this.element" === a.appendTo ? a.elm = this.element.append(a.elm).find(a.selector) : "after this.element" === a.appendTo ? (this.element.after(a.elm), 
+        a.elm = b.find(this.element.get(0).nodeName + " ~ " + a.selector)) : "before this.element" === a.appendTo ? (this.element.before(a.elm), 
+        a.elm = b.find(a.selector + " ~ " + this.element.get(0).nodeName)) : "prepend to this.element" === a.appendTo ? (this.element.prepend(a.elm), 
+        a.elm = this.element.children().first()) : a.elm = this.getUiElement(a.appendTo).append(a.elm).find(a.selector);
     },
     _createElementFromOptions: function(a) {
         var b = null;
         return isset(a) && "string" == typeof a && (a = this._namespace(a)), empty(a) ? null : (a.html && (b = $(a.html), 
-        isset(a.attribs) && $.isPlainObject(a.attribs) && b.attr(a.attribs), delete a.create), 
-        b);
+        isset(a.attribs) && $.isPlainObject(a.attribs) && b.attr(a.attribs)), b);
     },
     _removeCreatedElements: function() {
         var a = this, b = a.options;
-        b.ui.keys.forEach(function() {
-            b.ui[key].elm instanceof $ && b.ui[key].create && b.ui[key].elm.remove();
+        Object.keys(b.ui).forEach(function(a) {
+            b.ui[a].elm instanceof $ && b.ui[a].create && b.ui[a].elm.remove();
         });
+    },
+    _setOption: function(a, b) {
+        this._namespace(a, this.options, b);
+    },
+    _setOptions: function(a) {
+        var b = this;
+        if (isset(a)) return $.each(a, function(a, c) {
+            b._callSetterForKey(a, c);
+        }), b;
+    },
+    _callSetterForKey: function(a, b) {
+        var c = "set" + strToCamelCase(a), d = this;
+        isset(d[c]) ? d[c](b) : d._setOption(a, b);
     },
     getUiElement: function(a) {
         var b = this.options, c = null;
@@ -77,6 +92,9 @@ $.widget("jui.juiBase", {
         var e = null;
         return "string" == typeof a && $.isPlainObject(b) && (e = this._namespace(a, b), 
         "function" == typeof e && empty(d) && (e = e.apply(this, c))), e;
+    },
+    setValueOnHash: function(a, b, c) {
+        this._namespace(a, c, b);
     }
 }), $.widget("jui.splitText", {
     options: {
@@ -177,11 +195,8 @@ $.widget("jui.juiBase", {
             left: a.getValueFromOptions("offset.left")
         };
         c.addClass(b["class"]), f.bind("scroll resize orientationchange load", function() {
-            {
-                var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
-                f.width() + g.right;
-            }
-            d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
+            var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
+            f.width() + g.right, d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
                 position: "fixed",
                 top: g.top,
                 bottom: "auto"
@@ -312,137 +327,156 @@ $.widget("jui.juiBase", {
     getItemsElm: function() {
         return this.getUiElement("items");
     }
-}), $.widget("jui.juiDialog", $.jui.juiBase, {
-    options: {
-        className: "",
-        animation: {
-            duration: .3
-        },
-        template: '<div class="jui-dialog"><header><div class="title"></div></header><section class="content"></section><footer></footer></div>',
-        useTemplate: !1,
-        ui: {
-            pageOverlay: {
-                elm: null,
-                attribs: {
-                    "class": "jui-page-overlay"
+}), function() {
+    $.widget("jui.juiDialog", $.jui.juiBase, {
+        options: {
+            className: "",
+            animation: {
+                duration: .3
+            },
+            status: null,
+            statuses: {
+                OPENED: 1,
+                CLOSED: 0
+            },
+            ui: {
+                pageOverlay: {
+                    elm: null,
+                    attribs: {
+                        "class": "jui-page-overlay"
+                    },
+                    appendTo: "body",
+                    selector: ".jui-page-overlay",
+                    html: "<div></div>",
+                    create: !0
                 },
-                appendTo: "body",
-                selector: ".jui-page-overlay",
-                html: "<div></div>",
-                create: !0
-            },
-            wrapperElm: {
-                elm: null,
-                attribs: {
-                    "class": "jui-dialog"
+                wrapperElm: {
+                    elm: null,
+                    attribs: {
+                        "class": "jui-dialog"
+                    },
+                    appendTo: "body",
+                    selector: ".jui-dialog",
+                    html: "<div></div>",
+                    create: !0
                 },
-                appendTo: "body",
-                selector: ".jui-dialog",
-                html: "<div></div>",
-                create: !0
-            },
-            headerElm: {
-                elm: null,
-                selector: "> header",
-                html: "<header></header>",
-                appendTo: "wrapperElm",
-                create: !0
-            },
-            titleElm: {
-                elm: null,
-                attribs: {
-                    "class": "title"
+                headerElm: {
+                    elm: null,
+                    selector: "> header",
+                    html: "<header></header>",
+                    appendTo: "wrapperElm",
+                    create: !0
                 },
-                text: "",
-                selector: "> .title",
-                html: "<div></div>",
-                appendTo: "headerElm",
-                create: !0
-            },
-            closeButtonElm: {
-                elm: null,
-                attribs: {
-                    "class": "close button"
+                titleElm: {
+                    elm: null,
+                    attribs: {
+                        "class": "title"
+                    },
+                    text: "",
+                    selector: "> .title",
+                    html: "<div></div>",
+                    appendTo: "headerElm",
+                    create: !0
                 },
-                selector: "> .close.button",
-                html: "<div>X</div>",
-                appendTo: "headerElm",
-                create: !0
-            },
-            contentElm: {
-                elm: null,
-                attribs: {
-                    "class": "content"
+                closeButtonElm: {
+                    elm: null,
+                    attribs: {
+                        "class": "close button"
+                    },
+                    selector: "> .close.button",
+                    html: "<div>X</div>",
+                    appendTo: "headerElm",
+                    create: !0
                 },
-                selector: "> .content",
-                html: "<section></section>",
-                appendTo: "wrapperElm",
-                create: !0
-            },
-            footerElm: {
-                elm: null,
-                selector: "> footer",
-                html: "<footer></footer>",
-                appendTo: "wrapperElm",
-                create: !0
+                contentElm: {
+                    elm: null,
+                    attribs: {
+                        "class": "content"
+                    },
+                    selector: "> .content",
+                    html: "<section></section>",
+                    appendTo: "wrapperElm",
+                    create: !0
+                },
+                footerElm: {
+                    elm: null,
+                    selector: "> footer",
+                    html: "<footer></footer>",
+                    appendTo: "wrapperElm",
+                    create: !0
+                }
             }
+        },
+        _instances: [],
+        _create: function() {
+            var a = this, b = a.options;
+            $("html").hasClass("touch") && b.disableOnTouchDevice && (b.isTouchDevice = !0), 
+            a._instances.push(this), a._destroyAllInstances();
+        },
+        _init: function() {
+            var a = this, b = a.options;
+            b.timeline = new TimelineMax({
+                paused: !0
+            }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setContentFromThisElement(), 
+            a._addEventListeners(), a.open();
+        },
+        _setClassNameFromOptions: function() {
+            var a = this, b = a.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
+            empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
+            a.getUiElement("wrapperElm").attr("class", b.ui.wrapperElm.attribs["class"]);
+        },
+        _setContentFromThisElement: function() {
+            this._clearContentElmContent().html(this.element.text());
+        },
+        _setTitleText: function() {},
+        _clearContentElmContent: function() {
+            return this.getUiElement("contentElm").html("");
+        },
+        _addEventListeners: function() {
+            var a = this, b = (a.options, a.getUiElement("wrapperElm"), a.getUiElement("pageOverlay")), c = a.getUiElement("closeButtonElm");
+            b.bind("click", function(b) {
+                b.preventDefault(), a.close();
+            }), c.bind("click", function(b) {
+                b.preventDefault(), a.close();
+            });
+        },
+        _destroy: function() {
+            this._removeCreatedElements();
+        },
+        _destroyAllInstances: function() {
+            this._instances.forEach(function(a) {
+                a.destroy();
+            });
+        },
+        close: function() {
+            var a = this, b = a.options;
+            a.getUiElement("pageOverlay").css({
+                display: "none"
+            }), a.getUiElement("wrapperElm").css({
+                display: "none"
+            }), b.status = b.statuses.CLOSED;
+        },
+        open: function() {
+            var a = this, b = a.options;
+            a.getUiElement("pageOverlay").css({
+                display: "block"
+            }), a.getUiElement("wrapperElm").css({
+                display: "block"
+            }), b.status = b.statuses.OPENED;
+        },
+        destroy: function() {
+            this._destroy(), this._super();
+        },
+        playAnimation: function() {
+            var a = this, b = a.options;
+            b.timeline.play();
+        },
+        reverseAnimation: function() {
+            var a = this, b = a.options;
+            b.timeline.reverse();
         }
-    },
-    _create: function() {
-        var a = this.options;
-        $("html").hasClass("touch") && a.disableOnTouchDevice && (a.isTouchDevice = !0);
-    },
-    _init: function() {
-        var a = this, b = a.options;
-        b.timeline = new TimelineMax({
-            paused: !0
-        }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setContentFromThisElement(), 
-        a._addEventListeners(), a.open();
-    },
-    _setClassNameFromOptions: function() {
-        var a = this, b = a.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
-        empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
-        a.getUiElement("wrapperElm").attr("class", b.ui.wrapperElm.attribs["class"]);
-    },
-    _setContentFromThisElement: function() {
-        this._clearContentElmContent().html(this.element.text());
-    },
-    _setTitleText: function() {},
-    _clearContentElmContent: function() {
-        return this.getUiElement("contentElm").html("");
-    },
-    _addEventListeners: function() {
-        var a = this, b = (a.options, a.getUiElement("wrapperElm"), a.getUiElement("pageOverlay"));
-        b.bind("click", function(b) {
-            b.preventDefault(), a.close();
-        });
-    },
-    close: function() {
-        this.getUiElement("pageOverlay").css({
-            display: "none"
-        }), this.getUiElement("wrapperElm").css({
-            display: "none"
-        });
-    },
-    open: function() {
-        this.getUiElement("pageOverlay").css({
-            display: "block"
-        }), this.getUiElement("wrapperElm").css({
-            display: "block"
-        });
-    },
-    destroy: function() {
-        this._super();
-    },
-    playAnimation: function() {
-        var a = this, b = a.options;
-        b.timeline.play();
-    },
-    reverseAnimation: function() {
-        var a = this, b = a.options;
-        b.timeline.reverse();
-    }
-}), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
+    });
+}(), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
     options: {
         "class": "jui-floating-scroll-indicator",
         animation: {
@@ -493,7 +527,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -540,11 +574,8 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        {
-            var a = this;
-            a.options;
-        }
-        a.element.addClass(a.options.className), a._super();
+        var a = this;
+        a.options, a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -555,8 +586,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
@@ -635,8 +666,7 @@ $.widget("jui.juiBase", {
         b.css("overflow", "hidden")), f.element.addClass(a.pluginClassName), d > b.height() && f.initScrollbar(a.scrollbarOriented.VERTICALLY), 
         c > b.width() ? f.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : f.getUiElement("horizScrollbar").css("display", "none"), 
         b.mousewheel(function(b, c, d, g) {
-            console.log("delta: ", c, "x: ", d, "y: ", g), b.preventDefault(), b.stopPropagation(), 
-            c = isset(c) ? c : isset(d) ? d : g;
+            b.preventDefault(), b.stopPropagation(), c = isset(c) ? c : isset(d) ? d : g;
             var h, i = 1 > c ? 10 : -10;
             0 !== d ? (e = f.getScrollbarHandleByOrientation(a.scrollbarOriented.HORIZONTALLY), 
             h = e.position().left + i, e.css("left", h), f.constrainHandle(a.scrollbarOriented.HORIZONTALLY), 
