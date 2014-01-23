@@ -195,8 +195,11 @@ $.widget("jui.juiBase", {
             left: a.getValueFromOptions("offset.left")
         };
         c.addClass(b["class"]), f.bind("scroll resize orientationchange load", function() {
-            var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
-            f.width() + g.right, d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
+            {
+                var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
+                f.width() + g.right;
+            }
+            d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
                 position: "fixed",
                 top: g.top,
                 bottom: "auto"
@@ -328,6 +331,11 @@ $.widget("jui.juiBase", {
         return this.getUiElement("items");
     }
 }), function() {
+    function a() {
+        return argsToArray(arguments).filter(function(a) {
+            return isset(a);
+        });
+    }
     $.widget("jui.juiDialog", $.jui.juiBase, {
         options: {
             className: "",
@@ -417,8 +425,8 @@ $.widget("jui.juiBase", {
             var a = this, b = a.options;
             b.timeline = new TimelineMax({
                 paused: !0
-            }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setContentFromThisElement(), 
-            a._addEventListeners(), a.open();
+            }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setTitleText(), 
+            a._setContentFromThisElement(), a._addEventListeners(), a.open();
         },
         _setClassNameFromOptions: function() {
             var a = this, b = a.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
@@ -428,7 +436,6 @@ $.widget("jui.juiBase", {
         _setContentFromThisElement: function() {
             this._clearContentElmContent().html(this.element.text());
         },
-        _setTitleText: function() {},
         _clearContentElmContent: function() {
             return this.getUiElement("contentElm").html("");
         },
@@ -447,6 +454,17 @@ $.widget("jui.juiBase", {
             this._instances.forEach(function(a) {
                 a.destroy();
             });
+        },
+        _setTitleText: function(b, c) {
+            c = c || "text";
+            var d = this, e = d.options, f = a(b, e.titleText, e.ui.titleElm.text, d.element.attr("title"))[0];
+            d.getUiElement("titleElm")[c](f);
+        },
+        setClassName: function(a) {
+            this._namespace("titleText", a), this._setClassNameFromOptions();
+        },
+        setTitleText: function(a, b) {
+            return this._setTitleText(a, b), this;
         },
         close: function() {
             var a = this, b = a.options;
@@ -527,7 +545,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -574,8 +592,11 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        var a = this;
-        a.options, a.element.addClass(a.options.className), a._super();
+        {
+            var a = this;
+            a.options;
+        }
+        a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -586,8 +607,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 

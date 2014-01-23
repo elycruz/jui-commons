@@ -3,6 +3,12 @@
  */
 (function () {
 
+    function returnSetVars () {
+        return argsToArray(arguments).filter(function (value) {
+            return isset(value);
+        });
+    }
+
     $.widget('jui.juiDialog', $.jui.juiBase, {
 
         /**
@@ -144,6 +150,9 @@
             // Set `class name` from options
             self._setClassNameFromOptions();
 
+            // Set `title text` from options
+            self._setTitleText();
+
             // Set inner content to content from this element
             self._setContentFromThisElement();
 
@@ -179,10 +188,6 @@
         _setContentFromThisElement: function () {
             this._clearContentElmContent()
                 .html(this.element.text());
-        },
-
-        _setTitleText: function () {
-
         },
 
         _clearContentElmContent: function () {
@@ -225,6 +230,31 @@
             });
         },
 
+        _setTitleText: function (value, typeKey) {
+            typeKey = typeKey || 'text';
+            var self = this,
+                ops = self.options,
+                text = returnSetVars(
+                    value,
+                    ops.titleText,
+                    ops.ui.titleElm.text,
+                    self.element.attr('title')
+                )[0];
+
+            // Set the text elements html
+            self.getUiElement('titleElm')[typeKey](text);
+        },
+
+        setClassName: function (value) {
+            this._namespace('titleText', value);
+            this._setClassNameFromOptions();
+        },
+
+        setTitleText: function (value, typeKey) {
+            this._setTitleText(value, typeKey);
+            return this;
+        },
+
         close: function () {
             var self = this,
                 ops = self.options;
@@ -232,7 +262,6 @@
             self.getUiElement('wrapperElm').css({display: 'none'});
             ops.status = ops.statuses.CLOSED;
         },
-
 
         open: function () {
             var self = this,

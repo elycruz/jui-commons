@@ -20,7 +20,10 @@ function( Backbone, tmpl ) {
         onShow: function () {
             var self = this;
             $('.toggle-example-1-state').click(function () {
-                self.ui.content1.juiDialog({className: 'my-dialog', });
+                self.ui.content1.juiDialog({
+                    className: 'my-dialog',
+                    titleText: 'Title set via javascript'
+                });
             });
         }
 	});
