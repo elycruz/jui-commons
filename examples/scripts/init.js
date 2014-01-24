@@ -3,14 +3,8 @@ require.config({
 //    baseUrl: './scripts',
 
     deps: [
-        'es5-shim',
-        'es5-sham',
-        'phpjs',
-        'backbone.marionette',
-        'jquery',
-        'hbs',
-        'TweenMax',
-        'main'
+        'checkjs', 'es5-shim', 'es5-sham', 'phpjs',
+        'backbone.marionette', 'jquery', 'TweenMax', 'hbs', 'main'
     ],
 
     shim: {
@@ -48,7 +42,6 @@ require.config({
             deps: ['juiBase']
         },
         'juiBasicPaginator': {
-            deps: ['juiAbstractPaginator']
         },
         'juiPaginatorWithTextField': {
             deps: ['juiBasicPaginator']
@@ -66,6 +59,7 @@ require.config({
         'backbone.babysitter':  '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
         'backbone.marionette':  '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
         'backbone.wreqr':       '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
+        'checkjs':              '../bower_components/checkjs/check',
 
         'es5-sham':             '../bower_components/es5-shim/es5-sham',
         'es5-shim':             '../bower_components/es5-shim/es5-shim',

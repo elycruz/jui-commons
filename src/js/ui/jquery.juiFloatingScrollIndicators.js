@@ -5,15 +5,13 @@
 // @todo create alternate indicator creation method (list of selectors?)
 $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
     options: {
-        'class': 'jui-floating-scroll-indicator',
+        className: 'jui-floating-scroll-indicator',
         animation: {
             easing: Power3.easeOut,
             duration: 1
         },
         ui: {
-            scrollableElm: {
-                elm: $('body')
-            },
+            scrollableElm: 'html, body',
             wrapperElm: {
                 elm: null,
                 attribs: {
@@ -46,7 +44,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
             ops = self.options;
 
         // Add class name to this element
-        self.element.addClass(ops['class']);
+        self.element.addClass(ops.className);
 
         // Populate initial ui elements
         self._populateUiElementsFromOptions();
@@ -63,6 +61,10 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
                 inds.eq(index).css('top', $(elm).offset().top);
             });
         });
+    },
+
+    _addEventListeners: function () {
+
     },
 
     _createInidicators: function () {
@@ -105,7 +107,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
                 scrollableElm: scrollableElm,
                 offset: {
                     top: (index + 1) * nuIndElm.height(),
-                    bottom: -((indNeededElm.length - index)
+                    bottom: ((indNeededElm.length - index)
                         * nuIndElm.height())
                 }
             });
@@ -120,7 +122,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         indElms.click(function (e) {
             var elm = $(this),
                 toElm = indNeededElm.eq(elm.attr('data-index')),
-                val = parseInt(toElm.offset().top);
+                val = parseInt(toElm.position().top + elm.height());
             TweenMax.to(scrollableElm, ops.animation.duration,
                 {scrollTo: val});
         });

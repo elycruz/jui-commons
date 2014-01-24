@@ -25,7 +25,7 @@ function( Backbone, JuiFloatingScrollIndicatorsView  ) {
 		/* on show callback */
 		onShow: function() {
             var indTestElm = $('.floating-scroll-indicators-test')
-                .juiFloatingScrollIndicators();
+                .juiFloatingScrollIndicators({ui: {scrollableElm: $(window)}});
         }
 	});
 
