@@ -173,44 +173,49 @@ $.widget("jui.juiBase", {
         affixVertically: !0,
         affixHorizontally: !1,
         offset: {
-            top: 10,
-            right: 10,
-            bottom: 10,
-            left: 10
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
         },
         _isPositionFixedSupported: !1
     },
     _create: function() {
-        var a = this, b = a.options, c = a.element, d = b.affixVertically, e = (b.affixHorizontally, 
-        {
+        var a = this, b = a.options, c = a.element, d = b.affixVertically, e = b.affixHorizontally, f = {
             position: c.css("position"),
             top: c.position().top,
             right: c.css("right"),
             bottom: c.css("bottom"),
             left: c.position().left
-        }), f = b.scrollableElm, g = {
-            top: a.getValueFromOptions("offset.top"),
-            right: a.getValueFromOptions("offset.right"),
-            bottom: a.getValueFromOptions("offset.bottom"),
-            left: a.getValueFromOptions("offset.left")
+        }, g = b.scrollableElm, h = {
+            top: a.getValueFromOptions("offset.top") || 0,
+            right: a.getValueFromOptions("offset.right") || 0,
+            bottom: a.getValueFromOptions("offset.bottom") || 0,
+            left: a.getValueFromOptions("offset.left") || 0
         };
-        console.log("affix offsets", g, "original positions", e), c.addClass(b.className), 
-        f.bind("scroll resize orientationchange load", function() {
-            {
-                var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() - g.bottom - c.height());
-                f.width() + g.right;
-            }
-            d && (b > e.top - g.top && c.position().top - b < h ? c.css({
+        console.log("affix offsets", h, "original positions", f), c.addClass(b.className), 
+        g.bind("scroll resize orientationchange load", function() {
+            var a = $(this), b = a.scrollTop(), i = a.scrollLeft(), j = g.height() - h.bottom - c.height(), k = g.width() - h.right;
+            d && (b > f.top - h.top && c.position().top - b < j ? c.css({
                 position: "fixed",
-                top: g.top,
+                top: h.top,
                 bottom: "auto"
-            }) : b <= e.top && (c.css("position", e.position), c.css("top", e.top), 
-            c.css("bottom", "auto")), e.top - b >= h && c.css({
+            }) : b <= f.top && (c.css("position", f.position), c.css("top", f.top), 
+            c.css("bottom", "auto")), f.top - b >= j && c.css({
                 position: "fixed",
                 top: "auto",
-                bottom: g.bottom
+                bottom: h.bottom
+            })), e && (i > f.left - h.left && c.offset().left - i < k ? c.css({
+                position: "fixed",
+                left: h.left,
+                right: "auto"
+            }) : i <= f.left && (c.css("position", f.position), c.css("left", f.left), 
+            c.css("right", "auto")), f.left - i >= k && c.css({
+                position: "fixed",
+                left: "auto",
+                right: -h.right
             }));
-        }), f.scroll();
+        }), g.scroll();
     }
 }), $.widget("jui.juiBasicPaginator", $.jui.juiAbstractPaginator, {
     options: {

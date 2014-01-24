@@ -8,10 +8,10 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
         affixVertically: true,
         affixHorizontally: false,
         offset: {
-            top: 10,
-            right: 10,
-            bottom: 10,
-            left: 10
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
         },
         _isPositionFixedSupported: false
     },
@@ -33,10 +33,10 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             },
             scrollableElm = ops.scrollableElm,
             affixOffset = {
-                top: self.getValueFromOptions('offset.top'),
-                right: self.getValueFromOptions('offset.right'),
-                bottom: self.getValueFromOptions('offset.bottom'),
-                left: self.getValueFromOptions('offset.left')
+                top: self.getValueFromOptions('offset.top') || 0,
+                right: self.getValueFromOptions('offset.right') || 0,
+                bottom: self.getValueFromOptions('offset.bottom') || 0,
+                left: self.getValueFromOptions('offset.left') || 0
             };
 
         console.log("affix offsets", affixOffset, "original positions", original);
@@ -50,7 +50,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                 scrollTop = oElm.scrollTop(),
                 scrollLeft = oElm.scrollLeft(),
                 bottomLimit = scrollableElm.height() - affixOffset.bottom - elm.height(),
-                rightLimit = scrollableElm.width() + affixOffset.right;
+                rightLimit = scrollableElm.width() - affixOffset.right;
 
             if (affixVertically) {
                 if (scrollTop > original.top - affixOffset.top &&
@@ -75,30 +75,30 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                     });
                 }
             }
-//
-//            if (affixHorizontally) {
-//                if (scrollLeft > original.left - affixOffset.left &&
-//                    elm.offset().left - scrollLeft < rightLimit) {
-//                    elm.css({
-//                        position: 'fixed',
-//                        left: affixOffset.left,
-//                        right: 'auto'
-//                    });
-//                }
-//                else if (scrollLeft <= original.left) {
-//                    elm.css('position', original.position);
-//                    elm.css('left', original.left);
-//                    elm.css('right', 'auto');
-//                }
-//
-//                if (original.left - scrollLeft >= rightLimit) {
-//                    elm.css({
-//                        position: 'fixed',
-//                        left: 'auto',
-//                        right: -affixOffset.right
-//                    });
-//                }
-//            }
+
+            if (affixHorizontally) {
+                if (scrollLeft > original.left - affixOffset.left &&
+                    elm.offset().left - scrollLeft < rightLimit) {
+                    elm.css({
+                        position: 'fixed',
+                        left: affixOffset.left,
+                        right: 'auto'
+                    });
+                }
+                else if (scrollLeft <= original.left) {
+                    elm.css('position', original.position);
+                    elm.css('left', original.left);
+                    elm.css('right', 'auto');
+                }
+
+                if (original.left - scrollLeft >= rightLimit) {
+                    elm.css({
+                        position: 'fixed',
+                        left: 'auto',
+                        right: -affixOffset.right
+                    });
+                }
+            }
         });
 
         scrollableElm.scroll();
