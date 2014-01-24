@@ -1,4 +1,4 @@
-/*! jui-commons 2014-01-22 */
+/*! jui-commons 2014-01-24 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -150,8 +150,8 @@ $.widget("jui.juiBase", {
     }
 }), $.widget("jui.juiAffix", $.jui.juiBase, {
     options: {
-        "class": "jui-afix",
-        scrollableElm: $("html,body"),
+        className: "jui-affix",
+        scrollableElm: $(window),
         affixVertically: !0,
         affixHorizontally: !1,
         offset: {
@@ -167,8 +167,8 @@ $.widget("jui.juiBase", {
         {
             position: c.css("position"),
             top: c.position().top,
-            right: c.position().right,
-            bottom: c.position().bottom,
+            right: c.css("right"),
+            bottom: c.css("bottom"),
             left: c.position().left
         }), f = b.scrollableElm, g = {
             top: a.getValueFromOptions("offset.top"),
@@ -176,12 +176,13 @@ $.widget("jui.juiBase", {
             bottom: a.getValueFromOptions("offset.bottom"),
             left: a.getValueFromOptions("offset.left")
         };
-        c.addClass(b["class"]), f.bind("scroll resize orientationchange load", function() {
+        console.log("affix offsets", g, "original positions", e), c.addClass(b.className), 
+        f.bind("scroll resize orientationchange load", function() {
             {
-                var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() + g.bottom);
+                var a = $(this), b = a.scrollTop(), h = (a.scrollLeft(), f.height() - g.bottom - c.height());
                 f.width() + g.right;
             }
-            d && (b > e.top - g.top && c.offset().top - b < h ? c.css({
+            d && (b > e.top - g.top && c.position().top - b < h ? c.css({
                 position: "fixed",
                 top: g.top,
                 bottom: "auto"
@@ -189,7 +190,7 @@ $.widget("jui.juiBase", {
             c.css("bottom", "auto")), e.top - b >= h && c.css({
                 position: "fixed",
                 top: "auto",
-                bottom: -g.bottom
+                bottom: g.bottom
             }));
         }), f.scroll();
     }
@@ -444,15 +445,13 @@ $.widget("jui.juiBase", {
     }
 }), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
     options: {
-        "class": "jui-floating-scroll-indicator",
+        className: "jui-floating-scroll-indicator",
         animation: {
             easing: Power3.easeOut,
             duration: 1
         },
         ui: {
-            scrollableElm: {
-                elm: $("body")
-            },
+            scrollableElm: "html, body",
             wrapperElm: {
                 elm: null,
                 attribs: {
@@ -481,7 +480,7 @@ $.widget("jui.juiBase", {
     },
     _create: function() {
         var a = this, b = a.options;
-        a.element.addClass(b["class"]), a._populateUiElementsFromOptions(), a._createInidicators(), 
+        a.element.addClass(b.className), a._populateUiElementsFromOptions(), a._createInidicators(), 
         $(window).on("resize", function() {
             var b = a.getUiElement("inidicatorsNeededElms"), c = a.getUiElement("indicatorElms");
             b.each(function(a, b) {
@@ -489,6 +488,7 @@ $.widget("jui.juiBase", {
             });
         });
     },
+    _addEventListeners: function() {},
     _createInidicators: function() {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
@@ -498,11 +498,11 @@ $.widget("jui.juiBase", {
                 scrollableElm: g,
                 offset: {
                     top: (b + 1) * d.height(),
-                    bottom: -((a.length - b) * d.height())
+                    bottom: (a.length - b) * d.height()
                 }
             });
         }), b = d.ui.indicatorElms.elm = $(d.ui.indicatorElms.selector, f), b.click(function() {
-            var b = $(this), c = a.eq(b.attr("data-index")), e = parseInt(c.offset().top);
+            var b = $(this), c = a.eq(b.attr("data-index")), e = parseInt(c.position().top + b.height());
             TweenMax.to(g, d.animation.duration, {
                 scrollTo: e
             });
@@ -635,8 +635,7 @@ $.widget("jui.juiBase", {
         b.css("overflow", "hidden")), f.element.addClass(a.pluginClassName), d > b.height() && f.initScrollbar(a.scrollbarOriented.VERTICALLY), 
         c > b.width() ? f.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : f.getUiElement("horizScrollbar").css("display", "none"), 
         b.mousewheel(function(b, c, d, g) {
-            console.log("delta: ", c, "x: ", d, "y: ", g), b.preventDefault(), b.stopPropagation(), 
-            c = isset(c) ? c : isset(d) ? d : g;
+            b.preventDefault(), b.stopPropagation(), c = isset(c) ? c : isset(d) ? d : g;
             var h, i = 1 > c ? 10 : -10;
             0 !== d ? (e = f.getScrollbarHandleByOrientation(a.scrollbarOriented.HORIZONTALLY), 
             h = e.position().left + i, e.css("left", h), f.constrainHandle(a.scrollbarOriented.HORIZONTALLY), 

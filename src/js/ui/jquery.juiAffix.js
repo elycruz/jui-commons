@@ -3,8 +3,8 @@
  */
 $.widget('jui.juiAffix', $.jui.juiBase, {
     options: {
-        'class': 'jui-afix',
-        scrollableElm: $('html,body'),
+        className: 'jui-affix',
+        scrollableElm: $(window),
         affixVertically: true,
         affixHorizontally: false,
         offset: {
@@ -27,12 +27,11 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             original = {
                 position: elm.css('position'),
                 top: elm.position().top,
-                right: elm.position().right,
-                bottom: elm.position().bottom,
+                right: elm.css('right'),
+                bottom: elm.css('bottom'),
                 left: elm.position().left
             },
             scrollableElm = ops.scrollableElm,
-            posFixedSupport = false,
             affixOffset = {
                 top: self.getValueFromOptions('offset.top'),
                 right: self.getValueFromOptions('offset.right'),
@@ -40,20 +39,22 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                 left: self.getValueFromOptions('offset.left')
             };
 
+        console.log("affix offsets", affixOffset, "original positions", original);
+
         // Add plugin class
-        elm.addClass(ops['class']);
+        elm.addClass(ops.className);
 
         // On scrollable elm scroll
         scrollableElm.bind('scroll resize orientationchange load', function (e) {
             var oElm = $(this),
                 scrollTop = oElm.scrollTop(),
                 scrollLeft = oElm.scrollLeft(),
-                bottomLimit = scrollableElm.height() + affixOffset.bottom,
+                bottomLimit = scrollableElm.height() - affixOffset.bottom - elm.height(),
                 rightLimit = scrollableElm.width() + affixOffset.right;
 
             if (affixVertically) {
                 if (scrollTop > original.top - affixOffset.top &&
-                    elm.offset().top - scrollTop < bottomLimit) {
+                    elm.position().top - scrollTop < bottomLimit) {
                     elm.css({
                         position: 'fixed',
                         top: affixOffset.top,
@@ -70,7 +71,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                     elm.css({
                         position: 'fixed',
                         top: 'auto',
-                        bottom: -affixOffset.bottom
+                        bottom: affixOffset.bottom
                     });
                 }
             }

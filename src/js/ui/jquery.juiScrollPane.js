@@ -121,7 +121,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
 
         contentHolder.mousewheel(function (e, delta, deltaX, deltaY) {
-            console.log('delta: ', delta, 'x: ', deltaX, 'y: ', deltaY);
+//            console.log('delta: ', delta, 'x: ', deltaX, 'y: ', deltaY);
 
             // Scroll this element individually
             e.preventDefault();
