@@ -1,4 +1,8 @@
-define(['application', 'backbone.marionette'], function (app, Marionette) {
+define([
+    'application',
+    'backbone.marionette',
+    'communicator'
+], function (app, Marionette, communicator) {
 
     'use strict';
 
@@ -30,16 +34,13 @@ define(['application', 'backbone.marionette'], function (app, Marionette) {
                 entrypoint = this.controllersDirName
                     + '/' + controllerClassName;
 
-            require([entrypoint], function (Entrypoint) {
-
-                E = new Entrypoint({
-                    requestParams: $.extend({
-                        controller: controller,
-                        action: action}, requestParams)
+            // Different paradigm
+            communicator.mediator.trigger('routeTo:' + controllerClassName, {
+                requestParams: $.extend({
+                    controller: controller,
+                    action: action,
+                    actionName: actionName }, requestParams)
                 });
-
-                E.dispatch(actionName);
-            });
         },
 
         dispatchIndex: function () {

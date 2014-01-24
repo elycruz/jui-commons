@@ -1,31 +1,87 @@
 define([
+    'backbone.marionette',
+    'communicator',
     'controllers/BaseController',
-    'views/item/WelcomeItemView',
     'views/layout/MainLayout',
+//    'hbs!tmpl/item/effects-view',
+//    'hbs!tmpl/item/jui-basic-paginator-view',
+//    'hbs!tmpl/item/jui-floating-scroll-indicators-view',
+//    'hbs!tmpl/item/jui-scroll-pane-view',
+//    'hbs!tmpl/item/jui-scrollable-drop-down-view',
+//    'hbs!tmpl/item/jui-select-picker-view',
+    'views/item/EffectsView',
+    'views/item/JuiBasicPaginatorView',
+    'views/item/JuiScrollableDropDownView',
+    'views/item/JuiFloatingScrollIndicatorsView',
+    'views/item/JuiScrollPaneView',
+    'views/item/JuiSelectPickerView',
     'juiBase',
     'jquery-mousewheel'
 ],
-    function (BaseController, IndexView, Layout) {
+    function (
+        Marionette,
+        communicator,
+        BaseController,
+        Layout,
+        EffectsView,
+        JuiBasicPaginatorView,
+        JuiScrollableDropDownView,
+        JuiFloatingScrollIndicatorsView,
+        JuiScrollPaneView,
+        JuiSelectPickerView) {
+
         'use strict';
 
-        return BaseController.extend({
+        return Marionette.Controller.extend({
 
-            initialize: function (options) {
-                this.layout = new Layout();
+            defaultRequestParams: {},
+            requestParams: {},
+            viewClassSuffix: 'View',
+
+            initialize: function () {
+                var self = this;
+                self.layout = new Layout();
+                communicator.mediator.on('routeTo:IndexController', function (data) {
+                    if ($.isPlainObject(data) && !empty(data.requestParams)) {
+                        self.mergeRequestParams(data.requestParams);
+                    }
+                    self.dispatch();
+                });
+            },
+            
+            setRequestParams: function(requestParams) {
+                this.requestParams = requestParams;
+                return this;
             },
 
-            showView: function () {
-                var self = this;
-                require(['views/item/'
-                    + this.getViewClassName()], function (View) {
-                    var view = new View();
-                    self.layout.mainColRegion.show(view);
-                });
+            mergeRequestParams: function(requestParams) {
+                $.extend(true, this.requestParams, requestParams);
+                return this;
+            },
+
+            getRequestParams: function() {
+                return this.requestParams;
             },
 
             getViewClassName: function () {
-                return strToCamelCase(this.options.requestParams.action)
-                    + 'View';
+                return strToCamelCase(this.requestParams.action
+                    + this.viewClassSuffix);
+            },
+            
+            showView: function () {
+                var self = this,
+                    viewConstructor = eval(this.getViewClassName()),
+                    view = new viewConstructor();
+                    self.layout.mainColRegion.show(view);
+            },
+
+            dispatch: function (actionName) {
+                if (isset(this[actionName]) && typeof this[actionName] === 'function') {
+                    this[actionName]();
+                }
+                if (isset(this.showView) && typeof this.showView === 'function') {
+                    this.showView();
+                }
             }
 
         });

@@ -1,7 +1,6 @@
 define([
     'backbone',
     'hbs!tmpl/item/jui-scrollable-drop-down-view',
-    'juiScrollableDropDown',
     'TweenMax'
 ],
     function (Backbone, tmpl) {

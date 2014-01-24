@@ -2,25 +2,17 @@ define([
 	'backbone',
 	'communicator',
     'routers/Router',
-	'hbs!tmpl/welcome'
+    'controllers/IndexController'
 ],
 
-function( Backbone, Communicator, Router, Welcome_tmpl ) {
+function( Backbone, Communicator, Router, IndexController ) {
     'use strict';
-
-	var welcomeTmpl = Welcome_tmpl;
 
 	var app = new Backbone.Marionette.Application();
 
-	/* Add application regions here */
-//	app.addRegions({});
-
-    /** Router **/
     app.router = new Router();
 
-	/* Add initializers here */
-//	app.addInitializer( function () {
-//    });
+    app.indexController = new IndexController();
 
     return app;
 });

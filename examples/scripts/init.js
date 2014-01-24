@@ -1,9 +1,11 @@
-// @todo rename the TweenMax require config alias to gsap-tweenmax
 require.config({
+
+//    baseUrl: './scripts',
 
     deps: [
         'checkjs', 'es5-shim', 'es5-sham', 'phpjs',
-        'backbone.marionette', 'jquery', 'TweenMax', 'main'],
+        'backbone.marionette', 'jquery', 'TweenMax', 'hbs', 'main'
+    ],
 
     shim: {
         'gsap-scrollto-plugin': {
@@ -40,56 +42,56 @@ require.config({
             deps: ['juiBase']
         },
         'juiBasicPaginator': {
-            deps: ['juiAbstractPaginator']
         },
         'juiPaginatorWithTextField': {
             deps: ['juiBasicPaginator']
+        },
+        'hbs': {
+            deps: ['handlebars']
+        },
+        'main' : {
+            deps: ['es5-shim', 'phpjs']
         }
     },
 
     paths: {
-        'es5-shim': '../bower_components/es5-shim/es5-shim',
-        'es5-sham': '../bower_components/es5-shim/es5-sham',
-        'phpjs': '../bower_components/checkjs/check',
-        'checkjs': '../bower_components/phpjs/phpjs-shim',
-        'TweenMax': '../bower_components/greensock/src/uncompressed/TweenMax',
+        backbone:               '../bower_components/backbone-amd/backbone',
+        'backbone.babysitter':  '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
+        'backbone.marionette':  '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
+        'backbone.wreqr':       '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
+        'checkjs':              '../bower_components/checkjs/check',
+
+        'es5-sham':             '../bower_components/es5-shim/es5-sham',
+        'es5-shim':             '../bower_components/es5-shim/es5-shim',
         'gsap-scrollto-plugin': '../bower_components/greensock/src/uncompressed/plugins/ScrollToPlugin',
+        'jui-commons':          '../../distro/jui-commons',
 
-        'jui-commons': '../../distro/jui-commons',
-        'juiBase': '../../src/js/jquery.juiBase',
-        'juiScrollPane': '../../src/js/ui/jquery.juiScrollPane',
-        'juiSelectPicker': '../../src/js/ui/jquery.juiSelectPicker',
-        'juiScrollableDropDown': '../../src/js/ui/jquery.juiScrollableDropDown',
-        'juiAbstractPaginator': '../../src/js/ui/jquery.juiAbstractPaginator',
-        'juiBasicPaginator': '../../src/js/ui/jquery.juiBasicPaginator',
-        'juiPaginatorWithTextField': '../../src/js/ui/jquery.juiPaginatorWithTextField',
+        juiAbstractPaginator:       '../../src/js/ui/jquery.juiAbstractPaginator',
+        juiBase:                    '../../src/js/jquery.juiBase',
+        juiBasicPaginator:          '../../src/js/ui/jquery.juiBasicPaginator',
+        juiScrollPane:              '../../src/js/ui/jquery.juiScrollPane',
+        juiScrollableDropDown:      '../../src/js/ui/jquery.juiScrollableDropDown',
+        juiSelectPicker:            '../../src/js/ui/jquery.juiSelectPicker',
+        juiPaginatorWithTextField:  '../../src/js/ui/jquery.juiPaginatorWithTextField',
 
-        'jquery': '../bower_components/jquery/jquery',
-        'jquery-ui': '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
-        'jquery-mousewheel': '../bower_components/jquery-mousewheel/jquery.mousewheel',
-        'jquery-smartresize': '../bower_components/jquery-smartresize/jquery.debouncedresize',
+        'jquery':               '../bower_components/jquery/jquery',
+        'jquery-mousewheel':    '../bower_components/jquery-mousewheel/jquery.mousewheel',
+        'jquery-smartresize':   '../bower_components/jquery-smartresize/jquery.debouncedresize',
+        'jquery-ui':            '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
 
-        backbone: '../bower_components/backbone-amd/backbone',
-        underscore: '../bower_components/underscore-amd/underscore',
 
-        'backbone.marionette': '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
-        'backbone.wreqr': '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
-        'backbone.babysitter': '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
-
-        bootstrap: 'vendor/bootstrap',
-
-        text: '../bower_components/requirejs-text/text',
-        tmpl: "../templates",
-
-        handlebars: '../bower_components/require-handlebars-plugin/Handlebars',
-
-        /* require handlebars plugin - Alex Sexton */
-        i18nprecompile: '../bower_components/require-handlebars-plugin/hbs/i18nprecompile',
-        json2: '../bower_components/require-handlebars-plugin/hbs/json2',
-        hbs: '../bower_components/require-handlebars-plugin/hbs'
+        phpjs:      '../bower_components/phpjs/phpjs-shim',
+        handlebars:     '../bower_components/handlebars/handlebars.amd',
+        hbs:     '../bower_components/require-handlebars-plugin/hbs',
+        text:       '../bower_components/requirejs-text/text',
+        tmpl:       '../templates',
+        TweenMax:   '../bower_components/greensock/src/uncompressed/TweenMax',
+        underscore: '../bower_components/underscore-amd/underscore'
     },
-
-    hbs: {
-        disableI18n: true
+    hbs: { // optional
+        helpers: false,            // default: true
+        i18n: false,              // default: false
+        templateExtension: 'hbs', // default: 'hbs'
+        partialsUrl: ''           // default: ''
     }
 });

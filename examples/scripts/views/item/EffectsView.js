@@ -2,7 +2,7 @@ define([
     'backbone',
     'hbs!tmpl/item/effects-view'
 ],
-    function (Backbone, Effectsview) {
+    function (Backbone, tmpl) {
         'use strict';
 
         /* Return a ItemView class definition */
@@ -11,7 +11,7 @@ define([
             initialize: function () {
             },
 
-            template: Effectsview,
+            template: tmpl,
 
             /* ui selector cache */
             ui: {},
