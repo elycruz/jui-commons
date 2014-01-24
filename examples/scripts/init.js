@@ -2,7 +2,7 @@
 require.config({
 
     deps: [
-        'es5-shim', 'es5-sham', 'phpjs',
+        'checkjs', 'es5-shim', 'es5-sham', 'phpjs',
         'backbone.marionette', 'jquery', 'TweenMax', 'main'],
 
     shim: {
@@ -50,7 +50,8 @@ require.config({
     paths: {
         'es5-shim': '../bower_components/es5-shim/es5-shim',
         'es5-sham': '../bower_components/es5-shim/es5-sham',
-        'phpjs': '../bower_components/phpjs/phpjs-shim',
+        'phpjs': '../bower_components/checkjs/check',
+        'checkjs': '../bower_components/phpjs/phpjs-shim',
         'TweenMax': '../bower_components/greensock/src/uncompressed/TweenMax',
         'gsap-scrollto-plugin': '../bower_components/greensock/src/uncompressed/plugins/ScrollToPlugin',
 
@@ -67,7 +68,6 @@ require.config({
         'jquery-ui': '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
         'jquery-mousewheel': '../bower_components/jquery-mousewheel/jquery.mousewheel',
         'jquery-smartresize': '../bower_components/jquery-smartresize/jquery.debouncedresize',
-
 
         backbone: '../bower_components/backbone-amd/backbone',
         underscore: '../bower_components/underscore-amd/underscore',

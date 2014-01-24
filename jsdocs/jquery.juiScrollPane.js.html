@@ -45,11 +45,15 @@
  *
  */
 $.widget('jui.juiScrollPane', $.jui.juiBase, {
+    /**
+     * Options Hash.
+     * @type {Object}
+     */
     options: {
         ui: {
             contentHolder: {
                 elm: null,
-                selector: '.content',
+                selector: '>.content',
                 html: '&lt;div>&lt;/div>',
                 attribs: {
                     'class': 'content'
@@ -57,7 +61,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             },
             vertScrollbar: {
                 elm: null,
-                selector: '.vertical.scrollbar',
+                selector: '> .vertical.scrollbar',
                 html: '&lt;div>&lt;/div>',
                 appendTo: 'this.element',
                 attribs: {
@@ -67,7 +71,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             },
             vertHandle: {
                 elm: null,
-                selector: '.handle',
+                selector: '> .handle',
                 html: '&lt;div>&lt;/div>',
                 appendTo: 'vertScrollbar',
                 attribs: {
@@ -77,7 +81,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             },
             horizScrollbar: {
                 elm: null,
-                selector: '.horizontal.scrollbar',
+                selector: '> .horizontal.scrollbar',
                 html: '&lt;div>&lt;/div>',
                 appendTo: 'this.element',
                 attribs: {
@@ -87,7 +91,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             },
             horizHandle: {
                 elm: null,
-                selector: '.handle',
+                selector: '> .handle',
                 html: '&lt;div>&lt;/div>',
                 appendTo: 'horizScrollbar',
                 attribs: {
@@ -97,12 +101,16 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             }
         },
 
+        pluginClassName: 'jui-scroll-pane',
+
         scrollbarOriented: {
             VERTICALLY: 'vertical',
             HORIZONTALLY: 'horizontal'
         },
 
         autoHide: false,
+
+        originalOverflow: null,
 
         debug: false
     },
@@ -118,11 +126,12 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
         // Conetnt Holder
         if (contentHolder.css('overflow') !== 'hidden') {
+            ops.originalOverflow = contentHolder.css('overflow');
             contentHolder.css('overflow', 'hidden');
         }
 
         // Add plugin class
-        plugin.element.addClass('jui-scroll-pane');
+        plugin.element.addClass(ops.pluginClassName);
 
         // Determine whether we need a horizontal and/or vertical scrollbar.
         // Init vertical scrollbar
@@ -135,38 +144,57 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             plugin.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
         }
         else {
-            this.getUiElement('horizScrollbar').css('display', 'none');
+            plugin.getUiElement('horizScrollbar').css('display', 'none');
         }
 
         contentHolder.mousewheel(function (e, delta, deltaX, deltaY) {
+//            console.log('delta: ', delta, 'x: ', deltaX, 'y: ', deltaY);
 
             // Scroll this element individually
             e.preventDefault();
 
-            delta = delta !== undefined || delta !== null ? delta : deltaY;
+            // Stop propagation for nested scroll panes
+            e.stopPropagation();
 
-            // If no delta bail
-            if (delta === null || delta === undefined) {
-                return;
-            }
+            delta = isset(delta) ? delta :
+                (isset(deltaX)? deltaX : deltaY);
 
             // Prelims
             var incrementer = delta &lt; 1 ? 10 : -10,
-                scrollTo = contentHolder.scrollTop() + incrementer,
-                handleOffsetTop = handle.position().top + incrementer;
+                handleOffset;
 
-            // Position Handle
-            handle.css('top', handleOffsetTop);
+            // Scroll horizontally
+            if (deltaX !== 0) {
+                handle = plugin.getScrollbarHandleByOrientation(
+                    ops.scrollbarOriented.HORIZONTALLY);
 
-            // Constrain Handle
-            plugin.constrainHandle(ops.scrollbarOriented.VERTICALLY);
-            plugin.constrainHandle(ops.scrollbarOriented.HORIZONTALLY);
+                handleOffset = handle.position().left + incrementer;
 
-            // Scroll content holder
-            plugin.scrollContentHolder(ops.scrollbarOriented.VERTICALLY);
-            plugin.scrollContentHolder(ops.scrollbarOriented.HORIZONTALLY);
+                // Position Handle
+                handle.css('left', handleOffset);
+
+                // Constrain Handle
+                plugin.constrainHandle(ops.scrollbarOriented.HORIZONTALLY);
+
+                // Scroll content holder
+                plugin.scrollContentHolder(ops.scrollbarOriented.HORIZONTALLY);
+            }
+            // Assume vertical scrolling action
+            else {
+                handle = plugin.getScrollbarHandleByOrientation(
+                    ops.scrollbarOriented.VERTICALLY);
+                handleOffset = handle.position().top + incrementer;
+
+                // Position Handle
+                handle.css('top', handleOffset);
+
+                // Constrain handle
+                plugin.constrainHandle(ops.scrollbarOriented.VERTICALLY);
+
+                // Scroll content holder
+                plugin.scrollContentHolder(ops.scrollbarOriented.VERTICALLY);
+            }
         });
-
     },
 
     _scrollByOrientation: function (value, orientation) {
@@ -353,6 +381,24 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     scrollHorizontally: function (value) {
         this._scrollByOrientation(value,
             this.options.scrollbarOriented.HORIZONTALLY);
+    },
+
+    _destroy: function () {
+        var self = this,
+            ops = self.options;
+
+        // Remove created elements
+        self.getUiElement('vertHandle').remove();
+        self.getUiElement('vertScrollbar').remove();
+        self.getUiElement('horizHandle').remove();
+        self.getUiElement('horizScrollbar').remove();
+
+        // Undo original element manipulations
+        self.element.attr('overflow', ops.originalOverflow);
+        self.element.removeClass(ops.pluginClassName);
+
+        // Call jquery.ui.widget's _destory method
+        this._super();
     }
 
 });
@@ -366,13 +412,13 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="juiScrollableDropdown.html">juiScrollableDropdown</a></li><li><a href="juiScrollPane.html">juiScrollPane</a></li><li><a href="juiSplitText.html">juiSplitText</a></li><li><a href="juiBase.html">juiBase</a></li><li><a href="juiSelectPicker.html">juiSelectPicker</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="juiScrollableDropdown.html">juiScrollableDropdown</a></li><li><a href="juiScrollPane.html">juiScrollPane</a></li><li><a href="juiSplitText.html">juiSplitText</a></li><li><a href="juiBase.html">juiBase</a></li><li><a href="juiSelectPicker.html">juiSelectPicker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_addEventListeners">_addEventListeners</a></li><li><a href="global.html#_create">_create</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#playAnimation">playAnimation</a></li><li><a href="global.html#reverseAnimation">reverseAnimation</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Jan 08 2014 22:28:24 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Fri Jan 24 2014 00:53:30 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

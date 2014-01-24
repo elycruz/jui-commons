@@ -20,7 +20,8 @@
     "require-handlebars-plugin": "~0.4.0",
     "sinon": "~1.7.3",
     "underscore-amd": "~1.4.4",
-    "unsemantic": "nathansmith/unsemantic"
+    "unsemantic": "nathansmith/unsemantic",
+    "checkjs": "elycruz/checkjs#~0.1.5"
   },
   "devDependencies": {},
   "directory": "bower_components"

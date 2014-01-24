@@ -76,7 +76,13 @@
     <dt class="tag-todo">To Do:</dt>
     <dd class="tag-todo">
         <ul>
-            <li>Resolve issue with non-unique timeline object -Timeline object seems to be only one instance not new instances onnew calls of the extending plugins.</li>
+            <li>-- issue solved -- make sure all classes that need a timeline objectimplement their own `getTimeline` method.~~~deprecated~~~Resolve issue with non-unique timeline object -Timeline object seems to be only one instance not new instances onnew calls of the extending plugins.</li>
+        
+            <li>start using $.each instead of Object.keys (gets rid of one more dependancy)</li>
+        
+            <li>add a setoptions and setoption methods to juibase</li>
+        
+            <li>breakdown the _getElementFromOptions method further (create a newappendElementFromOptions method)</li>
         </ul>
     </dd>
     
@@ -165,7 +171,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line22">line 22</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line34">line 34</a>
     </li></ul></dd>
     
     
@@ -278,7 +284,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line194">line 194</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line216">line 216</a>
     </li></ul></dd>
     
     
@@ -419,7 +425,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line100">line 100</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line116">line 116</a>
     </li></ul></dd>
     
     
@@ -605,7 +611,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line285">line 285</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line333">line 333</a>
     </li></ul></dd>
     
     
@@ -643,7 +649,7 @@
         
             
 <dt>
-    <h4 class="name" id="_namespace"><span class="type-signature">&lt;inner> </span>_namespace<span class="signature">(ns_string, extendObj)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="_namespace"><span class="type-signature">&lt;inner> </span>_namespace<span class="signature">(ns_string, extendObj, valueToSet)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -728,6 +734,29 @@
         </tr>
 	
 	
+	
+        <tr>
+            
+                <td class="name"><code>valueToSet</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">optional, a value to set on the key (last key if key string (a.b.c.d = value))</td>
+        </tr>
+	
+	
 	</tbody>
 </table>
     
@@ -755,7 +784,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line39">line 39</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line52">line 52</a>
     </li></ul></dd>
     
     
@@ -893,7 +922,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line59">line 59</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line77">line 77</a>
     </li></ul></dd>
     
     
@@ -980,7 +1009,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line223">line 223</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line244">line 244</a>
     </li></ul></dd>
     
     
@@ -1067,7 +1096,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line268">line 268</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line316">line 316</a>
     </li></ul></dd>
     
     
@@ -1075,6 +1104,13 @@
     
     
     
+    
+    <dt class="tag-todo">To Do:</dt>
+    <dd class="tag-todo">
+        <ul>
+            <li>move this out of here.</li>
+        </ul>
+    </dd>
     
 </dl>
 
@@ -1205,7 +1241,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line238">line 238</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line285">line 285</a>
     </li></ul></dd>
     
     
@@ -1409,7 +1445,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line365">line 365</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line413">line 413</a>
     </li></ul></dd>
     
     
@@ -1539,7 +1575,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line351">line 351</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line399">line 399</a>
     </li></ul></dd>
     
     
@@ -1704,7 +1740,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line256">line 256</a>
+        <a href="jquery.juiBase.js.html">jquery.juiBase.js</a>, <a href="jquery.juiBase.js.html#line303">line 303</a>
     </li></ul></dd>
     
     
@@ -1745,13 +1781,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="juiScrollableDropdown.html">juiScrollableDropdown</a></li><li><a href="juiScrollPane.html">juiScrollPane</a></li><li><a href="juiSplitText.html">juiSplitText</a></li><li><a href="juiBase.html">juiBase</a></li><li><a href="juiSelectPicker.html">juiSelectPicker</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="juiScrollableDropdown.html">juiScrollableDropdown</a></li><li><a href="juiScrollPane.html">juiScrollPane</a></li><li><a href="juiSplitText.html">juiSplitText</a></li><li><a href="juiBase.html">juiBase</a></li><li><a href="juiSelectPicker.html">juiSelectPicker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_addEventListeners">_addEventListeners</a></li><li><a href="global.html#_create">_create</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#playAnimation">playAnimation</a></li><li><a href="global.html#reverseAnimation">reverseAnimation</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Jan 08 2014 22:28:24 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Fri Jan 24 2014 00:53:31 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

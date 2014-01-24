@@ -17,13 +17,13 @@
  * Timeline object seems to be only one instance not new instances on
  * new calls of the extending plugins.
  *
- * @todo fix `_removeCreatedElements` (it currently uses config.create to
- * check whether it should remove elements or not but `config.create` is deleted
- * in `_getElementFromOptions`.
+ * @todo start using $.each instead of Object.keys (gets rid of one more dependancy)
  *
  * @todo add a setoptions and setoption methods to juibase
+ *
  * @todo breakdown the _getElementFromOptions method further (create a new
  * appendElementFromOptions method)
+ *
  */
 $.widget('jui.juiBase', {
 
@@ -46,16 +46,22 @@ $.widget('jui.juiBase', {
      * hello: { world: { how: { are: { you: { doing: {} } } } } }
      * @param ns_string {String} the namespace you wish to fetch
      * @param extendObj {Object} optional, default this.options
+     * @param valueToSet {Object} optional, a value to set on the key (last key if key string (a.b.c.d = value))
      * @returns {Object}
      */
-    _namespace: function (ns_string, extendObj) {
+    _namespace: function (ns_string, extendObj, valueToSet) {
         var parts = ns_string.split('.'),
             parent = isset(extendObj) ? extendObj : this.options,
             i;
 
         for (i = 0; i < parts.length; i += 1) {
             if (typeof parent[parts[i]] === 'undefined') {
-                parent[parts[i]] = {};
+                if (i === parts.length && valueToSet !== undefined) {
+                    parent[parts[i]] = valueToSet;
+                }
+                else {
+                    parent[parts[i]] = {};
+                }
             }
             parent = parent[parts[i]];
         }
@@ -84,7 +90,6 @@ $.widget('jui.juiBase', {
 
         // Loop through ops and populate elements
         Object.keys(ops).forEach(function (key) {
-
             // If key is string
             if (typeof ops[key] === 'string') {
                 ops[key] = ops[key] = $(ops[key], self.element);
@@ -99,7 +104,6 @@ $.widget('jui.juiBase', {
                 // Create/fetch element
                 ops[key].elm = self._getElementFromOptions(ops[key]);
             }
-
         });
     },
 
@@ -112,8 +116,7 @@ $.widget('jui.juiBase', {
     _getElementFromOptions: function (optionKey) {
         var self = this,
             ops = self.options,
-            config = optionKey,
-            parent;
+            config = optionKey;
 
         // If config is a string
         if (typeof config === 'string') {
@@ -141,8 +144,7 @@ $.widget('jui.juiBase', {
 
         // If Selector
         if (isset(config.selector)
-            && empty(config.create)
-            && typeof config.selector === 'string') {
+            && empty(config.elm) && typeof config.selector === 'string') {
             if (typeof config.appendTo === 'string'
                 && config.appendTo.length > 0
                 && config.appendTo.indexOf('this') === -1) {
@@ -161,43 +163,47 @@ $.widget('jui.juiBase', {
             // Create element
             config.elm = this._createElementFromOptions(config);
 
+            // Append element
             if (isset(config.appendTo)
                 && typeof config.appendTo === 'string') {
-                parent = this.element.parent();
-                if (config.appendTo === 'body') {
-                    config.elm = $('body').eq(0)
-                        .append(config.elm).find(config.selector);
-                }
-                else if (config.appendTo === 'this.element') {
-                    config.elm = this.element
-                        .append(config.elm).find(config.selector);
-                }
-                else if (config.appendTo === 'after this.element') {
-                    this.element.after(config.elm);
-                    config.elm = parent.find(
-                        this.element.get(0).nodeName
-                            + ' ~ ' + config.selector);
-                }
-                else if (config.appendTo === 'before this.element') {
-                    this.element.before(config.elm);
-                    config.elm = parent.find(config.selector
-                        + ' ~ ' + this.element.get(0).nodeName);
-                }
-                else if (config.appendTo === 'prepend to this.element') {
-                    this.element.prepend(config.elm);
-                    config.elm = this.element.children().first();
-                }
-                else {
-                    config.elm = this.getUiElement(config.appendTo)
-                        .append(config.elm).find(config.selector);
-                }
+                self._appendElementFromOptions(config);
             }
-
-            delete config.create;
         }
 
         // Return element
         return !empty(config.elm) ? config.elm : null;
+    },
+
+    _appendElementFromOptions: function (config) {
+        var self = this,
+            parent = this.element.parent();
+        if (config.appendTo === 'body') {
+            config.elm = $('body').eq(0)
+                .append(config.elm).find(config.selector);
+        }
+        else if (config.appendTo === 'this.element') {
+            config.elm = this.element
+                .append(config.elm).find(config.selector);
+        }
+        else if (config.appendTo === 'after this.element') {
+            this.element.after(config.elm);
+            config.elm = parent.find(
+                this.element.get(0).nodeName
+                    + ' ~ ' + config.selector);
+        }
+        else if (config.appendTo === 'before this.element') {
+            this.element.before(config.elm);
+            config.elm = parent.find(config.selector
+                + ' ~ ' + this.element.get(0).nodeName);
+        }
+        else if (config.appendTo === 'prepend to this.element') {
+            this.element.prepend(config.elm);
+            config.elm = this.element.children().first();
+        }
+        else {
+            config.elm = this.getUiElement(config.appendTo)
+                .append(config.elm).find(config.selector);
+        }
     },
 
     /**
@@ -227,7 +233,6 @@ $.widget('jui.juiBase', {
                 && $.isPlainObject(config.attribs)) {
                 elm.attr(config.attribs);
             }
-            delete config.create;
         }
         return elm;
     },
@@ -238,11 +243,37 @@ $.widget('jui.juiBase', {
      */
     _removeCreatedElements: function () {
         var self = this, ops = self.options;
-        ops.ui.keys.forEach(function (x) {
+        Object.keys(ops.ui).forEach(function (key) {
             if (ops.ui[key].elm instanceof $ && ops.ui[key].create) {
                 ops.ui[key].elm.remove();
             }
         });
+    },
+
+    _setOption: function (key, value) {
+        this._namespace(key, this.options, value);
+    },
+
+    _setOptions: function (options) {
+        var self = this;
+        if (!isset(options)) {
+            return;
+        }
+        $.each(options, function (key, value) {
+            self._callSetterForKey(key, value);
+        });
+        return self;
+    },
+
+    _callSetterForKey: function (key, value) {
+        var setterFunc = 'set' + strToCamelCase(key),
+            self = this;
+        if (isset(self[setterFunc])) {
+            self[setterFunc](value);
+        }
+        else {
+            self._setOption(key, value);
+        }
     },
 
     /**
@@ -306,7 +337,7 @@ $.widget('jui.juiBase', {
             _animations;
 
         timeline = !isset(timeline) ? this.getAnimationTimeline() : timeline;
-        options = options  || self.options;
+        options = options || self.options;
         animations = animations || null;
 
         ops = options;
@@ -366,7 +397,7 @@ $.widget('jui.juiBase', {
      * @returns {Object}
      */
     getValueFromOptions: function (key, args, raw) {
-        return this.getValueFromHash (key, this.options, args, raw);
+        return this.getValueFromHash(key, this.options, args, raw);
     },
 
     /**
@@ -388,6 +419,10 @@ $.widget('jui.juiBase', {
             }
         }
         return retVal;
+    },
+
+    setValueOnHash: function (key, value, hash) {
+        this._namespace(key, hash, value);
     }
 
 });

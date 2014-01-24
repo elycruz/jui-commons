@@ -5,11 +5,11 @@ $.widget("jui.juiBase", {
         timeline: null,
         ui: {}
     },
-    _namespace: function(a, b) {
-        var c, d = a.split("."), e = isset(b) ? b : this.options;
-        for (c = 0; c < d.length; c += 1) "undefined" == typeof e[d[c]] && (e[d[c]] = {}), 
-        e = e[d[c]];
-        return e;
+    _namespace: function(a, b, c) {
+        var d, e = a.split("."), f = isset(b) ? b : this.options;
+        for (d = 0; d < e.length; d += 1) "undefined" == typeof f[e[d]] && (f[e[d]] = d === e.length && void 0 !== c ? c : {}), 
+        f = f[e[d]];
+        return f;
     },
     _populateUiElementsFromOptions: function(a) {
         var b = this, c = isset(a) ? a : this.options;
@@ -21,28 +21,43 @@ $.widget("jui.juiBase", {
         });
     },
     _getElementFromOptions: function(a) {
-        var b, c = this, d = c.options, e = a;
-        return "string" == typeof e && (e = c._namespace(e, d)), "function" == typeof e && (e = e()), 
-        empty(e) ? null : e instanceof $ && e.length > 0 ? e : isset(e.elm) && e.elm instanceof $ && e.length > 0 ? e.elm : (isset(e.selector) && empty(e.create) && "string" == typeof e.selector && (e.elm = "string" == typeof e.appendTo && e.appendTo.length > 0 && -1 === e.appendTo.indexOf("this") ? $(e.selector, c.getUiElement(e.appendTo)) : $(e.selector, c.element)), 
-        !empty(e.html) && e.create && "string" == typeof e.html && (e.elm = this._createElementFromOptions(e), 
-        isset(e.appendTo) && "string" == typeof e.appendTo && (b = this.element.parent(), 
-        "body" === e.appendTo ? e.elm = $("body").eq(0).append(e.elm).find(e.selector) : "this.element" === e.appendTo ? e.elm = this.element.append(e.elm).find(e.selector) : "after this.element" === e.appendTo ? (this.element.after(e.elm), 
-        e.elm = b.find(this.element.get(0).nodeName + " ~ " + e.selector)) : "before this.element" === e.appendTo ? (this.element.before(e.elm), 
-        e.elm = b.find(e.selector + " ~ " + this.element.get(0).nodeName)) : "prepend to this.element" === e.appendTo ? (this.element.prepend(e.elm), 
-        e.elm = this.element.children().first()) : e.elm = this.getUiElement(e.appendTo).append(e.elm).find(e.selector)), 
-        delete e.create), empty(e.elm) ? null : e.elm);
+        var b = this, c = b.options, d = a;
+        return "string" == typeof d && (d = b._namespace(d, c)), "function" == typeof d && (d = d()), 
+        empty(d) ? null : d instanceof $ && d.length > 0 ? d : isset(d.elm) && d.elm instanceof $ && d.length > 0 ? d.elm : (isset(d.selector) && empty(d.elm) && "string" == typeof d.selector && (d.elm = "string" == typeof d.appendTo && d.appendTo.length > 0 && -1 === d.appendTo.indexOf("this") ? $(d.selector, b.getUiElement(d.appendTo)) : $(d.selector, b.element)), 
+        !empty(d.html) && d.create && "string" == typeof d.html && (d.elm = this._createElementFromOptions(d), 
+        isset(d.appendTo) && "string" == typeof d.appendTo && b._appendElementFromOptions(d)), 
+        empty(d.elm) ? null : d.elm);
+    },
+    _appendElementFromOptions: function(a) {
+        var b = this.element.parent();
+        "body" === a.appendTo ? a.elm = $("body").eq(0).append(a.elm).find(a.selector) : "this.element" === a.appendTo ? a.elm = this.element.append(a.elm).find(a.selector) : "after this.element" === a.appendTo ? (this.element.after(a.elm), 
+        a.elm = b.find(this.element.get(0).nodeName + " ~ " + a.selector)) : "before this.element" === a.appendTo ? (this.element.before(a.elm), 
+        a.elm = b.find(a.selector + " ~ " + this.element.get(0).nodeName)) : "prepend to this.element" === a.appendTo ? (this.element.prepend(a.elm), 
+        a.elm = this.element.children().first()) : a.elm = this.getUiElement(a.appendTo).append(a.elm).find(a.selector);
     },
     _createElementFromOptions: function(a) {
         var b = null;
         return isset(a) && "string" == typeof a && (a = this._namespace(a)), empty(a) ? null : (a.html && (b = $(a.html), 
-        isset(a.attribs) && $.isPlainObject(a.attribs) && b.attr(a.attribs), delete a.create), 
-        b);
+        isset(a.attribs) && $.isPlainObject(a.attribs) && b.attr(a.attribs)), b);
     },
     _removeCreatedElements: function() {
         var a = this, b = a.options;
-        b.ui.keys.forEach(function() {
-            b.ui[key].elm instanceof $ && b.ui[key].create && b.ui[key].elm.remove();
+        Object.keys(b.ui).forEach(function(a) {
+            b.ui[a].elm instanceof $ && b.ui[a].create && b.ui[a].elm.remove();
         });
+    },
+    _setOption: function(a, b) {
+        this._namespace(a, this.options, b);
+    },
+    _setOptions: function(a) {
+        var b = this;
+        if (isset(a)) return $.each(a, function(a, c) {
+            b._callSetterForKey(a, c);
+        }), b;
+    },
+    _callSetterForKey: function(a, b) {
+        var c = "set" + strToCamelCase(a), d = this;
+        isset(d[c]) ? d[c](b) : d._setOption(a, b);
     },
     getUiElement: function(a) {
         var b = this.options, c = null;
@@ -77,6 +92,9 @@ $.widget("jui.juiBase", {
         var e = null;
         return "string" == typeof a && $.isPlainObject(b) && (e = this._namespace(a, b), 
         "function" == typeof e && empty(d) && (e = e.apply(this, c))), e;
+    },
+    setValueOnHash: function(a, b, c) {
+        this._namespace(a, c, b);
     }
 }), $.widget("jui.splitText", {
     options: {
@@ -313,137 +331,171 @@ $.widget("jui.juiBase", {
     getItemsElm: function() {
         return this.getUiElement("items");
     }
-}), $.widget("jui.juiDialog", $.jui.juiBase, {
-    options: {
-        className: "",
-        animation: {
-            duration: .3
-        },
-        template: '<div class="jui-dialog"><header><div class="title"></div></header><section class="content"></section><footer></footer></div>',
-        useTemplate: !1,
-        ui: {
-            pageOverlay: {
-                elm: null,
-                attribs: {
-                    "class": "jui-page-overlay"
-                },
-                appendTo: "body",
-                selector: ".jui-page-overlay",
-                html: "<div></div>",
-                create: !0
-            },
-            wrapperElm: {
-                elm: null,
-                attribs: {
-                    "class": "jui-dialog"
-                },
-                appendTo: "body",
-                selector: ".jui-dialog",
-                html: "<div></div>",
-                create: !0
-            },
-            headerElm: {
-                elm: null,
-                selector: "> header",
-                html: "<header></header>",
-                appendTo: "wrapperElm",
-                create: !0
-            },
-            titleElm: {
-                elm: null,
-                attribs: {
-                    "class": "title"
-                },
-                text: "",
-                selector: "> .title",
-                html: "<div></div>",
-                appendTo: "headerElm",
-                create: !0
-            },
-            closeButtonElm: {
-                elm: null,
-                attribs: {
-                    "class": "close button"
-                },
-                selector: "> .close.button",
-                html: "<div>X</div>",
-                appendTo: "headerElm",
-                create: !0
-            },
-            contentElm: {
-                elm: null,
-                attribs: {
-                    "class": "content"
-                },
-                selector: "> .content",
-                html: "<section></section>",
-                appendTo: "wrapperElm",
-                create: !0
-            },
-            footerElm: {
-                elm: null,
-                selector: "> footer",
-                html: "<footer></footer>",
-                appendTo: "wrapperElm",
-                create: !0
-            }
-        }
-    },
-    _create: function() {
-        var a = this.options;
-        $("html").hasClass("touch") && a.disableOnTouchDevice && (a.isTouchDevice = !0);
-    },
-    _init: function() {
-        var a = this, b = a.options;
-        b.timeline = new TimelineMax({
-            paused: !0
-        }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setContentFromThisElement(), 
-        a._addEventListeners(), a.open();
-    },
-    _setClassNameFromOptions: function() {
-        var a = this, b = a.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
-        empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
-        a.getUiElement("wrapperElm").attr("class", b.ui.wrapperElm.attribs["class"]);
-    },
-    _setContentFromThisElement: function() {
-        this._clearContentElmContent().html(this.element.text());
-    },
-    _setTitleText: function() {},
-    _clearContentElmContent: function() {
-        return this.getUiElement("contentElm").html("");
-    },
-    _addEventListeners: function() {
-        var a = this, b = (a.options, a.getUiElement("wrapperElm"), a.getUiElement("pageOverlay"));
-        b.bind("click", function(b) {
-            b.preventDefault(), a.close();
+}), function() {
+    function a() {
+        return argsToArray(arguments).filter(function(a) {
+            return isset(a);
         });
-    },
-    close: function() {
-        this.getUiElement("pageOverlay").css({
-            display: "none"
-        }), this.getUiElement("wrapperElm").css({
-            display: "none"
-        });
-    },
-    open: function() {
-        this.getUiElement("pageOverlay").css({
-            display: "block"
-        }), this.getUiElement("wrapperElm").css({
-            display: "block"
-        });
-    },
-    destroy: function() {
-        this._super();
-    },
-    playAnimation: function() {
-        var a = this, b = a.options;
-        b.timeline.play();
-    },
-    reverseAnimation: function() {
-        var a = this, b = a.options;
-        b.timeline.reverse();
     }
-}), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
+    $.widget("jui.juiDialog", $.jui.juiBase, {
+        options: {
+            className: "",
+            animation: {
+                duration: .3
+            },
+            status: null,
+            statuses: {
+                OPENED: 1,
+                CLOSED: 0
+            },
+            ui: {
+                pageOverlay: {
+                    elm: null,
+                    attribs: {
+                        "class": "jui-page-overlay"
+                    },
+                    appendTo: "body",
+                    selector: ".jui-page-overlay",
+                    html: "<div></div>",
+                    create: !0
+                },
+                wrapperElm: {
+                    elm: null,
+                    attribs: {
+                        "class": "jui-dialog"
+                    },
+                    appendTo: "body",
+                    selector: ".jui-dialog",
+                    html: "<div></div>",
+                    create: !0
+                },
+                headerElm: {
+                    elm: null,
+                    selector: "> header",
+                    html: "<header></header>",
+                    appendTo: "wrapperElm",
+                    create: !0
+                },
+                titleElm: {
+                    elm: null,
+                    attribs: {
+                        "class": "title"
+                    },
+                    text: "",
+                    selector: "> .title",
+                    html: "<div></div>",
+                    appendTo: "headerElm",
+                    create: !0
+                },
+                closeButtonElm: {
+                    elm: null,
+                    attribs: {
+                        "class": "close button"
+                    },
+                    selector: "> .close.button",
+                    html: "<div>X</div>",
+                    appendTo: "headerElm",
+                    create: !0
+                },
+                contentElm: {
+                    elm: null,
+                    attribs: {
+                        "class": "content"
+                    },
+                    selector: "> .content",
+                    html: "<section></section>",
+                    appendTo: "wrapperElm",
+                    create: !0
+                },
+                footerElm: {
+                    elm: null,
+                    selector: "> footer",
+                    html: "<footer></footer>",
+                    appendTo: "wrapperElm",
+                    create: !0
+                }
+            }
+        },
+        _instances: [],
+        _create: function() {
+            var a = this, b = a.options;
+            $("html").hasClass("touch") && b.disableOnTouchDevice && (b.isTouchDevice = !0), 
+            a._instances.push(this), a._destroyAllInstances();
+        },
+        _init: function() {
+            var a = this, b = a.options;
+            b.timeline = new TimelineMax({
+                paused: !0
+            }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setTitleText(), 
+            a._setContentFromThisElement(), a._addEventListeners(), a.open();
+        },
+        _setClassNameFromOptions: function() {
+            var a = this, b = a.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
+            empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
+            a.getUiElement("wrapperElm").attr("class", b.ui.wrapperElm.attribs["class"]);
+        },
+        _setContentFromThisElement: function() {
+            this._clearContentElmContent().html(this.element.text());
+        },
+        _clearContentElmContent: function() {
+            return this.getUiElement("contentElm").html("");
+        },
+        _addEventListeners: function() {
+            var a = this, b = (a.options, a.getUiElement("wrapperElm"), a.getUiElement("pageOverlay")), c = a.getUiElement("closeButtonElm");
+            b.bind("click", function(b) {
+                b.preventDefault(), a.close();
+            }), c.bind("click", function(b) {
+                b.preventDefault(), a.close();
+            });
+        },
+        _destroy: function() {
+            this._removeCreatedElements();
+        },
+        _destroyAllInstances: function() {
+            this._instances.forEach(function(a) {
+                a.destroy();
+            });
+        },
+        _setTitleText: function(b, c) {
+            c = c || "text";
+            var d = this, e = d.options, f = a(b, e.titleText, e.ui.titleElm.text, d.element.attr("title"))[0];
+            d.getUiElement("titleElm")[c](f);
+        },
+        setClassName: function(a) {
+            this._namespace("titleText", a), this._setClassNameFromOptions();
+        },
+        setTitleText: function(a, b) {
+            return this._setTitleText(a, b), this;
+        },
+        close: function() {
+            var a = this, b = a.options;
+            a.getUiElement("pageOverlay").css({
+                display: "none"
+            }), a.getUiElement("wrapperElm").css({
+                display: "none"
+            }), b.status = b.statuses.CLOSED;
+        },
+        open: function() {
+            var a = this, b = a.options;
+            a.getUiElement("pageOverlay").css({
+                display: "block"
+            }), a.getUiElement("wrapperElm").css({
+                display: "block"
+            }), b.status = b.statuses.OPENED;
+        },
+        destroy: function() {
+            this._destroy(), this._super();
+        },
+        playAnimation: function() {
+            var a = this, b = a.options;
+            b.timeline.play();
+        },
+        reverseAnimation: function() {
+            var a = this, b = a.options;
+            b.timeline.reverse();
+        }
+    });
+}(), $.widget("jui.juiFloatingScrollIndicators", $.jui.juiBase, {
     options: {
         className: "jui-floating-scroll-indicator",
         animation: {
