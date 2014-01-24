@@ -37,37 +37,42 @@ define([
             defaultRequestParams: {},
             requestParams: {},
             viewClassSuffix: 'View',
+
             initialize: function () {
                 var self = this;
                 self.layout = new Layout();
                 communicator.mediator.on('routeTo:IndexController', function (data) {
-                    if ($.isPlainObject(data) && !empty(data)) {
-                        self.mergeRequestParams(data);
+                    if ($.isPlainObject(data) && !empty(data.requestParams)) {
+                        self.mergeRequestParams(data.requestParams);
                     }
                     self.dispatch();
                 });
             },
             
             setRequestParams: function(requestParams) {
-                this.options.requestParams = requestParams;
+                this.requestParams = requestParams;
                 return this;
             },
+
             mergeRequestParams: function(requestParams) {
-                $.extend(true, this.options.requestParams, requestParams);
+                $.extend(true, this.requestParams, requestParams);
                 return this;
             },
+
             getRequestParams: function() {
-                return this.options.requestParams;
+                return this.requestParams;
             },
+
             getViewClassName: function () {
-                return strToCamelCase(this.options.requestParams.action
+                return strToCamelCase(this.requestParams.action
                     + this.viewClassSuffix);
             },
             
             showView: function () {
                 var self = this,
-                    view = new this.getViewClassName();
-                self.layout.mainColRegion.show(view);
+                    viewConstructor = eval(this.getViewClassName()),
+                    view = new viewConstructor();
+                    self.layout.mainColRegion.show(view);
             },
 
             dispatch: function (actionName) {
@@ -78,12 +83,6 @@ define([
                     this.showView();
                 }
             }
-//
-//            getViewClassName: function () {
-//                return strToCamelCase(
-//                    this.options.requestParams.action)
-//                    + 'View';
-//            }
 
         });
 
