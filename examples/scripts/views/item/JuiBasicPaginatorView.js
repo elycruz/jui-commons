@@ -1,6 +1,6 @@
 define([
     'backbone',
-    'stache!tmpl/item/jui-basic-paginator-view',
+    'hbs!tmpl/item/jui-basic-paginator-view',
     'gsap-scrollto-plugin'
 ],
     function (Backbone, tmpl) {

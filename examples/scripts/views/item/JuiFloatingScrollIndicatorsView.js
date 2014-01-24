@@ -1,6 +1,6 @@
 define([
 	'backbone',
-	'stache!tmpl/item/jui-floating-scroll-indicators-view',
+	'hbs!tmpl/item/jui-floating-scroll-indicators-view',
     'TweenMax',
     'gsap-scrollto-plugin'
 

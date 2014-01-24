@@ -5,8 +5,7 @@ require([
     'jquery',
     'jquery-ui',
     'TweenMax',
-    'jui-commons',
-    'mustache'
+    'jui-commons'
 ],
 function ( Backbone, App ) {
     'use strict';

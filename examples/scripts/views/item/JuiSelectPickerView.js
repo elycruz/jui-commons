@@ -1,6 +1,6 @@
 define([
     'backbone',
-    'stache!tmpl/item/jui-select-picker-view'
+    'hbs!tmpl/item/jui-select-picker-view'
 ],
     // @todo select picker needs to close when you click outside of it
 function (Backbone, tmpl) {

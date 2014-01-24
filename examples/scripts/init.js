@@ -8,8 +8,8 @@ require.config({
         'phpjs',
         'backbone.marionette',
         'jquery',
+        'hbs',
         'TweenMax',
-        'mustache',
         'main'
     ],
 
@@ -53,11 +53,11 @@ require.config({
         'juiPaginatorWithTextField': {
             deps: ['juiBasicPaginator']
         },
-        'stache': {
-            deps: ['mustache']
+        'hbs': {
+            deps: ['handlebars']
         },
         'main' : {
-            deps: ['es5-shim', 'phpjs', 'stache']
+            deps: ['es5-shim', 'phpjs']
         }
     },
 
@@ -85,12 +85,19 @@ require.config({
         'jquery-smartresize':   '../bower_components/jquery-smartresize/jquery.debouncedresize',
         'jquery-ui':            '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
 
-        mustache:   '../bower_components/mustache/mustache',
+
         phpjs:      '../bower_components/phpjs/phpjs-shim',
-        stache:     '../bower_components/requirejs-mustache/stache',
+        handlebars:     '../bower_components/handlebars/handlebars.amd',
+        hbs:     '../bower_components/require-handlebars-plugin/hbs',
         text:       '../bower_components/requirejs-text/text',
         tmpl:       '../templates',
         TweenMax:   '../bower_components/greensock/src/uncompressed/TweenMax',
         underscore: '../bower_components/underscore-amd/underscore'
+    },
+    hbs: { // optional
+        helpers: false,            // default: true
+        i18n: false,              // default: false
+        templateExtension: 'hbs', // default: 'hbs'
+        partialsUrl: ''           // default: ''
     }
 });

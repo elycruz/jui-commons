@@ -31,7 +31,7 @@ module.exports = function (grunt) {
                     out: './distro/js/examples.min.js',
                     name: 'init',
                     mainConfigFile: './scripts/init.js',
-//                    stubModules: ['text', 'stache'],
+//                    stubModules: ['text', 'hbs'],
                     preserveLicenseComments: false,
                     useStrict: true,
                     wrap: true
@@ -44,7 +44,7 @@ module.exports = function (grunt) {
                     out: 'distro/js/examples.js',
                     name: 'init',
                     mainConfigFile: 'scripts/init.js',
-//                    stubModules: ['text', 'stache'],
+//                    stubModules: ['text', 'hbs'],
                     preserveLicenseComments: false,
                     useStrict: true,
                     wrap: true
@@ -90,8 +90,14 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'compass',
         'cssmin',
-//        'jshint',
-        'requirejs:',
+        'requirejs',
+        'watch'
+    ]);
+
+    grunt.registerTask('develop', [
+        'compass',
+        'cssmin',
+        'requirejs:debug',
         'watch'
     ]);
 

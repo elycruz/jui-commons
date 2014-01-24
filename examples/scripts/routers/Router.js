@@ -35,7 +35,7 @@ define([
                     + '/' + controllerClassName;
 
             // Different paradigm
-            communicator.mediator.trigger(entrypoint, {
+            communicator.mediator.trigger('routeTo:' + controllerClassName, {
                 requestParams: $.extend({
                     controller: controller,
                     action: action,
