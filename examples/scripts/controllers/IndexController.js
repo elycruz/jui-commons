@@ -15,7 +15,8 @@ define([
     'views/item/JuiFloatingScrollIndicatorsView',
     'views/item/JuiScrollPaneView',
     'views/item/JuiSelectPickerView',
-    'juiBase',
+    'views/item/JuiAffixView',
+    'views/item/JuiDialogView',
     'jquery-mousewheel'
 ],
     function (
@@ -28,7 +29,10 @@ define([
         JuiScrollableDropDownView,
         JuiFloatingScrollIndicatorsView,
         JuiScrollPaneView,
-        JuiSelectPickerView) {
+        JuiSelectPickerView,
+        JuiAffixView,
+        JuiDialogView
+) {
 
         'use strict';
 

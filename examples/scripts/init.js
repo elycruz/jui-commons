@@ -66,14 +66,6 @@ require.config({
         'gsap-scrollto-plugin': '../bower_components/greensock/src/uncompressed/plugins/ScrollToPlugin',
         'jui-commons':          '../../distro/jui-commons',
 
-        juiAbstractPaginator:       '../../src/js/ui/jquery.juiAbstractPaginator',
-        juiBase:                    '../../src/js/jquery.juiBase',
-        juiBasicPaginator:          '../../src/js/ui/jquery.juiBasicPaginator',
-        juiScrollPane:              '../../src/js/ui/jquery.juiScrollPane',
-        juiScrollableDropDown:      '../../src/js/ui/jquery.juiScrollableDropDown',
-        juiSelectPicker:            '../../src/js/ui/jquery.juiSelectPicker',
-        juiPaginatorWithTextField:  '../../src/js/ui/jquery.juiPaginatorWithTextField',
-
         'jquery':               '../bower_components/jquery/jquery',
         'jquery-mousewheel':    '../bower_components/jquery-mousewheel/jquery.mousewheel',
         'jquery-smartresize':   '../bower_components/jquery-smartresize/jquery.debouncedresize',

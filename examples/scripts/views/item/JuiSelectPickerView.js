@@ -67,8 +67,8 @@ function (Backbone, tmpl) {
 
         onClose: function () {
             var ui = this.ui;
-            ui.catSelectElm.juiSelectPicker('destory');
-            ui.otherSelectElm.juiSelectPicker('destory');
+            ui.catSelectElm.juiSelectPicker('destroy');
+            ui.otherSelectElm.juiSelectPicker('destroy');
             delete ui.catSelectElm;
             delete ui.otherSelectElm;
         }
