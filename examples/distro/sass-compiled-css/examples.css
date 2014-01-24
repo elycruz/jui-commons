@@ -925,7 +925,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 .jui-select-picker .button {
   position: relative;
   display: border-box;
-  width: 100% !important;
+  width: 100%;
   height: auto;
   background: #fff;
   border: none;
@@ -962,7 +962,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 /* line 55, ../../../src/sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options {
   position: absolute;
-  width: 100% !important;
+  width: 100%;
   overflow: hidden;
   max-height: 220px;
   background: #fff;
@@ -1009,7 +1009,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 }
 /* line 89, ../../../src/sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.first {
-  border-top: none !important;
+  border-top: none;
 }
 /* line 92, ../../../src/sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.last {
@@ -1018,7 +1018,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 /* line 98, ../../../src/sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar {
   position: absolute;
-  top: auto !important;
+  top: auto;
   right: 10px;
   width: 8px;
   height: 220px;
