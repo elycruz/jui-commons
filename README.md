@@ -32,16 +32,36 @@ All jui plugins share the following naming conventions:
 - utils       - Utilities that may be commonly used throughout the
                 different components of the jui-eco-sphere.
 
-@todo list methods here
+### Components
+---------------------------
+List of current components offered:
+- jquery.juiAbstractPaginator
+- jquery.juiAffix
+- jquery.juiBasicPaginator
+- jquery.juiFloatingScrollIndicators (candidate for rename)
+- jquery.juiPaginatorWithTextField
+- jquery.juiScrollableDropDown
+- jquery.juiScrollPane
+- jquery.juiSelectPicker
 
-@todo Consider putting all plugins in src/ui to simplify things.
+#### jquery.jui.juiAbstractPaginator
+----
+The Jui Abstract Paginator offers a base for building paginators.
+It includes hashes in it's options hash which are well thought out and
+currently used in backend systems.
 
-@todo list the currently available plugins in the library here.
+##### Methods:
+- getPointer() - returns the current page pointer {null|String|Number}
+
+#### jquery.jui.juiBase
+----
+- @todo insert docs for juibase here.
 
 ### Requirements
 ---------------------------
-* Ecmascript 5 support (native or shim).
+* Ecmascript 5 support (native or shim) (tentative).
 * Phpjs shim (elycruz/phpjs).
+* CheckJs (elycruz/checkjs).
 * Modernizr
 * Gsap (Green Sock Animation Platform)
 * jquery 1.8 +
@@ -49,4 +69,8 @@ All jui plugins share the following naming conventions:
   * jquery-ui core
   * jquery-ui widget factory
 
-@todo add licensing info here.
+### Todos
+----------------------------
+- [ ] @todo add licensing info here.
+- [ ] @todo Consider putting all plugins in src/ui to simplify things.
+- [ ] @todo list the currently available plugins in the library here.
