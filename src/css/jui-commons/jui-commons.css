@@ -59,7 +59,7 @@
 .jui-select-picker .button {
   position: relative;
   display: border-box;
-  width: 100% !important;
+  width: 100%;
   height: auto;
   background: #fff;
   border: none;
@@ -96,7 +96,7 @@
 /* line 55, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options {
   position: absolute;
-  width: 100% !important;
+  width: 100%;
   overflow: hidden;
   max-height: 220px;
   background: #fff;
@@ -143,7 +143,7 @@
 }
 /* line 89, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.first {
-  border-top: none !important;
+  border-top: none;
 }
 /* line 92, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.last {
@@ -152,7 +152,7 @@
 /* line 98, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar {
   position: absolute;
-  top: auto !important;
+  top: auto;
   right: 10px;
   width: 8px;
   height: 220px;

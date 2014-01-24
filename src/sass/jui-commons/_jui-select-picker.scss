@@ -17,7 +17,7 @@
     .button {
         position: relative;
         display: border-box;
-        width: 100% !important;
+        width: 100%;
         height: auto;
         background: #fff;
         border: none;
@@ -54,7 +54,7 @@
 
     .options {
         position: absolute;
-        width: 100% !important;
+        width: 100%;
         overflow: hidden;
         max-height: 220px;
         background: #fff;
@@ -87,7 +87,7 @@
                 background: #ccc;
             }
             li.first {
-                border-top: none !important;
+                border-top: none;
             }
             li.last {
                 border-bottom: none;
@@ -97,7 +97,7 @@
 
     .vertical.scrollbar {
         position: absolute;
-        top: auto !important;
+        top: auto;
         right: 10px;
         width: 8px;
         height: 220px;
