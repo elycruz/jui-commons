@@ -370,7 +370,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         self.element.attr('overflow', ops.originalOverflow);
         self.element.removeClass(ops.pluginClassName);
 
-        // Call jquery.ui.widget's _destory method
+        // Call jquery.ui.widget's _destroy method
         this._super();
     }
 

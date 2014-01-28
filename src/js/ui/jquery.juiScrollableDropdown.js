@@ -28,8 +28,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         },
 
         // Example animations hash
-        defaultAnimations: [
-            {
+        defaultAnimations: [{
                 type: 'from',
                 duration: 0.30,
                 elmAlias: 'contentElm',
@@ -41,8 +40,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 elmAlias: 'scrollbar',
                 props: {css: {opacity: 1},
                     delay: -0.10}
-            }
-        ],
+        }],
 
         // Expand select-picker on event
         expandOn: 'click',
@@ -63,7 +61,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     },
 
     _create: function () {
-        var ops = this.options;
+        var self = this,
+            ops = self.options;
 
         // Add event class names
         this.element
@@ -73,6 +72,27 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
         // Populate ui elements on this (this.ui[elmKeyAlias])
         this._populateUiElementsFromOptions();
+
+        // Function for executing css: display (original | none)
+        function executeTimelineCompleteFunc () {
+            var contentElm = self.getUiElement('contentElm');
+            if (ops.state === ops.states.COLLAPSED) {
+                contentElm.css('display', 'none');
+            }
+            else if (ops.state === ops.states.EXPANDED) {
+                contentElm.css('display', ops.ui.contentElm.originalCss.display);
+            }
+        }
+
+        // Save original css `display` value
+        this._namespace('ui.contentElm.originalCss.display',
+            ops, this.getUiElement('contentElm').css('display'));
+
+        // Setup timeline object
+        this.timeline = new TimelineMax({
+            onReverseComplete: executeTimelineCompleteFunc,
+            onComplete: executeTimelineCompleteFunc
+        });
     },
 
     _init: function () {
@@ -124,13 +144,13 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             this.element.on(expandOnMouseEvent, function (e) {
                 if (self.options.state === states.COLLAPSED) {
                     self.ensureAnimationFunctionality();
-                    ops.timeline.play();
                     self.options.state = states.EXPANDED;
+                    ops.timeline.play();
                 }
                 else {
                     self.ensureAnimationFunctionality();
-                    ops.timeline.reverse();
                     self.options.state = states.COLLAPSED;
+                    ops.timeline.reverse();
                 }
             });
         }
@@ -138,14 +158,14 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             // On expand event
             this.element.on(expandOnMouseEvent, function (e) {
                 self.ensureAnimationFunctionality();
-                ops.timeline.play();
                 self.options.state = states.EXPANDED;
+                ops.timeline.play();
             })
                 // On collapse event
                 .on(collapseOnMouseEvent, function (e) {
                     self.ensureAnimationFunctionality();
-                    ops.timeline.reverse();
                     self.options.state = states.COLLAPSED;
+                    ops.timeline.reverse();
                 });
         }
 
@@ -155,8 +175,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 && ops.timeline.progress() === 1) {
                 if (self.options.state === states.EXPANDED) {
                     self.ensureAnimationFunctionality();
-                    ops.timeline.reverse();
                     self.options.state = states.COLLAPSED;
+                    ops.timeline.reverse();
                 }
             }
         });
@@ -213,7 +233,9 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     refreshOptions: function () {
         this._removeEventListeners();
         this._addEventListeners();
-    }, getState: function () {
+    },
+
+    getState: function () {
         return this.options.state;
     }
 

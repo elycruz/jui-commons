@@ -72,8 +72,8 @@ define([
 
             onClose: function () {
                 var ui = this.ui;
-                ui.test1Elm.juiSelectPicker('destory');
-                ui.test2Elm.juiSelectPicker('destory');
+                ui.test1Elm.juiSelectPicker('destroy');
+                ui.test2Elm.juiSelectPicker('destroy');
                 delete ui.test2Elm;
                 delete ui.test1Elm;
             }

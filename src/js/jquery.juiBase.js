@@ -423,6 +423,17 @@ $.widget('jui.juiBase', {
 
     setValueOnHash: function (key, value, hash) {
         this._namespace(key, hash, value);
+    },
+
+    /**
+     * Returns the timeline classname to use for the instance of the plugin
+     * extending juibase.
+     * @returns {*} default defaultTimelineClassName = 'TimelineLite'
+     */
+    getTimelineClassName: function () {
+        var ops = this.options;
+        return isset(ops.timelineClassName) ? ops.timelineClassName :
+            ops.defaultTimelineClassName;
     }
 
 });

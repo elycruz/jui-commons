@@ -1,4 +1,4 @@
-/*! jui-commons 2014-01-24 */
+/*! jui-commons 2014-01-28 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -95,6 +95,10 @@ $.widget("jui.juiBase", {
     },
     setValueOnHash: function(a, b, c) {
         this._namespace(a, c, b);
+    },
+    getTimelineClassName: function() {
+        var a = this.options;
+        return isset(a.timelineClassName) ? a.timelineClassName : a.defaultTimelineClassName;
     }
 }), $.widget("jui.splitText", {
     options: {
@@ -807,9 +811,17 @@ $.widget("jui.juiBase", {
         state: null
     },
     _create: function() {
-        var a = this.options;
-        this.element.addClass(a.className).addClass(this._getExpandOnClassName()).addClass(this._getCollapseOnClassName()), 
-        this._populateUiElementsFromOptions();
+        function a() {
+            var a = b.getUiElement("contentElm");
+            c.state === c.states.COLLAPSED ? a.css("display", "none") : c.state === c.states.EXPANDED && a.css("display", c.ui.contentElm.originalCss.display);
+        }
+        var b = this, c = b.options;
+        this.element.addClass(c.className).addClass(this._getExpandOnClassName()).addClass(this._getCollapseOnClassName()), 
+        this._populateUiElementsFromOptions(), this._namespace("ui.contentElm.originalCss.display", c, this.getUiElement("contentElm").css("display")), 
+        this.timeline = new TimelineMax({
+            onReverseComplete: a,
+            onComplete: a
+        });
     },
     _init: function() {
         var a = this.options;
@@ -833,16 +845,16 @@ $.widget("jui.juiBase", {
     _addEventListeners: function() {
         var a = this, b = a.options.states, c = this.options, d = this._getCollapseOnEventStringName(), e = this._getExpandOnEventStringName();
         e === d ? this.element.on(e, function() {
-            a.options.state === b.COLLAPSED ? (a.ensureAnimationFunctionality(), c.timeline.play(), 
-            a.options.state = b.EXPANDED) : (a.ensureAnimationFunctionality(), c.timeline.reverse(), 
-            a.options.state = b.COLLAPSED);
+            a.options.state === b.COLLAPSED ? (a.ensureAnimationFunctionality(), a.options.state = b.EXPANDED, 
+            c.timeline.play()) : (a.ensureAnimationFunctionality(), a.options.state = b.COLLAPSED, 
+            c.timeline.reverse());
         }) : this.element.on(e, function() {
-            a.ensureAnimationFunctionality(), c.timeline.play(), a.options.state = b.EXPANDED;
+            a.ensureAnimationFunctionality(), a.options.state = b.EXPANDED, c.timeline.play();
         }).on(d, function() {
-            a.ensureAnimationFunctionality(), c.timeline.reverse(), a.options.state = b.COLLAPSED;
+            a.ensureAnimationFunctionality(), a.options.state = b.COLLAPSED, c.timeline.reverse();
         }), $(window).on("click", function(d) {
             $.contains(a.element, $(d.target)) === !1 && 1 === c.timeline.progress() && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
-            c.timeline.reverse(), a.options.state = b.COLLAPSED);
+            a.options.state = b.COLLAPSED, c.timeline.reverse());
         });
     },
     _removeEventListeners: function() {
