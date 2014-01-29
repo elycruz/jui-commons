@@ -1,4 +1,4 @@
-/*! jui-commons 2014-01-28 */
+/*! jui-commons 2014-01-29 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -786,7 +786,8 @@ $.widget("jui.juiBase", {
             elmAlias: "contentElm",
             props: {
                 css: {
-                    height: 0
+                    height: 0,
+                    autoAlpha: 0
                 }
             }
         }, {

@@ -103,13 +103,14 @@
   z-index: 97;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
+  visibility: hidden;
 }
-/* line 64, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 65, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul {
   width: 85%;
   margin: 0 5%;
 }
-/* line 67, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 68, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li {
   width: 100%;
   border-bottom: 1px solid #ccc;
@@ -119,7 +120,7 @@
   -o-transition: background 0.16s linear;
   transition: background 0.16s linear;
 }
-/* line 73, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 74, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li a {
   display: block;
   padding: 10px;
@@ -129,11 +130,11 @@
   -o-transition: background 0.16s linear;
   transition: background 0.16s linear;
 }
-/* line 79, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 80, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li a:hover {
   background: #ddd;
 }
-/* line 86, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 87, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li a:active,
 .jui-select-picker .options ul li a.selected,
 .jui-select-picker .options ul li a.active,
@@ -141,15 +142,15 @@
 .jui-select-picker .options ul li.active {
   background: #ccc;
 }
-/* line 89, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 90, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.first {
   border-top: none;
 }
-/* line 92, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 93, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul li.last {
   border-bottom: none;
 }
-/* line 98, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 99, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar {
   position: absolute;
   top: auto;
@@ -165,7 +166,7 @@
   border-radius: 8px;
   z-index: 99;
 }
-/* line 108, ../../sass/jui-commons/_jui-select-picker.scss */
+/* line 109, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar .handle {
   width: 8px;
   -webkit-border-radius: 8px;

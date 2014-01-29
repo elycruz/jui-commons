@@ -60,6 +60,7 @@
         background: #fff;
         z-index: 97;
         @include opacity(0);
+        visibility: hidden;
 
         ul {
             width: 85%;

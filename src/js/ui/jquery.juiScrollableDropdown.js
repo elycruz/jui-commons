@@ -32,7 +32,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 type: 'from',
                 duration: 0.30,
                 elmAlias: 'contentElm',
-                props: {css: {height: 0}}
+                props: {css: {height: 0, autoAlpha: 0}}
             },
             {
                 type: 'to',
