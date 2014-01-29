@@ -813,13 +813,16 @@ $.widget("jui.juiBase", {
     },
     _create: function() {
         function a() {
-            var a = b.getUiElement("contentElm");
-            c.state === c.states.COLLAPSED ? a.css("display", "none") : c.state === c.states.EXPANDED && a.css("display", c.ui.contentElm.originalCss.display);
+            var a = c.getUiElement("contentElm");
+            d.state === d.states.COLLAPSED ? a.css("display", "none") : d.state === d.states.EXPANDED && a.css("display", d.ui.contentElm.originalCss.display);
         }
-        var b = this, c = b.options;
-        this.element.addClass(c.className).addClass(this._getExpandOnClassName()).addClass(this._getCollapseOnClassName()), 
-        this._populateUiElementsFromOptions(), this._namespace("ui.contentElm.originalCss.display", c, this.getUiElement("contentElm").css("display")), 
-        this.timeline = new TimelineMax({
+        var b, c = this, d = c.options;
+        this.element.addClass(d.className).addClass(this._getExpandOnClassName()).addClass(this._getCollapseOnClassName()), 
+        this._populateUiElementsFromOptions(), b = this.getUiElement("contentElm"), 
+        this._namespace("ui.contentElm.originalCss", d, {
+            display: b.css("display"),
+            visibility: b.css("visibility")
+        }), b.css("visibility", "hidden"), this.timeline = new TimelineMax({
             onReverseComplete: a,
             onComplete: a
         });
@@ -1062,12 +1065,12 @@ $.widget("jui.juiBase", {
         a = a || "", b = b || "text", c = isset(c) ? c : f.useSelectedLabelPrefixAndSuffix, 
         c && (d = f.selectedLabelPrefix || g.prefixText || "", e = f.selectedLabelSuffix || g.suffixText || "", 
         a = d + a + e), TweenMax.to(h, .16, {
-            opacity: 0,
+            autoAlpha: 0,
             onCompleteParams: [ a, b, h ],
             onComplete: function() {
                 var a = arguments, b = a[0], c = a[1], d = a[2];
                 d[c](b), TweenMax.to(d, .16, {
-                    opacity: 1
+                    autoAlpha: 1
                 });
             }
         });

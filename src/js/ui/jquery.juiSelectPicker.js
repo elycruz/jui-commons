@@ -472,7 +472,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // @todo move this declaration to the add event listeners
         // function and optimize it
         TweenMax.to(elm, 0.16, {
-            opacity: 0,
+            autoAlpha: 0,
             onCompleteParams: [text, textType, elm],
             onComplete: function () {
                 var args = arguments,
@@ -480,7 +480,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                     textType = args[1],
                     elm = args[2];
                 elm[textType](text);
-                TweenMax.to(elm, 0.16, {opacity: 1});
+                TweenMax.to(elm, 0.16, {autoAlpha: 1});
             }});
     },
 

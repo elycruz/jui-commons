@@ -62,7 +62,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     _create: function () {
         var self = this,
-            ops = self.options;
+            ops = self.options,
+            contentElm;
 
         // Add event class names
         this.element
@@ -84,9 +85,18 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             }
         }
 
+        // Get content element
+        contentElm = this.getUiElement('contentElm');
+
         // Save original css `display` value
-        this._namespace('ui.contentElm.originalCss.display',
-            ops, this.getUiElement('contentElm').css('display'));
+        this._namespace('ui.contentElm.originalCss',
+            ops, {
+                display: contentElm.css('display'),
+                visibility: contentElm.css('visibility')
+            });
+
+        // Set content element's visibility
+        contentElm.css('visibility', 'hidden');
 
         // Setup timeline object
         this.timeline = new TimelineMax({

@@ -112,7 +112,6 @@ $.widget('jui.juiBase', {
      * @param optionKey {Object|String}
      * @returns {null|jQuery} null or the jquery element selection
      */
-
     _getElementFromOptions: function (optionKey) {
         var self = this,
             ops = self.options,
