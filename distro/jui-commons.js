@@ -569,6 +569,56 @@ $.widget("jui.juiBase", {
             });
         }));
     }
+}), $.widget("jui.juiMouse", {
+    options: {
+        mouseX: null,
+        mouseY: null,
+        relMouseX: null,
+        relMouseY: null
+    },
+    mouseX: function() {
+        return this.options.mouseX;
+    },
+    mouseY: function() {
+        return this.options.mouseY;
+    },
+    relMouseX: function() {
+        return this.options.relMouseX;
+    },
+    relMouseY: function() {
+        return this.options.relMouseY;
+    },
+    hitTest: function(a) {
+        var b = this, c = b.getBoundingBox(a), d = b.options;
+        return d.mouseX >= c.left && d.mouseX <= c.right || d.mouseY >= c.top && d.mouseY <= c.bottom;
+    },
+    getRelativeMouse: function(a) {
+        var b = this, c = b.getBoundingBox(a), d = b.options;
+        return {
+            mouseX: d.mouseX - c.left,
+            mouseY: d.mouseY - c.top
+        };
+    },
+    getBoundingBox: function(a) {
+        var b = a.offset();
+        return b = b ? b : {
+            top: 0,
+            left: 0
+        }, {
+            top: b.top,
+            right: b.left + a.outerWidth(),
+            bottom: b.top + a.outerHeight(),
+            left: b.left
+        };
+    },
+    _create: function() {},
+    _init: function() {
+        var a = this, b = a.options;
+        a.element.mousemove(function(c) {
+            var d = a.getRelativeMouse(a.element);
+            b.mouseX = c.clientX, b.mouseY = c.clientY, b.relMouseX = d.mouseX, b.relMouseY = d.mouseY;
+        });
+    }
 }), $.widget("jui.juiPaginatorWithTextField", $.jui.juiBasicPaginator, {
     options: {
         template: '<a href="#" class="first-btn btn">&#124;&lt; First</a><a href="#" class="prev-btn btn">&lt; Prev</a><input type="text" size="4" class="text-field btn" /><a href="#" class="next-btn btn">Next &gt;</a><a href="#" class="last-btn btn">Last &gt;&#124;</a>',
@@ -627,7 +677,36 @@ $.widget("jui.juiBase", {
     }
 }), $.widget("jui.juiScalableBtn", $.jui.juiBase, {
     options: {
-        duration: .116
+        duration: null,
+        defaultDurationsVal: .116,
+        onHoverOptions: {
+            duration: null,
+            props: {
+                scale: 1.16,
+                ease: Linear.easeNone
+            }
+        },
+        onMousedownOptions: {
+            duration: null,
+            props: {
+                scale: .9,
+                ease: Linear.easeNone
+            }
+        },
+        onMouseupOptions: {
+            duration: null,
+            props: {
+                scale: 1.16,
+                ease: Linear.easeNone
+            }
+        },
+        onMouseoutOptions: {
+            duration: null,
+            props: {
+                scale: 1,
+                ease: Linear.easeNone
+            }
+        }
     },
     _create: function() {},
     _init: function() {
@@ -635,28 +714,26 @@ $.widget("jui.juiBase", {
         this.options._eventListenersHaveBeenAdded = !0);
     },
     _addEventListeners: function() {
-        var a = this, b = a.options, c = a.element, d = b.duration;
-        c.mouseover(function() {
-            TweenLite.to(c, d, {
-                scale: 1.16,
-                ease: Linear.easeNone
-            });
-        }).mousedown(function() {
-            TweenLite.to(c, d, {
-                scale: .9,
-                ease: Linear.easeNone
-            });
-        }).mouseup(function() {
-            TweenLite.to(c, d, {
-                scale: 1.16,
-                ease: Linear.easeNone
-            });
-        }).mouseout(function() {
-            TweenLite.to(c, d, {
-                scale: 1,
-                ease: Linear.easeNone
-            });
+        var a = this, b = a.options, c = a.element, d = a._getOverridingDuration() || b.defaultDurationsVal, e = b.onHoverOptions, f = b.onMousedownOptions, g = b.onMouseupOptions, h = b.onMouseoutOptions;
+        c.bind("mouseover", function() {
+            TweenLite.to(c, e.duration || d, e.props);
+        }).bind("mousedown", function() {
+            TweenLite.to(c, f.duration || d, f.props);
+        }).bind("mouseup", function() {
+            TweenLite.to(c, g.duration || d, g.props);
+        }).bind("mouseout", function() {
+            TweenLite.to(c, h.duration || d, h.props);
         });
+    },
+    _getOverridingDuration: function() {
+        var a = this.options, b = null;
+        return b = isset(a.duration) ? a.defaultDurationsVal : a.duration;
+    },
+    _removeEventListeners: function() {
+        this.element.unbind();
+    },
+    _destroy: function() {
+        this._removeEventListeners();
     }
 }), $.widget("jui.juiScrollPane", $.jui.juiBase, {
     options: {

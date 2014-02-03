@@ -5,7 +5,29 @@
 $.widget('jui.juiScalableBtn', $.jui.juiBase, {
 
     options: {
-        duration: 0.116
+        duration: null,
+
+        defaultDurationsVal: 0.116,
+
+        onHoverOptions: {
+            duration: null,
+            props: {scale: 1.16, ease: Linear.easeNone}
+        },
+
+        onMousedownOptions: {
+            duration: null,
+            props: {scale: 0.9, ease: Linear.easeNone}
+        },
+
+        onMouseupOptions: {
+            duration: null,
+            props: {scale: 1.16, ease: Linear.easeNone}
+        },
+
+        onMouseoutOptions: {
+            duration: null,
+            props: {scale: 1, ease: Linear.easeNone}
+        }
     },
 
     _create: function () {
@@ -22,20 +44,45 @@ $.widget('jui.juiScalableBtn', $.jui.juiBase, {
         var self = this,
             ops = self.options,
             elm = self.element,
-            duration = ops.duration;
+            defaultDuration = self._getOverridingDuration() || ops.defaultDurationsVal,
+            hoverOps = ops.onHoverOptions,
+            mousedownOps = ops.onMousedownOptions,
+            mouseupOps = ops.onMouseupOptions,
+            mouseoutOps = ops.onMouseoutOptions
+            ;
 
-        elm.mouseover(function (e) {
-            TweenLite.to(elm, duration, {scale: 1.16, ease: Linear.easeNone});
+        elm.bind('mouseover', function (e) {
+            TweenLite.to(elm, hoverOps.duration || defaultDuration, hoverOps.props);
         })
-            .mousedown(function (e) {
-                TweenLite.to(elm, duration, {scale: 0.9, ease: Linear.easeNone});
+            .bind('mousedown', function (e) {
+                TweenLite.to(elm, mousedownOps.duration || defaultDuration, mousedownOps.props);
             })
-            .mouseup(function (e) {
-                TweenLite.to(elm, duration, {scale: 1.16, ease: Linear.easeNone});
+            .bind('mouseup', function (e) {
+                TweenLite.to(elm,  mouseupOps.duration || defaultDuration, mouseupOps.props);
             })
-            .mouseout(function (e) {
-                TweenLite.to(elm, duration, {scale: 1, ease: Linear.easeNone});
+            .bind('mouseout', function (e) {
+                TweenLite.to(elm, mouseoutOps.duration || defaultDuration, mouseoutOps.props);
             });
+    },
+
+    _getOverridingDuration: function () {
+        var ops = this.options,
+            retVal = null;
+        if (!isset(ops.duration)) {
+            retVal = ops.duration;
+        }
+        else {
+            retVal = ops.defaultDurationsVal;
+        }
+        return retVal;
+    },
+
+    _removeEventListeners: function () {
+        this.element.unbind();
+    },
+
+    _destroy: function () {
+        this._removeEventListeners();
     }
 
 });
