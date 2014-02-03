@@ -1,6 +1,6 @@
 {
     "name": "jui-commons",
-    "version": "0.0.45",
+    "version": "0.0.48",
   "ignore": [
     "**/.*",
     "node_modules",

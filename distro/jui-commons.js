@@ -1,4 +1,4 @@
-/*! jui-commons 2014-01-29 */
+/*! jui-commons 2014-02-03 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -624,6 +624,39 @@ $.widget("jui.juiBase", {
     },
     getTextFieldElm: function() {
         return this.getUiElement("textField");
+    }
+}), $.widget("jui.juiScalableBtn", $.jui.juiBase, {
+    options: {
+        duration: .116
+    },
+    _create: function() {},
+    _init: function() {
+        isset(this.options._eventListenersHaveBeenAdded) || (this._addEventListeners(), 
+        this.options._eventListenersHaveBeenAdded = !0);
+    },
+    _addEventListeners: function() {
+        var a = this, b = a.options, c = a.element, d = b.duration;
+        c.mouseover(function() {
+            TweenLite.to(c, d, {
+                scale: 1.16,
+                ease: Linear.easeNone
+            });
+        }).mousedown(function() {
+            TweenLite.to(c, d, {
+                scale: .9,
+                ease: Linear.easeNone
+            });
+        }).mouseup(function() {
+            TweenLite.to(c, d, {
+                scale: 1.16,
+                ease: Linear.easeNone
+            });
+        }).mouseout(function() {
+            TweenLite.to(c, d, {
+                scale: 1,
+                ease: Linear.easeNone
+            });
+        });
     }
 }), $.widget("jui.juiScrollPane", $.jui.juiBase, {
     options: {

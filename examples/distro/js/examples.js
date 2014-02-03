@@ -31770,7 +31770,7 @@ case 27:t.datepicker._hideDatepicker();break;case 33:t.datepicker._adjustDate(e.
 if(n){if(a=this._find(s),a.length)return a.find(".ui-tooltip-content").html(n),void 0;s.is("[title]")&&(i&&"mouseover"===i.type?s.attr("title",""):s.removeAttr("title")),a=this._tooltip(s),e(s,a.attr("id")),a.find(".ui-tooltip-content").html(n),this.options.track&&i&&/^mouse/.test(i.type)?(this._on(this.document,{mousemove:o}),o(i)):a.position(t.extend({of:s},this.options.position)),a.hide(),this._show(a,this.options.show),this.options.show&&this.options.show.delay&&(h=this.delayedShow=setInterval(function(){a.is(":visible")&&(o(l.of),clearInterval(h))},t.fx.interval)),this._trigger("open",i,{tooltip:a}),r={keyup:function(e){if(e.keyCode===t.ui.keyCode.ESCAPE){var i=t.Event(e);i.currentTarget=s[0],this.close(i,!0)}},remove:function(){this._removeTooltip(a)}},i&&"mouseover"!==i.type||(r.mouseleave="close"),i&&"focusin"!==i.type||(r.focusout="close"),this._on(!0,s,r)}},close:function(e){var s=this,n=t(e?e.currentTarget:this.element),o=this._find(n);this.closing||(clearInterval(this.delayedShow),n.data("ui-tooltip-title")&&n.attr("title",n.data("ui-tooltip-title")),i(n),o.stop(!0),this._hide(o,this.options.hide,function(){s._removeTooltip(t(this))}),n.removeData("ui-tooltip-open"),this._off(n,"mouseleave focusout keyup"),n[0]!==this.element[0]&&this._off(n,"remove"),this._off(this.document,"mousemove"),e&&"mouseleave"===e.type&&t.each(this.parents,function(e,i){t(i.element).attr("title",i.title),delete s.parents[e]}),this.closing=!0,this._trigger("close",e,{tooltip:o}),this.closing=!1)},_tooltip:function(e){var i="ui-tooltip-"+s++,n=t("<div>").attr({id:i,role:"tooltip"}).addClass("ui-tooltip ui-widget ui-corner-all ui-widget-content "+(this.options.tooltipClass||""));return t("<div>").addClass("ui-tooltip-content").appendTo(n),n.appendTo(this.document[0].body),this.tooltips[i]=e,n},_find:function(e){var i=e.data("ui-tooltip-id");return i?t("#"+i):t()},_removeTooltip:function(t){t.remove(),delete this.tooltips[t.attr("id")]},_destroy:function(){var e=this;t.each(this.tooltips,function(i,s){var n=t.Event("blur");n.target=n.currentTarget=s[0],e.close(n,!0),t("#"+i).remove(),s.data("ui-tooltip-title")&&(s.attr("title",s.data("ui-tooltip-title")),s.removeData("ui-tooltip-title"))})}})}(jQuery);
 define("jquery-ui", ["jquery"], function(){});
 
-/*! jui-commons 2014-01-29 */
+/*! jui-commons 2014-02-03 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -32397,6 +32397,39 @@ $.widget("jui.juiBase", {
     getTextFieldElm: function() {
         return this.getUiElement("textField");
     }
+}), $.widget("jui.juiScalableBtn", $.jui.juiBase, {
+    options: {
+        duration: .116
+    },
+    _create: function() {},
+    _init: function() {
+        isset(this.options._eventListenersHaveBeenAdded) || (this._addEventListeners(), 
+        this.options._eventListenersHaveBeenAdded = !0);
+    },
+    _addEventListeners: function() {
+        var a = this, b = a.options, c = a.element, d = b.duration;
+        c.mouseover(function() {
+            TweenLite.to(c, d, {
+                scale: 1.16,
+                ease: Linear.easeNone
+            });
+        }).mousedown(function() {
+            TweenLite.to(c, d, {
+                scale: .9,
+                ease: Linear.easeNone
+            });
+        }).mouseup(function() {
+            TweenLite.to(c, d, {
+                scale: 1.16,
+                ease: Linear.easeNone
+            });
+        }).mouseout(function() {
+            TweenLite.to(c, d, {
+                scale: 1,
+                ease: Linear.easeNone
+            });
+        });
+    }
 }), $.widget("jui.juiScrollPane", $.jui.juiBase, {
     options: {
         ui: {
@@ -32879,6 +32912,7 @@ define("jui-commons", ["jquery","jquery-ui"], function(){});
 define('views/item/JuiDialogView',[
 	'backbone',
 	'hbs!tmpl/item/jui-dialog-view',
+    'TweenMax',
     'jui-commons'
 ],
 function( Backbone, tmpl ) {
@@ -32896,13 +32930,18 @@ function( Backbone, tmpl ) {
         },
 
         onShow: function () {
-            var self = this;
-            $('.toggle-example-1-state').click(function () {
+            var self = this,
+
+                btn =  $('.toggle-example-1-state');
+
+            btn.click(function () {
                 self.ui.content1.juiDialog({
                     className: 'my-dialog',
                     titleText: 'Title set via javascript'
                 });
             });
+
+            btn.juiScalableBtn();
         }
 	});
 

@@ -1,6 +1,7 @@
 define([
 	'backbone',
 	'hbs!tmpl/item/jui-dialog-view',
+    'TweenMax',
     'jui-commons'
 ],
 function( Backbone, tmpl ) {
@@ -18,13 +19,18 @@ function( Backbone, tmpl ) {
         },
 
         onShow: function () {
-            var self = this;
-            $('.toggle-example-1-state').click(function () {
+            var self = this,
+
+                btn =  $('.toggle-example-1-state');
+
+            btn.click(function () {
                 self.ui.content1.juiDialog({
                     className: 'my-dialog',
                     titleText: 'Title set via javascript'
                 });
             });
+
+            btn.juiScalableBtn();
         }
 	});
 
