@@ -168,6 +168,11 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 plugin.scrollContentHolder(ops.scrollbarOriented.VERTICALLY);
             }
         });
+
+        // Listen for arrow keys
+        $(window.document).keydown(function (e) {
+
+        });
     },
 
     _scrollByOrientation: function (value, orientation) {

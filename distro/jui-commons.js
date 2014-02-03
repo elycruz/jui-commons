@@ -810,7 +810,7 @@ $.widget("jui.juiBase", {
             f.scrollContentHolder(a.scrollbarOriented.HORIZONTALLY)) : (e = f.getScrollbarHandleByOrientation(a.scrollbarOriented.VERTICALLY), 
             h = e.position().top + i, e.css("top", h), f.constrainHandle(a.scrollbarOriented.VERTICALLY), 
             f.scrollContentHolder(a.scrollbarOriented.VERTICALLY));
-        });
+        }), $(window.document).keydown(function() {});
     },
     _scrollByOrientation: function(a, b) {
         var c, d = (this.options, this.getUiElement("contentHolder")), e = b, f = this.getScrollDirVars(e), g = f.scrollAmountTotal, h = this.getScrollbarHandleByOrientation(e), i = this.getScrollbarByOrientation(e), j = f.cssCalcDir, k = "outer" + ucaseFirst(f.scrollbarDimProp);
