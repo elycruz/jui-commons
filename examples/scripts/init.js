@@ -26,26 +26,6 @@ require.config({
         'jui-commons': {
             deps: ['jquery', 'jquery-ui']
         },
-        'juiBase': {
-            deps: ['jquery', 'jquery-ui']
-        },
-        'juiScrollPane': {
-            deps: ['juiBase']
-        },
-        'juiScrollableDropDown': {
-            deps: ['juiBase']
-        },
-        'juiSelectPicker': {
-            deps: ['juiBase']
-        },
-        'juiAbstractPaginator': {
-            deps: ['juiBase']
-        },
-        'juiBasicPaginator': {
-        },
-        'juiPaginatorWithTextField': {
-            deps: ['juiBasicPaginator']
-        },
         'hbs': {
             deps: ['handlebars']
         },

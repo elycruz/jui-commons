@@ -27,7 +27,7 @@ function( Backbone, tmpl ) {
                 }
                 else {
                     self.scrollPanes =
-                        $('.content-pane', self.$el).juiScrollPane();
+                        $('.content-pane', self.$el).juiScrollPane({mimickBrowser: true});
                 }
             });
 

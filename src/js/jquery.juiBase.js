@@ -9,7 +9,7 @@
  * @requires jQuery
  * @requires jQuery.ui - JQuery Ui Core.
  * @requires jquery.widget - JQuery Ui Widget Factory.
-
+ *
  * @todo -- issue solved -- make sure all classes that need a timeline object
  * implement their own `getTimeline` method.
  * ~~~deprecated~~~
@@ -18,11 +18,6 @@
  * new calls of the extending plugins.
  *
  * @todo start using $.each instead of Object.keys (gets rid of one more dependancy)
- *
- * @todo add a setoptions and setoption methods to juibase
- *
- * @todo breakdown the _getElementFromOptions method further (create a new
- * appendElementFromOptions method)
  *
  */
 $.widget('jui.juiBase', {
@@ -56,7 +51,7 @@ $.widget('jui.juiBase', {
 
         for (i = 0; i < parts.length; i += 1) {
             if (typeof parent[parts[i]] === 'undefined') {
-                if (i === parts.length && valueToSet !== undefined) {
+                if (i === parts.length - 1 && typeof valueToSet !== 'undefined') {
                     parent[parts[i]] = valueToSet;
                 }
                 else {
