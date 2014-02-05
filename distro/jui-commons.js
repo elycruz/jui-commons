@@ -554,7 +554,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -651,11 +651,8 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        {
-            var a = this;
-            a.options;
-        }
-        a.element.addClass(a.options.className), a._super();
+        var a = this;
+        a.options, a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -666,8 +663,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
@@ -742,8 +739,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = this.getUiElement("contentHolder").height() / 3 / 3 / 3 * 2, 
-            classOfIs(a, "Number") ? a : 0;
+            return a = 2 * (this.getUiElement("contentHolder").height() / 3 / 3), classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,
@@ -751,6 +747,7 @@ $.widget("jui.juiBase", {
             "39": 1,
             "40": 1
         },
+        mimickBrowser: !1,
         ui: {
             contentHolder: {
                 elm: null,
@@ -816,11 +813,15 @@ $.widget("jui.juiBase", {
         "hidden" !== b.css("overflow") && (a.originalOverflow = b.css("overflow"), 
         b.css("overflow", "hidden")), e.element.addClass(a.pluginClassName), d > b.height() && e.initScrollbar(a.scrollbarOriented.VERTICALLY), 
         c > b.width() ? e.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : e.getUiElement("horizScrollbar").css("display", "none"), 
-        b.mousewheel(function(a, c, d, f) {
-            a.preventDefault(), a.stopPropagation(), c = isset(c) ? c : isset(d) ? d : f;
-            var g = e.getValueFromOptions("scrollSpeed"), h = 1 > c ? g : -g;
-            0 !== d && 0 === f ? e.scrollHorizontally(b.scrollLeft() + h) : 0 === d && 0 !== f && e.scrollVertically(b.scrollTop() + h);
-        }), a.mousePos = $(window).juiMouse(), $(window).keydown(function(c) {
+        b.bind("mousewheel", function(a, c, d, f) {
+            var g, h, i = e.getValueFromOptions("mimickBrowser");
+            i || (a.preventDefault(), a.stopPropagation()), c = isset(c) ? c : isset(d) ? d : f, 
+            g = e.getValueFromOptions("scrollSpeed"), h = 1 > c ? g : -g, 0 !== d && 0 === f ? (e.scrollHorizontally(b.scrollLeft() + h), 
+            i && 0 !== b.scrollLeft() && b.scrollLeft() !== b.get(0).scrollWidth && (a.preventDefault(), 
+            a.stopPropagation())) : 0 === d && 0 !== f && (e.scrollVertically(b.scrollTop() + h), 
+            i && 0 !== b.scrollTop() && b.scrollTop() !== b.get(0).scrollHeight && (a.preventDefault(), 
+            a.stopPropagation()));
+        }), a.mousePos = $(window).juiMouse(), $(window).bind("keydown", function(c) {
             var d, f = c.keyCode + "";
             if (a.keyPressHash.hasOwnProperty(f) && a.mousePos.juiMouse("hitTest", b)) switch (b.focus(), 
             c.preventDefault(), d = e.getValueFromOptions("scrollSpeed") * a.keyPressHash[f], 
@@ -906,9 +907,8 @@ $.widget("jui.juiBase", {
     },
     _destroy: function() {
         var a = this, b = a.options;
-        a.getUiElement("vertHandle").remove(), a.getUiElement("vertScrollbar").remove(), 
-        a.getUiElement("horizHandle").remove(), a.getUiElement("horizScrollbar").remove(), 
-        a.element.attr("overflow", b.originalOverflow), a.element.removeClass(b.pluginClassName), 
+        a.element.attr("overflow", b.originalOverflow), $(window).unbind("keydown"), 
+        a._removeCreatedElements(), a.element.removeClass(b.pluginClassName), a.getUiElement("contentHolder").unbind("mousewheel").scrollLeft(0).scrollTop(0), 
         this._super();
     }
 }), $.widget("jui.juiScrollableDropDown", $.jui.juiBase, {

@@ -10,20 +10,35 @@ function( Backbone, tmpl ) {
 
     	template: tmpl,
 
-        scrollPane1: null,
+        scrollPanes: null,
+
+        ui: {
+            toggleCreationStateBtn: '.toggle-creation-destruction-state',
+            toggleMimickBrowserBtn: '.toggle-mimick-browser'
+        },
 
         onShow: function () {
             var self = this;
-            $('.toggle-example-1-state').click(function () {
-                if (!empty(self.scrollPane1)) {
-                    self.scrollPane1.juiScrollPane('destroy');
-                    self.scrollPane1 = null;
+
+            self.ui.toggleCreationStateBtn.click(function () {
+                if (!empty(self.scrollPanes)) {
+                    self.scrollPanes.juiScrollPane('destroy');
+                    self.scrollPanes = null;
                 }
                 else {
-                    self.scrollPane1 =
+                    self.scrollPanes =
                         $('.content-pane', self.$el).juiScrollPane();
                 }
             });
+
+            self.ui.toggleMimickBrowserBtn.click(function () {
+                if (empty(self.scrollPanes)) {
+                    self.ui.toggleCreationStateBtn.trigger('click');
+                }
+                var currVal = self.scrollPanes.juiScrollPane('option', 'mimickBrowser');
+                self.scrollPanes.juiScrollPane('option', 'mimickBrowser', (currVal === true ? false : true));
+                console.log(currVal);
+            })
         }
 	});
 

@@ -15,7 +15,8 @@
  *
  * @author ElyDeLaCruz
  * @created 09/28/2013
- *
+ * @todo move event listeners out of the create function (for consistency)
+ * @todo use the listeners added to window and contentHolder in the unbind function (to ensure we don't remove anyone elses listeners)
  */
 $.widget('jui.juiScrollPane', $.jui.juiBase, {
     /**
@@ -26,7 +27,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
         scrollSpeed: function () {
             var retVal = 0;
-            retVal = this.getUiElement('contentHolder').height() / 3 / 3 / 3 * 2;
+            retVal = this.getUiElement('contentHolder').height() / 3 / 3 * 2;
             return classOfIs(retVal, 'Number') ? retVal : 0;
         },
 
@@ -38,6 +39,10 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             '39': 1,
             '40': 1
         },
+
+        // Continue scroll outer element after content holder has
+        // reached it's scroll end (either directions)
+        mimickBrowser: false,
 
         ui: {
             contentHolder: {
@@ -135,29 +140,57 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             self.getUiElement('horizScrollbar').css('display', 'none');
         }
 
-        contentHolder.mousewheel(function (e, delta, deltaX, deltaY) {
+        // ----------------------------------------------------------
+        // Move to an add event listener function (for consistency)
+        // ----------------------------------------------------------
+        // Bind mousewheel event
+        contentHolder.bind('mousewheel', function (e, delta, deltaX, deltaY) {
 //            console.log('delta: ', delta, 'x: ', deltaX, 'y: ', deltaY);
 
-            // Scroll this element individually
-            e.preventDefault();
+            var mimickBrowser = self.getValueFromOptions('mimickBrowser'),
+                scrollSpeed, incrementer;
 
-            // Stop propagation for nested scroll panes
-            e.stopPropagation();
+            // If not mimick browser scrollbars stop propagation and
+            // prevent default behaviour
+            if (!mimickBrowser) {
+                // Scroll this element individually
+                e.preventDefault();
+
+                // Stop propagation for nested scroll panes
+                e.stopPropagation();
+            }
 
             delta = isset(delta) ? delta :
                 (isset(deltaX)? deltaX : deltaY);
 
             // Prelims
-            var scrollSpeed = self.getValueFromOptions('scrollSpeed'),
-                incrementer = delta < 1 ?  scrollSpeed : -scrollSpeed;
+            scrollSpeed = self.getValueFromOptions('scrollSpeed');
+            incrementer = delta < 1 ?  scrollSpeed : -scrollSpeed;
 
             // Scroll horizontally
             if (deltaX !== 0 && deltaY === 0) {
                 self.scrollHorizontally(contentHolder.scrollLeft() + incrementer);
+                if (mimickBrowser
+                    && contentHolder.scrollLeft() !== 0
+                    && contentHolder.scrollLeft() !== contentHolder.get(0).scrollWidth) {
+                    // Scroll this element individually
+                    e.preventDefault();
+
+                    // Stop propagation for nested scroll panes
+                    e.stopPropagation();
+                }
             }
             // Assume vertical scrolling action
             else if (deltaX === 0 && deltaY !== 0) {
                 self.scrollVertically(contentHolder.scrollTop() + incrementer);
+                if (mimickBrowser
+                    &&contentHolder.scrollTop() !== 0
+                    && contentHolder.scrollTop() !== contentHolder.get(0).scrollHeight) {
+                    // Scroll this element individually
+                    e.preventDefault();
+                    // Stop propagation for nested scroll panes
+                    e.stopPropagation();
+                }
             }
         });
 
@@ -165,7 +198,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         ops.mousePos = $(window).juiMouse();
 
         // Listen for arrow keys
-        $(window).keydown(function (e) {
+        $(window).bind('keydown', function (e) {
 
             var incrementer,
                 keyCode = e.keyCode + '';
@@ -206,6 +239,9 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 break;
             }
         });
+        // ----------------------------------------------------------
+        // End of move to add event listener function
+        // ----------------------------------------------------------
     },
 
     _scrollByOrientation: function (value, orientation) {
@@ -398,15 +434,21 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         var self = this,
             ops = self.options;
 
-        // Remove created elements
-        self.getUiElement('vertHandle').remove();
-        self.getUiElement('vertScrollbar').remove();
-        self.getUiElement('horizHandle').remove();
-        self.getUiElement('horizScrollbar').remove();
-
         // Undo original element manipulations
         self.element.attr('overflow', ops.originalOverflow);
+
+        // Unbind keydown event
+        $(window).unbind('keydown');
+
+        // Remove created elements
+        self._removeCreatedElements();
+
+        // Remove plugin class name
         self.element.removeClass(ops.pluginClassName);
+
+        // Unbind mousewheel event and scroll (left, right) to position 0
+        self.getUiElement('contentHolder').unbind('mousewheel')
+            .scrollLeft(0).scrollTop(0);
 
         // Call jquery.ui.widget's _destroy method
         this._super();

@@ -70,7 +70,7 @@ module.exports = function (grunt) {
                 }
             },
             js: {
-                files: ['./scripts/**/*.js'],
+                files: ['./scripts/**/*.js', '../distro/**/*'],
                 tasks: ['requirejs'],
                 options: {
                     spawn: false,
