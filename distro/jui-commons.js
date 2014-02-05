@@ -1,4 +1,4 @@
-/*! jui-commons 2014-02-03 */
+/*! jui-commons 2014-02-05 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -554,7 +554,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -590,7 +590,7 @@ $.widget("jui.juiBase", {
     },
     hitTest: function(a) {
         var b = this, c = b.getBoundingBox(a), d = b.options;
-        return d.mouseX >= c.left && d.mouseX <= c.right || d.mouseY >= c.top && d.mouseY <= c.bottom;
+        return d.mouseX >= c.left && d.mouseX <= c.right && d.mouseY >= c.top && d.mouseY <= c.bottom;
     },
     getRelativeMouse: function(a) {
         var b = this, c = b.getBoundingBox(a), d = b.options;
@@ -651,8 +651,11 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        var a = this;
-        a.options, a.element.addClass(a.options.className), a._super();
+        {
+            var a = this;
+            a.options;
+        }
+        a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -663,8 +666,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
@@ -737,6 +740,17 @@ $.widget("jui.juiBase", {
     }
 }), $.widget("jui.juiScrollPane", $.jui.juiBase, {
     options: {
+        scrollSpeed: function() {
+            var a = 0;
+            return a = this.getUiElement("contentHolder").height() / 3 / 3 / 3 * 2, 
+            classOfIs(a, "Number") ? a : 0;
+        },
+        keyPressHash: {
+            "37": -1,
+            "38": -1,
+            "39": 1,
+            "40": 1
+        },
         ui: {
             contentHolder: {
                 elm: null,
@@ -798,24 +812,40 @@ $.widget("jui.juiBase", {
     },
     _create: function() {
         this._populateUiElementsFromOptions();
-        var a = this.options, b = this.getUiElement("contentHolder"), c = b.get(0).scrollWidth, d = b.get(0).scrollHeight, e = this.getUiElement("vertHandle"), f = this;
+        var a = this.options, b = this.getUiElement("contentHolder"), c = b.get(0).scrollWidth, d = b.get(0).scrollHeight, e = this;
         "hidden" !== b.css("overflow") && (a.originalOverflow = b.css("overflow"), 
-        b.css("overflow", "hidden")), f.element.addClass(a.pluginClassName), d > b.height() && f.initScrollbar(a.scrollbarOriented.VERTICALLY), 
-        c > b.width() ? f.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : f.getUiElement("horizScrollbar").css("display", "none"), 
-        b.mousewheel(function(b, c, d, g) {
-            b.preventDefault(), b.stopPropagation(), c = isset(c) ? c : isset(d) ? d : g;
-            var h, i = 1 > c ? 10 : -10;
-            0 !== d ? (e = f.getScrollbarHandleByOrientation(a.scrollbarOriented.HORIZONTALLY), 
-            h = e.position().left + i, e.css("left", h), f.constrainHandle(a.scrollbarOriented.HORIZONTALLY), 
-            f.scrollContentHolder(a.scrollbarOriented.HORIZONTALLY)) : (e = f.getScrollbarHandleByOrientation(a.scrollbarOriented.VERTICALLY), 
-            h = e.position().top + i, e.css("top", h), f.constrainHandle(a.scrollbarOriented.VERTICALLY), 
-            f.scrollContentHolder(a.scrollbarOriented.VERTICALLY));
-        }), $(window.document).keydown(function() {});
+        b.css("overflow", "hidden")), e.element.addClass(a.pluginClassName), d > b.height() && e.initScrollbar(a.scrollbarOriented.VERTICALLY), 
+        c > b.width() ? e.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : e.getUiElement("horizScrollbar").css("display", "none"), 
+        b.mousewheel(function(a, c, d, f) {
+            a.preventDefault(), a.stopPropagation(), c = isset(c) ? c : isset(d) ? d : f;
+            var g = e.getValueFromOptions("scrollSpeed"), h = 1 > c ? g : -g;
+            0 !== d && 0 === f ? e.scrollHorizontally(b.scrollLeft() + h) : 0 === d && 0 !== f && e.scrollVertically(b.scrollTop() + h);
+        }), a.mousePos = $(window).juiMouse(), $(window).keydown(function(c) {
+            var d, f = c.keyCode + "";
+            if (a.keyPressHash.hasOwnProperty(f) && a.mousePos.juiMouse("hitTest", b)) switch (b.focus(), 
+            c.preventDefault(), d = e.getValueFromOptions("scrollSpeed") * a.keyPressHash[f], 
+            f) {
+              case "37":
+                e.scrollHorizontally(d + b.scrollLeft());
+                break;
+
+              case "38":
+                e.scrollVertically(d + b.scrollTop());
+                break;
+
+              case "39":
+                e.scrollHorizontally(d + b.scrollLeft());
+                break;
+
+              case "40":
+                e.scrollVertically(d + b.scrollTop());
+            }
+        });
     },
     _scrollByOrientation: function(a, b) {
         var c, d = (this.options, this.getUiElement("contentHolder")), e = b, f = this.getScrollDirVars(e), g = f.scrollAmountTotal, h = this.getScrollbarHandleByOrientation(e), i = this.getScrollbarByOrientation(e), j = f.cssCalcDir, k = "outer" + ucaseFirst(f.scrollbarDimProp);
-        d[f.scrollbarDimProp]() >= g || (g >= a && a >= 0 ? (d.scrollTop(a), c = a / g, 
-        h.css(j, i[k]() * c)) : a > g ? h.css(j, i[k]() - h[k]()) : 0 > a && h.css(j, 0), 
+        d[f.scrollbarDimProp]() >= g || (g >= a && a >= 0 ? (d["scroll" + ucaseFirst(j)](a), 
+        c = a / g, h.css(j, i[k]() * c)) : a > g ? h.css(j, i[k]() - h[k]()) : 0 > a && h.css(j, 0), 
         this.scrollContentHolder(e), this.constrainHandle(e));
     },
     scrollContentHolder: function(a) {

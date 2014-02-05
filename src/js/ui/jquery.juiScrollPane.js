@@ -23,6 +23,22 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
      * @type {Object}
      */
     options: {
+
+        scrollSpeed: function () {
+            var retVal = 0;
+            retVal = this.getUiElement('contentHolder').height() / 3 / 3 / 3 * 2;
+            return classOfIs(retVal, 'Number') ? retVal : 0;
+        },
+
+        // Left, up, right, down arrow keys and their direction values
+        // to multiply the scrollspeed by
+        keyPressHash: {
+            '37': -1,
+            '38': -1,
+            '39': 1,
+            '40': 1
+        },
+
         ui: {
             contentHolder: {
                 elm: null,
@@ -94,8 +110,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             contentHolder = this.getUiElement('contentHolder'),
             contentScrollWidth = contentHolder.get(0).scrollWidth,
             contentScrollHeight = contentHolder.get(0).scrollHeight,
-            handle = this.getUiElement('vertHandle'),
-            plugin = this;
+            self = this;
 
         // Conetnt Holder
         if (contentHolder.css('overflow') !== 'hidden') {
@@ -104,20 +119,20 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
 
         // Add plugin class
-        plugin.element.addClass(ops.pluginClassName);
+        self.element.addClass(ops.pluginClassName);
 
         // Determine whether we need a horizontal and/or vertical scrollbar.
         // Init vertical scrollbar
         if (contentScrollHeight > contentHolder.height()) {
-            plugin.initScrollbar(ops.scrollbarOriented.VERTICALLY);
+            self.initScrollbar(ops.scrollbarOriented.VERTICALLY);
         }
 
         // Init horizontal scrollbar or hide it
         if (contentScrollWidth > contentHolder.width()) {
-            plugin.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
+            self.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
         }
         else {
-            plugin.getUiElement('horizScrollbar').css('display', 'none');
+            self.getUiElement('horizScrollbar').css('display', 'none');
         }
 
         contentHolder.mousewheel(function (e, delta, deltaX, deltaY) {
@@ -133,45 +148,63 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 (isset(deltaX)? deltaX : deltaY);
 
             // Prelims
-            var incrementer = delta < 1 ? 10 : -10,
-                handleOffset;
+            var scrollSpeed = self.getValueFromOptions('scrollSpeed'),
+                incrementer = delta < 1 ?  scrollSpeed : -scrollSpeed;
 
             // Scroll horizontally
-            if (deltaX !== 0) {
-                handle = plugin.getScrollbarHandleByOrientation(
-                    ops.scrollbarOriented.HORIZONTALLY);
-
-                handleOffset = handle.position().left + incrementer;
-
-                // Position Handle
-                handle.css('left', handleOffset);
-
-                // Constrain Handle
-                plugin.constrainHandle(ops.scrollbarOriented.HORIZONTALLY);
-
-                // Scroll content holder
-                plugin.scrollContentHolder(ops.scrollbarOriented.HORIZONTALLY);
+            if (deltaX !== 0 && deltaY === 0) {
+                self.scrollHorizontally(contentHolder.scrollLeft() + incrementer);
             }
             // Assume vertical scrolling action
-            else {
-                handle = plugin.getScrollbarHandleByOrientation(
-                    ops.scrollbarOriented.VERTICALLY);
-                handleOffset = handle.position().top + incrementer;
-
-                // Position Handle
-                handle.css('top', handleOffset);
-
-                // Constrain handle
-                plugin.constrainHandle(ops.scrollbarOriented.VERTICALLY);
-
-                // Scroll content holder
-                plugin.scrollContentHolder(ops.scrollbarOriented.VERTICALLY);
+            else if (deltaX === 0 && deltaY !== 0) {
+                self.scrollVertically(contentHolder.scrollTop() + incrementer);
             }
         });
 
-        // Listen for arrow keys
-        $(window.document).keydown(function (e) {
+        // Get mouse position tracker
+        ops.mousePos = $(window).juiMouse();
 
+        // Listen for arrow keys
+        $(window).keydown(function (e) {
+
+            var incrementer,
+                keyCode = e.keyCode + '';
+
+            // If not arrow key pressed
+            if (!ops.keyPressHash.hasOwnProperty(keyCode)) {
+                return;
+            }
+
+            // If mouse not within scrollpane elm, bail
+            if (!ops.mousePos.juiMouse('hitTest', contentHolder)) {
+                return;
+            }
+
+            // Set focus on scrollpane
+            contentHolder.focus();
+
+            // Stop outer elemnt from scrolling
+            e.preventDefault();
+
+            incrementer = self.getValueFromOptions('scrollSpeed') *
+                ops.keyPressHash[keyCode];
+
+            // Get mouse position
+            switch (keyCode) {
+                // Left
+                case '37':
+                    self.scrollHorizontally(incrementer + contentHolder.scrollLeft());
+                    break;
+                case '38':
+                    self.scrollVertically(incrementer + contentHolder.scrollTop());
+                    break;
+                case '39':
+                    self.scrollHorizontally(incrementer + contentHolder.scrollLeft());
+                    break;
+                case '40':
+                    self.scrollVertically(incrementer + contentHolder.scrollTop());
+                break;
+            }
         });
     },
 
@@ -193,7 +226,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
 
         if (value <= scrollTotal && value >= 0) {
-            contentHolder.scrollTop(value);
+            contentHolder['scroll' + ucaseFirst(dir)](value);
             scrollPercent = value / scrollTotal;
             handle.css(dir, scrollbar[dimProp]() * scrollPercent);
         }

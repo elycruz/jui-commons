@@ -41,9 +41,9 @@ $.widget('jui.juiMouse', {
 
         // Check if mouse is within bounds
         return (ops.mouseX >= offset.left
-            && ops.mouseX <= offset.right) ||
-            (ops.mouseY >= offset.top
-                && ops.mouseY <= offset.bottom)
+            && ops.mouseX <= offset.right
+            && ops.mouseY >= offset.top
+                && ops.mouseY <= offset.bottom);
     },
 
     getRelativeMouse: function (elm) {

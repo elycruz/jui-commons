@@ -1,6 +1,6 @@
 {
-    "name": "jui-commons",
-    "version": "0.0.48",
+  "name": "jui-commons",
+  "version": "0.0.48",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -17,6 +17,9 @@
     "chai": "~1.8.1",
     "mocha": "~1.16.2",
     "requirejs": "~2.1.9",
-    "checkjs": "elycruz/checkjs#~0.1.5"
+    "checkjs": "elycruz/checkjs#~0.2.0"
+  },
+  "resolutions": {
+    "checkjs": "~0.2.0"
   }
 }
