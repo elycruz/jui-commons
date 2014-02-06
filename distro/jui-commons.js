@@ -1,4 +1,4 @@
-/*! jui-commons 2014-02-05 */
+/*! jui-commons 2014-02-06 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -7,8 +7,8 @@ $.widget("jui.juiBase", {
     },
     _namespace: function(a, b, c) {
         var d, e = a.split("."), f = isset(b) ? b : this.options;
-        for (d = 0; d < e.length; d += 1) "undefined" == typeof f[e[d]] && (f[e[d]] = d === e.length - 1 && "undefined" != typeof c ? c : {}), 
-        f = f[e[d]];
+        for (d = 0; d < e.length; d += 1) "undefined" == typeof f[e[d]] && (f[e[d]] = {}), 
+        d === e.length - 1 && "undefined" != typeof c && (f[e[d]] = c), f = f[e[d]];
         return f;
     },
     _populateUiElementsFromOptions: function(a) {
@@ -817,9 +817,9 @@ $.widget("jui.juiBase", {
             var g, h, i = e.getValueFromOptions("mimickBrowser");
             i || (a.preventDefault(), a.stopPropagation()), c = isset(c) ? c : isset(d) ? d : f, 
             g = e.getValueFromOptions("scrollSpeed"), h = 1 > c ? g : -g, 0 !== d && 0 === f ? (e.scrollHorizontally(b.scrollLeft() + h), 
-            i || 0 === b.scrollLeft() || b.scrollLeft() === b.get(0).scrollWidth || (a.preventDefault(), 
+            i && 0 !== b.scrollLeft() && b.scrollLeft() !== b.get(0).scrollWidth && (a.preventDefault(), 
             a.stopPropagation())) : 0 === d && 0 !== f && (e.scrollVertically(b.scrollTop() + h), 
-            i || 0 === b.scrollTop() || b.scrollTop() === b.get(0).scrollHeight || (a.preventDefault(), 
+            i && 0 !== b.scrollTop() && b.scrollTop() !== b.get(0).scrollHeight - 1 && (a.preventDefault(), 
             a.stopPropagation()));
         }), a.mousePos = $(window).juiMouse(), $(window).bind("keydown", function(c) {
             var d, f = c.keyCode + "";

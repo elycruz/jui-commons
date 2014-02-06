@@ -51,12 +51,10 @@ $.widget('jui.juiBase', {
 
         for (i = 0; i < parts.length; i += 1) {
             if (typeof parent[parts[i]] === 'undefined') {
-                if (i === parts.length - 1 && typeof valueToSet !== 'undefined') {
-                    parent[parts[i]] = valueToSet;
-                }
-                else {
-                    parent[parts[i]] = {};
-                }
+                parent[parts[i]] = {};
+            }
+            if (i === parts.length - 1 && typeof valueToSet !== 'undefined') {
+                parent[parts[i]] = valueToSet;
             }
             parent = parent[parts[i]];
         }

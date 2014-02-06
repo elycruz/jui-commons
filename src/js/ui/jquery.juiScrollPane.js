@@ -17,6 +17,7 @@
  * @created 09/28/2013
  * @todo move event listeners out of the create function (for consistency)
  * @todo use the listeners added to window and contentHolder in the unbind function (to ensure we don't remove anyone elses listeners)
+ * @todo solve browser scrollbar mimicking
  */
 $.widget('jui.juiScrollPane', $.jui.juiBase, {
     /**
@@ -170,7 +171,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             // Scroll horizontally
             if (deltaX !== 0 && deltaY === 0) {
                 self.scrollHorizontally(contentHolder.scrollLeft() + incrementer);
-                if (!mimickBrowser
+                if (mimickBrowser
                     && contentHolder.scrollLeft() !== 0
                     && contentHolder.scrollLeft() !== contentHolder.get(0).scrollWidth) {
                     // Scroll this element individually
@@ -183,9 +184,9 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             // Assume vertical scrolling action
             else if (deltaX === 0 && deltaY !== 0) {
                 self.scrollVertically(contentHolder.scrollTop() + incrementer);
-                if (!mimickBrowser
+                if (mimickBrowser
                     &&contentHolder.scrollTop() !== 0
-                    && contentHolder.scrollTop() !== contentHolder.get(0).scrollHeight) {
+                    && contentHolder.scrollTop() !== contentHolder.get(0).scrollHeight - 1) {
                     // Scroll this element individually
                     e.preventDefault();
                     // Stop propagation for nested scroll panes
