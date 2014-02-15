@@ -22,9 +22,11 @@ function( Backbone, tmpl ) {
             $('.content-pane > .content', self.$el).css('overflow', 'scroll');
 //            $('.content-pane', self.$el).juiScrollPane();
             $('#wrapper > nav').juiAffix({
+//                offset: {top: 10},
                 scrollableElm: $(window)
             });
             elmToAffix.juiAffix({
+                offset: {bottom: 10},
                 scrollableElm: $(window)
             });
         }

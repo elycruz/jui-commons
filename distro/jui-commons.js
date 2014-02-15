@@ -1,4 +1,4 @@
-/*! jui-commons 2014-02-06 */
+/*! jui-commons 2014-02-14 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -182,44 +182,46 @@ $.widget("jui.juiBase", {
             bottom: null,
             left: null
         },
+        realtime: !1,
         _isPositionFixedSupported: !1
     },
     _create: function() {
-        var a = this, b = a.options, c = a.element, d = b.affixVertically, e = b.affixHorizontally, f = {
-            position: c.css("position"),
-            top: c.position().top,
-            right: c.css("right"),
-            bottom: c.css("bottom"),
-            left: c.position().left
-        }, g = b.scrollableElm, h = {
-            top: a.getValueFromOptions("offset.top") || 0,
-            right: a.getValueFromOptions("offset.right") || 0,
-            bottom: a.getValueFromOptions("offset.bottom") || 0,
-            left: a.getValueFromOptions("offset.left") || 0
-        };
-        console.log("affix offsets", h, "original positions", f), c.addClass(b.className), 
-        g.bind("scroll resize orientationchange load", function() {
-            var a = $(this), b = a.scrollTop(), i = a.scrollLeft(), j = g.height() - h.bottom - c.height(), k = g.width() - h.right;
-            d && (b > f.top - h.top && c.position().top - b < j ? c.css({
+        var a, b = this, c = b.options, d = b.element, e = c.affixVertically, f = c.affixHorizontally, g = {
+            position: d.css("position"),
+            top: d.position().top,
+            right: d.css("right"),
+            bottom: d.css("bottom"),
+            left: d.position().left
+        }, h = c.scrollableElm;
+        c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
+        h.bind("scroll resize orientationchange load", function() {
+            var i = $(this), j = i.scrollTop(), k = i.scrollLeft(), l = h.height() - a.bottom - d.height(), m = h.width() - a.right;
+            c.realtime && (a = b._getUserDefinedOffset()), e && (isset(a.top) && (j > g.top - a.top && d.position().top - j < l ? d.css({
                 position: "fixed",
-                top: h.top,
+                top: a.top,
                 bottom: "auto"
-            }) : b <= f.top && (c.css("position", f.position), c.css("top", f.top), 
-            c.css("bottom", "auto")), f.top - b >= j && c.css({
+            }) : j <= g.top && (d.css("position", g.position), d.css("top", g.top), 
+            d.css("bottom", "auto"))), g.top - j >= l && isset(a.bottom) && d.css({
                 position: "fixed",
                 top: "auto",
-                bottom: h.bottom
-            })), e && (i > f.left - h.left && c.offset().left - i < k ? c.css({
+                bottom: a.bottom
+            })), f && (k > g.left - a.left && d.offset().left - k < m ? d.css({
                 position: "fixed",
-                left: h.left,
+                left: a.left,
                 right: "auto"
-            }) : i <= f.left && (c.css("position", f.position), c.css("left", f.left), 
-            c.css("right", "auto")), f.left - i >= k && c.css({
+            }) : k <= g.left && (d.css("position", g.position), d.css("left", g.left), 
+            d.css("right", "auto")), g.left - k >= m && d.css({
                 position: "fixed",
                 left: "auto",
-                right: -h.right
+                right: -a.right
             }));
-        }), g.scroll();
+        }), h.scroll();
+    },
+    _getUserDefinedOffset: function() {
+        var a = this, b = a.options, c = a.getValueFromOptions("offset");
+        return $.each([ "top", "right", "bottom", "left" ], function(d, e) {
+            isset(c[e]) || (b.offset[e] = a.element.attr("data-offset-" + c[e]) || null);
+        }), c;
     }
 }), $.widget("jui.juiBasicPaginator", $.jui.juiAbstractPaginator, {
     options: {
@@ -554,7 +556,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -651,8 +653,11 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        var a = this;
-        a.options, a.element.addClass(a.options.className), a._super();
+        {
+            var a = this;
+            a.options;
+        }
+        a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -663,8 +668,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
@@ -739,7 +744,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = 2 * (this.getUiElement("contentHolder").height() / 3 / 3), classOfIs(a, "Number") ? a : 0;
+            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,

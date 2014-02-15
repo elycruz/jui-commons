@@ -13,6 +13,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             bottom: null,
             left: null
         },
+        realtime: false,
         _isPositionFixedSupported: false
     },
     _create: function () {
@@ -32,14 +33,12 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                 left: elm.position().left
             },
             scrollableElm = ops.scrollableElm,
-            affixOffset = {
-                top: self.getValueFromOptions('offset.top') || 0,
-                right: self.getValueFromOptions('offset.right') || 0,
-                bottom: self.getValueFromOptions('offset.bottom') || 0,
-                left: self.getValueFromOptions('offset.left') || 0
-            };
+            affixOffset;
 
-        console.log("affix offsets", affixOffset, "original positions", original);
+        // If not realtime option calculations
+        if (!ops.realtime) {
+            affixOffset = self._getUserDefinedOffset();
+        }
 
         // Add plugin class
         elm.addClass(ops.className);
@@ -52,22 +51,30 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                 bottomLimit = scrollableElm.height() - affixOffset.bottom - elm.height(),
                 rightLimit = scrollableElm.width() - affixOffset.right;
 
+            // If realtime option calcs
+            if (ops.realtime) {
+                affixOffset = self._getUserDefinedOffset();
+            }
+
             if (affixVertically) {
-                if (scrollTop > original.top - affixOffset.top &&
-                    elm.position().top - scrollTop < bottomLimit) {
-                    elm.css({
-                        position: 'fixed',
-                        top: affixOffset.top,
-                        bottom: 'auto'
-                    });
-                }
-                else if (scrollTop <= original.top) {
-                    elm.css('position', original.position);
-                    elm.css('top', original.top);
-                    elm.css('bottom', 'auto');
+                if (isset(affixOffset.top)) {
+                    if (scrollTop > original.top - affixOffset.top &&
+                        elm.position().top - scrollTop < bottomLimit) {
+                        elm.css({
+                            position: 'fixed',
+                            top: affixOffset.top,
+                            bottom: 'auto'
+                        });
+                    }
+                    else if (scrollTop <= original.top) {
+                        elm.css('position', original.position);
+                        elm.css('top', original.top);
+                        elm.css('bottom', 'auto');
+                    }
                 }
 
-                if (original.top - scrollTop >= bottomLimit) {
+                if (original.top - scrollTop >= bottomLimit
+                    && isset(affixOffset.bottom)) {
                     elm.css({
                         position: 'fixed',
                         top: 'auto',
@@ -102,6 +109,18 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
         });
 
         scrollableElm.scroll();
+    },
+
+    _getUserDefinedOffset: function () {
+        var self = this,
+            ops = self.options,
+            offsets = self.getValueFromOptions('offset');
+        $.each(['top', 'right', 'bottom', 'left'], function (index, key) {
+            if (!isset(offsets[key])) {
+                ops.offset[key] = self.element.attr('data-offset-' + offsets[key]) || null;
+            }
+        });
+        return offsets;
     }
 
 });
