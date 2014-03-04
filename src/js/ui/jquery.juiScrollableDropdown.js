@@ -15,11 +15,16 @@
  * @requires TweenMax
  * @requires jquery.juiBase
  * @requires jquery.juiScrollPane
+ *
+ * @triggers expand
+ * @triggers collapse
  */
 $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     options: {
         className: 'jui-scrollable-drop-down',
+
+
         ui: {
             contentElm: {
                 elm: null,
@@ -45,10 +50,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         // Expand select-picker on event
         expandOn: 'click',
         expandOnClassNamePrefix: 'expands-on',
+        expandClassName: 'expanded',
 
         // Collapse select-picker on event
         collapseOn: 'click',
         collapseOnClassNamePrefix: 'collapses-on',
+        collapseClassName: 'collapsed',
 
         // States
         states: {
@@ -66,13 +73,14 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             contentElm;
 
         // Add event class names
-        this.element
+        self.element
             .addClass(ops.className)
-            .addClass(this._getExpandOnClassName())
-            .addClass(this._getCollapseOnClassName());
+            .addClass(self._getExpandOnClassName())
+            .addClass(self._getCollapseOnClassName())
+            .addClass('collapsed');
 
-        // Populate ui elements on this (this.ui[elmKeyAlias])
-        this._populateUiElementsFromOptions();
+        // Populate ui elements on self (self.ui[elmKeyAlias])
+        self._populateUiElementsFromOptions();
 
         // Function for executing css: display (original | none)
         function executeTimelineCompleteFunc () {
@@ -86,10 +94,10 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         }
 
         // Get content element
-        contentElm = this.getUiElement('contentElm');
+        contentElm = self.getUiElement('contentElm');
 
         // Save original css `display` value
-        this._namespace('ui.contentElm.originalCss',
+        self._namespace('ui.contentElm.originalCss',
             ops, {
                 display: contentElm.css('display'),
                 visibility: contentElm.css('visibility')
@@ -99,7 +107,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         contentElm.css('visibility', 'hidden');
 
         // Setup timeline object
-        this.timeline = new TimelineMax({
+        self.timeline = new TimelineMax({
             onReverseComplete: executeTimelineCompleteFunc,
             onComplete: executeTimelineCompleteFunc
         });
@@ -145,36 +153,48 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _addEventListeners: function () {
         var self = this,
             states = self.options.states,
-            ops = this.options,
-            collapseOnMouseEvent = this._getCollapseOnEventStringName(),
-            expandOnMouseEvent = this._getExpandOnEventStringName();
+            ops = self.options,
+            collapseOnMouseEvent = self._getCollapseOnEventStringName(),
+            expandOnMouseEvent = self._getExpandOnEventStringName();
 
         // If expand and collapse events are the same (use toggle pattern)
         if (expandOnMouseEvent === collapseOnMouseEvent) {
-            this.element.on(expandOnMouseEvent, function (e) {
+            self.element.on(expandOnMouseEvent, function (e) {
                 if (self.options.state === states.COLLAPSED) {
                     self.ensureAnimationFunctionality();
                     self.options.state = states.EXPANDED;
+                    self.element.removeClass(ops.collapseClassName);
+                    self.element.addClass(ops.expandClassName);
+                    self.element.trigger('expand', e);
                     ops.timeline.play();
                 }
                 else {
                     self.ensureAnimationFunctionality();
                     self.options.state = states.COLLAPSED;
+                    self.element.removeClass(ops.expandClassName);
+                    self.element.addClass(ops.collapseClassName);
+                    self.element.trigger('collapse', e);
                     ops.timeline.reverse();
                 }
             });
         }
         else {
             // On expand event
-            this.element.on(expandOnMouseEvent, function (e) {
+            self.element.on(expandOnMouseEvent, function (e) {
                 self.ensureAnimationFunctionality();
                 self.options.state = states.EXPANDED;
+                self.element.removeClass(ops.collapseClassName);
+                self.element.addClass(ops.expandClassName);
+                self.element.trigger('expand', e);
                 ops.timeline.play();
             })
                 // On collapse event
                 .on(collapseOnMouseEvent, function (e) {
                     self.ensureAnimationFunctionality();
                     self.options.state = states.COLLAPSED;
+                    self.element.removeClass(ops.expandClassName);
+                    self.element.addClass(ops.collapseClassName);
+                    self.element.trigger('collapse', e);
                     ops.timeline.reverse();
                 });
         }
@@ -186,6 +206,9 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 if (self.options.state === states.EXPANDED) {
                     self.ensureAnimationFunctionality();
                     self.options.state = states.COLLAPSED;
+                    self.element.removeClass(ops.expandClassName);
+                    self.element.addClass(ops.collapseClassName);
+                    self.element.trigger('collapse', e);
                     ops.timeline.reverse();
                 }
             }

@@ -1,4 +1,4 @@
-/*! jui-commons 2014-02-06 */
+/*! jui-commons 2014-03-04 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -182,44 +182,46 @@ $.widget("jui.juiBase", {
             bottom: null,
             left: null
         },
+        realtime: !1,
         _isPositionFixedSupported: !1
     },
     _create: function() {
-        var a = this, b = a.options, c = a.element, d = b.affixVertically, e = b.affixHorizontally, f = {
-            position: c.css("position"),
-            top: c.position().top,
-            right: c.css("right"),
-            bottom: c.css("bottom"),
-            left: c.position().left
-        }, g = b.scrollableElm, h = {
-            top: a.getValueFromOptions("offset.top") || 0,
-            right: a.getValueFromOptions("offset.right") || 0,
-            bottom: a.getValueFromOptions("offset.bottom") || 0,
-            left: a.getValueFromOptions("offset.left") || 0
-        };
-        console.log("affix offsets", h, "original positions", f), c.addClass(b.className), 
-        g.bind("scroll resize orientationchange load", function() {
-            var a = $(this), b = a.scrollTop(), i = a.scrollLeft(), j = g.height() - h.bottom - c.height(), k = g.width() - h.right;
-            d && (b > f.top - h.top && c.position().top - b < j ? c.css({
+        var a, b = this, c = b.options, d = b.element, e = c.affixVertically, f = c.affixHorizontally, g = {
+            position: d.css("position"),
+            top: d.offset().top,
+            right: d.css("right"),
+            bottom: d.css("bottom"),
+            left: d.offset().left
+        }, h = c.scrollableElm;
+        c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
+        h.bind("scroll resize orientationchange load", function() {
+            var i = $(this), j = i.scrollTop(), k = i.scrollLeft(), l = isset(a.bottom) ? a.bottom : 0, m = isset(a.right) ? a.right : 0, n = h.height() - l - d.height(), o = h.width() - m;
+            c.realtime && (a = b._getUserDefinedOffset()), e && (isset(a.top) && (j > g.top - a.top && d.offset().top - j < n ? d.css({
                 position: "fixed",
-                top: h.top,
+                top: a.top,
                 bottom: "auto"
-            }) : b <= f.top && (c.css("position", f.position), c.css("top", f.top), 
-            c.css("bottom", "auto")), f.top - b >= j && c.css({
+            }) : j <= g.top && (d.css("position", g.position), d.css("top", g.top), 
+            d.css("bottom", "auto"))), g.top - j >= n && isset(a.bottom) && d.css({
                 position: "fixed",
                 top: "auto",
-                bottom: h.bottom
-            })), e && (i > f.left - h.left && c.offset().left - i < k ? c.css({
+                bottom: a.bottom
+            })), f && (k > g.left - a.left && d.offset().left - k < o ? d.css({
                 position: "fixed",
-                left: h.left,
+                left: a.left,
                 right: "auto"
-            }) : i <= f.left && (c.css("position", f.position), c.css("left", f.left), 
-            c.css("right", "auto")), f.left - i >= k && c.css({
+            }) : k <= g.left && (d.css("position", g.position), d.css("left", g.left), 
+            d.css("right", "auto")), g.left - k >= o && d.css({
                 position: "fixed",
                 left: "auto",
-                right: -h.right
+                right: -a.right
             }));
-        }), g.scroll();
+        }), h.scroll();
+    },
+    _getUserDefinedOffset: function() {
+        var a = this, b = a.options, c = a.getValueFromOptions("offset");
+        return $.each([ "top", "right", "bottom", "left" ], function(d, e) {
+            isset(c[e]) || (b.offset[e] = a.element.attr("data-offset-" + c[e]) || null);
+        }), c;
     }
 }), $.widget("jui.juiBasicPaginator", $.jui.juiAbstractPaginator, {
     options: {
@@ -943,8 +945,10 @@ $.widget("jui.juiBase", {
         } ],
         expandOn: "click",
         expandOnClassNamePrefix: "expands-on",
+        expandClassName: "expanded",
         collapseOn: "click",
         collapseOnClassNamePrefix: "collapses-on",
+        collapseClassName: "collapsed",
         states: {
             COLLAPSED: "collapsed",
             EXPANDED: "expanded"
@@ -957,12 +961,11 @@ $.widget("jui.juiBase", {
             d.state === d.states.COLLAPSED ? a.css("display", "none") : d.state === d.states.EXPANDED && a.css("display", d.ui.contentElm.originalCss.display);
         }
         var b, c = this, d = c.options;
-        this.element.addClass(d.className).addClass(this._getExpandOnClassName()).addClass(this._getCollapseOnClassName()), 
-        this._populateUiElementsFromOptions(), b = this.getUiElement("contentElm"), 
-        this._namespace("ui.contentElm.originalCss", d, {
+        c.element.addClass(d.className).addClass(c._getExpandOnClassName()).addClass(c._getCollapseOnClassName()).addClass("collapsed"), 
+        c._populateUiElementsFromOptions(), b = c.getUiElement("contentElm"), c._namespace("ui.contentElm.originalCss", d, {
             display: b.css("display"),
             visibility: b.css("visibility")
-        }), b.css("visibility", "hidden"), this.timeline = new TimelineMax({
+        }), b.css("visibility", "hidden"), c.timeline = new TimelineMax({
             onReverseComplete: a,
             onComplete: a
         });
@@ -987,18 +990,26 @@ $.widget("jui.juiBase", {
         return this.options.collapseOn;
     },
     _addEventListeners: function() {
-        var a = this, b = a.options.states, c = this.options, d = this._getCollapseOnEventStringName(), e = this._getExpandOnEventStringName();
-        e === d ? this.element.on(e, function() {
+        var a = this, b = a.options.states, c = a.options, d = a._getCollapseOnEventStringName(), e = a._getExpandOnEventStringName();
+        e === d ? a.element.on(e, function(d) {
             a.options.state === b.COLLAPSED ? (a.ensureAnimationFunctionality(), a.options.state = b.EXPANDED, 
-            c.timeline.play()) : (a.ensureAnimationFunctionality(), a.options.state = b.COLLAPSED, 
+            a.element.removeClass(c.collapseClassName), a.element.addClass(c.expandClassName), 
+            a.element.trigger("expand", d), c.timeline.play()) : (a.ensureAnimationFunctionality(), 
+            a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
+            a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
             c.timeline.reverse());
-        }) : this.element.on(e, function() {
-            a.ensureAnimationFunctionality(), a.options.state = b.EXPANDED, c.timeline.play();
-        }).on(d, function() {
-            a.ensureAnimationFunctionality(), a.options.state = b.COLLAPSED, c.timeline.reverse();
+        }) : a.element.on(e, function(d) {
+            a.ensureAnimationFunctionality(), a.options.state = b.EXPANDED, a.element.removeClass(c.collapseClassName), 
+            a.element.addClass(c.expandClassName), a.element.trigger("expand", d), c.timeline.play();
+        }).on(d, function(d) {
+            a.ensureAnimationFunctionality(), a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
+            a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
+            c.timeline.reverse();
         }), $(window).on("click", function(d) {
             $.contains(a.element, $(d.target)) === !1 && 1 === c.timeline.progress() && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
-            a.options.state = b.COLLAPSED, c.timeline.reverse());
+            a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
+            a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
+            c.timeline.reverse());
         });
     },
     _removeEventListeners: function() {

@@ -1,8 +1,5 @@
 .jui-scrollable-drop-down {
     &.expanded {
-        .options {
-            border: 1px solid #000;
-        }
         border: 1px solid #000;
     }
 
@@ -63,4 +60,4 @@
         }
         z-index: 99;
     }
-    }
+}

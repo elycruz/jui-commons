@@ -54,7 +54,10 @@ module.exports = function (grunt) {
 
         watch: {
             compass: {
-                files: ['./sass/**/*.scss'],
+                files: [
+                    './sass/*.scss',
+                    '../src/sass/*.scss'
+                ],
                 tasks: ['compass'],
                 options: {
                     spawn: false,
@@ -62,7 +65,10 @@ module.exports = function (grunt) {
                 }
             },
             cssmin: {
-                files: ['./distro/sass-compiled-css/**/*.css'],
+                files: [
+                    './distro/sass-compiled-css/**/*.css',
+                    '../src/css/jui-commons.css'
+                ],
                 tasks: ['cssmin'],
                 options: {
                     spawn: false,
