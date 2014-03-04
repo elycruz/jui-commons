@@ -27,10 +27,10 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
         // @todo put the t r b l into an offset object
             original = {
                 position: elm.css('position'),
-                top: elm.position().top,
+                top: elm.offset().top,
                 right: elm.css('right'),
                 bottom: elm.css('bottom'),
-                left: elm.position().left
+                left: elm.offset().left
             },
             scrollableElm = ops.scrollableElm,
             affixOffset;
@@ -48,8 +48,10 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             var oElm = $(this),
                 scrollTop = oElm.scrollTop(),
                 scrollLeft = oElm.scrollLeft(),
-                bottomLimit = scrollableElm.height() - affixOffset.bottom - elm.height(),
-                rightLimit = scrollableElm.width() - affixOffset.right;
+                affixBottom = isset(affixOffset.bottom) ? affixOffset.bottom : 0,
+                affixRight = isset(affixOffset.right) ? affixOffset.right : 0,
+                bottomLimit = scrollableElm.height() - affixBottom - elm.height(),
+                rightLimit = scrollableElm.width() - affixRight;
 
             // If realtime option calcs
             if (ops.realtime) {
@@ -59,7 +61,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             if (affixVertically) {
                 if (isset(affixOffset.top)) {
                     if (scrollTop > original.top - affixOffset.top &&
-                        elm.position().top - scrollTop < bottomLimit) {
+                        elm.offset().top - scrollTop < bottomLimit) {
                         elm.css({
                             position: 'fixed',
                             top: affixOffset.top,

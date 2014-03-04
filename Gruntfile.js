@@ -117,7 +117,7 @@ module.exports = function (grunt) {
     grunt.registerTask('develop', [
         'compass',
         'cssmin',
-        'uglify',
+//        'uglify',
         'connect',
         'open',
         'watch'
