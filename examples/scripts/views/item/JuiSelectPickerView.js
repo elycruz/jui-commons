@@ -46,6 +46,13 @@ function (Backbone, tmpl) {
                 collapseOn: 'mouseleave'
             });
 
+            // Trigger tests
+            $cats.juiSelectPicker('getUiElement', 'wrapperElm').on('expand',function (e) {
+                console.log('categories have expanded');
+            }).on('collapse', function (e) {
+                console.log('categories have expanded');
+            });
+
             // Toggle the select element
             $('.toggle-select-element').click(function () {
                 var selElm = $(this).parent().find('select');
