@@ -1,4 +1,4 @@
-/*! jui-commons 2014-03-04 */
+/*! jui-commons 2014-03-29 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -186,36 +186,35 @@ $.widget("jui.juiBase", {
         _isPositionFixedSupported: !1
     },
     _create: function() {
-        var a, b = this, c = b.options, d = b.element, e = c.affixVertically, f = c.affixHorizontally, g = {
+        var a, b = this, c = b.options, d = b.element, e = c.affixVertically, f = (c.affixHorizontally, 
+        {
             position: d.css("position"),
             top: d.offset().top,
             right: d.css("right"),
             bottom: d.css("bottom"),
             left: d.offset().left
-        }, h = c.scrollableElm;
+        }), g = c.scrollableElm;
         c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
-        h.bind("scroll resize orientationchange load", function() {
-            var i = $(this), j = i.scrollTop(), k = i.scrollLeft(), l = isset(a.bottom) ? a.bottom : 0, m = isset(a.right) ? a.right : 0, n = h.height() - l - d.height(), o = h.width() - m;
-            c.realtime && (a = b._getUserDefinedOffset()), e && (isset(a.top) && (j > g.top - a.top && d.offset().top - j < n ? d.css({
+        g.bind("scroll resize orientationchange load", function() {
+            {
+                var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), isset(a.bottom) ? a.bottom : 0), k = isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
+                g.width() - k;
+            }
+            c.realtime && (a = b._getUserDefinedOffset()), e && (isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
                 position: "fixed",
                 top: a.top,
                 bottom: "auto"
-            }) : j <= g.top && (d.css("position", g.position), d.css("top", g.top), 
-            d.css("bottom", "auto"))), g.top - j >= n && isset(a.bottom) && d.css({
+            }) : i <= f.top && (d.css("position", f.position), d.css("top", f.top), 
+            d.css("bottom", "auto"))), isset(a.bottom) && (f.top - l <= i ? d.css({
+                position: f.position,
+                top: f.top,
+                bottom: f.bottom
+            }) : d.css({
                 position: "fixed",
                 top: "auto",
                 bottom: a.bottom
-            })), f && (k > g.left - a.left && d.offset().left - k < o ? d.css({
-                position: "fixed",
-                left: a.left,
-                right: "auto"
-            }) : k <= g.left && (d.css("position", g.position), d.css("left", g.left), 
-            d.css("right", "auto")), g.left - k >= o && d.css({
-                position: "fixed",
-                left: "auto",
-                right: -a.right
-            }));
-        }), h.scroll();
+            })));
+        }), g.scroll();
     },
     _getUserDefinedOffset: function() {
         var a = this, b = a.options, c = a.getValueFromOptions("offset");
@@ -556,7 +555,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -653,8 +652,11 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        var a = this;
-        a.options, a.element.addClass(a.options.className), a._super();
+        {
+            var a = this;
+            a.options;
+        }
+        a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -665,8 +667,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
@@ -741,7 +743,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = 2 * (this.getUiElement("contentHolder").height() / 3 / 3), classOfIs(a, "Number") ? a : 0;
+            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,
@@ -1057,6 +1059,8 @@ $.widget("jui.juiBase", {
         skipFirstOptionItem: !1,
         selectedValue: null,
         disableOnTouchDevice: !0,
+        valueAttribName: "value",
+        labelAttribName: null,
         ui: {
             wrapperElm: {
                 elm: null,
@@ -1150,15 +1154,15 @@ $.widget("jui.juiBase", {
     },
     _drawSelectOptions: function() {
         var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
-        c.each(function(a, b) {
-            if (b = $(b), 0 !== a || !e.skipFirstOptionItem) {
-                var f = b.attr("value"), g = b.attr("data-value"), h = b.attr("class"), i = "";
-                !isset(e.selectedValue) || e.selectedValue !== f && e.selectedValue !== g || (empty(i) ? i = e.ui.optionsElm.optionSelectedClassName : (i.length > 0 && (i += " "), 
-                i += e.ui.optionsElm.optionSelectedClassName), i = ' class="' + i + '"'), 
-                h = empty(h) ? "" : 'class="' + h + '" ', f = empty(f) ? empty(g) ? "" : 'data-value="' + g + '" ' : ' data-value="' + f + '"';
-                var j = $("<li" + i + "><a " + h + 'href="javascript: void(0);"' + f + ">" + b.text() + "</a></li>");
-                0 !== a || empty(e.ui.buttonElm.text) ? 1 === a && empty(e.ui.buttonElm.text) && j.addClass("first") : j.addClass("first"), 
-                a === c.length - 1 && j.addClass("last"), d.append(j);
+        c.each(function(b, f) {
+            if (f = $(f), 0 !== b || !e.skipFirstOptionItem) {
+                var g = a.getValueFromOptionElm(f), h = a.getLabelFromOptionElm(f), i = f.attr("class"), j = "";
+                console.log(g, h), isset(e.selectedValue) && e.selectedValue === g && (empty(j) ? j = e.ui.optionsElm.optionSelectedClassName : (j.length > 0 && (j += " "), 
+                j += e.ui.optionsElm.optionSelectedClassName), j = ' class="' + j + '"'), 
+                i = empty(i) ? "" : 'class="' + i + '" ', g = ' data-value="' + g + '" ';
+                var k = $("<li" + j + "><a " + i + 'href="javascript: void(0);"' + g + ">" + h + "</a></li>");
+                0 !== b || empty(e.ui.buttonElm.text) ? 1 === b && empty(e.ui.buttonElm.text) && k.addClass("first") : k.addClass("first"), 
+                b === c.length - 1 && k.addClass("last"), d.append(k);
             }
         }), b.append(d);
     },
@@ -1208,7 +1212,7 @@ $.widget("jui.juiBase", {
         this.element.removeAttr("hidden"), this._removeCreatedOptions(), this._super();
     },
     refreshOptions: function() {
-        this.options.selectedValue = this.getSelectedOptionValue(), this._removeCreatedOptions(), 
+        this.options.selectedValue = this.getSelectedOwnOptionElmValue(), this._removeCreatedOptions(), 
         this._drawSelectOptions(), this.setLabelText(), this.element.trigger("change");
     },
     setSelectedItemLabelText: function(a, b, c) {
@@ -1246,10 +1250,20 @@ $.widget("jui.juiBase", {
         var a = this, b = a.options;
         b.disableOnTouchDevice && b.isTouchDevice || b.timeline.reverse();
     },
-    getOptionElementByValue: function(a) {
+    getOwnOptionElmByValue: function(a) {
         this.getUiElement("optionsElm").find('[data-value="' + a + '"]');
     },
-    getSelectedOptionValue: function() {
+    getSelectedOwnOptionElmValue: function() {
         return this.getUiElement("optionsElm").find("." + this.options.ui.optionsElm.optionSelectedClassName).find("a").attr("data-value");
+    },
+    getValueFromOptionElm: function(a) {
+        var b, c = this.options;
+        return empty(a) ? null : (isset(c.valueAttribName) && (b = a.attr(c.valueAttribName), 
+        console.log(b)), isset(b) ? b : a.text());
+    },
+    getLabelFromOptionElm: function(a) {
+        var b, c = this.options;
+        return empty(a) ? null : (isset(c.labelAttribName) && (b = a.attr(c.labelAtribName)), 
+        isset(b) ? b : a.text());
     }
 });

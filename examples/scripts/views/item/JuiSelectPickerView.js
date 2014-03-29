@@ -10,8 +10,9 @@ function (Backbone, tmpl) {
     return Backbone.Marionette.ItemView.extend({
 
         ui: {
-            catSelectElm: '#categories',
-            otherSelectElm: '#other-options'
+            example1: '#categories',
+            example2: '#other-options',
+            example3: '#other-options-2'
         },
 
         template: tmpl,
@@ -21,16 +22,17 @@ function (Backbone, tmpl) {
             // Expands on click
             var ui = this.ui,
 
-                $cats = ui.catSelectElm.juiSelectPicker({
-                    useSelectedLabelPrefixAndSuffix: true,
-                    labelText: 'Select a Category:',
-                    skipFirstOptionItem: true,
-                    expandOn: 'click',
-                    collapseOn: 'click'
-                }),
+            // Example 1 - expands on click
+            $example1 = ui.example1.juiSelectPicker({
+                useSelectedLabelPrefixAndSuffix: true,
+                labelText: 'Select a Category:',
+                skipFirstOptionItem: true,
+                expandOn: 'click',
+                collapseOn: 'click'
+            }),
 
-            // Expands on hover
-            $otherOptions = ui.otherSelectElm.juiSelectPicker({
+            // Example 2 - expands on hover
+            $example2 = ui.example2.juiSelectPicker({
                 wrapperElm: {
                     selector: '.jui-select-picker-example-1',
                     attribs: {
@@ -41,16 +43,33 @@ function (Backbone, tmpl) {
                 selectedLabelPrefix: '< "',
                 selectedLabelSuffix: '" >',
                 skipFirstOptionItem: true,
-//                labelText: '"Other Option":',
+                labelText: '"Option":',
+                expandOn: 'mouseenter',
+                collapseOn: 'mouseleave'
+            }),
+
+            // Example 3 - expands on hover and has no value attributes in select element
+            $example3 = ui.example3.juiSelectPicker({
+                wrapperElm: {
+                    selector: '.jui-select-picker-example-1',
+                    attribs: {
+                        'class': 'jui-select-picker jui-select-picker-example-1'
+                    }
+                },
+                useSelectedLabelPrefixAndSuffix: true,
+                selectedLabelPrefix: '< "',
+                selectedLabelSuffix: '" >',
+                skipFirstOptionItem: true,
+                labelText: '"Option":',
                 expandOn: 'mouseenter',
                 collapseOn: 'mouseleave'
             });
 
             // Trigger tests
-            $cats.juiSelectPicker('getUiElement', 'wrapperElm').on('expand',function (e) {
-                console.log('categories have expanded');
+            $example1.juiSelectPicker('getUiElement', 'wrapperElm').on('expand',function (e) {
+                console.log('An "expand" event has occurred on example 1');
             }).on('collapse', function (e) {
-                console.log('categories have expanded');
+                console.log('A "collapse" event has occurred on example 2');
             });
 
             // Toggle the select element
@@ -67,17 +86,18 @@ function (Backbone, tmpl) {
             });
 
             $('.add-items-to-select-element').click(function () {
-                $cats.append('<option> Random element' + Math.random() + '</option>')
-                $cats.juiSelectPicker('refreshOptions');
+                $example1.append('<option> Random element' + Math.random() + '</option>')
+                $example1.juiSelectPicker('refreshOptions');
             });
+
         },
 
         onClose: function () {
             var ui = this.ui;
-            ui.catSelectElm.juiSelectPicker('destroy');
-            ui.otherSelectElm.juiSelectPicker('destroy');
-            delete ui.catSelectElm;
-            delete ui.otherSelectElm;
+            ui.example1.juiSelectPicker('destroy');
+            ui.example2.juiSelectPicker('destroy');
+            delete ui.example1;
+            delete ui.example2;
         }
     });
 

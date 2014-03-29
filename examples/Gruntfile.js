@@ -76,7 +76,7 @@ module.exports = function (grunt) {
                 }
             },
             js: {
-                files: ['./scripts/**/*.js', '../distro/**/*'],
+                files: ['./scripts/**/*.js', '../distro/**/*', './templates/**/*'],
                 tasks: ['requirejs'],
                 options: {
                     spawn: false,

@@ -82,6 +82,20 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         disableOnTouchDevice: true,
 
         /**
+         * The attribute to get the value from on the select element's option element.
+         * @type {String} - default 'value'
+         */
+        valueAttribName: 'value',
+
+        /**
+         * Where to get the label string for the option from (if 'html', or
+         * 'text uses jquery to pull the 'html'/'text' from the select element's
+         * option element).
+         * @type {String} - default 'html'
+         */
+        labelAttribName: null,
+
+        /**
          * Ui Hash.
          * @type {Object}
          */
@@ -252,14 +266,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 return;
             }
 
-            var value = option.attr('value'),
-                dataValue = option.attr('data-value'),
+            var value = self.getValueFromOptionElm(option),
+                label = self.getLabelFromOptionElm(option),
                 classValue = option.attr('class'),
                 liClassValue = '';
 
+            console.log(value, label);
+
             // Preselect item if necessary
             if (isset(ops.selectedValue) &&
-                (ops.selectedValue === value || ops.selectedValue === dataValue)) {
+                (ops.selectedValue === value)) {
                 if (!empty(liClassValue)) {
                     if (liClassValue.length > 0) {
                         liClassValue += ' ';
@@ -275,13 +291,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
             // Resolve class attribute and data-value attribute
             classValue = !empty(classValue) ? 'class="' + classValue + '" ' : '';
-            value = empty(value) ? (empty(dataValue) ?
-                '' : 'data-value="' + dataValue + '" ') :
-                ' data-value="' + value + '"';
+            value = ' data-value="' + value + '" ';
 
             // Build list element
             var li = $('<li' + liClassValue + '><a ' + classValue + 'href="javascript: void(0);"'
-                + value + '>' + option.text() + '</a></li>');
+                + value + '>' + label + '</a></li>');
 
             // Add first class
             if (i === 0 && !empty(ops.ui.buttonElm.text)) {
@@ -343,7 +357,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 val = elm.val();
             if (isset(val)) {
                 self.setSelectedItemLabelText(val);
-//                self.setSelected(self.getOptionElementByValue(val));
+//                self.setSelected(self.getOwnOptionElmByValue(val));
             }
         });
     },
@@ -438,7 +452,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * @returns {void}
      */
     refreshOptions: function () {
-        this.options.selectedValue = this.getSelectedOptionValue();
+        this.options.selectedValue = this.getSelectedOwnOptionElmValue();
         this._removeCreatedOptions();
         this._drawSelectOptions();
         this.setLabelText();
@@ -556,7 +570,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * Gets a drawn option element (from within wrapper) by value.
      * @param value
      */
-    getOptionElementByValue: function (value) {
+    getOwnOptionElmByValue: function (value) {
         this.getUiElement('optionsElm')
             .find('[data-value="' + value +'"]');
     },
@@ -565,10 +579,57 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * Gets the selected option's value (from within wrapper).
      * @returns {*}
      */
-    getSelectedOptionValue: function () {
+    getSelectedOwnOptionElmValue: function () {
         return this.getUiElement('optionsElm')
             .find('.' + this.options.ui.optionsElm.optionSelectedClassName)
             .find('a').attr('data-value');
+    },
+
+    /**
+     * Get's an option element's value.
+     * @param option
+     * @returns {*} - null or option's value
+     */
+    getValueFromOptionElm: function (option) {
+        var ops = this.options,
+            value;
+
+        // If no selection
+        if (empty(option)) {
+            return null;
+        }
+
+        // If we have a value attribute name, get value by attribute name
+        if (isset(ops.valueAttribName)) {
+            value = option.attr(ops.valueAttribName);
+            console.log(value);
+        }
+
+        // Else use the option elements text
+        return !isset(value) ? option.text() : value;
+    },
+    
+    /**
+     * Get's an option element's label.
+     * @param option
+     * @returns {*} - null or option's label
+     */
+    getLabelFromOptionElm: function (option) {
+        var ops = this.options,
+            label;
+
+        // If no selection
+        if (empty(option)) {
+            return null;
+        }
+
+        // If we have a label attribute name, get label by attribute name
+        if (isset(ops.labelAttribName)) {
+            label = option.attr(ops.labelAtribName);
+        }
+
+        // Else use the option elements text
+        return !isset(label) ? option.text() : label;
     }
 
 });

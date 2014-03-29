@@ -50,7 +50,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                 scrollLeft = oElm.scrollLeft(),
                 affixBottom = isset(affixOffset.bottom) ? affixOffset.bottom : 0,
                 affixRight = isset(affixOffset.right) ? affixOffset.right : 0,
-                bottomLimit = scrollableElm.height() - affixBottom - elm.height(),
+                bottomLimit = scrollableElm.height() - affixBottom - elm.outerHeight(),
                 rightLimit = scrollableElm.width() - affixRight;
 
             // If realtime option calcs
@@ -60,8 +60,8 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
 
             if (affixVertically) {
                 if (isset(affixOffset.top)) {
-                    if (scrollTop > original.top - affixOffset.top &&
-                        elm.offset().top - scrollTop < bottomLimit) {
+                    if (scrollTop > original.top + affixOffset.top &&
+                        elm.offset().top + elm.outerHeight() - scrollTop + affixOffset.top < bottomLimit) {
                         elm.css({
                             position: 'fixed',
                             top: affixOffset.top,
@@ -75,39 +75,49 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                     }
                 }
 
-                if (original.top - scrollTop >= bottomLimit
-                    && isset(affixOffset.bottom)) {
-                    elm.css({
-                        position: 'fixed',
-                        top: 'auto',
-                        bottom: affixOffset.bottom
-                    });
-                }
-            }
 
-            if (affixHorizontally) {
-                if (scrollLeft > original.left - affixOffset.left &&
-                    elm.offset().left - scrollLeft < rightLimit) {
-                    elm.css({
-                        position: 'fixed',
-                        left: affixOffset.left,
-                        right: 'auto'
-                    });
-                }
-                else if (scrollLeft <= original.left) {
-                    elm.css('position', original.position);
-                    elm.css('left', original.left);
-                    elm.css('right', 'auto');
+                if (isset(affixOffset.bottom)) {
+                    if (original.top - bottomLimit <= scrollTop) {
+                        elm.css({
+                            position: original.position,
+                            top: original.top,
+                            bottom: original.bottom
+                        });
+                    }
+                    else {
+                        elm.css({
+                            position: 'fixed',
+                            top: 'auto',
+                            bottom: affixOffset.bottom
+                        });
+                    }
                 }
 
-                if (original.left - scrollLeft >= rightLimit) {
-                    elm.css({
-                        position: 'fixed',
-                        left: 'auto',
-                        right: -affixOffset.right
-                    });
-                }
             }
+
+//            if (affixHorizontally) {
+//                if (scrollLeft > original.left - affixOffset.left &&
+//                    elm.offset().left - scrollLeft < rightLimit) {
+//                    elm.css({
+//                        position: 'fixed',
+//                        left: affixOffset.left,
+//                        right: 'auto'
+//                    });
+//                }
+//                else if (scrollLeft <= original.left) {
+//                    elm.css('position', original.position);
+//                    elm.css('left', original.left);
+//                    elm.css('right', 'auto');
+//                }
+//
+//                if (original.left - scrollLeft >= rightLimit) {
+//                    elm.css({
+//                        position: 'fixed',
+//                        left: 'auto',
+//                        right: -affixOffset.right
+//                    });
+//                }
+//            }
         });
 
         scrollableElm.scroll();

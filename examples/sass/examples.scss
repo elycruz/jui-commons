@@ -8,6 +8,7 @@
 @import "../../src/sass/jui-commons/jui-commons.scss";
 @import "jui-scrollable-drop-down-example";
 @import "jui-scroll-pane-example";
+@import "jui-select-picker-example";
 @import "jui-floating-scroll-indicators-example";
 @import "jui-paginators-example";
 @import "jui-affix-example";
@@ -51,4 +52,12 @@ label {
 }
 select {
     margin-bottom: 10px;
+}
+
+.view-module-1 {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #888;
+    background: #eee;
+    @include border-radius(10px);
 }
