@@ -271,8 +271,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 classValue = option.attr('class'),
                 liClassValue = '';
 
-            console.log(value, label);
-
             // Preselect item if necessary
             if (isset(ops.selectedValue) &&
                 (ops.selectedValue === value)) {
@@ -602,7 +600,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // If we have a value attribute name, get value by attribute name
         if (isset(ops.valueAttribName)) {
             value = option.attr(ops.valueAttribName);
-            console.log(value);
         }
 
         // Else use the option elements text

@@ -1954,162 +1954,162 @@ if (!Object.isExtensible) {
  */
 (function (context) {
 
-	if (typeof context.empty !== 'function') {
-		/**
-		 * Checks object's own properties to see if it is empty.
-		 * @param obj object to be checked
-		 * @returns {boolean}
-		 */
-		function isEmptyObj (obj) {
+    if (typeof context.empty !== 'function') {
+        /**
+         * Checks object's own properties to see if it is empty.
+         * @param obj object to be checked
+         * @returns {boolean}
+         */
+        function isEmptyObj (obj) {
             var retVal = obj === true ? false : true;
-			for (var key in obj) {
-				if (obj.hasOwnProperty(key)) {
-					retVal = false;
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    retVal = false;
                     break;
-				}
-			}
-			return retVal;
-		}
+                }
+            }
+            return retVal;
+        }
 
-		/**
-		 * Checks to see if value is empty (objects, arrays,
-		 * strings etc.).
-		 * @param value
-		 * @returns {boolean}
-		 */
-		function isEmptyValue(value) {
-			if (value instanceof Array || value instanceof String) {
-				return value.length === 0;
-			}
-			return (value === 0 || value === false
-				|| value === undefined || value === null
-				|| isEmptyObj(value));
-		}
+        /**
+         * Checks to see if value is empty (objects, arrays,
+         * strings etc.).
+         * @param value
+         * @returns {boolean}
+         */
+        function isEmptyValue(value) {
+            if (value instanceof Array || Object.prototype.toString.call(value) === '[object String]') {
+                return value.length === 0;
+            }
+            return (value === 0 || value === false
+                || value === undefined || value === null
+                || isEmptyObj(value));
+        }
 
-		/**
-		 * Checks to see if any of the arguments passed in are empty.
-		 * @return boolean
-		 */
-		context.empty = function () {
+        /**
+         * Checks to see if any of the arguments passed in are empty.
+         * @return boolean
+         */
+        context.empty = function () {
             var retVal = true, check;
-			if (arguments.length > 1) {
-				for (var i in arguments) {
-					i = arguments[i];
-					check = isEmptyValue(i);
+            if (arguments.length > 1) {
+                for (var i in arguments) {
+                    i = arguments[i];
+                    check = isEmptyValue(i);
                     if (check) {
                         retVal = check;
                         break;
                     }
-				}
-			}
-			else if (arguments.length === 1) {
-				retVal = isEmptyValue(arguments[0]);
-			}
-			return retVal;
-		};
-	}
+                }
+            }
+            else if (arguments.length === 1) {
+                retVal = isEmptyValue(arguments[0]);
+            }
+            return retVal;
+        };
+    }
 
-	if (typeof context.isset !== 'function') {
+    if (typeof context.isset !== 'function') {
 
-		/**
-		 * Checks to see if value is set (not null and not undefined).
-		 * @param value
-		 * @returns {boolean}
-		 */
-		function isSet (value) {
-			return (value !== undefined && value !== null);
-		}
+        /**
+         * Checks to see if value is set (not null and not undefined).
+         * @param value
+         * @returns {boolean}
+         */
+        function isSet (value) {
+            return (value !== undefined && value !== null);
+        }
 
-		/**
-		 * Checks to see if any of the arguments passed in are
-		 * set (not undefined and not null).
-		 * Returns false on the first argument encountered that
-		 * is null or undefined.
-		 * @return boolean
-		 */
-		context.isset = function () {
+        /**
+         * Checks to see if any of the arguments passed in are
+         * set (not undefined and not null).
+         * Returns false on the first argument encountered that
+         * is null or undefined.
+         * @return boolean
+         */
+        context.isset = function () {
             var retVal = false,
                 check;
 
-			if (arguments.length > 1) {
-				for (var i in arguments) {
-					i = arguments[i];
-					check = isSet(i);
+            if (arguments.length > 1) {
+                for (var i in arguments) {
+                    i = arguments[i];
+                    check = isSet(i);
                     if (! check) {
                         retVal = check;
                         break;
                     }
-				}
-			}
-			else if (arguments.length === 1) {
-				retVal = isSet(arguments[0]);
-			}
+                }
+            }
+            else if (arguments.length === 1) {
+                retVal = isSet(arguments[0]);
+            }
 
-			return retVal;
-		};
-	}
+            return retVal;
+        };
+    }
 
-	if (typeof context.ucaseFirst !== 'function') {
-		/**
-		 * Upper cases first character of a string.
-		 * @param {String} str
-		 * @returns {String}
-		 */
-		context.ucaseFirst = function (str) {
-			str = str + "";
-			s0 = str.match(/^[a-z]/i);
-			if (!s0 instanceof Array) {
-				return null;
-			}
-			return s0[0].toUpperCase() + str.substr(1);
-		};
-	}
+    if (typeof context.ucaseFirst !== 'function') {
+        /**
+         * Upper cases first character of a string.
+         * @param {String} str
+         * @returns {String}
+         */
+        context.ucaseFirst = function (str) {
+            str = str + "";
+            s0 = str.match(/^[a-z]/i);
+            if (!s0 instanceof Array) {
+                return null;
+            }
+            return s0[0].toUpperCase() + str.substr(1);
+        };
+    }
 
-	if (typeof context.lcaseFirst !== 'function') {
-		/**
-		 * Lower cases first character of a string.
-		 * @param {String} str
-		 * @returns {String}
-		 */
-		context.lcaseFirst = function (str) {
-			str = str + "";
-			return str.match(/[a-z]/i)[0].toLowerCase() + str.substr(1);
-		};
-	}
+    if (typeof context.lcaseFirst !== 'function') {
+        /**
+         * Lower cases first character of a string.
+         * @param {String} str
+         * @returns {String}
+         */
+        context.lcaseFirst = function (str) {
+            str = str + "";
+            return str.match(/[a-z]/i)[0].toLowerCase() + str.substr(1);
+        };
+    }
 
-	if (typeof context.strToCamelCase) {
+    if (typeof context.strToCamelCase) {
 
-		/**
-		 * Make a string code friendly. Camel cases a dirty string into
-		 * a valid javascript variable/constructor name;  Uses `replaceStrRegex`
-		 * to replace unwanted characters with a '-' and then splits and merges
-		 * the parts with the proper casing, pass in `true` for lcaseFirst
-		 * to lower case the first character.
-		 * @param {String} str
-		 * @param {Boolean} lowerFirst default `false`
-		 * @param {Regex} replaceStrRegex default /[^a-z0-9\-_] * /i (without spaces before and after '*')
-		 * @returns {String}
-		 */
-		context.strToCamelCase = function (str, lowerFirst, replaceStrRegex) {
-			lowerFirst = lowerFirst || false;
-			replaceStrRegex = replaceStrRegex || /[^a-z0-9\-_]*/i;
-			var newStr = "";
-			str = str + "";
-			str = str.replace(replaceStrRegex, '-');
-			str.split('-').forEach(function (str) {
-				if (/^[a-z]/i.test(str)) {
-					newStr += ucaseFirst(str);
-				}
-				else {
-					newStr += str;
-				}
-			});
-			if (lowerFirst) {
-				newStr = lcaseFirst(newStr);
-			}
-			return newStr;
-		};
-	}
+        /**
+         * Make a string code friendly. Camel cases a dirty string into
+         * a valid javascript variable/constructor name;  Uses `replaceStrRegex`
+         * to replace unwanted characters with a '-' and then splits and merges
+         * the parts with the proper casing, pass in `true` for lcaseFirst
+         * to lower case the first character.
+         * @param {String} str
+         * @param {Boolean} lowerFirst default `false`
+         * @param {Regex} replaceStrRegex default /[^a-z0-9\-_] * /i (without spaces before and after '*')
+         * @returns {String}
+         */
+        context.strToCamelCase = function (str, lowerFirst, replaceStrRegex) {
+            lowerFirst = lowerFirst || false;
+            replaceStrRegex = replaceStrRegex || /[^a-z0-9\-_]*/i;
+            var newStr = "";
+            str = str + "";
+            str = str.replace(replaceStrRegex, '-');
+            str.split('-').forEach(function (str) {
+                if (/^[a-z]/i.test(str)) {
+                    newStr += ucaseFirst(str);
+                }
+                else {
+                    newStr += str;
+                }
+            });
+            if (lowerFirst) {
+                newStr = lcaseFirst(newStr);
+            }
+            return newStr;
+        };
+    }
 })(typeof window !== "undefined" ? window : global);
 
 define("phpjs", function(){});
@@ -16901,13 +16901,13 @@ _.extend(Marionette.Module, {
 }));
 
 /*!
- * VERSION: 1.11.2
- * DATE: 2013-11-20
+ * VERSION: 1.11.4
+ * DATE: 2014-01-18
  * UPDATES AND DOCS AT: http://www.greensock.com
  * 
  * Includes all of the following: TweenLite, TweenMax, TimelineLite, TimelineMax, EasePack, CSSPlugin, RoundPropsPlugin, BezierPlugin, AttrPlugin, DirectionalRotationPlugin
  *
- * @license Copyright (c) 2008-2013, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2014, GreenSock. All rights reserved.
  * This work is subject to the terms at http://www.greensock.com/terms_of_use.html or for
  * Club GreenSock members, the software agreement that was issued with your membership.
  * 
@@ -16936,7 +16936,7 @@ _.extend(Marionette.Module, {
 			p = TweenMax.prototype = TweenLite.to({}, 0.1, {}),
 			_blankArray = [];
 
-		TweenMax.version = "1.11.2";
+		TweenMax.version = "1.11.4";
 		p.constructor = TweenMax;
 		p.kill()._gc = false;
 		TweenMax.killTweensOf = TweenMax.killDelayedCallsTo = TweenLite.killTweensOf;
@@ -16953,7 +16953,7 @@ _.extend(Marionette.Module, {
 		
 		p.updateTo = function(vars, resetDuration) {
 			var curRatio = this.ratio, p;
-			if (resetDuration && this.timeline && this._startTime < this._timeline._time) {
+			if (resetDuration && this._startTime < this._timeline._time) {
 				this._startTime = this._timeline._time;
 				this._uncache(false);
 				if (this._gc) {
@@ -16969,6 +16969,9 @@ _.extend(Marionette.Module, {
 				if (resetDuration) {
 					this._initted = false;
 				} else {
+					if (this._gc) {
+						this._enabled(true, false);
+					}
 					if (this._notifyPluginsOfEnabled && this._firstPT) {
 						TweenLite._onPluginEvent("_onDisable", this); //in case a plugin like MotionBlur must perform some cleanup tasks
 					}
@@ -17026,7 +17029,7 @@ _.extend(Marionette.Module, {
 							callback = "onReverseComplete";
 						}
 					}
-					this._rawPrevTime = rawPrevTime = (!suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				}
 				
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
@@ -17042,7 +17045,7 @@ _.extend(Marionette.Module, {
 						if (this._rawPrevTime >= 0) {
 							force = true;
 						}
-						this._rawPrevTime = rawPrevTime = (!suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					}
 				} else if (!this._initted) { //if we render the very beginning (time == 0) of a fromTo(), we must force the render (normal tweens wouldn't need to render at a time of 0 when the prevTime was also 0). This is also mandatory to make sure overwriting kicks in immediately.
 					force = true;
@@ -17151,7 +17154,7 @@ _.extend(Marionette.Module, {
 				if (time < 0) if (this._startAt && this._startTime) { //if the tween is positioned at the VERY beginning (_startTime 0) of its parent timeline, it's illegal for the playhead to go back further, so we should not render the recorded startAt values.
 					this._startAt.render(time, suppressEvents, force); //note: for performance reasons, we tuck this conditional logic inside less traveled areas (most tweens don't have an onUpdate). We'd just have it at the end before the onComplete, but the values should be updated before any onUpdate is called, so we ALSO put it here and then if it's not called, we do so later near the onComplete.
 				}
-				if (!suppressEvents) {
+				if (!suppressEvents) if (this._totalTime !== prevTotalTime || isComplete) {
 					this._onUpdate.apply(this.vars.onUpdateScope || this, this.vars.onUpdateParams || _blankArray);
 				}
 			}
@@ -17309,7 +17312,7 @@ _.extend(Marionette.Module, {
 				parent = TweenLite.selector(parent) || parent;
 			}
 			if (_isSelector(parent)) {
-				parent = _slice(parent, 0);
+				parent = _slice.call(parent, 0);
 			}
 			if (_isArray(parent)) {
 				i = parent.length;
@@ -17506,7 +17509,7 @@ _.extend(Marionette.Module, {
 			_slice = _blankArray.slice,
 			p = TimelineLite.prototype = new SimpleTimeline();
 
-		TimelineLite.version = "1.11.0";
+		TimelineLite.version = "1.11.4";
 		p.constructor = TimelineLite;
 		p.kill()._gc = false;
 
@@ -17523,7 +17526,7 @@ _.extend(Marionette.Module, {
 		};
 
 		p.staggerTo = function(targets, duration, vars, stagger, position, onCompleteAll, onCompleteAllParams, onCompleteAllScope) {
-			var tl = new TimelineLite({onComplete:onCompleteAll, onCompleteParams:onCompleteAllParams, onCompleteScope:onCompleteAllScope}),
+			var tl = new TimelineLite({onComplete:onCompleteAll, onCompleteParams:onCompleteAllParams, onCompleteScope:onCompleteAllScope, smoothChildTiming:this.smoothChildTiming}),
 				i;
 			if (typeof(targets) === "string") {
 				targets = TweenLite.selector(targets) || targets;
@@ -17774,8 +17777,8 @@ _.extend(Marionette.Module, {
 						}
 					}
 				}
-				this._rawPrevTime = (this._duration || !suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
-				time = totalDur + 0.000001; //to avoid occasional floating point rounding errors - sometimes child tweens/timelines were not being fully completed (their progress might be 0.999999999999998 instead of 1 because when _time - tween._startTime is performed, floating point errors would return a value that was SLIGHTLY off)
+				this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+				time = totalDur + 0.0001; //to avoid occasional floating point rounding errors - sometimes child tweens/timelines were not being fully completed (their progress might be 0.999999999999998 instead of 1 because when _time - tween._startTime is performed, floating point errors would return a value that was SLIGHTLY off). Try (999999999999.7 - 999999999999) * 1 = 0.699951171875 instead of 0.7.
 
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
 				this._totalTime = this._time = 0;
@@ -17790,7 +17793,7 @@ _.extend(Marionette.Module, {
 					}
 					this._rawPrevTime = time;
 				} else {
-					this._rawPrevTime = (this._duration || !suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 
 					time = 0; //to avoid occasional floating point rounding errors (could cause problems especially with zero-duration tweens at the very beginning of the timeline)
 					if (!this._initted) {
@@ -18103,7 +18106,7 @@ _.extend(Marionette.Module, {
 
 		p.constructor = TimelineMax;
 		p.kill()._gc = false;
-		TimelineMax.version = "1.11.0";
+		TimelineMax.version = "1.11.4";
 
 		p.invalidate = function() {
 			this._yoyo = (this.vars.yoyo === true);
@@ -18137,15 +18140,17 @@ _.extend(Marionette.Module, {
 
 		p.tweenTo = function(position, vars) {
 			vars = vars || {};
-			var copy = {ease:_easeNone, overwrite:2, useFrames:this.usesFrames(), immediateRender:false}, p, t;
+			var copy = {ease:_easeNone, overwrite:2, useFrames:this.usesFrames(), immediateRender:false},
+				duration, p, t;
 			for (p in vars) {
 				copy[p] = vars[p];
 			}
 			copy.time = this._parseTimeOrLabel(position);
-			t = new TweenLite(this, (Math.abs(Number(copy.time) - this._time) / this._timeScale) || 0.001, copy);
+			duration = (Math.abs(Number(copy.time) - this._time) / this._timeScale) || 0.001;
+			t = new TweenLite(this, duration, copy);
 			copy.onStart = function() {
 				t.target.paused(true);
-				if (t.vars.time !== t.target.time()) { //don't make the duration zero - if it's supposed to be zero, don't worry because it's already initting the tween and will complete immediately, effectively making the duration zero anyway. If we make duration zero, the tween won't run at all.
+				if (t.vars.time !== t.target.time() && duration === t.duration()) { //don't make the duration zero - if it's supposed to be zero, don't worry because it's already initting the tween and will complete immediately, effectively making the duration zero anyway. If we make duration zero, the tween won't run at all.
 					t.duration( Math.abs( t.vars.time - t.target.time()) / t.target._timeScale );
 				}
 				if (vars.onStart) { //in case the user had an onStart in the vars - we don't want to overwrite it.
@@ -18193,12 +18198,12 @@ _.extend(Marionette.Module, {
 						}
 					}
 				}
-				this._rawPrevTime = (this._duration || !suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+				this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				if (this._yoyo && (this._cycle & 1) !== 0) {
 					this._time = time = 0;
 				} else {
 					this._time = dur;
-					time = dur + 0.000001; //to avoid occasional floating point rounding errors
+					time = dur + 0.0001; //to avoid occasional floating point rounding errors - sometimes child tweens/timelines were not being fully completed (their progress might be 0.999999999999998 instead of 1 because when _time - tween._startTime is performed, floating point errors would return a value that was SLIGHTLY off). Try (999999999999.7 - 999999999999) * 1 = 0.699951171875 instead of 0.7. We cannot do less then 0.0001 because the same issue can occur when the duration is extremely large like 999999999999 in which case adding 0.00000001, for example, causes it to act like nothing was added.
 				}
 
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
@@ -18217,7 +18222,7 @@ _.extend(Marionette.Module, {
 					}
 					this._rawPrevTime = time;
 				} else {
-					this._rawPrevTime = (dur || !suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = (dur || !suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					time = 0; //to avoid occasional floating point rounding errors (could cause problems especially with zero-duration tweens at the very beginning of the timeline)
 					if (!this._initted) {
 						internalForce = true;
@@ -18243,7 +18248,7 @@ _.extend(Marionette.Module, {
 						}
 						if (this._time > dur) {
 							this._time = dur;
-							time = dur + 0.000001; //to avoid occasional floating point rounding error
+							time = dur + 0.0001; //to avoid occasional floating point rounding error
 						} else if (this._time < 0) {
 							this._time = time = 0;
 						} else {
@@ -18277,7 +18282,7 @@ _.extend(Marionette.Module, {
 				}
 				this._time = prevTime; //temporarily revert _time so that render() renders the children in the correct order. Without this, tweens won't rewind correctly. We could arhictect things in a "cleaner" way by splitting out the rendering queue into a separate method but for performance reasons, we kept it all inside this method.
 
-				this._rawPrevTime = (dur === 0) ? prevRawPrevTime - 0.00001 : prevRawPrevTime;
+				this._rawPrevTime = (dur === 0) ? prevRawPrevTime - 0.0001 : prevRawPrevTime;
 				this._cycle = prevCycle;
 				this._locked = true; //prevents changes to totalTime and skips repeat/yoyo behavior when we recursively call render()
 				prevTime = (backwards) ? 0 : dur;
@@ -18288,7 +18293,7 @@ _.extend(Marionette.Module, {
 					}
 				}
 				if (wrap) {
-					prevTime = (backwards) ? dur + 0.000001 : -0.000001;
+					prevTime = (backwards) ? dur + 0.0001 : -0.0001;
 					this.render(prevTime, true, false);
 				}
 				this._locked = false;
@@ -19123,11 +19128,11 @@ _.extend(Marionette.Module, {
 			p = CSSPlugin.prototype = new TweenPlugin("css");
 
 		p.constructor = CSSPlugin;
-		CSSPlugin.version = "1.11.2";
+		CSSPlugin.version = "1.11.4";
 		CSSPlugin.API = 2;
 		CSSPlugin.defaultTransformPerspective = 0;
 		p = "px"; //we'll reuse the "p" variable to keep file size down
-		CSSPlugin.suffixMap = {top:p, right:p, bottom:p, left:p, width:p, height:p, fontSize:p, padding:p, margin:p, perspective:p};
+		CSSPlugin.suffixMap = {top:p, right:p, bottom:p, left:p, width:p, height:p, fontSize:p, padding:p, margin:p, perspective:p, lineHeight:""};
 
 
 		var _numExp = /(?:\d|\-\d|\.\d|\-\.\d)+/g,
@@ -20401,16 +20406,7 @@ _.extend(Marionette.Module, {
 					perspective = t.perspective,
 					a11, a12, a13, a14,	a21, a22, a23, a24, a31, a32, a33, a34,	a41, a42, a43,
 					zOrigin, rnd, cos, sin, t1, t2, t3, t4;
-				if (_isFirefox) { //Firefox has a
-					/*
-					// It seems Firefox fixed the bug that causes 3D elements to randomly disappear during animation unless a repaint is forced (in version 25), so we're commenting out the fix as of CSSPlugin version 1.11.2, but leaving it in the source in case it's useful later. One way we were working around this was change "top" or "bottom" by 0.05 which is imperceptible, so we go back and forth. Another way is to change the display to "none", read the clientTop, and then revert the display but that is much slower.
-					var ffProp = style.top ? "top" : style.bottom ? "bottom" : parseFloat(_getStyle(this.t, "top", null, false)) ? "bottom" : "top";
-					t1 = _getStyle(this.t, ffProp, null, false);
-					n = parseFloat(t1) || 0;
-					var sfx = t1.substr((n + "").length) || "px";
-					t._ffFix = !t._ffFix;
-					style[ffProp] = (t._ffFix ? n + 0.05 : n - 0.05) + sfx;
-					*/
+				if (_isFirefox) {
 					var n = 0.0001;
 					if (sx < n && sx > -n) { //Firefox has a bug (at least in v25) that causes it to render the transparent part of 32-bit PNG images as black when displayed inside an iframe and the 3D scale is very small and doesn't change sufficiently enough between renders (like if you use a Power4.easeInOut to scale from 0 to 1 where the beginning values only change a tiny amount to begin the tween before accelerating). In this case, we force the scale to be 0.00002 instead which is visually the same but works around the Firefox issue.
 						sx = sz = 0.00002;
@@ -20511,14 +20507,11 @@ _.extend(Marionette.Module, {
 				var t = this.data, //refers to the element's _gsTransform object
 					targ = this.t,
 					style = targ.style,
-					ffProp, t1, n, sfx, ang, skew, rnd, sx, sy;
-				if (_isFirefox) { //Firefox has a bug that causes elements to randomly disappear during animation unless a repaint is forced. One way to do this is change "top" or "bottom" by 0.05 which is imperceptible, so we go back and forth. Another way is to change the display to "none", read the clientTop, and then revert the display but that is much slower.
-					ffProp = style.top ? "top" : style.bottom ? "bottom" : parseFloat(_getStyle(targ, "top", null, false)) ? "bottom" : "top";
-					t1 = _getStyle(targ, ffProp, null, false);
-					n = parseFloat(t1) || 0;
-					sfx = t1.substr((n + "").length) || "px";
-					t._ffFix = !t._ffFix;
-					style[ffProp] = (t._ffFix ? n + 0.05 : n - 0.05) + sfx;
+					ang, skew, rnd, sx, sy;
+				if (t.rotationX || t.rotationY || t.z || t.force3D) { //if a 3D tween begins while a 2D one is running, we need to kick the rendering over to the 3D method. For example, imagine a yoyo-ing, infinitely repeating scale tween running, and then the object gets rotated in 3D space with a different tween.
+					this.setRatio = _set3DTransformRatio;
+					_set3DTransformRatio.call(this, v);
+					return;
 				}
 				if (!t.rotation && !t.skewX) {
 					style[_transformProp] = "matrix(" + t.scaleX + ",0,0," + t.scaleY + "," + t.x + "," + t.y + ")";
@@ -20552,7 +20545,7 @@ _.extend(Marionette.Module, {
 			} else if (typeof(v) === "object") { //for values like scaleX, scaleY, rotation, x, y, skewX, and skewY or transform:{...} (object)
 				m2 = {scaleX:_parseVal((v.scaleX != null) ? v.scaleX : v.scale, m1.scaleX),
 					scaleY:_parseVal((v.scaleY != null) ? v.scaleY : v.scale, m1.scaleY),
-					scaleZ:_parseVal((v.scaleZ != null) ? v.scaleZ : v.scale, m1.scaleZ),
+					scaleZ:_parseVal(v.scaleZ, m1.scaleZ),
 					x:_parseVal(v.x, m1.x),
 					y:_parseVal(v.y, m1.y),
 					z:_parseVal(v.z, m1.z),
@@ -20582,7 +20575,7 @@ _.extend(Marionette.Module, {
 				}
 			}
 
-			if (v.force3D != null) {
+			if (_supports3D && v.force3D != null) {
 				m1.force3D = v.force3D;
 				hasChange = true;
 			}
@@ -20754,6 +20747,7 @@ _.extend(Marionette.Module, {
 				var a = v.split(" ");
 				return a[0] + " " + (a[1] || "solid") + " " + (v.match(_colorExp) || ["#000"])[0];
 			}});
+		_registerComplexSpecialProp("borderWidth", {parser:_getEdgeParser("borderTopWidth,borderRightWidth,borderBottomWidth,borderLeftWidth")}); //Firefox doesn't pick up on borderWidth set in style sheets (only inline).
 		_registerComplexSpecialProp("float,cssFloat,styleFloat", {parser:function(t, e, p, cssp, pt, plugin) {
 			var s = t.style,
 				prop = ("cssFloat" in s) ? "cssFloat" : "styleFloat";
@@ -21090,7 +21084,7 @@ _.extend(Marionette.Module, {
 						}
 
 						if (esfx === "") {
-							esfx = _suffixMap[p] || bsfx; //populate the end suffix, prioritizing the map, then if none is found, use the beginning suffix.
+							esfx = (p in _suffixMap) ? _suffixMap[p] : bsfx; //populate the end suffix, prioritizing the map, then if none is found, use the beginning suffix.
 						}
 
 						es = (en || en === 0) ? (rel ? en + bn : en) + esfx : vars[p]; //ensures that any += or -= prefixes are taken care of. Record the end value before normalizing the suffix because we always want to end the tween on exactly what they intended even if it doesn't match the beginning value's suffix.
@@ -21100,9 +21094,6 @@ _.extend(Marionette.Module, {
 							bn = _convertToPixels(target, p, bn, bsfx);
 							if (esfx === "%") {
 								bn /= _convertToPixels(target, p, 100, "%") / 100;
-								if (bn > 100) { //extremely rare
-									bn = 100;
-								}
 								if (vars.strictUnits !== true) { //some browsers report only "px" values instead of allowing "%" with getComputedStyle(), so we assume that if we're tweening to a %, we should start there too unless strictUnits:true is defined. This approach is particularly useful for responsive designs that use from() tweens.
 									bs = bn + "%";
 								}
@@ -21458,6 +21449,7 @@ _.extend(Marionette.Module, {
 	window._gsDefine.plugin({
 		propName: "attr",
 		API: 2,
+		version: "0.2.0",
 
 		//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
 		init: function(target, value, tween) {
@@ -21506,6 +21498,7 @@ _.extend(Marionette.Module, {
 	window._gsDefine.plugin({
 		propName: "directionalRotation",
 		API: 2,
+		version: "0.2.0",
 
 		//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
 		init: function(target, value, tween) {
@@ -21949,7 +21942,7 @@ _.extend(Marionette.Module, {
 				var toString = Object.prototype.toString,
 					array = toString.call([]);
 				return function(obj) {
-					return (obj instanceof Array || (typeof(obj) === "object" && !!obj.push && toString.call(obj) === array));
+					return obj != null && (obj instanceof Array || (typeof(obj) === "object" && !!obj.push && toString.call(obj) === array));
 				};
 			}()),
 			a, i, p, _ticker, _tickerActive,
@@ -22567,7 +22560,7 @@ _.extend(Marionette.Module, {
 			}
 			if (value != this._reversed) {
 				this._reversed = value;
-				this.totalTime(this._totalTime, true);
+				this.totalTime(((this._timeline && !this._timeline.smoothChildTiming) ? this.totalDuration() - this._totalTime : this._totalTime), true);
 			}
 			return this;
 		};
@@ -22789,7 +22782,7 @@ _.extend(Marionette.Module, {
 		p._firstPT = p._targets = p._overwrittenProps = p._startAt = null;
 		p._notifyPluginsOfEnabled = false;
 
-		TweenLite.version = "1.11.2";
+		TweenLite.version = "1.11.4";
 		TweenLite.defaultEase = p._ease = new Ease(null, null, 1, 1);
 		TweenLite.defaultOverwrite = "auto";
 		TweenLite.ticker = _ticker;
@@ -22890,7 +22883,7 @@ _.extend(Marionette.Module, {
 						if (_checkOverlap(curTween, globalStart, zeroDur) === 0) {
 							overlaps[oCount++] = curTween;
 						}
-					} else if (curTween._startTime <= startTime) if (curTween._startTime + curTween.totalDuration() / curTween._timeScale + _tinyNum > startTime) if (!((zeroDur || !curTween._initted) && startTime - curTween._startTime <= 0.0000000002)) {
+					} else if (curTween._startTime <= startTime) if (curTween._startTime + curTween.totalDuration() / curTween._timeScale > startTime) if (!((zeroDur || !curTween._initted) && startTime - curTween._startTime <= 0.0000000002)) {
 						overlaps[oCount++] = curTween;
 					}
 				}
@@ -23088,7 +23081,7 @@ _.extend(Marionette.Module, {
 							callback = "onReverseComplete";
 						}
 					}
-					this._rawPrevTime = rawPrevTime = (!suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				}
 
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
@@ -23104,7 +23097,7 @@ _.extend(Marionette.Module, {
 						if (this._rawPrevTime >= 0) {
 							force = true;
 						}
-						this._rawPrevTime = rawPrevTime = (!suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					}
 				} else if (!this._initted) { //if we render the very beginning (time == 0) of a fromTo(), we must force the render (normal tweens wouldn't need to render at a time of 0 when the prevTime was also 0). This is also mandatory to make sure overwriting kicks in immediately.
 					force = true;
@@ -23191,7 +23184,7 @@ _.extend(Marionette.Module, {
 				if (time < 0) if (this._startAt && this._startTime) { //if the tween is positioned at the VERY beginning (_startTime 0) of its parent timeline, it's illegal for the playhead to go back further, so we should not render the recorded startAt values.
 					this._startAt.render(time, suppressEvents, force); //note: for performance reasons, we tuck this conditional logic inside less traveled areas (most tweens don't have an onUpdate). We'd just have it at the end before the onComplete, but the values should be updated before any onUpdate is called, so we ALSO put it here and then if it's not called, we do so later near the onComplete.
 				}
-				if (!suppressEvents) if (!(force && this._time === 0 && prevTime === 0)) {
+				if (!suppressEvents) if (this._time !== prevTime || isComplete) {
 					this._onUpdate.apply(this.vars.onUpdateScope || this, this.vars.onUpdateParams || _blankArray);
 				}
 			}
@@ -31233,11 +31226,11 @@ return t;
 /* END_TEMPLATE */
 ;
 /*!
- * VERSION: beta 1.7.1
- * DATE: 2013-10-23
+ * VERSION: 1.7.3
+ * DATE: 2014-01-14
  * UPDATES AND DOCS AT: http://www.greensock.com
  *
- * @license Copyright (c) 2008-2013, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2014, GreenSock. All rights reserved.
  * This work is subject to the terms at http://www.greensock.com/terms_of_use.html or for
  * Club GreenSock members, the software agreement that was issued with your membership.
  * 
@@ -31260,6 +31253,7 @@ return t;
 		ScrollToPlugin = window._gsDefine.plugin({
 			propName: "scrollTo",
 			API: 2,
+			version:"1.7.3",
 
 			//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
 			init: function(target, value, tween) {
@@ -31274,11 +31268,13 @@ return t;
 				this.y = this.yPrev = this.getY();
 				if (value.x != null) {
 					this._addTween(this, "x", this.x, (value.x === "max") ? _max(target, "x") : value.x, "scrollTo_x", true);
+					this._overwriteProps.push("scrollTo_x");
 				} else {
 					this.skipX = true;
 				}
 				if (value.y != null) {
 					this._addTween(this, "y", this.y, (value.y === "max") ? _max(target, "y") : value.y, "scrollTo_y", true);
+					this._overwriteProps.push("scrollTo_y");
 				} else {
 					this.skipY = true;
 				}
@@ -31296,10 +31292,10 @@ return t;
 
 				if (this._autoKill) {
 					//note: iOS has a bug that throws off the scroll by several pixels, so we need to check if it's within 7 pixels of the previous one that we set instead of just looking for an exact match.
-					if (!this.skipX && (xDif > 7 || xDif < -7)) {
+					if (!this.skipX && (xDif > 7 || xDif < -7) && x < _max(this._target, "x")) {
 						this.skipX = true; //if the user scrolls separately, we should stop tweening!
 					}
-					if (!this.skipY && (yDif > 7 || yDif < -7)) {
+					if (!this.skipY && (yDif > 7 || yDif < -7) && y < _max(this._target, "y")) {
 						this.skipY = true; //if the user scrolls separately, we should stop tweening!
 					}
 					if (this.skipX && this.skipY) {
