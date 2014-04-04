@@ -176,7 +176,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 optionSelectedClassName: 'selected'
             }
         }
-
     },
 
     /**
