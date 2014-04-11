@@ -109,7 +109,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 selector: '.jui-select-picker',
                 html: '<div></div>',
                 create: true,
-                timeline: new TimelineMax()
+                timeline: new TimelineLite()
             },
             buttonElm: {
                 elm: null,
@@ -220,7 +220,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         }
 
         // Timeline
-        this.options.timeline = new TimelineMax({paused: true});
+        this.options.timeline = new TimelineLite({paused: true});
 
         // Hide this element and append new markup beside where it used
         // to be
@@ -380,7 +380,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             duration = ops.animation.duration,
             scrollbarElm,
             timeline,
-            dropDown, dropDownOptions;
+            dropDown,
+            dropDownOptions,
+            tween,
+            tweens;
 
         // Scrollable drop down options
         dropDownOptions = {
@@ -415,15 +418,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Get scrollbar element
         scrollbarElm = $('.vertical.scrollbar', wrapperElm);
 
-        // Supply new tweens
-        [
+        tweens = [
             TweenLite.to(wrapperElm, duration, {height: wrapperElm.css('max-height')}),
             TweenLite.to(contentElm, duration, {height: contentElm.css('max-height'), autoAlpha: 1, delay: -0.30}),
             TweenLite.to(scrollbarElm, duration, {autoAlpha: 1, delay: -0.20})
-        ]
-            .forEach(function (tween) {
-                timeline.add(tween);
-            });
+        ];
+
+        // Supply new tweens
+        for (tween = 0; tween < tweens.length; tween += 1) {
+            timeline.add(tweens[tween]);
+        }
     },
 
     /**

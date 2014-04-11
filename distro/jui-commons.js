@@ -1,4 +1,4 @@
-/*! jui-commons 2014-04-04 */
+/*! jui-commons 2014-04-10 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -13,12 +13,12 @@ $.widget("jui.juiBase", {
     },
     _populateUiElementsFromOptions: function(a) {
         var b = this, c = isset(a) ? a : this.options;
-        isset(c.ui) || (c.ui = {}), c = c.ui, Object.keys(c).forEach(function(a) {
-            if ("string" == typeof c[a] && (c[a] = c[a] = $(c[a], b.element)), $.isPlainObject(c[a])) {
-                if (isset(c[a].elm) && c[a].elm.length > 0) return;
-                c[a].elm = b._getElementFromOptions(c[a]);
-            }
-        });
+        isset(c.ui) || (c.ui = {}), c = c.ui;
+        for (var d in c) if (c.hasOwnProperty(d) && ("string" == typeof c[d] && (c[d] = c[d] = $(c[d], b.element)), 
+        $.isPlainObject(c[d]))) {
+            if (isset(c[d].elm) && c[d].elm.length > 0) return;
+            c[d].elm = b._getElementFromOptions(c[d]);
+        }
     },
     _getElementFromOptions: function(a) {
         var b = this, c = b.options, d = a;
@@ -42,9 +42,7 @@ $.widget("jui.juiBase", {
     },
     _removeCreatedElements: function() {
         var a = this, b = a.options;
-        Object.keys(b.ui).forEach(function(a) {
-            b.ui[a].elm instanceof $ && b.ui[a].create && b.ui[a].elm.remove();
-        });
+        for (var c in b.ui) b.ui[c].elm instanceof $ && b.ui[c].create && b.ui[c].elm.remove();
     },
     _setOption: function(a, b) {
         this._namespace(a, this.options, b);
@@ -89,9 +87,11 @@ $.widget("jui.juiBase", {
         return this.getValueFromHash(a, this.options, b, c);
     },
     getValueFromHash: function(a, b, c, d) {
+        c = c || null, d = d || !1;
         var e = null;
         return "string" == typeof a && $.isPlainObject(b) && (e = this._namespace(a, b), 
-        "function" == typeof e && empty(d) && (e = e.apply(this, c))), e;
+        "function" == typeof e && empty(d) && (e = c ? e.apply(this, c) : e.apply(this))), 
+        e;
     },
     setValueOnHash: function(a, b, c) {
         this._namespace(a, c, b);
@@ -431,7 +431,7 @@ $.widget("jui.juiBase", {
         },
         _init: function() {
             var a = this, b = a.options;
-            b.timeline = new TimelineMax({
+            b.timeline = new TimelineLite({
                 paused: !0
             }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setTitleText(), 
             a._setContentFromThisElement(), a._addEventListeners(), a.open();
@@ -459,9 +459,7 @@ $.widget("jui.juiBase", {
             this._removeCreatedElements();
         },
         _destroyAllInstances: function() {
-            this._instances.forEach(function(a) {
-                a.destroy();
-            });
+            for (var a = 0; a < this._instances.length; a += 1) this._instances[a].destroy();
         },
         _setTitleText: function(b, c) {
             c = c || "text";
@@ -934,7 +932,7 @@ $.widget("jui.juiBase", {
             elmAlias: "scrollbar",
             props: {
                 css: {
-                    opacity: 1
+                    autoAlpha: 1
                 },
                 delay: -.1
             }
@@ -961,10 +959,15 @@ $.widget("jui.juiBase", {
         c._populateUiElementsFromOptions(), b = c.getUiElement("contentElm"), c._namespace("ui.contentElm.originalCss", d, {
             display: b.css("display"),
             visibility: b.css("visibility")
-        }), b.css("visibility", "hidden"), c.timeline = new TimelineMax({
-            onReverseComplete: a,
-            onComplete: a
-        });
+        }), b.css("visibility", "hidden");
+        try {
+            c.timeline = new TimelineLite({
+                onReverseComplete: a,
+                onComplete: a
+            });
+        } catch (e) {
+            throw new Error('Could not create a new "' + d.defaultTimelineClass + '"' + "when trying to create a timeline object.");
+        }
     },
     _init: function() {
         var a = this.options;
@@ -1065,7 +1068,7 @@ $.widget("jui.juiBase", {
                 selector: ".jui-select-picker",
                 html: "<div></div>",
                 create: !0,
-                timeline: new TimelineMax()
+                timeline: new TimelineLite()
             },
             buttonElm: {
                 elm: null,
@@ -1140,7 +1143,7 @@ $.widget("jui.juiBase", {
     _init: function() {
         var a = this, b = this.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
         empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
-        this.options.timeline = new TimelineMax({
+        this.options.timeline = new TimelineLite({
             paused: !0
         }), this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
         this.setLabelText(), this._drawSelectOptions(), this._initScrollableDropDown(), 
@@ -1177,30 +1180,28 @@ $.widget("jui.juiBase", {
         this.getUiElement("optionsElm").find("ul").remove();
     },
     _initScrollableDropDown: function() {
-        var a, b, c, d, e = this, f = e.options, g = e.getUiElement("wrapperElm"), h = e.getUiElement("optionsElm"), i = f.animation.duration;
-        d = {
+        var a, b, c, d, e, f, g = this, h = g.options, i = g.getUiElement("wrapperElm"), j = g.getUiElement("optionsElm"), k = h.animation.duration;
+        for (d = {
             state: "collapsed",
             ui: {
                 contentElm: {
                     elm: this.getUiElement("optionsElm"),
-                    attribs: f.ui.optionsElm.attribs,
-                    selector: f.ui.optionsElm.selector + ""
+                    attribs: h.ui.optionsElm.attribs,
+                    selector: h.ui.optionsElm.selector + ""
                 }
             }
-        }, isset(f.expandOn) && (d.expandOn = f.expandOn), isset(f.collapseOn) && (d.collapseOn = f.collapseOn), 
-        c = g.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
-        b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", g), [ TweenLite.to(g, i, {
-            height: g.css("max-height")
-        }), TweenLite.to(h, i, {
-            height: h.css("max-height"),
+        }, isset(h.expandOn) && (d.expandOn = h.expandOn), isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
+        c = i.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
+        b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
+            height: i.css("max-height")
+        }), TweenLite.to(j, k, {
+            height: j.css("max-height"),
             autoAlpha: 1,
             delay: -.3
-        }), TweenLite.to(a, i, {
+        }), TweenLite.to(a, k, {
             autoAlpha: 1,
             delay: -.2
-        }) ].forEach(function(a) {
-            b.add(a);
-        });
+        }) ], e = 0; e < f.length; e += 1) b.add(f[e]);
     },
     destroy: function() {
         this.element.removeAttr("hidden"), this._removeCreatedOptions(), this._super();

@@ -37,7 +37,7 @@ function( Backbone, tmpl ) {
                 }
                 var currVal = self.scrollPanes.juiScrollPane('option', 'mimickBrowser');
                 self.scrollPanes.juiScrollPane('option', 'mimickBrowser', (currVal === true ? false : true));
-                console.log(currVal);
+//                console.log(currVal);
             })
         }
 	});

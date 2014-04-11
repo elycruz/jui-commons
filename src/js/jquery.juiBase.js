@@ -82,22 +82,24 @@ $.widget('jui.juiBase', {
         ops = ops.ui;
 
         // Loop through ops and populate elements
-        Object.keys(ops).forEach(function (key) {
-            // If key is string
-            if (typeof ops[key] === 'string') {
-                ops[key] = ops[key] = $(ops[key], self.element);
-            }
-
-            // If key is plain object
-            if ($.isPlainObject(ops[key])) {
-                // If element already is populated, skip it
-                if (isset(ops[key].elm) && ops[key].elm.length > 0) {
-                    return;
+        for (var key in ops) {
+            if (ops.hasOwnProperty(key)) {
+                // If key is string
+                if (typeof ops[key] === 'string') {
+                    ops[key] = ops[key] = $(ops[key], self.element);
                 }
-                // Create/fetch element
-                ops[key].elm = self._getElementFromOptions(ops[key]);
+
+                // If key is plain object
+                if ($.isPlainObject(ops[key])) {
+                    // If element already is populated, skip it
+                    if (isset(ops[key].elm) && ops[key].elm.length > 0) {
+                        return;
+                    }
+                    // Create/fetch element
+                    ops[key].elm = self._getElementFromOptions(ops[key]);
+                }
             }
-        });
+        }
     },
 
     /**
@@ -235,11 +237,11 @@ $.widget('jui.juiBase', {
      */
     _removeCreatedElements: function () {
         var self = this, ops = self.options;
-        Object.keys(ops.ui).forEach(function (key) {
+        for (var key in ops.ui) {
             if (ops.ui[key].elm instanceof $ && ops.ui[key].create) {
                 ops.ui[key].elm.remove();
             }
-        });
+        };
     },
 
     _setOption: function (key, value) {
@@ -403,11 +405,13 @@ $.widget('jui.juiBase', {
      * @returns {*}
      */
     getValueFromHash: function (key, hash, args, raw) {
+        args = args || null;
+        raw = raw || false;
         var retVal = null;
         if (typeof key === 'string' && $.isPlainObject(hash)) {
             retVal = this._namespace(key, hash);
             if (typeof retVal === 'function' && empty(raw)) {
-                retVal = retVal.apply(this, args);
+                retVal = args ? retVal.apply(this, args) : retVal.apply(this);
             }
         }
         return retVal;

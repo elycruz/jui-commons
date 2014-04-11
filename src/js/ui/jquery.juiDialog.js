@@ -142,7 +142,7 @@
                 ops = self.options;
 
             // Timeline (animation object)
-            ops.timeline = new TimelineMax({paused: true});
+            ops.timeline = new TimelineLite({paused: true});
 
             // Populate ui elements on self (self.options.ui[elmKeyAlias])
             self._populateUiElementsFromOptions();
@@ -225,9 +225,9 @@
         },
 
         _destroyAllInstances: function () {
-            this._instances.forEach(function (item) {
-                item.destroy();
-            });
+            for (var i = 0; i < this._instances.length; i += 1) {
+                this._instances[i].destroy();
+            }
         },
 
         _setTitleText: function (value, typeKey) {

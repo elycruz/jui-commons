@@ -38,7 +38,7 @@
                 check;
 
             if (arguments.length > 1) {
-                for (var i in arguments) {
+                for (var i in  arguments) {
                     i = arguments[i];
                     check = isSet(i);
                     if (!check) {
@@ -59,11 +59,12 @@
         /**
          * Returns the class name of an object from it's class string.
          * @param val {mixed}
-         * @returns {string}
+         * @returns {string} - Returns "Null or Undefined" for ie lt 8 on null and undefined
          */
         context.classOf = function (val) {
-            return Object.prototype.toString.call(val)
-                .split(/\[object\s/)[1].split(']')[0];
+            var rslt = (Object.prototype.toString.call(val)).split(/\[object\s/);
+            var splitThis = (rslt.length === 1 ? rslt[0] : (rslt.length > 1 ? rslt[1] : 0));
+            return splitThis === 0 ? 'Null  or Undefined' : splitThis.split(']')[0];
         };
     }
 
@@ -133,7 +134,7 @@
         context.empty = function () {
             var retVal, check,
                 i, item,
-                args = argsToArray(arguments);
+                args = context.argsToArray(arguments);
 
             // If multiple arguments
             if (args.length > 1) {
@@ -1954,162 +1955,174 @@ if (!Object.isExtensible) {
  */
 (function (context) {
 
-    if (typeof context.empty !== 'function') {
-        /**
-         * Checks object's own properties to see if it is empty.
-         * @param obj object to be checked
-         * @returns {boolean}
-         */
-        function isEmptyObj (obj) {
+	if (typeof context.empty !== 'function') {
+		/**
+		 * Checks object's own properties to see if it is empty.
+		 * @param obj object to be checked
+		 * @returns {boolean}
+		 */
+		function isEmptyObj (obj) {
             var retVal = obj === true ? false : true;
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    retVal = false;
+			for (var key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					retVal = false;
                     break;
-                }
-            }
-            return retVal;
-        }
+				}
+			}
+			return retVal;
+		}
 
-        /**
-         * Checks to see if value is empty (objects, arrays,
-         * strings etc.).
-         * @param value
-         * @returns {boolean}
-         */
-        function isEmptyValue(value) {
-            if (value instanceof Array || Object.prototype.toString.call(value) === '[object String]') {
-                return value.length === 0;
-            }
-            return (value === 0 || value === false
-                || value === undefined || value === null
-                || isEmptyObj(value));
-        }
+		/**
+		 * Checks to see if value is empty (objects, arrays,
+		 * strings etc.).
+		 * @param value
+		 * @returns {boolean}
+		 */
+		function isEmptyValue(value) {
+			if (value instanceof Array || Object.prototype.toString.call(value) === '[object String]') {
+				return value.length === 0;
+			}
+			return (value === 0 || value === false
+				|| value === undefined || value === null
+				|| isEmptyObj(value));
+		}
 
-        /**
-         * Checks to see if any of the arguments passed in are empty.
-         * @return boolean
-         */
-        context.empty = function () {
+		/**
+		 * Checks to see if any of the arguments passed in are empty.
+		 * @return boolean
+		 */
+		context.empty = function () {
             var retVal = true, check;
-            if (arguments.length > 1) {
-                for (var i in arguments) {
-                    i = arguments[i];
-                    check = isEmptyValue(i);
+			if (arguments.length > 1) {
+				for (var i in arguments) {
+					i = arguments[i];
+					check = isEmptyValue(i);
                     if (check) {
                         retVal = check;
                         break;
                     }
-                }
-            }
-            else if (arguments.length === 1) {
-                retVal = isEmptyValue(arguments[0]);
-            }
-            return retVal;
-        };
-    }
+				}
+			}
+			else if (arguments.length === 1) {
+				retVal = isEmptyValue(arguments[0]);
+			}
+			return retVal;
+		};
+	}
 
-    if (typeof context.isset !== 'function') {
+	if (typeof context.isset !== 'function') {
 
-        /**
-         * Checks to see if value is set (not null and not undefined).
-         * @param value
-         * @returns {boolean}
-         */
-        function isSet (value) {
-            return (value !== undefined && value !== null);
-        }
+		/**
+		 * Checks to see if value is set (not null and not undefined).
+		 * @param value
+		 * @returns {boolean}
+		 */
+		function isSet (value) {
+			return (value !== undefined && value !== null);
+		}
 
-        /**
-         * Checks to see if any of the arguments passed in are
-         * set (not undefined and not null).
-         * Returns false on the first argument encountered that
-         * is null or undefined.
-         * @return boolean
-         */
-        context.isset = function () {
+		/**
+		 * Checks to see if any of the arguments passed in are
+		 * set (not undefined and not null).
+		 * Returns false on the first argument encountered that
+		 * is null or undefined.
+		 * @return boolean
+		 */
+		context.isset = function () {
             var retVal = false,
                 check;
 
-            if (arguments.length > 1) {
-                for (var i in arguments) {
-                    i = arguments[i];
-                    check = isSet(i);
+			if (arguments.length > 1) {
+				for (var i in arguments) {
+					i = arguments[i];
+					check = isSet(i);
                     if (! check) {
                         retVal = check;
                         break;
                     }
-                }
+				}
+			}
+			else if (arguments.length === 1) {
+				retVal = isSet(arguments[0]);
+			}
+
+			return retVal;
+		};
+	}
+
+	if (typeof context.ucaseFirst !== 'function') {
+		/**
+		 * Upper cases first character of a string.
+		 * @param {String} str
+		 * @returns {String}
+		 */
+		context.ucaseFirst = function (str) {
+			str = str + "";
+			s0 = str.match(/^[a-z]/i);
+			if (!s0 instanceof Array) {
+				return null;
+			}
+			return s0[0].toUpperCase() + str.substr(1);
+		};
+	}
+
+	if (typeof context.lcaseFirst !== 'function') {
+		/**
+		 * Lower cases first character of a string.
+		 * @param {String} str
+		 * @returns {String}
+		 */
+		context.lcaseFirst = function (str) {
+            var rslt =  str + "";
+                rslt = rslt.match(/[a-z]/i)
+                _str = rslt.join('');
+
+            if (rslt && rslt.length > 0) {
+                rslt = rslt[0].toLowerCase() + _str.substr(1);
             }
-            else if (arguments.length === 1) {
-                retVal = isSet(arguments[0]);
-            }
 
-            return retVal;
-        };
-    }
+			return rslt;
+		};
+	}
 
-    if (typeof context.ucaseFirst !== 'function') {
-        /**
-         * Upper cases first character of a string.
-         * @param {String} str
-         * @returns {String}
-         */
-        context.ucaseFirst = function (str) {
-            str = str + "";
-            s0 = str.match(/^[a-z]/i);
-            if (!s0 instanceof Array) {
-                return null;
-            }
-            return s0[0].toUpperCase() + str.substr(1);
-        };
-    }
+	if (typeof context.strToCamelCase) {
 
-    if (typeof context.lcaseFirst !== 'function') {
-        /**
-         * Lower cases first character of a string.
-         * @param {String} str
-         * @returns {String}
-         */
-        context.lcaseFirst = function (str) {
-            str = str + "";
-            return str.match(/[a-z]/i)[0].toLowerCase() + str.substr(1);
-        };
-    }
-
-    if (typeof context.strToCamelCase) {
-
-        /**
-         * Make a string code friendly. Camel cases a dirty string into
-         * a valid javascript variable/constructor name;  Uses `replaceStrRegex`
-         * to replace unwanted characters with a '-' and then splits and merges
-         * the parts with the proper casing, pass in `true` for lcaseFirst
-         * to lower case the first character.
-         * @param {String} str
-         * @param {Boolean} lowerFirst default `false`
-         * @param {Regex} replaceStrRegex default /[^a-z0-9\-_] * /i (without spaces before and after '*')
-         * @returns {String}
-         */
-        context.strToCamelCase = function (str, lowerFirst, replaceStrRegex) {
-            lowerFirst = lowerFirst || false;
-            replaceStrRegex = replaceStrRegex || /[^a-z0-9\-_]*/i;
-            var newStr = "";
-            str = str + "";
-            str = str.replace(replaceStrRegex, '-');
-            str.split('-').forEach(function (str) {
-                if (/^[a-z]/i.test(str)) {
-                    newStr += ucaseFirst(str);
-                }
-                else {
-                    newStr += str;
-                }
-            });
-            if (lowerFirst) {
-                newStr = lcaseFirst(newStr);
-            }
-            return newStr;
-        };
-    }
+		/**
+		 * Make a string code friendly. Camel cases a dirty string into
+		 * a valid javascript variable/constructor name;  Uses `replaceStrRegex`
+		 * to replace unwanted characters with a '-' and then splits and merges
+		 * the parts with the proper casing, pass in `true` for lcaseFirst
+		 * to lower case the first character.
+		 * @param {String} str
+		 * @param {Boolean} lowerFirst default `false`
+		 * @param {Regex} replaceStrRegex default /[^a-z0-9\-_] * /i (without spaces before and after '*')
+		 * @returns {String}
+		 */
+		context.strToCamelCase = function (str, lowerFirst, replaceStrRegex) {
+			lowerFirst = lowerFirst || false;
+			replaceStrRegex = replaceStrRegex || /[^a-z0-9\-_]*/i;
+			var newStr = "",
+                afterSplit,
+                _str,
+                i;
+			str = str + "";
+			str = str.replace(replaceStrRegex, '-');
+            afterSplit = str.split('-');
+			for (i = 0; i < afterSplit.length; i += 1) {
+                _str = afterSplit[i];
+				if (/^[a-z]/i.test(_str)) {
+					newStr += ucaseFirst(_str);
+				}
+				else {
+					newStr += _str;
+				}
+			};
+			if (lowerFirst) {
+				newStr = lcaseFirst(newStr);
+			}
+			return newStr;
+		};
+	}
 })(typeof window !== "undefined" ? window : global);
 
 define("phpjs", function(){});
@@ -16901,8 +16914,8 @@ _.extend(Marionette.Module, {
 }));
 
 /*!
- * VERSION: 1.11.4
- * DATE: 2014-01-18
+ * VERSION: 1.11.6
+ * DATE: 2014-03-26
  * UPDATES AND DOCS AT: http://www.greensock.com
  * 
  * Includes all of the following: TweenLite, TweenMax, TimelineLite, TimelineMax, EasePack, CSSPlugin, RoundPropsPlugin, BezierPlugin, AttrPlugin, DirectionalRotationPlugin
@@ -16936,7 +16949,7 @@ _.extend(Marionette.Module, {
 			p = TweenMax.prototype = TweenLite.to({}, 0.1, {}),
 			_blankArray = [];
 
-		TweenMax.version = "1.11.4";
+		TweenMax.version = "1.11.6";
 		p.constructor = TweenMax;
 		p.kill()._gc = false;
 		TweenMax.killTweensOf = TweenMax.killDelayedCallsTo = TweenLite.killTweensOf;
@@ -17023,19 +17036,22 @@ _.extend(Marionette.Module, {
 				}
 				if (duration === 0) { //zero-duration tweens are tricky because we must discern the momentum/direction of time in order to determine whether the starting values should be rendered or the ending values. If the "playhead" of its timeline goes past the zero-duration tween in the forward direction or lands directly on it, the end values should be rendered, but if the timeline's "playhead" moves past it in the backward direction (from a postitive time to a negative time), the starting values must be rendered.
 					rawPrevTime = this._rawPrevTime;
+					if (this._startTime === this._timeline._duration) { //if a zero-duration tween is at the VERY end of a timeline and that timeline renders at its end, it will typically add a tiny bit of cushion to the render time to prevent rounding errors from getting in the way of tweens rendering their VERY end. If we then reverse() that timeline, the zero-duration tween will trigger its onReverseComplete even though technically the playhead didn't pass over it again. It's a very specific edge case we must accommodate.
+						time = 0;
+					}
 					if (time === 0 || rawPrevTime < 0 || rawPrevTime === _tinyNum) if (rawPrevTime !== time) {
 						force = true;
 						if (rawPrevTime > _tinyNum) {
 							callback = "onReverseComplete";
 						}
 					}
-					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				}
 				
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
 				this._totalTime = this._time = this._cycle = 0;
 				this.ratio = this._ease._calcEnd ? this._ease.getRatio(0) : 0;
-				if (prevTotalTime !== 0 || (duration === 0 && this._rawPrevTime > _tinyNum)) {
+				if (prevTotalTime !== 0 || (duration === 0 && this._rawPrevTime > 0 && this._rawPrevTime !== _tinyNum)) {
 					callback = "onReverseComplete";
 					isComplete = this._reversed;
 				}
@@ -17045,7 +17061,7 @@ _.extend(Marionette.Module, {
 						if (this._rawPrevTime >= 0) {
 							force = true;
 						}
-						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					}
 				} else if (!this._initted) { //if we render the very beginning (time == 0) of a fromTo(), we must force the render (normal tweens wouldn't need to render at a time of 0 when the prevTime was also 0). This is also mandatory to make sure overwriting kicks in immediately.
 					force = true;
@@ -17509,7 +17525,7 @@ _.extend(Marionette.Module, {
 			_slice = _blankArray.slice,
 			p = TimelineLite.prototype = new SimpleTimeline();
 
-		TimelineLite.version = "1.11.4";
+		TimelineLite.version = "1.11.6";
 		p.constructor = TimelineLite;
 		p.kill()._gc = false;
 
@@ -17631,15 +17647,15 @@ _.extend(Marionette.Module, {
 
 			SimpleTimeline.prototype.add.call(this, value, position);
 
-			//if the timeline has already ended but the inserted tween/timeline extends the duration, we should enable this timeline again so that it renders properly.
-			if (this._gc) if (!this._paused) if (this._duration < this.duration()) {
-				//in case any of the anscestors had completed but should now be enabled...
+			//if the timeline has already ended but the inserted tween/timeline extends the duration, we should enable this timeline again so that it renders properly. We should also align the playhead with the parent timeline's when appropriate.
+			if (this._gc || this._time === this._duration) if (!this._paused) if (this._duration < this.duration()) {
+				//in case any of the ancestors had completed but should now be enabled...
 				tl = this;
 				beforeRawTime = (tl.rawTime() > value._startTime); //if the tween is placed on the timeline so that it starts BEFORE the current rawTime, we should align the playhead (move the timeline). This is because sometimes users will create a timeline, let it finish, and much later append a tween and expect it to run instead of jumping to its end state. While technically one could argue that it should jump to its end state, that's not what users intuitively expect.
-				while (tl._gc && tl._timeline) {
-					if (tl._timeline.smoothChildTiming && beforeRawTime) {
+				while (tl._timeline) {
+					if (beforeRawTime && tl._timeline.smoothChildTiming) {
 						tl.totalTime(tl._totalTime, true); //moves the timeline (shifts its startTime) if necessary, and also enables it.
-					} else {
+					} else if (tl._gc) {
 						tl._enabled(true, false);
 					}
 					tl = tl._timeline;
@@ -17668,7 +17684,7 @@ _.extend(Marionette.Module, {
 			SimpleTimeline.prototype._remove.call(this, tween, skipDisable);
 			var last = this._last;
 			if (!last) {
-				this._time = this._totalTime = 0;
+				this._time = this._totalTime = this._duration = this._totalDuration = 0;
 			} else if (this._time > last._startTime + last._totalDuration / last._timeScale) {
 				this._time = this.duration();
 				this._totalTime = this._totalDuration;
@@ -17777,12 +17793,12 @@ _.extend(Marionette.Module, {
 						}
 					}
 				}
-				this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+				this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				time = totalDur + 0.0001; //to avoid occasional floating point rounding errors - sometimes child tweens/timelines were not being fully completed (their progress might be 0.999999999999998 instead of 1 because when _time - tween._startTime is performed, floating point errors would return a value that was SLIGHTLY off). Try (999999999999.7 - 999999999999) * 1 = 0.699951171875 instead of 0.7.
 
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
 				this._totalTime = this._time = 0;
-				if (prevTime !== 0 || (this._duration === 0 && (this._rawPrevTime > _tinyNum || (time < 0 && this._rawPrevTime >= 0)))) {
+				if (prevTime !== 0 || (this._duration === 0 && this._rawPrevTime !== _tinyNum && (this._rawPrevTime > 0 || (time < 0 && this._rawPrevTime >= 0)))) {
 					callback = "onReverseComplete";
 					isComplete = this._reversed;
 				}
@@ -17793,7 +17809,7 @@ _.extend(Marionette.Module, {
 					}
 					this._rawPrevTime = time;
 				} else {
-					this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 
 					time = 0; //to avoid occasional floating point rounding errors (could cause problems especially with zero-duration tweens at the very beginning of the timeline)
 					if (!this._initted) {
@@ -18106,7 +18122,7 @@ _.extend(Marionette.Module, {
 
 		p.constructor = TimelineMax;
 		p.kill()._gc = false;
-		TimelineMax.version = "1.11.4";
+		TimelineMax.version = "1.11.6";
 
 		p.invalidate = function() {
 			this._yoyo = (this.vars.yoyo === true);
@@ -18198,7 +18214,7 @@ _.extend(Marionette.Module, {
 						}
 					}
 				}
-				this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+				this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				if (this._yoyo && (this._cycle & 1) !== 0) {
 					this._time = time = 0;
 				} else {
@@ -18211,7 +18227,7 @@ _.extend(Marionette.Module, {
 					this._totalTime = this._cycle = 0;
 				}
 				this._time = 0;
-				if (prevTime !== 0 || (dur === 0 && (prevRawPrevTime > _tinyNum || (time < 0 && prevRawPrevTime >= 0)) && !this._locked)) { //edge case for checking time < 0 && prevRawPrevTime >= 0: a zero-duration fromTo() tween inside a zero-duration timeline (yeah, very rare)
+				if (prevTime !== 0 || (dur === 0 && prevRawPrevTime !== _tinyNum && (prevRawPrevTime > 0 || (time < 0 && prevRawPrevTime >= 0)) && !this._locked)) { //edge case for checking time < 0 && prevRawPrevTime >= 0: a zero-duration fromTo() tween inside a zero-duration timeline (yeah, very rare)
 					callback = "onReverseComplete";
 					isComplete = this._reversed;
 				}
@@ -18222,7 +18238,7 @@ _.extend(Marionette.Module, {
 					}
 					this._rawPrevTime = time;
 				} else {
-					this._rawPrevTime = (dur || !suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = (dur || !suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					time = 0; //to avoid occasional floating point rounding errors (could cause problems especially with zero-duration tweens at the very beginning of the timeline)
 					if (!this._initted) {
 						internalForce = true;
@@ -18827,6 +18843,7 @@ _.extend(Marionette.Module, {
 			BezierPlugin = window._gsDefine.plugin({
 					propName: "bezier",
 					priority: -1,
+					version: "1.3.1",
 					API: 2,
 					global:true,
 
@@ -18878,6 +18895,7 @@ _.extend(Marionette.Module, {
 						}
 
 						if ((autoRotate = this._autoRotate)) {
+							this._initialRotations = [];
 							if (!(autoRotate[0] instanceof Array)) {
 								this._autoRotate = autoRotate = [autoRotate];
 							}
@@ -18887,8 +18905,11 @@ _.extend(Marionette.Module, {
 									p = autoRotate[i][j];
 									this._func[p] = (typeof(target[p]) === "function") ? target[ ((p.indexOf("set") || typeof(target["get" + p.substr(3)]) !== "function") ? p : "get" + p.substr(3)) ] : false;
 								}
+								p = autoRotate[i][2];
+								this._initialRotations[i] = this._func[p] ? this._func[p].call(this._target) : this._target[p];
 							}
 						}
+						this._startRatio = tween.vars.runBackwards ? 1 : 0; //we determine the starting ratio when the tween inits which is always 0 unless the tween has runBackwards:true (indicating it's a from() tween) in which case it's 1.
 						return true;
 					},
 
@@ -18897,6 +18918,7 @@ _.extend(Marionette.Module, {
 						var segments = this._segCount,
 							func = this._func,
 							target = this._target,
+							notStart = (v !== this._startRatio),
 							curIndex, inv, i, p, b, t, val, l, lengths, curSeg;
 						if (!this._timeRes) {
 							curIndex = (v < 0) ? 0 : (v >= 1) ? segments - 1 : (segments * v) >> 0;
@@ -18990,7 +19012,7 @@ _.extend(Marionette.Module, {
 									y1 += (y2 - y1) * t;
 									y2 += ((b2.c + (b2.d - b2.c) * t) - y2) * t;
 
-									val = Math.atan2(y2 - y1, x2 - x1) * conv + add;
+									val = notStart ? Math.atan2(y2 - y1, x2 - x1) * conv + add : this._initialRotations[i];
 
 									if (func[p]) {
 										target[p](val);
@@ -19128,9 +19150,10 @@ _.extend(Marionette.Module, {
 			p = CSSPlugin.prototype = new TweenPlugin("css");
 
 		p.constructor = CSSPlugin;
-		CSSPlugin.version = "1.11.4";
+		CSSPlugin.version = "1.11.6";
 		CSSPlugin.API = 2;
 		CSSPlugin.defaultTransformPerspective = 0;
+		CSSPlugin.defaultSkewType = "compensated";
 		p = "px"; //we'll reuse the "p" variable to keep file size down
 		CSSPlugin.suffixMap = {top:p, right:p, bottom:p, left:p, width:p, height:p, fontSize:p, padding:p, margin:p, perspective:p, lineHeight:""};
 
@@ -19194,7 +19217,7 @@ _.extend(Marionette.Module, {
 			_prefixCSS = "", //the non-camelCase vendor prefix like "-o-", "-moz-", "-ms-", or "-webkit-"
 			_prefix = "", //camelCase vendor prefix like "O", "ms", "Webkit", or "Moz".
 
-			//@private feed in a camelCase property name like "transform" and it will check to see if it is valid as-is or if it needs a vendor prefix. It returns the corrected camelCase property name (i.e. "WebkitTransform" or "MozTransform" or "transform" or null if no such property is found, like if the browser is IE8 or before, "transform" won't be found at all)
+			// @private feed in a camelCase property name like "transform" and it will check to see if it is valid as-is or if it needs a vendor prefix. It returns the corrected camelCase property name (i.e. "WebkitTransform" or "MozTransform" or "transform" or null if no such property is found, like if the browser is IE8 or before, "transform" won't be found at all)
 			_checkPropPrefix = function(p, e) {
 				e = e || _tempDiv;
 				var s = e.style,
@@ -19252,7 +19275,7 @@ _.extend(Marionette.Module, {
 			 * @param {boolean=} recurse If true, the call is a recursive one. In some browsers (like IE7/8), occasionally the value isn't accurately reported initially, but if we run the function again it will take effect.
 			 * @return {number} value in pixels
 			 */
-			_convertToPixels = function(t, p, v, sfx, recurse) {
+			_convertToPixels = _internals.convertToPixels = function(t, p, v, sfx, recurse) {
 				if (sfx === "px" || !sfx) { return v; }
 				if (sfx === "auto" || !v) { return 0; }
 				var horiz = _horizExp.test(p),
@@ -19282,14 +19305,14 @@ _.extend(Marionette.Module, {
 				}
 				return neg ? -pix : pix;
 			},
-			_calculateOffset = function(t, p, cs) { //for figuring out "top" or "left" in px when it's "auto". We need to factor in margin with the offsetLeft/offsetTop
+			_calculateOffset = _internals.calculateOffset = function(t, p, cs) { //for figuring out "top" or "left" in px when it's "auto". We need to factor in margin with the offsetLeft/offsetTop
 				if (_getStyle(t, "position", cs) !== "absolute") { return 0; }
 				var dim = ((p === "left") ? "Left" : "Top"),
 					v = _getStyle(t, "margin" + dim, cs);
 				return t["offset" + dim] - (_convertToPixels(t, p, parseFloat(v), v.replace(_suffixExp, "")) || 0);
 			},
 
-			//@private returns at object containing ALL of the style properties in camelCase and their associated values.
+			// @private returns at object containing ALL of the style properties in camelCase and their associated values.
 			_getAllStyles = function(t, cs) {
 				var s = {},
 					i, tr;
@@ -19305,7 +19328,7 @@ _.extend(Marionette.Module, {
 					}
 				} else if ((cs = t.currentStyle || t.style)) {
 					for (i in cs) {
-						if (typeof(i) === "string" && s[i] !== undefined) {
+						if (typeof(i) === "string" && s[i] === undefined) {
 							s[i.replace(_camelExp, _camelFunc)] = cs[i];
 						}
 					}
@@ -19332,7 +19355,7 @@ _.extend(Marionette.Module, {
 				return s;
 			},
 
-			//@private analyzes two style objects (as returned by _getAllStyles()) and only looks for differences between them that contain tweenable values (like a number or color). It returns an object with a "difs" property which refers to an object containing only those isolated properties and values for tweening, and a "firstMPT" property which refers to the first MiniPropTween instance in a linked list that recorded all the starting values of the different properties so that we can revert to them at the end or beginning of the tween - we don't want the cascading to get messed up. The forceLookup parameter is an optional generic object with properties that should be forced into the results - this is necessary for className tweens that are overwriting others because imagine a scenario where a rollover/rollout adds/removes a class and the user swipes the mouse over the target SUPER fast, thus nothing actually changed yet and the subsequent comparison of the properties would indicate they match (especially when px rounding is taken into consideration), thus no tweening is necessary even though it SHOULD tween and remove those properties after the tween (otherwise the inline styles will contaminate things). See the className SpecialProp code for details.
+			// @private analyzes two style objects (as returned by _getAllStyles()) and only looks for differences between them that contain tweenable values (like a number or color). It returns an object with a "difs" property which refers to an object containing only those isolated properties and values for tweening, and a "firstMPT" property which refers to the first MiniPropTween instance in a linked list that recorded all the starting values of the different properties so that we can revert to them at the end or beginning of the tween - we don't want the cascading to get messed up. The forceLookup parameter is an optional generic object with properties that should be forced into the results - this is necessary for className tweens that are overwriting others because imagine a scenario where a rollover/rollout adds/removes a class and the user swipes the mouse over the target SUPER fast, thus nothing actually changed yet and the subsequent comparison of the properties would indicate they match (especially when px rounding is taken into consideration), thus no tweening is necessary even though it SHOULD tween and remove those properties after the tween (otherwise the inline styles will contaminate things). See the className SpecialProp code for details.
 			_cssDif = function(t, s1, s2, vars, forceLookup) {
 				var difs = {},
 					style = t.style,
@@ -19376,7 +19399,7 @@ _.extend(Marionette.Module, {
 				return v;
 			},
 
-			//@private Parses position-related complex strings like "top left" or "50px 10px" or "70% 20%", etc. which are used for things like transformOrigin or backgroundPosition. Optionally decorates a supplied object (recObj) with the following properties: "ox" (offsetX), "oy" (offsetY), "oxp" (if true, "ox" is a percentage not a pixel value), and "oxy" (if true, "oy" is a percentage not a pixel value)
+			// @private Parses position-related complex strings like "top left" or "50px 10px" or "70% 20%", etc. which are used for things like transformOrigin or backgroundPosition. Optionally decorates a supplied object (recObj) with the following properties: "ox" (offsetX), "oy" (offsetY), "oxp" (if true, "ox" is a percentage not a pixel value), and "oxy" (if true, "oy" is a percentage not a pixel value)
 			_parsePosition = function(v, recObj) {
 				if (v == null || v === "" || v === "auto" || v === "auto auto") { //note: Firefox uses "auto auto" as default whereas Chrome uses "auto".
 					v = "0 0";
@@ -19640,7 +19663,7 @@ _.extend(Marionette.Module, {
 				};
 			},
 
-			//@private used when other plugins must tween values first, like BezierPlugin or ThrowPropsPlugin, etc. That plugin's setRatio() gets called first so that the values are updated, and then we loop through the MiniPropTweens  which handle copying the values into their appropriate slots so that they can then be applied correctly in the main CSSPlugin setRatio() method. Remember, we typically create a proxy object that has a bunch of uniquely-named properties that we feed to the sub-plugin and it does its magic normally, and then we must interpret those values and apply them to the css because often numbers must get combined/concatenated, suffixes added, etc. to work with css, like boxShadow could have 4 values plus a color.
+			// @private used when other plugins must tween values first, like BezierPlugin or ThrowPropsPlugin, etc. That plugin's setRatio() gets called first so that the values are updated, and then we loop through the MiniPropTweens  which handle copying the values into their appropriate slots so that they can then be applied correctly in the main CSSPlugin setRatio() method. Remember, we typically create a proxy object that has a bunch of uniquely-named properties that we feed to the sub-plugin and it does its magic normally, and then we must interpret those values and apply them to the css because often numbers must get combined/concatenated, suffixes added, etc. to work with css, like boxShadow could have 4 values plus a color.
 			_setPluginRatio = _internals._setPluginRatio = function(v) {
 				this.plugin.setRatio(v);
 				var d = this.data,
@@ -20141,6 +20164,9 @@ _.extend(Marionette.Module, {
 			_transformPropCSS = _prefixCSS + "transform",
 			_transformOriginProp = _checkPropPrefix("transformOrigin"),
 			_supports3D = (_checkPropPrefix("perspective") !== null),
+			Transform = _internals.Transform = function() {
+				this.skewY = 0;
+			},
 
 			/**
 			 * Parses the transform values for an element, returning an object with x, y, z, scaleX, scaleY, scaleZ, rotation, rotationX, rotationY, skewX, and skewY properties. Note: by default (for performance reasons), all skewing is combined into skewX and rotation but skewY still has a place in the transform object so that we can record how much of the skew is attributed to skewX vs skewY. Remember, a skewY of 10 looks the same as a rotation of 10 and skewX of -10.
@@ -20150,11 +20176,11 @@ _.extend(Marionette.Module, {
 			 * @param {boolean=} parse if true, we'll ignore any _gsTransform values that already exist on the element, and force a reparsing of the css (calculated style)
 			 * @return {object} object containing all of the transform properties/values like {x:0, y:0, z:0, scaleX:1...}
 			 */
-			_getTransform = function(t, cs, rec, parse) {
+			_getTransform = _internals.getTransform = function(t, cs, rec, parse) {
 				if (t._gsTransform && rec && !parse) {
 					return t._gsTransform; //if the element already has a _gsTransform, use that. Note: some browsers don't accurately return the calculated style for the transform (particularly for SVG), so it's almost always safest to just use the values we've already applied rather than re-parsing things.
 				}
-				var tm = rec ? t._gsTransform || {skewY:0} : {skewY:0},
+				var tm = rec ? t._gsTransform || new Transform() : new Transform(),
 					invX = (tm.scaleX < 0), //in order to interpret things properly, we need to know if the user applied a negative scaleX previously so that we can adjust the rotation and skewX accordingly. Otherwise, if we always interpret a flipped matrix as affecting scaleY and the user only wants to tween the scaleX on multiple sequential tweens, it would keep the negative scaleY without that being the user's intent.
 					min = 0.00002,
 					rnd = 100000,
@@ -20396,7 +20422,7 @@ _.extend(Marionette.Module, {
 				}
 			},
 
-			_set3DTransformRatio = function(v) {
+			_set3DTransformRatio = _internals.set3DTransformRatio = function(v) {
 				var t = this.data, //refers to the element's _gsTransform object
 					style = this.t.style,
 					angle = t.rotation * _DEG2RAD,
@@ -20427,9 +20453,16 @@ _.extend(Marionette.Module, {
 						angle -= t.skewX * _DEG2RAD;
 						cos = Math.cos(angle);
 						sin = Math.sin(angle);
+						if (t.skewType === "simple") { //by default, we compensate skewing on the other axis to make it look more natural, but you can set the skewType to "simple" to use the uncompensated skewing that CSS does
+							t1 = Math.tan(t.skewX * _DEG2RAD);
+							t1 = Math.sqrt(1 + t1 * t1);
+							cos *= t1;
+							sin *= t1;
+						}
 					}
 					a12 = -sin;
 					a22 = cos;
+
 				} else if (!t.rotationY && !t.rotationX && sz === 1 && !perspective) { //if we're only translating and/or 2D scaling, this is faster...
 					style[_transformProp] = "translate3d(" + t.x + "px," + t.y + "px," + t.z +"px)" + ((sx !== 1 || sy !== 1) ? " scale(" + sx + "," + sy + ")" : "");
 					return;
@@ -20503,7 +20536,7 @@ _.extend(Marionette.Module, {
 				style[_transformProp] = "matrix3d(" + [ (((a11 * rnd) | 0) / rnd), (((a21 * rnd) | 0) / rnd), (((a31 * rnd) | 0) / rnd), (((a41 * rnd) | 0) / rnd), (((a12 * rnd) | 0) / rnd), (((a22 * rnd) | 0) / rnd), (((a32 * rnd) | 0) / rnd), (((a42 * rnd) | 0) / rnd), (((a13 * rnd) | 0) / rnd), (((a23 * rnd) | 0) / rnd), (((a33 * rnd) | 0) / rnd), (((a43 * rnd) | 0) / rnd), a14, a24, a34, (perspective ? (1 + (-a34 / perspective)) : 1) ].join(",") + ")";
 			},
 
-			_set2DTransformRatio = function(v) {
+			_set2DTransformRatio = _internals.set2DTransformRatio = function(v) {
 				var t = this.data, //refers to the element's _gsTransform object
 					targ = this.t,
 					style = targ.style,
@@ -20526,7 +20559,7 @@ _.extend(Marionette.Module, {
 				}
 			};
 
-		_registerComplexSpecialProp("transform,scale,scaleX,scaleY,scaleZ,x,y,z,rotation,rotationX,rotationY,rotationZ,skewX,skewY,shortRotation,shortRotationX,shortRotationY,shortRotationZ,transformOrigin,transformPerspective,directionalRotation,parseTransform,force3D", {parser:function(t, e, p, cssp, pt, plugin, vars) {
+		_registerComplexSpecialProp("transform,scale,scaleX,scaleY,scaleZ,x,y,z,rotation,rotationX,rotationY,rotationZ,skewX,skewY,shortRotation,shortRotationX,shortRotationY,shortRotationZ,transformOrigin,transformPerspective,directionalRotation,parseTransform,force3D,skewType", {parser:function(t, e, p, cssp, pt, plugin, vars) {
 			if (cssp._transform) { return pt; } //only need to parse the transform once, and only if the browser supports it.
 			var m1 = cssp._transform = _getTransform(t, _cs, true, vars.parseTransform),
 				style = t.style,
@@ -20579,6 +20612,8 @@ _.extend(Marionette.Module, {
 				m1.force3D = v.force3D;
 				hasChange = true;
 			}
+
+			m1.skewType = v.skewType || m1.skewType || CSSPlugin.defaultSkewType;
 
 			has3D = (m1.force3D || m1.z || m1.rotationX || m1.rotationY || m2.z || m2.rotationX || m2.rotationY || m2.perspective);
 			if (!has3D && v.scale != null) {
@@ -22322,21 +22357,21 @@ _.extend(Marionette.Module, {
 
 
 		p.play = function(from, suppressEvents) {
-			if (arguments.length) {
+			if (from != null) {
 				this.seek(from, suppressEvents);
 			}
 			return this.reversed(false).paused(false);
 		};
 
 		p.pause = function(atTime, suppressEvents) {
-			if (arguments.length) {
+			if (atTime != null) {
 				this.seek(atTime, suppressEvents);
 			}
 			return this.paused(true);
 		};
 
 		p.resume = function(from, suppressEvents) {
-			if (arguments.length) {
+			if (from != null) {
 				this.seek(from, suppressEvents);
 			}
 			return this.paused(false);
@@ -22351,7 +22386,7 @@ _.extend(Marionette.Module, {
 		};
 
 		p.reverse = function(from, suppressEvents) {
-			if (arguments.length) {
+			if (from != null) {
 				this.seek((from || this.totalDuration()), suppressEvents);
 			}
 			return this.reversed(true).paused(false);
@@ -22782,7 +22817,7 @@ _.extend(Marionette.Module, {
 		p._firstPT = p._targets = p._overwrittenProps = p._startAt = null;
 		p._notifyPluginsOfEnabled = false;
 
-		TweenLite.version = "1.11.4";
+		TweenLite.version = "1.11.6";
 		TweenLite.defaultEase = p._ease = new Ease(null, null, 1, 1);
 		TweenLite.defaultOverwrite = "auto";
 		TweenLite.ticker = _ticker;
@@ -23075,19 +23110,22 @@ _.extend(Marionette.Module, {
 				}
 				if (duration === 0) { //zero-duration tweens are tricky because we must discern the momentum/direction of time in order to determine whether the starting values should be rendered or the ending values. If the "playhead" of its timeline goes past the zero-duration tween in the forward direction or lands directly on it, the end values should be rendered, but if the timeline's "playhead" moves past it in the backward direction (from a postitive time to a negative time), the starting values must be rendered.
 					rawPrevTime = this._rawPrevTime;
+					if (this._startTime === this._timeline._duration) { //if a zero-duration tween is at the VERY end of a timeline and that timeline renders at its end, it will typically add a tiny bit of cushion to the render time to prevent rounding errors from getting in the way of tweens rendering their VERY end. If we then reverse() that timeline, the zero-duration tween will trigger its onReverseComplete even though technically the playhead didn't pass over it again. It's a very specific edge case we must accommodate.
+						time = 0;
+					}
 					if (time === 0 || rawPrevTime < 0 || rawPrevTime === _tinyNum) if (rawPrevTime !== time) {
 						force = true;
 						if (rawPrevTime > _tinyNum) {
 							callback = "onReverseComplete";
 						}
 					}
-					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				}
 
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
 				this._totalTime = this._time = 0;
 				this.ratio = this._ease._calcEnd ? this._ease.getRatio(0) : 0;
-				if (prevTime !== 0 || (duration === 0 && this._rawPrevTime > _tinyNum)) {
+				if (prevTime !== 0 || (duration === 0 && this._rawPrevTime > 0 && this._rawPrevTime !== _tinyNum)) {
 					callback = "onReverseComplete";
 					isComplete = this._reversed;
 				}
@@ -23097,7 +23135,7 @@ _.extend(Marionette.Module, {
 						if (this._rawPrevTime >= 0) {
 							force = true;
 						}
-						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === 0) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					}
 				} else if (!this._initted) { //if we render the very beginning (time == 0) of a fromTo(), we must force the render (normal tweens wouldn't need to render at a time of 0 when the prevTime was also 0). This is also mandatory to make sure overwriting kicks in immediately.
 					force = true;
@@ -30425,7 +30463,7 @@ define('hbs',[
     };
 
     fetchText = function (url, callback) {
-      var xdm = false;  
+      var xdm = false;
       // If url is a fully qualified URL, it might be a cross domain request. Check for that.
 	  // IF url is a relative url, it cannot be cross domain.
       if (url.indexOf('http') != 0 ){
@@ -30437,7 +30475,7 @@ define('hbs',[
           var msie = getIEVersion();
               xdm = ( dom != window.location.href.substr(hidx).split('/').shift() ) && (msie >= 7);
       }
-      
+
       if ( xdm ) {
          var xdr = getXhr(true);
         xdr.open('GET', url);
@@ -30575,7 +30613,7 @@ define('hbs',[
               return res;
             }
             catch (e) {
-              return '{ \'description\' : \'' + statement.comment + '\' }';
+              return '{ "description" : "' + statement.comment + '" }';
             }
           }
         }
@@ -30752,7 +30790,7 @@ define('hbs',[
               var path;
               if(partialReference.match(/^(\.|\/)+/)) {
                 // relative path
-                path = cleanPath(baseDir + partialReference) 
+                path = cleanPath(baseDir + partialReference)
               }
               else {
                 // absolute path relative to config.hbs.partialsUrl if defined
@@ -30771,7 +30809,7 @@ define('hbs',[
             }
           }
 
-          depStr = deps.join("', 'hbs!");
+          depStr = deps.join("', '");
 
           helps = helps.concat((metaObj && metaObj.helpers) ? metaObj.helpers : []);
           helpDepStr = disableHelpers ?
@@ -30858,9 +30896,9 @@ define('hbs',[
 
           if(depStr) depStr = ", '"+depStr+"'";
 
-          var partialReferences = []; 
+          var partialReferences = [];
           if(require.config.hbs._partials[name])
-            partialReferences = require.config.hbs._partials[name].references; 
+            partialReferences = require.config.hbs._partials[name].references;
 
           text = '/* START_TEMPLATE */\n' +
                  'define('+tmplName+"['hbs','hbs/handlebars'"+depStr+helpDepStr+'], function( hbs, Handlebars ){ \n' +
@@ -31095,7 +31133,7 @@ function( Backbone, tmpl  ) {
         el: '#wrapper',
 
         initialize: function() {
-			console.log("initialize a MainLayout Layout");
+//			console.log("initialize a MainLayout Layout");
 		},
 		
     	/* Layout sub regions */
@@ -31610,7 +31648,7 @@ function( Backbone, tmpl ) {
                 }
                 var currVal = self.scrollPanes.juiScrollPane('option', 'mimickBrowser');
                 self.scrollPanes.juiScrollPane('option', 'mimickBrowser', (currVal === true ? false : true));
-                console.log(currVal);
+//                console.log(currVal);
             })
         }
 	});
@@ -31700,9 +31738,9 @@ function (Backbone, tmpl) {
 
             // Trigger tests
             $example1.juiSelectPicker('getUiElement', 'wrapperElm').on('expand',function (e) {
-                console.log('An "expand" event has occurred on example 1');
+//                console.log('An "expand" event has occurred on example 1');
             }).on('collapse', function (e) {
-                console.log('A "collapse" event has occurred on example 2');
+//                console.log('A "collapse" event has occurred on example 2');
             });
 
             // Toggle the select element
@@ -31814,7 +31852,7 @@ case 27:t.datepicker._hideDatepicker();break;case 33:t.datepicker._adjustDate(e.
 if(n){if(a=this._find(s),a.length)return a.find(".ui-tooltip-content").html(n),void 0;s.is("[title]")&&(i&&"mouseover"===i.type?s.attr("title",""):s.removeAttr("title")),a=this._tooltip(s),e(s,a.attr("id")),a.find(".ui-tooltip-content").html(n),this.options.track&&i&&/^mouse/.test(i.type)?(this._on(this.document,{mousemove:o}),o(i)):a.position(t.extend({of:s},this.options.position)),a.hide(),this._show(a,this.options.show),this.options.show&&this.options.show.delay&&(h=this.delayedShow=setInterval(function(){a.is(":visible")&&(o(l.of),clearInterval(h))},t.fx.interval)),this._trigger("open",i,{tooltip:a}),r={keyup:function(e){if(e.keyCode===t.ui.keyCode.ESCAPE){var i=t.Event(e);i.currentTarget=s[0],this.close(i,!0)}},remove:function(){this._removeTooltip(a)}},i&&"mouseover"!==i.type||(r.mouseleave="close"),i&&"focusin"!==i.type||(r.focusout="close"),this._on(!0,s,r)}},close:function(e){var s=this,n=t(e?e.currentTarget:this.element),o=this._find(n);this.closing||(clearInterval(this.delayedShow),n.data("ui-tooltip-title")&&n.attr("title",n.data("ui-tooltip-title")),i(n),o.stop(!0),this._hide(o,this.options.hide,function(){s._removeTooltip(t(this))}),n.removeData("ui-tooltip-open"),this._off(n,"mouseleave focusout keyup"),n[0]!==this.element[0]&&this._off(n,"remove"),this._off(this.document,"mousemove"),e&&"mouseleave"===e.type&&t.each(this.parents,function(e,i){t(i.element).attr("title",i.title),delete s.parents[e]}),this.closing=!0,this._trigger("close",e,{tooltip:o}),this.closing=!1)},_tooltip:function(e){var i="ui-tooltip-"+s++,n=t("<div>").attr({id:i,role:"tooltip"}).addClass("ui-tooltip ui-widget ui-corner-all ui-widget-content "+(this.options.tooltipClass||""));return t("<div>").addClass("ui-tooltip-content").appendTo(n),n.appendTo(this.document[0].body),this.tooltips[i]=e,n},_find:function(e){var i=e.data("ui-tooltip-id");return i?t("#"+i):t()},_removeTooltip:function(t){t.remove(),delete this.tooltips[t.attr("id")]},_destroy:function(){var e=this;t.each(this.tooltips,function(i,s){var n=t.Event("blur");n.target=n.currentTarget=s[0],e.close(n,!0),t("#"+i).remove(),s.data("ui-tooltip-title")&&(s.attr("title",s.data("ui-tooltip-title")),s.removeData("ui-tooltip-title"))})}})}(jQuery);
 define("jquery-ui", ["jquery"], function(){});
 
-/*! jui-commons 2014-04-04 */
+/*! jui-commons 2014-04-10 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -31829,12 +31867,12 @@ $.widget("jui.juiBase", {
     },
     _populateUiElementsFromOptions: function(a) {
         var b = this, c = isset(a) ? a : this.options;
-        isset(c.ui) || (c.ui = {}), c = c.ui, Object.keys(c).forEach(function(a) {
-            if ("string" == typeof c[a] && (c[a] = c[a] = $(c[a], b.element)), $.isPlainObject(c[a])) {
-                if (isset(c[a].elm) && c[a].elm.length > 0) return;
-                c[a].elm = b._getElementFromOptions(c[a]);
-            }
-        });
+        isset(c.ui) || (c.ui = {}), c = c.ui;
+        for (var d in c) if (c.hasOwnProperty(d) && ("string" == typeof c[d] && (c[d] = c[d] = $(c[d], b.element)), 
+        $.isPlainObject(c[d]))) {
+            if (isset(c[d].elm) && c[d].elm.length > 0) return;
+            c[d].elm = b._getElementFromOptions(c[d]);
+        }
     },
     _getElementFromOptions: function(a) {
         var b = this, c = b.options, d = a;
@@ -31858,9 +31896,7 @@ $.widget("jui.juiBase", {
     },
     _removeCreatedElements: function() {
         var a = this, b = a.options;
-        Object.keys(b.ui).forEach(function(a) {
-            b.ui[a].elm instanceof $ && b.ui[a].create && b.ui[a].elm.remove();
-        });
+        for (var c in b.ui) b.ui[c].elm instanceof $ && b.ui[c].create && b.ui[c].elm.remove();
     },
     _setOption: function(a, b) {
         this._namespace(a, this.options, b);
@@ -31905,9 +31941,11 @@ $.widget("jui.juiBase", {
         return this.getValueFromHash(a, this.options, b, c);
     },
     getValueFromHash: function(a, b, c, d) {
+        c = c || null, d = d || !1;
         var e = null;
         return "string" == typeof a && $.isPlainObject(b) && (e = this._namespace(a, b), 
-        "function" == typeof e && empty(d) && (e = e.apply(this, c))), e;
+        "function" == typeof e && empty(d) && (e = c ? e.apply(this, c) : e.apply(this))), 
+        e;
     },
     setValueOnHash: function(a, b, c) {
         this._namespace(a, c, b);
@@ -32247,7 +32285,7 @@ $.widget("jui.juiBase", {
         },
         _init: function() {
             var a = this, b = a.options;
-            b.timeline = new TimelineMax({
+            b.timeline = new TimelineLite({
                 paused: !0
             }), a._populateUiElementsFromOptions(), a._setClassNameFromOptions(), a._setTitleText(), 
             a._setContentFromThisElement(), a._addEventListeners(), a.open();
@@ -32275,9 +32313,7 @@ $.widget("jui.juiBase", {
             this._removeCreatedElements();
         },
         _destroyAllInstances: function() {
-            this._instances.forEach(function(a) {
-                a.destroy();
-            });
+            for (var a = 0; a < this._instances.length; a += 1) this._instances[a].destroy();
         },
         _setTitleText: function(b, c) {
             c = c || "text";
@@ -32750,7 +32786,7 @@ $.widget("jui.juiBase", {
             elmAlias: "scrollbar",
             props: {
                 css: {
-                    opacity: 1
+                    autoAlpha: 1
                 },
                 delay: -.1
             }
@@ -32777,10 +32813,15 @@ $.widget("jui.juiBase", {
         c._populateUiElementsFromOptions(), b = c.getUiElement("contentElm"), c._namespace("ui.contentElm.originalCss", d, {
             display: b.css("display"),
             visibility: b.css("visibility")
-        }), b.css("visibility", "hidden"), c.timeline = new TimelineMax({
-            onReverseComplete: a,
-            onComplete: a
-        });
+        }), b.css("visibility", "hidden");
+        try {
+            c.timeline = new TimelineLite({
+                onReverseComplete: a,
+                onComplete: a
+            });
+        } catch (e) {
+            throw new Error('Could not create a new "' + d.defaultTimelineClass + '"' + "when trying to create a timeline object.");
+        }
     },
     _init: function() {
         var a = this.options;
@@ -32881,7 +32922,7 @@ $.widget("jui.juiBase", {
                 selector: ".jui-select-picker",
                 html: "<div></div>",
                 create: !0,
-                timeline: new TimelineMax()
+                timeline: new TimelineLite()
             },
             buttonElm: {
                 elm: null,
@@ -32956,7 +32997,7 @@ $.widget("jui.juiBase", {
     _init: function() {
         var a = this, b = this.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
         empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
-        this.options.timeline = new TimelineMax({
+        this.options.timeline = new TimelineLite({
             paused: !0
         }), this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
         this.setLabelText(), this._drawSelectOptions(), this._initScrollableDropDown(), 
@@ -32993,30 +33034,28 @@ $.widget("jui.juiBase", {
         this.getUiElement("optionsElm").find("ul").remove();
     },
     _initScrollableDropDown: function() {
-        var a, b, c, d, e = this, f = e.options, g = e.getUiElement("wrapperElm"), h = e.getUiElement("optionsElm"), i = f.animation.duration;
-        d = {
+        var a, b, c, d, e, f, g = this, h = g.options, i = g.getUiElement("wrapperElm"), j = g.getUiElement("optionsElm"), k = h.animation.duration;
+        for (d = {
             state: "collapsed",
             ui: {
                 contentElm: {
                     elm: this.getUiElement("optionsElm"),
-                    attribs: f.ui.optionsElm.attribs,
-                    selector: f.ui.optionsElm.selector + ""
+                    attribs: h.ui.optionsElm.attribs,
+                    selector: h.ui.optionsElm.selector + ""
                 }
             }
-        }, isset(f.expandOn) && (d.expandOn = f.expandOn), isset(f.collapseOn) && (d.collapseOn = f.collapseOn), 
-        c = g.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
-        b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", g), [ TweenLite.to(g, i, {
-            height: g.css("max-height")
-        }), TweenLite.to(h, i, {
-            height: h.css("max-height"),
+        }, isset(h.expandOn) && (d.expandOn = h.expandOn), isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
+        c = i.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
+        b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
+            height: i.css("max-height")
+        }), TweenLite.to(j, k, {
+            height: j.css("max-height"),
             autoAlpha: 1,
             delay: -.3
-        }), TweenLite.to(a, i, {
+        }), TweenLite.to(a, k, {
             autoAlpha: 1,
             delay: -.2
-        }) ].forEach(function(a) {
-            b.add(a);
-        });
+        }) ], e = 0; e < f.length; e += 1) b.add(f[e]);
     },
     destroy: function() {
         this.element.removeAttr("hidden"), this._removeCreatedOptions(), this._super();
@@ -33120,7 +33159,7 @@ function( Backbone, tmpl ) {
 /*! Copyright (c) 2013 Brandon Aaron (http://brandon.aaron.sh)
  * Licensed under the MIT License (LICENSE.txt).
  *
- * Version: 3.1.9
+ * Version: 3.1.11
  *
  * Requires: jQuery 1.2.2+
  */
@@ -33151,7 +33190,7 @@ function( Backbone, tmpl ) {
     }
 
     var special = $.event.special.mousewheel = {
-        version: '3.1.9',
+        version: '3.1.11',
 
         setup: function() {
             if ( this.addEventListener ) {
@@ -33174,10 +33213,17 @@ function( Backbone, tmpl ) {
             } else {
                 this.onmousewheel = null;
             }
+            // Clean up the data we added to the element
+            $.removeData(this, 'mousewheel-line-height');
+            $.removeData(this, 'mousewheel-page-height');
         },
 
         getLineHeight: function(elem) {
-            return parseInt($(elem)['offsetParent' in $.fn ? 'offsetParent' : 'parent']().css('fontSize'), 10);
+            var $parent = $(elem)['offsetParent' in $.fn ? 'offsetParent' : 'parent']();
+            if (!$parent.length) {
+                $parent = $('body');
+            }
+            return parseInt($parent.css('fontSize'), 10);
         },
 
         getPageHeight: function(elem) {
@@ -33185,7 +33231,8 @@ function( Backbone, tmpl ) {
         },
 
         settings: {
-            adjustOldDeltas: true
+            adjustOldDeltas: true, // see shouldAdjustOldDeltas() below
+            normalizeOffset: true  // calls getBoundingClientRect for each event
         }
     };
 
@@ -33206,7 +33253,9 @@ function( Backbone, tmpl ) {
             delta      = 0,
             deltaX     = 0,
             deltaY     = 0,
-            absDelta   = 0;
+            absDelta   = 0,
+            offsetX    = 0,
+            offsetY    = 0;
         event = $.event.fix(orgEvent);
         event.type = 'mousewheel';
 
@@ -33280,10 +33329,19 @@ function( Backbone, tmpl ) {
         deltaX = Math[ deltaX >= 1 ? 'floor' : 'ceil' ](deltaX / lowestDelta);
         deltaY = Math[ deltaY >= 1 ? 'floor' : 'ceil' ](deltaY / lowestDelta);
 
+        // Normalise offsetX and offsetY properties
+        if ( special.settings.normalizeOffset && this.getBoundingClientRect ) {
+            var boundingRect = this.getBoundingClientRect();
+            offsetX = event.clientX - boundingRect.left;
+            offsetY = event.clientY - boundingRect.top;
+        }
+
         // Add information to the event object
         event.deltaX = deltaX;
         event.deltaY = deltaY;
         event.deltaFactor = lowestDelta;
+        event.offsetX = offsetX;
+        event.offsetY = offsetY;
         // Go ahead and set deltaMode to 0 since we converted to pixels
         // Although this is a little odd since we overwrite the deltaX/Y
         // properties with normalized deltas.
@@ -33487,6 +33545,12 @@ require([
 ],
 function ( Backbone, App ) {
     'use strict';
+//    var pushState = !!(window.history && window.history.pushState),
+//        settings = {
+//            pushState: pushState,
+//            silent: true,
+//            hashChange: !pushState ? true : false
+//        };
     Backbone.history.start();
 	App.start();
 });
@@ -33546,8 +33610,7 @@ require.config({
         'jquery-smartresize':   '../bower_components/jquery-smartresize/jquery.debouncedresize',
         'jquery-ui':            '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
 
-
-        phpjs:      '../bower_components/phpjs/phpjs-shim',
+        phpjs:      '../../bower_components/phpjs/phpjs-shim',
         handlebars:     '../bower_components/handlebars/handlebars.amd',
         hbs:     '../bower_components/require-handlebars-plugin/hbs',
         text:       '../bower_components/requirejs-text/text',
@@ -33556,7 +33619,7 @@ require.config({
         underscore: '../bower_components/underscore-amd/underscore'
     },
     hbs: { // optional
-        helpers: false,            // default: true
+        helpers: false,           // default: true
         i18n: false,              // default: false
         templateExtension: 'hbs', // default: 'hbs'
         partialsUrl: ''           // default: ''

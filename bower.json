@@ -18,8 +18,5 @@
     "mocha": "~1.16.2",
     "requirejs": "~2.1.9",
     "checkjs": "elycruz/checkjs#~0.2.0"
-  },
-  "resolutions": {
-    "checkjs": "~0.2.0"
   }
 }
