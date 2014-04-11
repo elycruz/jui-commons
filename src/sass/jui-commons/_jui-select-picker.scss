@@ -56,8 +56,8 @@
         max-height: 220px;
         background: #fff;
         z-index: 97;
-        @include opacity(0);
-        visibility: hidden;
+        @include opacity(1);
+        visibility: visible;
 
         ul {
             width: 85%;

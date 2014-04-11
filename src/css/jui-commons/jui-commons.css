@@ -97,9 +97,9 @@
   max-height: 220px;
   background: #fff;
   z-index: 97;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-  opacity: 0;
-  visibility: hidden;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+  visibility: visible;
 }
 /* line 62, ../../sass/jui-commons/_jui-select-picker.scss */
 .jui-select-picker .options ul {

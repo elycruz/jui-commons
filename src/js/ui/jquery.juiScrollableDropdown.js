@@ -43,7 +43,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 type: 'to',
                 duration: 0.30,
                 elmAlias: 'scrollbar',
-                props: {css: {opacity: 1},
+                props: {css: {autoAlpha: 1},
                     delay: -0.10}
         }],
 
@@ -106,11 +106,18 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         // Set content element's visibility
         contentElm.css('visibility', 'hidden');
 
-        // Setup timeline object
-        self.timeline = new TimelineMax({
-            onReverseComplete: executeTimelineCompleteFunc,
-            onComplete: executeTimelineCompleteFunc
-        });
+        try {
+            // Setup timeline object
+            self.timeline = new TimelineLite({
+                onReverseComplete: executeTimelineCompleteFunc,
+                onComplete: executeTimelineCompleteFunc
+            });
+        }
+        catch (e) {
+            throw new Error('Could not create a new "' + ops.defaultTimelineClass + '"' +
+                'when trying to create a timeline object.');
+        }
+
     },
 
     _init: function () {

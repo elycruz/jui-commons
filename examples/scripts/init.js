@@ -51,8 +51,7 @@ require.config({
         'jquery-smartresize':   '../bower_components/jquery-smartresize/jquery.debouncedresize',
         'jquery-ui':            '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
 
-
-        phpjs:      '../bower_components/phpjs/phpjs-shim',
+        phpjs:      '../../bower_components/phpjs/phpjs-shim',
         handlebars:     '../bower_components/handlebars/handlebars.amd',
         hbs:     '../bower_components/require-handlebars-plugin/hbs',
         text:       '../bower_components/requirejs-text/text',
@@ -61,7 +60,7 @@ require.config({
         underscore: '../bower_components/underscore-amd/underscore'
     },
     hbs: { // optional
-        helpers: false,            // default: true
+        helpers: false,           // default: true
         i18n: false,              // default: false
         templateExtension: 'hbs', // default: 'hbs'
         partialsUrl: ''           // default: ''

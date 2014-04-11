@@ -10,7 +10,7 @@ function( Backbone, tmpl  ) {
         el: '#wrapper',
 
         initialize: function() {
-			console.log("initialize a MainLayout Layout");
+//			console.log("initialize a MainLayout Layout");
 		},
 		
     	/* Layout sub regions */

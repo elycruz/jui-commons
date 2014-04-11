@@ -67,9 +67,9 @@ function (Backbone, tmpl) {
 
             // Trigger tests
             $example1.juiSelectPicker('getUiElement', 'wrapperElm').on('expand',function (e) {
-                console.log('An "expand" event has occurred on example 1');
+//                console.log('An "expand" event has occurred on example 1');
             }).on('collapse', function (e) {
-                console.log('A "collapse" event has occurred on example 2');
+//                console.log('A "collapse" event has occurred on example 2');
             });
 
             // Toggle the select element
