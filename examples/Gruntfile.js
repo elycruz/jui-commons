@@ -31,7 +31,7 @@ module.exports = function (grunt) {
                     out: './distro/js/examples.min.js',
                     name: 'init',
                     mainConfigFile: './scripts/init.js',
-//                    stubModules: ['text', 'hbs'],
+                    stubModules: ['text', 'hbs'],
                     preserveLicenseComments: false,
                     useStrict: true,
                     wrap: true
@@ -44,7 +44,7 @@ module.exports = function (grunt) {
                     out: 'distro/js/examples.js',
                     name: 'init',
                     mainConfigFile: 'scripts/init.js',
-//                    stubModules: ['text', 'hbs'],
+                    stubModules: ['text', 'hbs'],
                     preserveLicenseComments: false,
                     useStrict: true,
                     wrap: true

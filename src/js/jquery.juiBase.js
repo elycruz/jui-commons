@@ -271,53 +271,6 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Pulls a ui element from the options -> ui hash else uses
-     * getElementFromOptions to create/fetch it.
-     * @param {string} alias
-     * @returns {*}
-     */
-    getUiElement: function (alias) {
-        var ops = this.options,
-            elm = null;
-        if (isset(ops.ui[alias])) {
-            elm = ops.ui[alias].elm;
-            if (elm instanceof $ && elm.length > 0) {
-                return elm;
-            }
-        }
-        return this._getElementFromOptions('ui.' + alias);
-    },
-
-    /**
-     * Sets css on element if it exist.
-     * @tentative
-     * @param alias {string} Element alias
-     * @param cssHash {object}
-     */
-    setCssOnUiElement: function (alias, cssHash) {
-        var elm = this.getUiElement(alias);
-        if (elm) {
-            elm.css(cssHash);
-        }
-    },
-
-    /**
-     * Lazy initializes a Timeline Lite or
-     * Timeline Max animation timeline.
-     * @returns {TimelineMax|TimelineLite}
-     * @todo move this out of here.
-     */
-    getAnimationTimeline: function () {
-        var timeline = this.options.timeline;
-        if (empty(timeline)) {
-            timeline =
-                this.options.timeline =
-                    new window[this.options.defaultTimelineClass];
-        }
-        return timeline;
-    },
-
-    /**
      * Adds animations to our animation timeline.
      * @param timeline {TimelineLite|TimelineMax} optional
      * @param animations {array} optional animations array
@@ -381,6 +334,77 @@ $.widget('jui.juiBase', {
                 config.postInit.apply(this);
             }
         }
+    },
+
+    _removeDisabledElements: function (options) {
+        // Get options
+        ops = !isset(options) ? this.options : options;
+
+        // Set our ui collection
+        if (!isset(ops.ui)) {
+            ops.ui = {};
+        }
+
+        // Ui ops
+        ops = ops.ui;
+
+        // Loop through ops and remove disabled elements
+        Object.keys(ops).forEach(function (key) {
+            // If key is plain object
+            if ($.isPlainObject(ops[key])) {
+                // If element is populated and disabled remove it
+                if (!ops.enabled && isset(ops[key].elm) && ops[key].elm.length > 0) {
+                    ops[key].elm.remove();
+                }
+            }
+        });
+    },
+
+    /**
+     * Pulls a ui element from the options -> ui hash else uses
+     * getElementFromOptions to create/fetch it.
+     * @param {string} alias
+     * @returns {*}
+     */
+    getUiElement: function (alias) {
+        var ops = this.options,
+            elm = null;
+        if (isset(ops.ui[alias])) {
+            elm = ops.ui[alias].elm;
+            if (elm instanceof $ && elm.length > 0) {
+                return elm;
+            }
+        }
+        return this._getElementFromOptions('ui.' + alias);
+    },
+
+    /**
+     * Sets css on element if it exist.
+     * @tentative
+     * @param alias {string} Element alias
+     * @param cssHash {object}
+     */
+    setCssOnUiElement: function (alias, cssHash) {
+        var elm = this.getUiElement(alias);
+        if (elm) {
+            elm.css(cssHash);
+        }
+    },
+
+    /**
+     * Lazy initializes a Timeline Lite or
+     * Timeline Max animation timeline.
+     * @returns {TimelineMax|TimelineLite}
+     * @todo move this out of here.
+     */
+    getAnimationTimeline: function () {
+        var timeline = this.options.timeline;
+        if (empty(timeline)) {
+            timeline =
+                this.options.timeline =
+                    new window[this.options.defaultTimelineClass];
+        }
+        return timeline;
     },
 
     /**
