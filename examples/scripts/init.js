@@ -3,7 +3,7 @@ require.config({
 //    baseUrl: './scripts',
 
     deps: [
-        'checkjs', 'es5-shim', 'es5-sham', 'phpjs',
+        'es5-shim', 'es5-sham', 'checkjs', 'phpjs',
         'backbone.marionette', 'jquery', 'TweenMax', 'hbs', 'main'
     ],
 
@@ -31,6 +31,9 @@ require.config({
         },
         'main' : {
             deps: ['es5-shim', 'phpjs']
+        },
+        'checkjs': {
+            deps: ['es5-shim']
         }
     },
 

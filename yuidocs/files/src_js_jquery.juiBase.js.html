@@ -1,3 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src\js\jquery.juiBase.js - jui-commons</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="jui-commons"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.49</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/jquery.juiSelectPicker.html">jquery.juiSelectPicker</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/$.jui.juiScrollableDropdown.html">$.jui.juiScrollableDropdown</a></li>
+            
+                <li><a href="../modules/$.jui.juiScrollPane.html">$.jui.juiScrollPane</a></li>
+            
+                <li><a href="../modules/$.jui.juiSplitText.html">$.jui.juiSplitText</a></li>
+            
+                <li><a href="../modules/jQuery.jui.juiBase.html">jQuery.jui.juiBase</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: src\js\jquery.juiBase.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
 /**
  * Created with JetBrains WebStorm.
  * User: ElyDeLaCruz
@@ -11,7 +107,7 @@
  * @requires jquery.widget - JQuery Ui Widget Factory.
  *
  * @todo -- issue solved -- make sure all classes that need a timeline object
- * implement their own `getTimeline` method.
+ * implement their own &#x60;getTimeline&#x60; method.
  * ~~~deprecated~~~
  * Resolve issue with non-unique timeline object -
  * Timeline object seems to be only one instance not new instances on
@@ -20,23 +116,23 @@
  * @todo start using $.each instead of Object.keys (gets rid of one more dependancy)
  *
  */
-$.widget('jui.juiBase', {
+$.widget(&#x27;jui.juiBase&#x27;, {
 
     /**
      * Options hash.
      * @type {Object}
      */
     options: {
-        defaultTimelineClass: 'TimelineLite',
+        defaultTimelineClass: &#x27;TimelineLite&#x27;,
         timeline: null,
         ui: {}
     },
 
     /**
      * Takes a namespace string and fetches that location out from
-     * an object.  If the namespace doesn't exists it is created then
+     * an object.  If the namespace doesn&#x27;t exists it is created then
      * returned.
-     * Example: _namespace('hello.world.how.are.you.doing') will
+     * Example: _namespace(&#x27;hello.world.how.are.you.doing&#x27;) will
      * create/fetch:
      * hello: { world: { how: { are: { you: { doing: {} } } } } }
      * @param ns_string {String} the namespace you wish to fetch
@@ -45,15 +141,15 @@ $.widget('jui.juiBase', {
      * @returns {Object}
      */
     _namespace: function (ns_string, extendObj, valueToSet) {
-        var parts = ns_string.split('.'),
+        var parts = ns_string.split(&#x27;.&#x27;),
             parent = isset(extendObj) ? extendObj : this.options,
             i;
 
-        for (i = 0; i < parts.length; i += 1) {
-            if (typeof parent[parts[i]] === 'undefined') {
+        for (i = 0; i &lt; parts.length; i += 1) {
+            if (typeof parent[parts[i]] === &#x27;undefined&#x27;) {
                 parent[parts[i]] = {};
             }
-            if (i === parts.length - 1 && typeof valueToSet !== 'undefined') {
+            if (i === parts.length - 1 &amp;&amp; typeof valueToSet !== &#x27;undefined&#x27;) {
                 parent[parts[i]] = valueToSet;
             }
             parent = parent[parts[i]];
@@ -84,14 +180,14 @@ $.widget('jui.juiBase', {
         // Loop through ops and populate elements
         Object.keys(ops).forEach(function (key) {
             // If key is string
-            if (typeof ops[key] === 'string') {
+            if (typeof ops[key] === &#x27;string&#x27;) {
                 ops[key] = ops[key] = $(ops[key], self.element);
             }
 
             // If key is plain object
             if ($.isPlainObject(ops[key])) {
                 // If element already is populated, skip it
-                if (isset(ops[key].elm) && ops[key].elm.length > 0) {
+                if (isset(ops[key].elm) &amp;&amp; ops[key].elm.length &gt; 0) {
                     return;
                 }
                 // Create/fetch element
@@ -101,7 +197,7 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Fetches an element from the option hash's `ui` namespace.
+     * Fetches an element from the option hash&#x27;s &#x60;ui&#x60; namespace.
      * @param optionKey {Object|String}
      * @returns {null|jQuery} null or the jquery element selection
      */
@@ -111,12 +207,12 @@ $.widget('jui.juiBase', {
             config = optionKey;
 
         // If config is a string
-        if (typeof config === 'string') {
+        if (typeof config === &#x27;string&#x27;) {
             config = self._namespace(config, ops);
         }
 
         // If config is a function
-        if (typeof config === 'function') {
+        if (typeof config === &#x27;function&#x27;) {
             config = config();
         }
 
@@ -126,20 +222,20 @@ $.widget('jui.juiBase', {
         }
 
         // If config is jquery selection return it
-        if (config instanceof $ && config.length > 0) {
+        if (config instanceof $ &amp;&amp; config.length &gt; 0) {
             return config;
         }
         else if (isset(config.elm)
-            && config.elm instanceof $ && config.length > 0) {
+            &amp;&amp; config.elm instanceof $ &amp;&amp; config.length &gt; 0) {
             return config.elm
         }
 
         // If Selector
         if (isset(config.selector)
-            && empty(config.elm) && typeof config.selector === 'string') {
-            if (typeof config.appendTo === 'string'
-                && config.appendTo.length > 0
-                && config.appendTo.indexOf('this') === -1) {
+            &amp;&amp; empty(config.elm) &amp;&amp; typeof config.selector === &#x27;string&#x27;) {
+            if (typeof config.appendTo === &#x27;string&#x27;
+                &amp;&amp; config.appendTo.length &gt; 0
+                &amp;&amp; config.appendTo.indexOf(&#x27;this&#x27;) === -1) {
                 config.elm = $(config.selector,
                     self.getUiElement(config.appendTo));
             }
@@ -148,16 +244,16 @@ $.widget('jui.juiBase', {
             }
         }
 
-        // Create element and `append to` config section if necessary
-        if (!empty(config.html) && config.create
-            && typeof config.html === 'string') {
+        // Create element and &#x60;append to&#x60; config section if necessary
+        if (!empty(config.html) &amp;&amp; config.create
+            &amp;&amp; typeof config.html === &#x27;string&#x27;) {
 
             // Create element
             config.elm = this._createElementFromOptions(config);
 
             // Append element
             if (isset(config.appendTo)
-                && typeof config.appendTo === 'string') {
+                &amp;&amp; typeof config.appendTo === &#x27;string&#x27;) {
                 self._appendElementFromOptions(config);
             }
         }
@@ -169,26 +265,26 @@ $.widget('jui.juiBase', {
     _appendElementFromOptions: function (config) {
         var self = this,
             parent = this.element.parent();
-        if (config.appendTo === 'body') {
-            config.elm = $('body').eq(0)
+        if (config.appendTo === &#x27;body&#x27;) {
+            config.elm = $(&#x27;body&#x27;).eq(0)
                 .append(config.elm).find(config.selector);
         }
-        else if (config.appendTo === 'this.element') {
+        else if (config.appendTo === &#x27;this.element&#x27;) {
             config.elm = this.element
                 .append(config.elm).find(config.selector);
         }
-        else if (config.appendTo === 'after this.element') {
+        else if (config.appendTo === &#x27;after this.element&#x27;) {
             this.element.after(config.elm);
             config.elm = parent.find(
                 this.element.get(0).nodeName
-                    + ' ~ ' + config.selector);
+                    + &#x27; ~ &#x27; + config.selector);
         }
-        else if (config.appendTo === 'before this.element') {
+        else if (config.appendTo === &#x27;before this.element&#x27;) {
             this.element.before(config.elm);
             config.elm = parent.find(config.selector
-                + ' ~ ' + this.element.get(0).nodeName);
+                + &#x27; ~ &#x27; + this.element.get(0).nodeName);
         }
-        else if (config.appendTo === 'prepend to this.element') {
+        else if (config.appendTo === &#x27;prepend to this.element&#x27;) {
             this.element.prepend(config.elm);
             config.elm = this.element.children().first();
         }
@@ -200,7 +296,7 @@ $.widget('jui.juiBase', {
 
     /**
      * Create and Element from the options.ui hash and appends it to
-     * it's config.appendTo section alias string.
+     * it&#x27;s config.appendTo section alias string.
      * @param config {Object} the options object from which to create
      *  and where to populate the created element to.
      * @returns {null|jQuery}
@@ -209,7 +305,7 @@ $.widget('jui.juiBase', {
         var elm = null;
 
         // If config is string look it up in our options hash
-        if (isset(config) && typeof config === 'string') {
+        if (isset(config) &amp;&amp; typeof config === &#x27;string&#x27;) {
             config = this._namespace(config);
         }
 
@@ -222,7 +318,7 @@ $.widget('jui.juiBase', {
         if (config.html) {
             elm = $(config.html);
             if (isset(config.attribs)
-                && $.isPlainObject(config.attribs)) {
+                &amp;&amp; $.isPlainObject(config.attribs)) {
                 elm.attr(config.attribs);
             }
         }
@@ -236,7 +332,7 @@ $.widget('jui.juiBase', {
     _removeCreatedElements: function () {
         var self = this, ops = self.options;
         Object.keys(ops.ui).forEach(function (key) {
-            if (ops.ui[key].elm instanceof $ && ops.ui[key].create) {
+            if (ops.ui[key].elm instanceof $ &amp;&amp; ops.ui[key].create) {
                 ops.ui[key].elm.remove();
             }
         });
@@ -258,7 +354,7 @@ $.widget('jui.juiBase', {
     },
 
     _callSetterForKey: function (key, value) {
-        var setterFunc = 'set' + strToCamelCase(key),
+        var setterFunc = &#x27;set&#x27; + strToCamelCase(key),
             self = this;
         if (isset(self[setterFunc])) {
             self[setterFunc](value);
@@ -269,97 +365,7 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Adds animations to our animation timeline.
-     * @param timeline {TimelineLite|TimelineMax} optional
-     * @param animations {array} optional animations array
-     * @param options {object] optional options hash to search on
-     * @returns default
-     */
-    _initAnimationTimeline: function (timeline, animations, options) {
-        var self = this,
-            ops,
-            i, config, elm, dur, props,
-            _animations;
-
-        timeline = !isset(timeline) ? this.getAnimationTimeline() : timeline;
-        options = options || self.options;
-        animations = animations || null;
-
-        ops = options;
-
-        // If default animations, use them
-        if (isset(ops.defaultAnimations)
-            && ops.defaultAnimations instanceof Array) {
-            _animations = ops.defaultAnimations;
-        }
-
-        // If animations, use them (also override defaults if any)
-        if (isset(ops.animations)
-            && ops.animations instanceof Array && isset(_animations)) {
-            _animations = isset(animations)
-                ? $.extend(true, _animations, ops.animations) : ops.animations;
-        }
-
-        // Set animations variable
-        if (isset(animations) && isset(_animations)) {
-            animations = $.extend(true, _animations, animations);
-        }
-        else if (isset(_animations)) {
-            animations = _animations;
-        }
-        // If no animations, bail
-        else {
-            return;
-        }
-
-        // Add animations to timeline
-        for (i = 0; i < animations.length; i += 1) {
-            config = animations[i];
-            elm = self.getUiElement(config.elmAlias);
-            dur = config.duration;
-            props = config.props;
-
-            // Pre init function
-            if (isset(config.preInit) && typeof config.preInit === 'function') {
-                config.preInit.apply(this);
-            }
-
-            // Init timeline
-            timeline[config.type](elm, dur, props);
-
-            // Post init function
-            if (isset(config.postInit) && typeof config.postInit === 'function') {
-                config.postInit.apply(this);
-            }
-        }
-    },
-
-    _removeDisabledElements: function (options) {
-        // Get options
-        ops = !isset(options) ? this.options : options;
-
-        // Set our ui collection
-        if (!isset(ops.ui)) {
-            ops.ui = {};
-        }
-
-        // Ui ops
-        ops = ops.ui;
-
-        // Loop through ops and remove disabled elements
-        Object.keys(ops).forEach(function (key) {
-            // If key is plain object
-            if ($.isPlainObject(ops[key])) {
-                // If element is populated and disabled remove it
-                if (!ops.enabled && isset(ops[key].elm) && ops[key].elm.length > 0) {
-                    ops[key].elm.remove();
-                }
-            }
-        });
-    },
-
-    /**
-     * Pulls a ui element from the options -> ui hash else uses
+     * Pulls a ui element from the options -&gt; ui hash else uses
      * getElementFromOptions to create/fetch it.
      * @param {string} alias
      * @returns {*}
@@ -369,11 +375,11 @@ $.widget('jui.juiBase', {
             elm = null;
         if (isset(ops.ui[alias])) {
             elm = ops.ui[alias].elm;
-            if (elm instanceof $ && elm.length > 0) {
+            if (elm instanceof $ &amp;&amp; elm.length &gt; 0) {
                 return elm;
             }
         }
-        return this._getElementFromOptions('ui.' + alias);
+        return this._getElementFromOptions(&#x27;ui.&#x27; + alias);
     },
 
     /**
@@ -406,8 +412,74 @@ $.widget('jui.juiBase', {
     },
 
     /**
+     * Adds animations to our animation timeline.
+     * @param timeline {TimelineLite|TimelineMax} optional
+     * @param animations {array} optional animations array
+     * @param options {object] optional options hash to search on
+     * @returns default
+     */
+    _initAnimationTimeline: function (timeline, animations, options) {
+        var self = this,
+            ops,
+            i, config, elm, dur, props,
+            _animations;
+
+        timeline = !isset(timeline) ? this.getAnimationTimeline() : timeline;
+        options = options || self.options;
+        animations = animations || null;
+
+        ops = options;
+
+        // If default animations, use them
+        if (isset(ops.defaultAnimations)
+            &amp;&amp; ops.defaultAnimations instanceof Array) {
+            _animations = ops.defaultAnimations;
+        }
+
+        // If animations, use them (also override defaults if any)
+        if (isset(ops.animations)
+            &amp;&amp; ops.animations instanceof Array &amp;&amp; isset(_animations)) {
+            _animations = isset(animations)
+                ? $.extend(true, _animations, ops.animations) : ops.animations;
+        }
+
+        // Set animations variable
+        if (isset(animations) &amp;&amp; isset(_animations)) {
+            animations = $.extend(true, _animations, animations);
+        }
+        else if (isset(_animations)) {
+            animations = _animations;
+        }
+        // If no animations, bail
+        else {
+            return;
+        }
+
+        // Add animations to timeline
+        for (i = 0; i &lt; animations.length; i += 1) {
+            config = animations[i];
+            elm = self.getUiElement(config.elmAlias);
+            dur = config.duration;
+            props = config.props;
+
+            // Pre init function
+            if (isset(config.preInit) &amp;&amp; typeof config.preInit === &#x27;function&#x27;) {
+                config.preInit.apply(this);
+            }
+
+            // Init timeline
+            timeline[config.type](elm, dur, props);
+
+            // Post init function
+            if (isset(config.postInit) &amp;&amp; typeof config.postInit === &#x27;function&#x27;) {
+                config.postInit.apply(this);
+            }
+        }
+    },
+
+    /**
      * Gets an option value from the options hash.  This function is a
-     * proxy for `getValueFromHash` and it just sets the hash to `this.options`.
+     * proxy for &#x60;getValueFromHash&#x60; and it just sets the hash to &#x60;this.options&#x60;.
      * @see getValueFromHash
      * @param key
      * @returns {Object}
@@ -417,9 +489,9 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Searches hash for key and returns it's value.  If value is a function
-     * calls function, with optional `args`, and returns it's return value.
-     * If `raw` is true returns the actual function if value is a function.
+     * Searches hash for key and returns it&#x27;s value.  If value is a function
+     * calls function, with optional &#x60;args&#x60;, and returns it&#x27;s return value.
+     * If &#x60;raw&#x60; is true returns the actual function if value is a function.
      * @param key {string} The hash key to search for
      * @param hash {object} optional, the hash to search within
      * @param args {array} optional the arrays to pass to value if it is a function
@@ -428,9 +500,9 @@ $.widget('jui.juiBase', {
      */
     getValueFromHash: function (key, hash, args, raw) {
         var retVal = null;
-        if (typeof key === 'string' && $.isPlainObject(hash)) {
+        if (typeof key === &#x27;string&#x27; &amp;&amp; $.isPlainObject(hash)) {
             retVal = this._namespace(key, hash);
-            if (typeof retVal === 'function' && empty(raw)) {
+            if (typeof retVal === &#x27;function&#x27; &amp;&amp; empty(raw)) {
                 retVal = retVal.apply(this, args);
             }
         }
@@ -444,7 +516,7 @@ $.widget('jui.juiBase', {
     /**
      * Returns the timeline classname to use for the instance of the plugin
      * extending juibase.
-     * @returns {*} default defaultTimelineClassName = 'TimelineLite'
+     * @returns {*} default defaultTimelineClassName = &#x27;TimelineLite&#x27;
      */
     getTimelineClassName: function () {
         var ops = this.options;
@@ -453,3 +525,23 @@ $.widget('jui.juiBase', {
     }
 
 });
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
