@@ -1,9 +1,6 @@
 require.config({
 
-    deps: [
-        'checkjs', 'phpjs', 'sjl',
-        'backbone.marionette', 'jquery', 'TweenMax', 'hbs', 'main'
-    ],
+    deps: ['sjl', 'backbone.marionette', 'jquery', 'TweenMax', 'hbs', 'main' ],
 
     shim: {
         'gsap-scrollto-plugin': {
@@ -26,12 +23,6 @@ require.config({
         },
         'hbs': {
             deps: ['handlebars']
-        },
-        'main' : {
-            deps: ['es5-shim', 'phpjs']
-        },
-        'checkjs': {
-            deps: ['es5-shim']
         }
     },
 
@@ -40,11 +31,9 @@ require.config({
         'backbone.babysitter':  '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
         'backbone.marionette':  '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
         'backbone.wreqr':       '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
-        'checkjs':              '../bower_components/checkjs/check',
         'sjl':                  '../bower_components/sjljs/sjl',
 
-        'es5-sham':             '../bower_components/es5-shim/es5-sham',
-        'es5-shim':             '../bower_components/es5-shim/es5-shim',
+
         'gsap-scrollto-plugin': '../bower_components/greensock/src/uncompressed/plugins/ScrollToPlugin',
         'jui-commons':          '../../distro/jui-commons',
 
@@ -53,7 +42,6 @@ require.config({
         'jquery-smartresize':   '../bower_components/jquery-smartresize/jquery.debouncedresize',
         'jquery-ui':            '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
 
-        phpjs:      '../../bower_components/phpjs/phpjs-shim',
         handlebars:     '../bower_components/handlebars/handlebars.amd',
         hbs:     '../bower_components/require-handlebars-plugin/hbs',
         text:       '../bower_components/requirejs-text/text',

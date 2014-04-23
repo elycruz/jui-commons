@@ -421,7 +421,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         tweens = [
             TweenLite.to(wrapperElm, duration, {height: wrapperElm.css('max-height')}),
             TweenLite.to(contentElm, duration, {height: contentElm.css('max-height'), autoAlpha: 1, delay: -0.30}),
-            TweenLite.to(scrollbarElm, duration, {autoAlpha: 1, delay: -0.20})
+            TweenLite.to(scrollbarElm, duration, {opacity: 1, delay: -0.20})
         ];
 
         // Supply new tweens

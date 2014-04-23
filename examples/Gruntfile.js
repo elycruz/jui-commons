@@ -60,7 +60,6 @@ module.exports = function (grunt) {
                 ],
                 tasks: ['compass'],
                 options: {
-                    spawn: false,
                     livereload: true
                 }
             },
@@ -71,15 +70,17 @@ module.exports = function (grunt) {
                 ],
                 tasks: ['cssmin'],
                 options: {
-                    spawn: false,
                     livereload: true
                 }
             },
             js: {
-                files: ['./scripts/**/*.js', '../distro/**/*', './templates/**/*'],
+                files: [
+                    './bower_components/**/*',
+                    './scripts/**/*',
+                    '../distro/**/*',
+                    './templates/**/*'],
                 tasks: ['requirejs'],
                 options: {
-                    spawn: false,
                     livereload: true
                 }
             }
