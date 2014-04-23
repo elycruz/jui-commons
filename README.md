@@ -36,13 +36,15 @@ All jui plugins share the following naming conventions:
 ---------------------------
 List of current components offered:
 - jquery.juiAbstractPaginator
-- jquery.juiAffix
 - jquery.juiBasicPaginator
-- jquery.juiFloatingScrollIndicators (candidate for rename)
 - jquery.juiPaginatorWithTextField
 - jquery.juiScrollableDropDown
 - jquery.juiScrollPane
 - jquery.juiSelectPicker
+
+List of WIPs
+- jquery.juiAffix
+- jquery.juiFloatingScrollIndicators (candidate for rename)
 
 #### jquery.jui.juiAbstractPaginator
 ----
