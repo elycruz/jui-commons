@@ -194,16 +194,24 @@
 .jui-scroll-pane .scrollbar.vertical .handle {
   width: 13px;
 }
-/* line 22, ../../sass/jui-commons/_jui-scroll-pane.scss */
+/* line 19, ../../sass/jui-commons/_jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar.vertical .handle:hover {
+  cursor: ns-resize;
+}
+/* line 25, ../../sass/jui-commons/_jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar.horizontal {
   bottom: 0;
   left: 0;
   height: 13px;
   width: 100%;
 }
-/* line 27, ../../sass/jui-commons/_jui-scroll-pane.scss */
+/* line 30, ../../sass/jui-commons/_jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar.horizontal .handle {
   height: 13px;
+}
+/* line 32, ../../sass/jui-commons/_jui-scroll-pane.scss */
+.jui-scroll-pane .scrollbar.horizontal .handle:hover {
+  cursor: ew-resize;
 }
 
 /* line 1, ../../sass/jui-commons/_jui-scrollable-drop-down.scss */

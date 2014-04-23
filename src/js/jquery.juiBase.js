@@ -46,7 +46,7 @@ $.widget('jui.juiBase', {
      */
     _namespace: function (ns_string, extendObj, valueToSet) {
         var parts = ns_string.split('.'),
-            parent = isset(extendObj) ? extendObj : this.options,
+            parent = sjl.isset(extendObj) ? extendObj : this.options,
             i;
 
         for (i = 0; i < parts.length; i += 1) {
@@ -71,10 +71,10 @@ $.widget('jui.juiBase', {
         var self = this,
 
         // Get options
-            ops = !isset(options) ? this.options : options;
+            ops = !sjl.isset(options) ? this.options : options;
 
         // Set our ui collection
-        if (!isset(ops.ui)) {
+        if (!sjl.isset(ops.ui)) {
             ops.ui = {};
         }
 
@@ -92,7 +92,7 @@ $.widget('jui.juiBase', {
                 // If key is plain object
                 if ($.isPlainObject(ops[key])) {
                     // If element already is populated, skip it
-                    if (isset(ops[key].elm) && ops[key].elm.length > 0) {
+                    if (sjl.isset(ops[key].elm) && ops[key].elm.length > 0) {
                         return;
                     }
                     // Create/fetch element
@@ -123,7 +123,7 @@ $.widget('jui.juiBase', {
         }
 
         // If config is empty return
-        if (empty(config)) {
+        if (sjl.empty(config)) {
             return null;
         }
 
@@ -131,14 +131,14 @@ $.widget('jui.juiBase', {
         if (config instanceof $ && config.length > 0) {
             return config;
         }
-        else if (isset(config.elm)
+        else if (sjl.isset(config.elm)
             && config.elm instanceof $ && config.length > 0) {
             return config.elm
         }
 
         // If Selector
-        if (isset(config.selector)
-            && empty(config.elm) && typeof config.selector === 'string') {
+        if (sjl.isset(config.selector)
+            && sjl.empty(config.elm) && typeof config.selector === 'string') {
             if (typeof config.appendTo === 'string'
                 && config.appendTo.length > 0
                 && config.appendTo.indexOf('this') === -1) {
@@ -151,21 +151,21 @@ $.widget('jui.juiBase', {
         }
 
         // Create element and `append to` config section if necessary
-        if (!empty(config.html) && config.create
+        if (!sjl.empty(config.html) && config.create
             && typeof config.html === 'string') {
 
             // Create element
             config.elm = this._createElementFromOptions(config);
 
             // Append element
-            if (isset(config.appendTo)
+            if (sjl.isset(config.appendTo)
                 && typeof config.appendTo === 'string') {
                 self._appendElementFromOptions(config);
             }
         }
 
         // Return element
-        return !empty(config.elm) ? config.elm : null;
+        return !sjl.empty(config.elm) ? config.elm : null;
     },
 
     _appendElementFromOptions: function (config) {
@@ -211,19 +211,19 @@ $.widget('jui.juiBase', {
         var elm = null;
 
         // If config is string look it up in our options hash
-        if (isset(config) && typeof config === 'string') {
+        if (sjl.isset(config) && typeof config === 'string') {
             config = this._namespace(config);
         }
 
         // If config is empty
-        if (empty(config)) {
+        if (sjl.empty(config)) {
             return null;
         }
 
         // Assume config is an object
         if (config.html) {
             elm = $(config.html);
-            if (isset(config.attribs)
+            if (sjl.isset(config.attribs)
                 && $.isPlainObject(config.attribs)) {
                 elm.attr(config.attribs);
             }
@@ -250,7 +250,7 @@ $.widget('jui.juiBase', {
 
     _setOptions: function (options) {
         var self = this;
-        if (!isset(options)) {
+        if (!sjl.isset(options)) {
             return;
         }
         $.each(options, function (key, value) {
@@ -260,9 +260,9 @@ $.widget('jui.juiBase', {
     },
 
     _callSetterForKey: function (key, value) {
-        var setterFunc = 'set' + strToCamelCase(key),
+        var setterFunc = 'set' + sjl.camelCase(key, true),
             self = this;
-        if (isset(self[setterFunc])) {
+        if (sjl.isset(self[setterFunc])) {
             self[setterFunc](value);
         }
         else {
@@ -283,30 +283,30 @@ $.widget('jui.juiBase', {
             i, config, elm, dur, props,
             _animations;
 
-        timeline = !isset(timeline) ? this.getAnimationTimeline() : timeline;
+        timeline = !sjl.isset(timeline) ? this.getAnimationTimeline() : timeline;
         options = options || self.options;
         animations = animations || null;
 
         ops = options;
 
         // If default animations, use them
-        if (isset(ops.defaultAnimations)
+        if (sjl.isset(ops.defaultAnimations)
             && ops.defaultAnimations instanceof Array) {
             _animations = ops.defaultAnimations;
         }
 
         // If animations, use them (also override defaults if any)
-        if (isset(ops.animations)
-            && ops.animations instanceof Array && isset(_animations)) {
-            _animations = isset(animations)
+        if (sjl.isset(ops.animations)
+            && ops.animations instanceof Array && sjl.isset(_animations)) {
+            _animations = sjl.isset(animations)
                 ? $.extend(true, _animations, ops.animations) : ops.animations;
         }
 
         // Set animations variable
-        if (isset(animations) && isset(_animations)) {
+        if (sjl.isset(animations) && sjl.isset(_animations)) {
             animations = $.extend(true, _animations, animations);
         }
-        else if (isset(_animations)) {
+        else if (sjl.isset(_animations)) {
             animations = _animations;
         }
         // If no animations, bail
@@ -322,7 +322,7 @@ $.widget('jui.juiBase', {
             props = config.props;
 
             // Pre init function
-            if (isset(config.preInit) && typeof config.preInit === 'function') {
+            if (sjl.isset(config.preInit) && typeof config.preInit === 'function') {
                 config.preInit.apply(this);
             }
 
@@ -330,7 +330,7 @@ $.widget('jui.juiBase', {
             timeline[config.type](elm, dur, props);
 
             // Post init function
-            if (isset(config.postInit) && typeof config.postInit === 'function') {
+            if (sjl.isset(config.postInit) && typeof config.postInit === 'function') {
                 config.postInit.apply(this);
             }
         }
@@ -338,10 +338,10 @@ $.widget('jui.juiBase', {
 
     _removeDisabledElements: function (options) {
         // Get options
-        ops = !isset(options) ? this.options : options;
+        ops = !sjl.isset(options) ? this.options : options;
 
         // Set our ui collection
-        if (!isset(ops.ui)) {
+        if (!sjl.isset(ops.ui)) {
             ops.ui = {};
         }
 
@@ -353,7 +353,7 @@ $.widget('jui.juiBase', {
             // If key is plain object
             if ($.isPlainObject(ops[key])) {
                 // If element is populated and disabled remove it
-                if (!ops.enabled && isset(ops[key].elm) && ops[key].elm.length > 0) {
+                if (!ops.enabled && sjl.isset(ops[key].elm) && ops[key].elm.length > 0) {
                     ops[key].elm.remove();
                 }
             }
@@ -369,7 +369,7 @@ $.widget('jui.juiBase', {
     getUiElement: function (alias) {
         var ops = this.options,
             elm = null;
-        if (isset(ops.ui[alias])) {
+        if (sjl.isset(ops.ui[alias])) {
             elm = ops.ui[alias].elm;
             if (elm instanceof $ && elm.length > 0) {
                 return elm;
@@ -399,7 +399,7 @@ $.widget('jui.juiBase', {
      */
     getAnimationTimeline: function () {
         var timeline = this.options.timeline;
-        if (empty(timeline)) {
+        if (sjl.empty(timeline)) {
             timeline =
                 this.options.timeline =
                     new window[this.options.defaultTimelineClass];
@@ -434,7 +434,7 @@ $.widget('jui.juiBase', {
         var retVal = null;
         if (typeof key === 'string' && $.isPlainObject(hash)) {
             retVal = this._namespace(key, hash);
-            if (typeof retVal === 'function' && empty(raw)) {
+            if (typeof retVal === 'function' && sjl.empty(raw)) {
                 retVal = args ? retVal.apply(this, args) : retVal.apply(this);
             }
         }
@@ -452,7 +452,7 @@ $.widget('jui.juiBase', {
      */
     getTimelineClassName: function () {
         var ops = this.options;
-        return isset(ops.timelineClassName) ? ops.timelineClassName :
+        return sjl.isset(ops.timelineClassName) ? ops.timelineClassName :
             ops.defaultTimelineClassName;
     }
 

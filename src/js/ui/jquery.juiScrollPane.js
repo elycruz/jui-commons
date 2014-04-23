@@ -29,7 +29,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         scrollSpeed: function () {
             var retVal = 0;
             retVal = this.getUiElement('contentHolder').height() / 3 / 3 * 2;
-            return classOfIs(retVal, 'Number') ? retVal : 0;
+            return sjl.classOfIs(retVal, 'Number') ? retVal : 0;
         },
 
         // Left, up, right, down arrow keys and their direction values
@@ -161,8 +161,8 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 e.stopPropagation();
             }
 
-            delta = isset(delta) ? delta :
-                (isset(deltaX)? deltaX : deltaY);
+            delta = sjl.isset(delta) ? delta :
+                (sjl.isset(deltaX)? deltaX : deltaY);
 
             // Prelims
             scrollSpeed = self.getValueFromOptions('scrollSpeed');
@@ -255,7 +255,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             scrollbar = this.getScrollbarByOrientation(layout),
             scrollPercent,
             dir = vars.cssCalcDir,
-            dimProp = 'outer' + ucaseFirst(vars.scrollbarDimProp);
+            dimProp = 'outer' + sjl.ucaseFirst(vars.scrollbarDimProp);
 
         // If not scrollable bail
         if (contentHolder[vars.scrollbarDimProp]() >= scrollTotal) {
@@ -263,7 +263,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
 
         if (value <= scrollTotal && value >= 0) {
-            contentHolder['scroll' + ucaseFirst(dir)](value);
+            contentHolder['scroll' + sjl.ucaseFirst(dir)](value);
             scrollPercent = value / scrollTotal;
             handle.css(dir, scrollbar[dimProp]() * scrollPercent);
         }
@@ -292,7 +292,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         // Math
             percentScroll = handle.position()[dir] / scrollbar[dimProp](),
             scrollPos = percentScroll * scrollAmountTotal,
-            contentHolderScrollFunc = 'scroll' + ucaseFirst(dir);
+            contentHolderScrollFunc = 'scroll' + sjl.ucaseFirst(dir);
 
         // Scroll only if limits haven't been reached
         if (scrollPos >= 0 && scrollPos <= scrollAmountTotal) {
@@ -352,7 +352,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 var percentScroll =
                     ui.position[dir] / scrollbar[dimProp]();
 
-                contentHolder['scroll' + ucaseFirst(dir)]
+                contentHolder['scroll' + sjl.ucaseFirst(dir)]
                     (percentScroll * scrollVars.scrollAmountTotal);
             }
         });
@@ -376,7 +376,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             dimProp = vars.scrollbarDimProp,
             contentDimVal = contentHolder[dimProp](),
             scrollTotal = contentHolder.get(0)['scroll'
-                + ucaseFirst(dimProp)],
+                + sjl.ucaseFirst(dimProp)],
             scrollbarDimVal = scrollBar[dimProp]();
         handle[dimProp]
             ((contentDimVal * scrollbarDimVal) / scrollTotal);

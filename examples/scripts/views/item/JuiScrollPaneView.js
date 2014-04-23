@@ -21,7 +21,7 @@ function( Backbone, tmpl ) {
             var self = this;
 
             self.ui.toggleCreationStateBtn.click(function () {
-                if (!empty(self.scrollPanes)) {
+                if (!sjl.empty(self.scrollPanes)) {
                     self.scrollPanes.juiScrollPane('destroy');
                     self.scrollPanes = null;
                 }
@@ -32,7 +32,7 @@ function( Backbone, tmpl ) {
             });
 
             self.ui.toggleMimickBrowserBtn.click(function () {
-                if (empty(self.scrollPanes)) {
+                if (sjl.empty(self.scrollPanes)) {
                     self.ui.toggleCreationStateBtn.trigger('click');
                 }
                 var currVal = self.scrollPanes.juiScrollPane('option', 'mimickBrowser');

@@ -47,7 +47,7 @@
          * @return string default '00:00'
          */
         this.prettyPrint = function (obj) {
-            var output = (!empty(arguments[1])  ? this.leadingZero(obj.hours)  +
+            var output = (!sjl.empty(arguments[1])  ? this.leadingZero(obj.hours)  +
                 ':' : '')  + this.leadingZero(obj.minutes)  + ':' +
                 this.leadingZero(obj.seconds);
             return output;
@@ -60,7 +60,7 @@
          * @return string default '00:00'
          */
         this.prettyPrintFromSecs = function (secs) {
-            if (!empty(arguments[1]) ) {
+            if (!sjl.empty(arguments[1]) ) {
                 return this.prettyPrint(this.resolveFromSecs(secs) , arguments[1]);
             }
             return this.prettyPrint(this.resolveFromSecs(secs) );
@@ -208,7 +208,7 @@
 
             // Set audio time helper for now
             // @todo decide what to do with the media time helper class
-            if (empty(audio_ns.timeHelper) ) {
+            if (sjl.empty(audio_ns.timeHelper) ) {
                 audio_ns.timeHelper = new MediaTime();
             }
 

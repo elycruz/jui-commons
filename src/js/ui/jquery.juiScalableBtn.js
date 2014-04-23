@@ -34,7 +34,7 @@ $.widget('jui.juiScalableBtn', $.jui.juiBase, {
     },
 
     _init: function () {
-        if (!isset(this.options._eventListenersHaveBeenAdded)) {
+        if (!sjl.isset(this.options._eventListenersHaveBeenAdded)) {
             this._addEventListeners();
             this.options._eventListenersHaveBeenAdded = true;
         }
@@ -68,7 +68,7 @@ $.widget('jui.juiScalableBtn', $.jui.juiBase, {
     _getOverridingDuration: function () {
         var ops = this.options,
             retVal = null;
-        if (!isset(ops.duration)) {
+        if (!sjl.isset(ops.duration)) {
             retVal = ops.duration;
         }
         else {

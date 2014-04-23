@@ -16,6 +16,9 @@
         width: 13px;
         .handle {
             width: 13px;
+            &:hover {
+                cursor: ns-resize;
+            }
         }
     }
 
@@ -26,6 +29,9 @@
         width: 100%;
         .handle {
             height: 13px;
+            &:hover {
+                cursor: ew-resize;
+            }
         }
     }
 

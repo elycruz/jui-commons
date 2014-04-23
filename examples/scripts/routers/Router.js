@@ -26,7 +26,7 @@ define([
             action = action || 'index';
 
             var controllerClassName = this.getControllerClassName(controller),
-                actionName = this.getActionName(action || 'index'),
+                actionName = this.getActionName(typeof action !== 'function' ? action : 'index'),
                 requestParams = Array.prototype.slice.call(arguments, 3)[0],
                 E,
 
@@ -53,7 +53,7 @@ define([
         },
 
         getActionName: function (action) {
-            return strToCamelCase(action, true)
+            return sjl.camelCase(action)
                 + this.actionNameSuffix;
         },
 
@@ -62,8 +62,9 @@ define([
             if (!this.objAliasRegex.test(alias)) {
                 return null;
             }
-            return strToCamelCase(alias);
+            return sjl.camelCase(alias, true);
         }
 
     });
+
 });

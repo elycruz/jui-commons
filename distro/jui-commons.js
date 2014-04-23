@@ -1,4 +1,4 @@
-/*! jui-commons 2014-04-13 */
+/*! jui-commons 2014-04-22 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -6,27 +6,27 @@ $.widget("jui.juiBase", {
         ui: {}
     },
     _namespace: function(a, b, c) {
-        var d, e = a.split("."), f = isset(b) ? b : this.options;
+        var d, e = a.split("."), f = sjl.isset(b) ? b : this.options;
         for (d = 0; d < e.length; d += 1) "undefined" == typeof f[e[d]] && (f[e[d]] = {}), 
         d === e.length - 1 && "undefined" != typeof c && (f[e[d]] = c), f = f[e[d]];
         return f;
     },
     _populateUiElementsFromOptions: function(a) {
-        var b = this, c = isset(a) ? a : this.options;
-        isset(c.ui) || (c.ui = {}), c = c.ui;
+        var b = this, c = sjl.isset(a) ? a : this.options;
+        sjl.isset(c.ui) || (c.ui = {}), c = c.ui;
         for (var d in c) if (c.hasOwnProperty(d) && ("string" == typeof c[d] && (c[d] = c[d] = $(c[d], b.element)), 
         $.isPlainObject(c[d]))) {
-            if (isset(c[d].elm) && c[d].elm.length > 0) return;
+            if (sjl.isset(c[d].elm) && c[d].elm.length > 0) return;
             c[d].elm = b._getElementFromOptions(c[d]);
         }
     },
     _getElementFromOptions: function(a) {
         var b = this, c = b.options, d = a;
         return "string" == typeof d && (d = b._namespace(d, c)), "function" == typeof d && (d = d()), 
-        empty(d) ? null : d instanceof $ && d.length > 0 ? d : isset(d.elm) && d.elm instanceof $ && d.length > 0 ? d.elm : (isset(d.selector) && empty(d.elm) && "string" == typeof d.selector && (d.elm = "string" == typeof d.appendTo && d.appendTo.length > 0 && -1 === d.appendTo.indexOf("this") ? $(d.selector, b.getUiElement(d.appendTo)) : $(d.selector, b.element)), 
-        !empty(d.html) && d.create && "string" == typeof d.html && (d.elm = this._createElementFromOptions(d), 
-        isset(d.appendTo) && "string" == typeof d.appendTo && b._appendElementFromOptions(d)), 
-        empty(d.elm) ? null : d.elm);
+        sjl.empty(d) ? null : d instanceof $ && d.length > 0 ? d : sjl.isset(d.elm) && d.elm instanceof $ && d.length > 0 ? d.elm : (sjl.isset(d.selector) && sjl.empty(d.elm) && "string" == typeof d.selector && (d.elm = "string" == typeof d.appendTo && d.appendTo.length > 0 && -1 === d.appendTo.indexOf("this") ? $(d.selector, b.getUiElement(d.appendTo)) : $(d.selector, b.element)), 
+        !sjl.empty(d.html) && d.create && "string" == typeof d.html && (d.elm = this._createElementFromOptions(d), 
+        sjl.isset(d.appendTo) && "string" == typeof d.appendTo && b._appendElementFromOptions(d)), 
+        sjl.empty(d.elm) ? null : d.elm);
     },
     _appendElementFromOptions: function(a) {
         var b = this.element.parent();
@@ -37,8 +37,9 @@ $.widget("jui.juiBase", {
     },
     _createElementFromOptions: function(a) {
         var b = null;
-        return isset(a) && "string" == typeof a && (a = this._namespace(a)), empty(a) ? null : (a.html && (b = $(a.html), 
-        isset(a.attribs) && $.isPlainObject(a.attribs) && b.attr(a.attribs)), b);
+        return sjl.isset(a) && "string" == typeof a && (a = this._namespace(a)), 
+        sjl.empty(a) ? null : (a.html && (b = $(a.html), sjl.isset(a.attribs) && $.isPlainObject(a.attribs) && b.attr(a.attribs)), 
+        b);
     },
     _removeCreatedElements: function() {
         var a = this, b = a.options;
@@ -49,36 +50,36 @@ $.widget("jui.juiBase", {
     },
     _setOptions: function(a) {
         var b = this;
-        if (isset(a)) return $.each(a, function(a, c) {
+        if (sjl.isset(a)) return $.each(a, function(a, c) {
             b._callSetterForKey(a, c);
         }), b;
     },
     _callSetterForKey: function(a, b) {
-        var c = "set" + strToCamelCase(a), d = this;
-        isset(d[c]) ? d[c](b) : d._setOption(a, b);
+        var c = "set" + sjl.camelCase(a, !0), d = this;
+        sjl.isset(d[c]) ? d[c](b) : d._setOption(a, b);
     },
     _initAnimationTimeline: function(a, b, c) {
         var d, e, f, g, h, i, j, k = this;
-        if (a = isset(a) ? a : this.getAnimationTimeline(), c = c || k.options, 
-        b = b || null, d = c, isset(d.defaultAnimations) && d.defaultAnimations instanceof Array && (j = d.defaultAnimations), 
-        isset(d.animations) && d.animations instanceof Array && isset(j) && (j = isset(b) ? $.extend(!0, j, d.animations) : d.animations), 
-        isset(b) && isset(j)) b = $.extend(!0, j, b); else {
-            if (!isset(j)) return;
+        if (a = sjl.isset(a) ? a : this.getAnimationTimeline(), c = c || k.options, 
+        b = b || null, d = c, sjl.isset(d.defaultAnimations) && d.defaultAnimations instanceof Array && (j = d.defaultAnimations), 
+        sjl.isset(d.animations) && d.animations instanceof Array && sjl.isset(j) && (j = sjl.isset(b) ? $.extend(!0, j, d.animations) : d.animations), 
+        sjl.isset(b) && sjl.isset(j)) b = $.extend(!0, j, b); else {
+            if (!sjl.isset(j)) return;
             b = j;
         }
         for (e = 0; e < b.length; e += 1) f = b[e], g = k.getUiElement(f.elmAlias), 
-        h = f.duration, i = f.props, isset(f.preInit) && "function" == typeof f.preInit && f.preInit.apply(this), 
-        a[f.type](g, h, i), isset(f.postInit) && "function" == typeof f.postInit && f.postInit.apply(this);
+        h = f.duration, i = f.props, sjl.isset(f.preInit) && "function" == typeof f.preInit && f.preInit.apply(this), 
+        a[f.type](g, h, i), sjl.isset(f.postInit) && "function" == typeof f.postInit && f.postInit.apply(this);
     },
     _removeDisabledElements: function(a) {
-        ops = isset(a) ? a : this.options, isset(ops.ui) || (ops.ui = {}), ops = ops.ui, 
-        Object.keys(ops).forEach(function(a) {
-            $.isPlainObject(ops[a]) && !ops.enabled && isset(ops[a].elm) && ops[a].elm.length > 0 && ops[a].elm.remove();
+        ops = sjl.isset(a) ? a : this.options, sjl.isset(ops.ui) || (ops.ui = {}), 
+        ops = ops.ui, Object.keys(ops).forEach(function(a) {
+            $.isPlainObject(ops[a]) && !ops.enabled && sjl.isset(ops[a].elm) && ops[a].elm.length > 0 && ops[a].elm.remove();
         });
     },
     getUiElement: function(a) {
         var b = this.options, c = null;
-        return isset(b.ui[a]) && (c = b.ui[a].elm, c instanceof $ && c.length > 0) ? c : this._getElementFromOptions("ui." + a);
+        return sjl.isset(b.ui[a]) && (c = b.ui[a].elm, c instanceof $ && c.length > 0) ? c : this._getElementFromOptions("ui." + a);
     },
     setCssOnUiElement: function(a, b) {
         var c = this.getUiElement(a);
@@ -86,7 +87,7 @@ $.widget("jui.juiBase", {
     },
     getAnimationTimeline: function() {
         var a = this.options.timeline;
-        return empty(a) && (a = this.options.timeline = new window[this.options.defaultTimelineClass]()), 
+        return sjl.empty(a) && (a = this.options.timeline = new window[this.options.defaultTimelineClass]()), 
         a;
     },
     getValueFromOptions: function(a, b, c) {
@@ -96,7 +97,7 @@ $.widget("jui.juiBase", {
         c = c || null, d = d || !1;
         var e = null;
         return "string" == typeof a && $.isPlainObject(b) && (e = this._namespace(a, b), 
-        "function" == typeof e && empty(d) && (e = c ? e.apply(this, c) : e.apply(this))), 
+        "function" == typeof e && sjl.empty(d) && (e = c ? e.apply(this, c) : e.apply(this))), 
         e;
     },
     setValueOnHash: function(a, b, c) {
@@ -104,7 +105,7 @@ $.widget("jui.juiBase", {
     },
     getTimelineClassName: function() {
         var a = this.options;
-        return isset(a.timelineClassName) ? a.timelineClassName : a.defaultTimelineClassName;
+        return sjl.isset(a.timelineClassName) ? a.timelineClassName : a.defaultTimelineClassName;
     }
 }), $.widget("jui.splitText", {
     options: {
@@ -203,15 +204,15 @@ $.widget("jui.juiBase", {
         c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
         g.bind("scroll resize orientationchange load", function() {
             {
-                var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), isset(a.bottom) ? a.bottom : 0), k = isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
+                var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
                 g.width() - k;
             }
-            c.realtime && (a = b._getUserDefinedOffset()), e && (isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
+            c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
                 position: "fixed",
                 top: a.top,
                 bottom: "auto"
             }) : i <= f.top && (d.css("position", f.position), d.css("top", f.top), 
-            d.css("bottom", "auto"))), isset(a.bottom) && (f.top - l <= i ? d.css({
+            d.css("bottom", "auto"))), sjl.isset(a.bottom) && (f.top - l <= i ? d.css({
                 position: f.position,
                 top: f.top,
                 bottom: f.bottom
@@ -225,7 +226,7 @@ $.widget("jui.juiBase", {
     _getUserDefinedOffset: function() {
         var a = this, b = a.options, c = a.getValueFromOptions("offset");
         return $.each([ "top", "right", "bottom", "left" ], function(d, e) {
-            isset(c[e]) || (b.offset[e] = a.element.attr("data-offset-" + c[e]) || null);
+            sjl.isset(c[e]) || (b.offset[e] = a.element.attr("data-offset-" + c[e]) || null);
         }), c;
     }
 }), function() {
@@ -241,10 +242,10 @@ $.widget("jui.juiBase", {
         }, this.leadingZero = function(a) {
             return 10 > a && (a = "0" + a), a;
         }, this.prettyPrint = function(a) {
-            var b = (empty(arguments[1]) ? "" : this.leadingZero(a.hours) + ":") + this.leadingZero(a.minutes) + ":" + this.leadingZero(a.seconds);
+            var b = (sjl.empty(arguments[1]) ? "" : this.leadingZero(a.hours) + ":") + this.leadingZero(a.minutes) + ":" + this.leadingZero(a.seconds);
             return b;
         }, this.prettyPrintFromSecs = function(a) {
-            return empty(arguments[1]) ? this.prettyPrint(this.resolveFromSecs(a)) : this.prettyPrint(this.resolveFromSecs(a), arguments[1]);
+            return sjl.empty(arguments[1]) ? this.prettyPrint(this.resolveFromSecs(a)) : this.prettyPrint(this.resolveFromSecs(a), arguments[1]);
         };
     }
     $.widget("jui.juiAudioPlayer", $.jui.juiBase, {
@@ -352,7 +353,7 @@ $.widget("jui.juiBase", {
             this.element.html(this.options.template);
             var c = this.options.audio;
             c.obj = c.obj || new Audio(), c.obj.volume = c.volume, c.obj.autoplay = c.autoplay, 
-            c.obj.preload = c.preload, empty(c.timeHelper) && (c.timeHelper = new a()), 
+            c.obj.preload = c.preload, sjl.empty(c.timeHelper) && (c.timeHelper = new a()), 
             this._addControlListeners(), this._addAudioObjectListeners(), this.setAudioTitleElmText("Loading..."), 
             this.gotoAudioSrcNum(0), this.changeVolume(c.obj.volume), this.options.controls.volumeSlider.enabled && this.options.controls.volumeSlider.elm.slider("value", 100 * c.obj.volume);
         },
@@ -524,18 +525,18 @@ $.widget("jui.juiBase", {
         var a = this, b = a.options;
         "string" == typeof b.className && b.className.length > 0 && a.element.addClass(b.className), 
         "string" == typeof b.template && b.template.length > 0 && a.element.append(b.template), 
-        a._populateUiElementsFromOptions(b), a._addEventListeners(), empty(b.skipPagesCalculation) && a._calculateNumberOfPages(b), 
+        a._populateUiElementsFromOptions(b), a._addEventListeners(), sjl.empty(b.skipPagesCalculation) && a._calculateNumberOfPages(b), 
         a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.getFirstBtnElm(), c = a.getNextBtnElm(), d = a.getPrevBtnElm(), e = a.getLastBtnElm();
-        isset(b) && b.length > 0 && b.on("click", function(b) {
+        sjl.isset(b) && b.length > 0 && b.on("click", function(b) {
             b.preventDefault(), a.firstPage();
-        }), isset(d) && d.length > 0 && d.on("click", function(b) {
+        }), sjl.isset(d) && d.length > 0 && d.on("click", function(b) {
             b.preventDefault(), a.prevPage();
-        }), isset(c) && c.length > 0 && c.on("click", function(b) {
+        }), sjl.isset(c) && c.length > 0 && c.on("click", function(b) {
             b.preventDefault(), a.nextPage();
-        }), isset(e) && e.length > 0 && e.on("click", function(b) {
+        }), sjl.isset(e) && e.length > 0 && e.on("click", function(b) {
             b.preventDefault(), a.lastPage();
         });
     },
@@ -575,8 +576,8 @@ $.widget("jui.juiBase", {
     }
 }), function() {
     function a() {
-        return argsToArray(arguments).filter(function(a) {
-            return isset(a);
+        return sjl.argsToArray(arguments).filter(function(a) {
+            return sjl.isset(a);
         });
     }
     $.widget("jui.juiDialog", $.jui.juiBase, {
@@ -673,7 +674,7 @@ $.widget("jui.juiBase", {
         },
         _setClassNameFromOptions: function() {
             var a = this, b = a.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
-            empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
+            sjl.empty(c) || (sjl.empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
             a.getUiElement("wrapperElm").attr("class", b.ui.wrapperElm.attribs["class"]);
         },
         _setContentFromThisElement: function() {
@@ -944,7 +945,7 @@ $.widget("jui.juiBase", {
     },
     _create: function() {},
     _init: function() {
-        isset(this.options._eventListenersHaveBeenAdded) || (this._addEventListeners(), 
+        sjl.isset(this.options._eventListenersHaveBeenAdded) || (this._addEventListeners(), 
         this.options._eventListenersHaveBeenAdded = !0);
     },
     _addEventListeners: function() {
@@ -961,7 +962,7 @@ $.widget("jui.juiBase", {
     },
     _getOverridingDuration: function() {
         var a = this.options, b = null;
-        return b = isset(a.duration) ? a.defaultDurationsVal : a.duration;
+        return b = sjl.isset(a.duration) ? a.defaultDurationsVal : a.duration;
     },
     _removeEventListeners: function() {
         this.element.unbind();
@@ -973,7 +974,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, classOfIs(a, "Number") ? a : 0;
+            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, sjl.classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,
@@ -1049,7 +1050,7 @@ $.widget("jui.juiBase", {
         c > b.width() ? e.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : e.getUiElement("horizScrollbar").css("display", "none"), 
         b.bind("mousewheel", function(a, c, d, f) {
             var g, h, i = e.getValueFromOptions("mimickBrowser");
-            i || (a.preventDefault(), a.stopPropagation()), c = isset(c) ? c : isset(d) ? d : f, 
+            i || (a.preventDefault(), a.stopPropagation()), c = sjl.isset(c) ? c : sjl.isset(d) ? d : f, 
             g = e.getValueFromOptions("scrollSpeed"), h = 1 > c ? g : -g, 0 !== d && 0 === f ? (e.scrollHorizontally(b.scrollLeft() + h), 
             i && 0 !== b.scrollLeft() && b.scrollLeft() !== b.get(0).scrollWidth && (a.preventDefault(), 
             a.stopPropagation())) : 0 === d && 0 !== f && (e.scrollVertically(b.scrollTop() + h), 
@@ -1078,13 +1079,13 @@ $.widget("jui.juiBase", {
         });
     },
     _scrollByOrientation: function(a, b) {
-        var c, d = (this.options, this.getUiElement("contentHolder")), e = b, f = this.getScrollDirVars(e), g = f.scrollAmountTotal, h = this.getScrollbarHandleByOrientation(e), i = this.getScrollbarByOrientation(e), j = f.cssCalcDir, k = "outer" + ucaseFirst(f.scrollbarDimProp);
-        d[f.scrollbarDimProp]() >= g || (g >= a && a >= 0 ? (d["scroll" + ucaseFirst(j)](a), 
+        var c, d = (this.options, this.getUiElement("contentHolder")), e = b, f = this.getScrollDirVars(e), g = f.scrollAmountTotal, h = this.getScrollbarHandleByOrientation(e), i = this.getScrollbarByOrientation(e), j = f.cssCalcDir, k = "outer" + sjl.ucaseFirst(f.scrollbarDimProp);
+        d[f.scrollbarDimProp]() >= g || (g >= a && a >= 0 ? (d["scroll" + sjl.ucaseFirst(j)](a), 
         c = a / g, h.css(j, i[k]() * c)) : a > g ? h.css(j, i[k]() - h[k]()) : 0 > a && h.css(j, 0), 
         this.scrollContentHolder(e), this.constrainHandle(e));
     },
     scrollContentHolder: function(a) {
-        var b = this.getScrollbarHandleByOrientation(a), c = this.getScrollbarByOrientation(a), d = this.getUiElement("contentHolder"), e = this.getScrollDirVars(a), f = e.scrollAmountTotal, g = e.cssCalcDir, h = e.scrollbarDimProp, i = b.position()[g] / c[h](), j = i * f, k = "scroll" + ucaseFirst(g);
+        var b = this.getScrollbarHandleByOrientation(a), c = this.getScrollbarByOrientation(a), d = this.getUiElement("contentHolder"), e = this.getScrollDirVars(a), f = e.scrollAmountTotal, g = e.cssCalcDir, h = e.scrollbarDimProp, i = b.position()[g] / c[h](), j = i * f, k = "scroll" + sjl.ucaseFirst(g);
         j >= 0 && f >= j ? d[k](i * f) : 0 > j ? d[k](0) : j > f && d[k](f);
     },
     constrainHandle: function(a) {
@@ -1100,7 +1101,7 @@ $.widget("jui.juiBase", {
             axis: g,
             drag: function(a, c) {
                 var e = c.position[h] / b[i]();
-                d["scroll" + ucaseFirst(h)](e * f.scrollAmountTotal);
+                d["scroll" + sjl.ucaseFirst(h)](e * f.scrollAmountTotal);
             }
         }), b.bind("click", function(b) {
             b.stopPropagation(), c.css(h, b["offset" + g.toUpperCase()] - c[i]() / 2), 
@@ -1108,7 +1109,7 @@ $.widget("jui.juiBase", {
         });
     },
     initScrollbarHandle: function(a) {
-        var b = this.getUiElement("contentHolder"), c = this.getScrollbarByOrientation(a), d = this.getScrollbarHandleByOrientation(a), e = this.getScrollDirVars(a), f = e.scrollbarDimProp, g = b[f](), h = b.get(0)["scroll" + ucaseFirst(f)], i = c[f]();
+        var b = this.getUiElement("contentHolder"), c = this.getScrollbarByOrientation(a), d = this.getScrollbarHandleByOrientation(a), e = this.getScrollDirVars(a), f = e.scrollbarDimProp, g = b[f](), h = b.get(0)["scroll" + sjl.ucaseFirst(f)], i = c[f]();
         d[f](g * i / h);
     },
     getScrollDirVars: function(a) {
@@ -1254,7 +1255,7 @@ $.widget("jui.juiBase", {
     },
     _initScrollbar: function() {
         var a = this.options, b = this._namespace("ui.scrollbar");
-        !empty(b.elm) && b.elm.length > 0 || (this.element.juiScrollPane({
+        !sjl.empty(b.elm) && b.elm.length > 0 || (this.element.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement("contentElm"),
@@ -1267,7 +1268,7 @@ $.widget("jui.juiBase", {
         this._initAnimationTimeline();
     },
     _initTimeline: function() {
-        empty(this.options.timeline) && this.initAnimationTimeline();
+        sjl.empty(this.options.timeline) && this.initAnimationTimeline();
     },
     ensureAnimationFunctionality: function() {
         this._initScrollbar(), this._initTimeline();
@@ -1380,7 +1381,7 @@ $.widget("jui.juiBase", {
     },
     _init: function() {
         var a = this, b = this.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
-        empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
+        sjl.empty(c) || (sjl.empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
         this.options.timeline = new TimelineLite({
             paused: !0
         }), this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
@@ -1392,11 +1393,11 @@ $.widget("jui.juiBase", {
         c.each(function(b, f) {
             if (f = $(f), 0 !== b || !e.skipFirstOptionItem) {
                 var g = a.getValueFromOptionElm(f), h = a.getLabelFromOptionElm(f), i = f.attr("class"), j = "";
-                isset(e.selectedValue) && e.selectedValue === g && (empty(j) ? j = e.ui.optionsElm.optionSelectedClassName : (j.length > 0 && (j += " "), 
+                sjl.isset(e.selectedValue) && e.selectedValue === g && (sjl.empty(j) ? j = e.ui.optionsElm.optionSelectedClassName : (j.length > 0 && (j += " "), 
                 j += e.ui.optionsElm.optionSelectedClassName), j = ' class="' + j + '"'), 
-                i = empty(i) ? "" : 'class="' + i + '" ', g = ' data-value="' + g + '" ';
+                i = sjl.empty(i) ? "" : 'class="' + i + '" ', g = ' data-value="' + g + '" ';
                 var k = $("<li" + j + "><a " + i + 'href="javascript: void(0);"' + g + ">" + h + "</a></li>");
-                0 !== b || empty(e.ui.buttonElm.text) ? 1 === b && empty(e.ui.buttonElm.text) && k.addClass("first") : k.addClass("first"), 
+                0 !== b || sjl.empty(e.ui.buttonElm.text) ? 1 === b && sjl.empty(e.ui.buttonElm.text) && k.addClass("first") : k.addClass("first"), 
                 b === c.length - 1 && k.addClass("last"), d.append(k);
             }
         }), b.append(d);
@@ -1411,7 +1412,7 @@ $.widget("jui.juiBase", {
             a.clearSelected(), a.setSelected(d), b.timeline.reverse();
         }), this.element.on("change", function() {
             var b = $(this), c = b.val();
-            isset(c) && a.setSelectedItemLabelText(c);
+            sjl.isset(c) && a.setSelectedItemLabelText(c);
         });
     },
     _removeCreatedOptions: function() {
@@ -1428,7 +1429,7 @@ $.widget("jui.juiBase", {
                     selector: h.ui.optionsElm.selector + ""
                 }
             }
-        }, isset(h.expandOn) && (d.expandOn = h.expandOn), isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
+        }, sjl.isset(h.expandOn) && (d.expandOn = h.expandOn), sjl.isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
         c = i.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
         b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
             height: i.css("max-height")
@@ -1437,7 +1438,7 @@ $.widget("jui.juiBase", {
             autoAlpha: 1,
             delay: -.3
         }), TweenLite.to(a, k, {
-            autoAlpha: 1,
+            opacity: 1,
             delay: -.2
         }) ], e = 0; e < f.length; e += 1) b.add(f[e]);
     },
@@ -1450,7 +1451,7 @@ $.widget("jui.juiBase", {
     },
     setSelectedItemLabelText: function(a, b, c) {
         var d, e, f = this.options, g = f.ui.selectedItemLabelElm, h = this.getUiElement("selectedItemLabelElm").eq(0);
-        a = a || "", b = b || "text", c = isset(c) ? c : f.useSelectedLabelPrefixAndSuffix, 
+        a = a || "", b = b || "text", c = sjl.isset(c) ? c : f.useSelectedLabelPrefixAndSuffix, 
         c && (d = f.selectedLabelPrefix || g.prefixText || "", e = f.selectedLabelSuffix || g.suffixText || "", 
         a = d + a + e), TweenMax.to(h, .16, {
             autoAlpha: 0,
@@ -1464,7 +1465,7 @@ $.widget("jui.juiBase", {
         });
     },
     setLabelText: function(a, b) {
-        b = b || "text", a = a || (empty(this.options.ui.buttonElm.text) ? empty(this.options.labelText) ? this.element.find("option").eq(0).text() : this.options.labelText : this.options.ui.buttonElm.text), 
+        b = b || "text", a = a || (sjl.empty(this.options.ui.buttonElm.text) ? sjl.empty(this.options.labelText) ? this.element.find("option").eq(0).text() : this.options.labelText : this.options.ui.buttonElm.text), 
         this.getUiElement("labelElm").eq(0)[b](a);
     },
     setSelected: function(a) {
@@ -1491,12 +1492,12 @@ $.widget("jui.juiBase", {
     },
     getValueFromOptionElm: function(a) {
         var b, c = this.options;
-        return empty(a) ? null : (isset(c.valueAttribName) && (b = a.attr(c.valueAttribName)), 
-        isset(b) ? b : a.text());
+        return sjl.empty(a) ? null : (sjl.isset(c.valueAttribName) && (b = a.attr(c.valueAttribName)), 
+        sjl.isset(b) ? b : a.text());
     },
     getLabelFromOptionElm: function(a) {
         var b, c = this.options;
-        return empty(a) ? null : (isset(c.labelAttribName) && (b = a.attr(c.labelAtribName)), 
-        isset(b) ? b : a.text());
+        return sjl.empty(a) ? null : (sjl.isset(c.labelAttribName) && (b = a.attr(c.labelAtribName)), 
+        sjl.isset(b) ? b : a.text());
     }
 });

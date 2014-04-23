@@ -17,15 +17,15 @@ define(['backbone.marionette'], function(Marionette) {
             return this.requestParams;
         },
         getViewClassName: function () {
-            return strToCamelCase(this.requestParams.action
-                + this.viewClassSuffix);
+            return sjl.camelCase(this.requestParams.action
+                + this.viewClassSuffix, true);
         },
 
         dispatch: function (actionName) {
-            if (isset(this[actionName]) && typeof this[actionName] === 'function') {
+            if (sjl.isset(this[actionName]) && typeof this[actionName] === 'function') {
                 this[actionName]();
             }
-            if (isset(this.showView) && typeof this.showView === 'function') {
+            if (sjl.isset(this.showView) && typeof this.showView === 'function') {
                 this.showView();
             }
         }

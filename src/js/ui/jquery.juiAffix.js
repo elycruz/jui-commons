@@ -48,8 +48,8 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             var oElm = $(this),
                 scrollTop = oElm.scrollTop(),
                 scrollLeft = oElm.scrollLeft(),
-                affixBottom = isset(affixOffset.bottom) ? affixOffset.bottom : 0,
-                affixRight = isset(affixOffset.right) ? affixOffset.right : 0,
+                affixBottom = sjl.isset(affixOffset.bottom) ? affixOffset.bottom : 0,
+                affixRight = sjl.isset(affixOffset.right) ? affixOffset.right : 0,
                 bottomLimit = scrollableElm.height() - affixBottom - elm.outerHeight(),
                 rightLimit = scrollableElm.width() - affixRight;
 
@@ -59,7 +59,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             }
 
             if (affixVertically) {
-                if (isset(affixOffset.top)) {
+                if (sjl.isset(affixOffset.top)) {
                     if (scrollTop > original.top + affixOffset.top &&
                         elm.offset().top + elm.outerHeight() - scrollTop + affixOffset.top < bottomLimit) {
                         elm.css({
@@ -76,7 +76,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
                 }
 
 
-                if (isset(affixOffset.bottom)) {
+                if (sjl.isset(affixOffset.bottom)) {
                     if (original.top - bottomLimit <= scrollTop) {
                         elm.css({
                             position: original.position,
@@ -128,7 +128,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             ops = self.options,
             offsets = self.getValueFromOptions('offset');
         $.each(['top', 'right', 'bottom', 'left'], function (index, key) {
-            if (!isset(offsets[key])) {
+            if (!sjl.isset(offsets[key])) {
                 ops.offset[key] = self.element.attr('data-offset-' + offsets[key]) || null;
             }
         });

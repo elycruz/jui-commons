@@ -1,1781 +1,29 @@
 (function () {
-// Copyright 2009-2012 by contributors, MIT License
-// vim: ts=4 sts=4 sw=4 expandtab
-
-// Module systems magic dance
-(function (definition) {
-    // RequireJS
-    if (typeof define == "function") {
-        define('es5-shim',definition);
-    // YUI3
-    } else if (typeof YUI == "function") {
-        YUI.add("es5", definition);
-    // CommonJS and <script>
-    } else {
-        definition();
-    }
-})(function () {
-
-/**
- * Brings an environment as close to ECMAScript 5 compliance
- * as is possible with the facilities of erstwhile engines.
- *
- * Annotated ES5: http://es5.github.com/ (specific links below)
- * ES5 Spec: http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf
- * Required reading: http://javascriptweblog.wordpress.com/2011/12/05/extending-javascript-natives/
+/**! sjl.js Tue Apr 22 2014 22:55:05 GMT-0400 (Eastern Daylight Time) **//**
+ * Created by Ely on 4/19/2014.
  */
 
-//
-// Function
-// ========
-//
-
-// ES-5 15.3.4.5
-// http://es5.github.com/#x15.3.4.5
-
-function Empty() {}
-
-if (!Function.prototype.bind) {
-    Function.prototype.bind = function bind(that) { // .length is 1
-        // 1. Let Target be the this value.
-        var target = this;
-        // 2. If IsCallable(Target) is false, throw a TypeError exception.
-        if (typeof target != "function") {
-            throw new TypeError("Function.prototype.bind called on incompatible " + target);
-        }
-        // 3. Let A be a new (possibly empty) internal list of all of the
-        //   argument values provided after thisArg (arg1, arg2 etc), in order.
-        // XXX slicedArgs will stand in for "A" if used
-        var args = _Array_slice_.call(arguments, 1); // for normal call
-        // 4. Let F be a new native ECMAScript object.
-        // 11. Set the [[Prototype]] internal property of F to the standard
-        //   built-in Function prototype object as specified in 15.3.3.1.
-        // 12. Set the [[Call]] internal property of F as described in
-        //   15.3.4.5.1.
-        // 13. Set the [[Construct]] internal property of F as described in
-        //   15.3.4.5.2.
-        // 14. Set the [[HasInstance]] internal property of F as described in
-        //   15.3.4.5.3.
-        var bound = function () {
-
-            if (this instanceof bound) {
-                // 15.3.4.5.2 [[Construct]]
-                // When the [[Construct]] internal method of a function object,
-                // F that was created using the bind function is called with a
-                // list of arguments ExtraArgs, the following steps are taken:
-                // 1. Let target be the value of F's [[TargetFunction]]
-                //   internal property.
-                // 2. If target has no [[Construct]] internal method, a
-                //   TypeError exception is thrown.
-                // 3. Let boundArgs be the value of F's [[BoundArgs]] internal
-                //   property.
-                // 4. Let args be a new list containing the same values as the
-                //   list boundArgs in the same order followed by the same
-                //   values as the list ExtraArgs in the same order.
-                // 5. Return the result of calling the [[Construct]] internal
-                //   method of target providing args as the arguments.
-
-                var result = target.apply(
-                    this,
-                    args.concat(_Array_slice_.call(arguments))
-                );
-                if (Object(result) === result) {
-                    return result;
-                }
-                return this;
-
-            } else {
-                // 15.3.4.5.1 [[Call]]
-                // When the [[Call]] internal method of a function object, F,
-                // which was created using the bind function is called with a
-                // this value and a list of arguments ExtraArgs, the following
-                // steps are taken:
-                // 1. Let boundArgs be the value of F's [[BoundArgs]] internal
-                //   property.
-                // 2. Let boundThis be the value of F's [[BoundThis]] internal
-                //   property.
-                // 3. Let target be the value of F's [[TargetFunction]] internal
-                //   property.
-                // 4. Let args be a new list containing the same values as the
-                //   list boundArgs in the same order followed by the same
-                //   values as the list ExtraArgs in the same order.
-                // 5. Return the result of calling the [[Call]] internal method
-                //   of target providing boundThis as the this value and
-                //   providing args as the arguments.
-
-                // equiv: target.call(this, ...boundArgs, ...args)
-                return target.apply(
-                    that,
-                    args.concat(_Array_slice_.call(arguments))
-                );
-
-            }
-
-        };
-        if(target.prototype) {
-            Empty.prototype = target.prototype;
-            bound.prototype = new Empty();
-            // Clean up dangling references.
-            Empty.prototype = null;
-        }
-        // XXX bound.length is never writable, so don't even try
-        //
-        // 15. If the [[Class]] internal property of Target is "Function", then
-        //     a. Let L be the length property of Target minus the length of A.
-        //     b. Set the length own property of F to either 0 or L, whichever is
-        //       larger.
-        // 16. Else set the length own property of F to 0.
-        // 17. Set the attributes of the length own property of F to the values
-        //   specified in 15.3.5.1.
-
-        // TODO
-        // 18. Set the [[Extensible]] internal property of F to true.
-
-        // TODO
-        // 19. Let thrower be the [[ThrowTypeError]] function Object (13.2.3).
-        // 20. Call the [[DefineOwnProperty]] internal method of F with
-        //   arguments "caller", PropertyDescriptor {[[Get]]: thrower, [[Set]]:
-        //   thrower, [[Enumerable]]: false, [[Configurable]]: false}, and
-        //   false.
-        // 21. Call the [[DefineOwnProperty]] internal method of F with
-        //   arguments "arguments", PropertyDescriptor {[[Get]]: thrower,
-        //   [[Set]]: thrower, [[Enumerable]]: false, [[Configurable]]: false},
-        //   and false.
-
-        // TODO
-        // NOTE Function objects created using Function.prototype.bind do not
-        // have a prototype property or the [[Code]], [[FormalParameters]], and
-        // [[Scope]] internal properties.
-        // XXX can't delete prototype in pure-js.
-
-        // 22. Return F.
-        return bound;
-    };
-}
-
-// Shortcut to an often accessed properties, in order to avoid multiple
-// dereference that costs universally.
-// _Please note: Shortcuts are defined after `Function.prototype.bind` as we
-// us it in defining shortcuts.
-var call = Function.prototype.call;
-var prototypeOfArray = Array.prototype;
-var prototypeOfObject = Object.prototype;
-var _Array_slice_ = prototypeOfArray.slice;
-// Having a toString local variable name breaks in Opera so use _toString.
-var _toString = call.bind(prototypeOfObject.toString);
-var owns = call.bind(prototypeOfObject.hasOwnProperty);
-
-// If JS engine supports accessors creating shortcuts.
-var defineGetter;
-var defineSetter;
-var lookupGetter;
-var lookupSetter;
-var supportsAccessors;
-if ((supportsAccessors = owns(prototypeOfObject, "__defineGetter__"))) {
-    defineGetter = call.bind(prototypeOfObject.__defineGetter__);
-    defineSetter = call.bind(prototypeOfObject.__defineSetter__);
-    lookupGetter = call.bind(prototypeOfObject.__lookupGetter__);
-    lookupSetter = call.bind(prototypeOfObject.__lookupSetter__);
-}
-
-//
-// Array
-// =====
-//
-
-// ES5 15.4.4.12
-// http://es5.github.com/#x15.4.4.12
-// Default value for second param
-// [bugfix, ielt9, old browsers]
-// IE < 9 bug: [1,2].splice(0).join("") == "" but should be "12"
-if ([1,2].splice(0).length != 2) {
-    var array_splice = Array.prototype.splice;
-
-    if(function() { // test IE < 9 to splice bug - see issue #138
-        function makeArray(l) {
-            var a = [];
-            while (l--) {
-                a.unshift(l)
-            }
-            return a
-        }
-
-        var array = []
-            , lengthBefore
-        ;
-
-        array.splice.bind(array, 0, 0).apply(null, makeArray(20));
-        array.splice.bind(array, 0, 0).apply(null, makeArray(26));
-
-        lengthBefore = array.length; //20
-        array.splice(5, 0, "XXX"); // add one element
-
-        if(lengthBefore + 1 == array.length) {
-            return true;// has right splice implementation without bugs
-        }
-        // else {
-        //    IE8 bug
-        // }
-    }()) {//IE 6/7
-        Array.prototype.splice = function(start, deleteCount) {
-            if (!arguments.length) {
-                return [];
-            } else {
-                return array_splice.apply(this, [
-                    start === void 0 ? 0 : start,
-                    deleteCount === void 0 ? (this.length - start) : deleteCount
-                ].concat(_Array_slice_.call(arguments, 2)))
-            }
-        };
-    }
-    else {//IE8
-        Array.prototype.splice = function(start, deleteCount) {
-            var result
-                , args = _Array_slice_.call(arguments, 2)
-                , addElementsCount = args.length
-            ;
-
-            if(!arguments.length) {
-                return [];
-            }
-
-            if(start === void 0) { // default
-                start = 0;
-            }
-            if(deleteCount === void 0) { // default
-                deleteCount = this.length - start;
-            }
-
-            if(addElementsCount > 0) {
-                if(deleteCount <= 0) {
-                    if(start == this.length) { // tiny optimisation #1
-                        this.push.apply(this, args);
-                        return [];
-                    }
-
-                    if(start == 0) { // tiny optimisation #2
-                        this.unshift.apply(this, args);
-                        return [];
-                    }
-                }
-
-                // Array.prototype.splice implementation
-                result = _Array_slice_.call(this, start, start + deleteCount);// delete part
-                args.push.apply(args, _Array_slice_.call(this, start + deleteCount, this.length));// right part
-                args.unshift.apply(args, _Array_slice_.call(this, 0, start));// left part
-
-                // delete all items from this array and replace it to 'left part' + _Array_slice_.call(arguments, 2) + 'right part'
-                args.unshift(0, this.length);
-
-                array_splice.apply(this, args);
-
-                return result;
-            }
-
-            return array_splice.call(this, start, deleteCount);
-        }
-
-    }
-}
-
-// ES5 15.4.4.12
-// http://es5.github.com/#x15.4.4.13
-// Return len+argCount.
-// [bugfix, ielt8]
-// IE < 8 bug: [].unshift(0) == undefined but should be "1"
-if ([].unshift(0) != 1) {
-    var array_unshift = Array.prototype.unshift;
-    Array.prototype.unshift = function() {
-        array_unshift.apply(this, arguments);
-        return this.length;
-    };
-}
-
-// ES5 15.4.3.2
-// http://es5.github.com/#x15.4.3.2
-// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/isArray
-if (!Array.isArray) {
-    Array.isArray = function isArray(obj) {
-        return _toString(obj) == "[object Array]";
-    };
-}
-
-// The IsCallable() check in the Array functions
-// has been replaced with a strict check on the
-// internal class of the object to trap cases where
-// the provided function was actually a regular
-// expression literal, which in V8 and
-// JavaScriptCore is a typeof "function".  Only in
-// V8 are regular expression literals permitted as
-// reduce parameters, so it is desirable in the
-// general case for the shim to match the more
-// strict and common behavior of rejecting regular
-// expressions.
-
-// ES5 15.4.4.18
-// http://es5.github.com/#x15.4.4.18
-// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/array/forEach
-
-// Check failure of by-index access of string characters (IE < 9)
-// and failure of `0 in boxedString` (Rhino)
-var boxedString = Object("a"),
-    splitString = boxedString[0] != "a" || !(0 in boxedString);
-
-if (!Array.prototype.forEach) {
-    Array.prototype.forEach = function forEach(fun /*, thisp*/) {
-        var object = toObject(this),
-            self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                object,
-            thisp = arguments[1],
-            i = -1,
-            length = self.length >>> 0;
-
-        // If no callback function or if callback is not a callable function
-        if (_toString(fun) != "[object Function]") {
-            throw new TypeError(); // TODO message
-        }
-
-        while (++i < length) {
-            if (i in self) {
-                // Invoke the callback function with call, passing arguments:
-                // context, property value, property key, thisArg object
-                // context
-                fun.call(thisp, self[i], i, object);
-            }
-        }
-    };
-}
-
-// ES5 15.4.4.19
-// http://es5.github.com/#x15.4.4.19
-// https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Objects/Array/map
-if (!Array.prototype.map) {
-    Array.prototype.map = function map(fun /*, thisp*/) {
-        var object = toObject(this),
-            self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                object,
-            length = self.length >>> 0,
-            result = Array(length),
-            thisp = arguments[1];
-
-        // If no callback function or if callback is not a callable function
-        if (_toString(fun) != "[object Function]") {
-            throw new TypeError(fun + " is not a function");
-        }
-
-        for (var i = 0; i < length; i++) {
-            if (i in self)
-                result[i] = fun.call(thisp, self[i], i, object);
-        }
-        return result;
-    };
-}
-
-// ES5 15.4.4.20
-// http://es5.github.com/#x15.4.4.20
-// https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Objects/Array/filter
-if (!Array.prototype.filter) {
-    Array.prototype.filter = function filter(fun /*, thisp */) {
-        var object = toObject(this),
-            self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                    object,
-            length = self.length >>> 0,
-            result = [],
-            value,
-            thisp = arguments[1];
-
-        // If no callback function or if callback is not a callable function
-        if (_toString(fun) != "[object Function]") {
-            throw new TypeError(fun + " is not a function");
-        }
-
-        for (var i = 0; i < length; i++) {
-            if (i in self) {
-                value = self[i];
-                if (fun.call(thisp, value, i, object)) {
-                    result.push(value);
-                }
-            }
-        }
-        return result;
-    };
-}
-
-// ES5 15.4.4.16
-// http://es5.github.com/#x15.4.4.16
-// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/every
-if (!Array.prototype.every) {
-    Array.prototype.every = function every(fun /*, thisp */) {
-        var object = toObject(this),
-            self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                object,
-            length = self.length >>> 0,
-            thisp = arguments[1];
-
-        // If no callback function or if callback is not a callable function
-        if (_toString(fun) != "[object Function]") {
-            throw new TypeError(fun + " is not a function");
-        }
-
-        for (var i = 0; i < length; i++) {
-            if (i in self && !fun.call(thisp, self[i], i, object)) {
-                return false;
-            }
-        }
-        return true;
-    };
-}
-
-// ES5 15.4.4.17
-// http://es5.github.com/#x15.4.4.17
-// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/some
-if (!Array.prototype.some) {
-    Array.prototype.some = function some(fun /*, thisp */) {
-        var object = toObject(this),
-            self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                object,
-            length = self.length >>> 0,
-            thisp = arguments[1];
-
-        // If no callback function or if callback is not a callable function
-        if (_toString(fun) != "[object Function]") {
-            throw new TypeError(fun + " is not a function");
-        }
-
-        for (var i = 0; i < length; i++) {
-            if (i in self && fun.call(thisp, self[i], i, object)) {
-                return true;
-            }
-        }
-        return false;
-    };
-}
-
-// ES5 15.4.4.21
-// http://es5.github.com/#x15.4.4.21
-// https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Objects/Array/reduce
-if (!Array.prototype.reduce) {
-    Array.prototype.reduce = function reduce(fun /*, initial*/) {
-        var object = toObject(this),
-            self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                object,
-            length = self.length >>> 0;
-
-        // If no callback function or if callback is not a callable function
-        if (_toString(fun) != "[object Function]") {
-            throw new TypeError(fun + " is not a function");
-        }
-
-        // no value to return if no initial value and an empty array
-        if (!length && arguments.length == 1) {
-            throw new TypeError("reduce of empty array with no initial value");
-        }
-
-        var i = 0;
-        var result;
-        if (arguments.length >= 2) {
-            result = arguments[1];
-        } else {
-            do {
-                if (i in self) {
-                    result = self[i++];
-                    break;
-                }
-
-                // if array contains no values, no initial value to return
-                if (++i >= length) {
-                    throw new TypeError("reduce of empty array with no initial value");
-                }
-            } while (true);
-        }
-
-        for (; i < length; i++) {
-            if (i in self) {
-                result = fun.call(void 0, result, self[i], i, object);
-            }
-        }
-
-        return result;
-    };
-}
-
-// ES5 15.4.4.22
-// http://es5.github.com/#x15.4.4.22
-// https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Objects/Array/reduceRight
-if (!Array.prototype.reduceRight) {
-    Array.prototype.reduceRight = function reduceRight(fun /*, initial*/) {
-        var object = toObject(this),
-            self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                object,
-            length = self.length >>> 0;
-
-        // If no callback function or if callback is not a callable function
-        if (_toString(fun) != "[object Function]") {
-            throw new TypeError(fun + " is not a function");
-        }
-
-        // no value to return if no initial value, empty array
-        if (!length && arguments.length == 1) {
-            throw new TypeError("reduceRight of empty array with no initial value");
-        }
-
-        var result, i = length - 1;
-        if (arguments.length >= 2) {
-            result = arguments[1];
-        } else {
-            do {
-                if (i in self) {
-                    result = self[i--];
-                    break;
-                }
-
-                // if array contains no values, no initial value to return
-                if (--i < 0) {
-                    throw new TypeError("reduceRight of empty array with no initial value");
-                }
-            } while (true);
-        }
-
-        if (i < 0) {
-            return result;
-        }
-
-        do {
-            if (i in this) {
-                result = fun.call(void 0, result, self[i], i, object);
-            }
-        } while (i--);
-
-        return result;
-    };
-}
-
-// ES5 15.4.4.14
-// http://es5.github.com/#x15.4.4.14
-// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf
-if (!Array.prototype.indexOf || ([0, 1].indexOf(1, 2) != -1)) {
-    Array.prototype.indexOf = function indexOf(sought /*, fromIndex */ ) {
-        var self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                toObject(this),
-            length = self.length >>> 0;
-
-        if (!length) {
-            return -1;
-        }
-
-        var i = 0;
-        if (arguments.length > 1) {
-            i = toInteger(arguments[1]);
-        }
-
-        // handle negative indices
-        i = i >= 0 ? i : Math.max(0, length + i);
-        for (; i < length; i++) {
-            if (i in self && self[i] === sought) {
-                return i;
-            }
-        }
-        return -1;
-    };
-}
-
-// ES5 15.4.4.15
-// http://es5.github.com/#x15.4.4.15
-// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/lastIndexOf
-if (!Array.prototype.lastIndexOf || ([0, 1].lastIndexOf(0, -3) != -1)) {
-    Array.prototype.lastIndexOf = function lastIndexOf(sought /*, fromIndex */) {
-        var self = splitString && _toString(this) == "[object String]" ?
-                this.split("") :
-                toObject(this),
-            length = self.length >>> 0;
-
-        if (!length) {
-            return -1;
-        }
-        var i = length - 1;
-        if (arguments.length > 1) {
-            i = Math.min(i, toInteger(arguments[1]));
-        }
-        // handle negative indices
-        i = i >= 0 ? i : length - Math.abs(i);
-        for (; i >= 0; i--) {
-            if (i in self && sought === self[i]) {
-                return i;
-            }
-        }
-        return -1;
-    };
-}
-
-//
-// Object
-// ======
-//
-
-// ES5 15.2.3.14
-// http://es5.github.com/#x15.2.3.14
-if (!Object.keys) {
-    // http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
-    var hasDontEnumBug = true,
-        dontEnums = [
-            "toString",
-            "toLocaleString",
-            "valueOf",
-            "hasOwnProperty",
-            "isPrototypeOf",
-            "propertyIsEnumerable",
-            "constructor"
-        ],
-        dontEnumsLength = dontEnums.length;
-
-    for (var key in {"toString": null}) {
-        hasDontEnumBug = false;
-    }
-
-    Object.keys = function keys(object) {
-
-        if (
-            (typeof object != "object" && typeof object != "function") ||
-            object === null
-        ) {
-            throw new TypeError("Object.keys called on a non-object");
-        }
-
-        var keys = [];
-        for (var name in object) {
-            if (owns(object, name)) {
-                keys.push(name);
-            }
-        }
-
-        if (hasDontEnumBug) {
-            for (var i = 0, ii = dontEnumsLength; i < ii; i++) {
-                var dontEnum = dontEnums[i];
-                if (owns(object, dontEnum)) {
-                    keys.push(dontEnum);
-                }
-            }
-        }
-        return keys;
-    };
-
-}
-
-//
-// Date
-// ====
-//
-
-// ES5 15.9.5.43
-// http://es5.github.com/#x15.9.5.43
-// This function returns a String value represent the instance in time
-// represented by this Date object. The format of the String is the Date Time
-// string format defined in 15.9.1.15. All fields are present in the String.
-// The time zone is always UTC, denoted by the suffix Z. If the time value of
-// this object is not a finite Number a RangeError exception is thrown.
-var negativeDate = -62198755200000,
-    negativeYearString = "-000001";
-if (
-    !Date.prototype.toISOString ||
-    (new Date(negativeDate).toISOString().indexOf(negativeYearString) === -1)
-) {
-    Date.prototype.toISOString = function toISOString() {
-        var result, length, value, year, month;
-        if (!isFinite(this)) {
-            throw new RangeError("Date.prototype.toISOString called on non-finite value.");
-        }
-
-        year = this.getUTCFullYear();
-
-        month = this.getUTCMonth();
-        // see https://github.com/kriskowal/es5-shim/issues/111
-        year += Math.floor(month / 12);
-        month = (month % 12 + 12) % 12;
-
-        // the date time string format is specified in 15.9.1.15.
-        result = [month + 1, this.getUTCDate(),
-            this.getUTCHours(), this.getUTCMinutes(), this.getUTCSeconds()];
-        year = (
-            (year < 0 ? "-" : (year > 9999 ? "+" : "")) +
-            ("00000" + Math.abs(year))
-            .slice(0 <= year && year <= 9999 ? -4 : -6)
-        );
-
-        length = result.length;
-        while (length--) {
-            value = result[length];
-            // pad months, days, hours, minutes, and seconds to have two
-            // digits.
-            if (value < 10) {
-                result[length] = "0" + value;
-            }
-        }
-        // pad milliseconds to have three digits.
-        return (
-            year + "-" + result.slice(0, 2).join("-") +
-            "T" + result.slice(2).join(":") + "." +
-            ("000" + this.getUTCMilliseconds()).slice(-3) + "Z"
-        );
-    };
-}
-
-
-// ES5 15.9.5.44
-// http://es5.github.com/#x15.9.5.44
-// This function provides a String representation of a Date object for use by
-// JSON.stringify (15.12.3).
-var dateToJSONIsSupported = false;
-try {
-    dateToJSONIsSupported = (
-        Date.prototype.toJSON &&
-        new Date(NaN).toJSON() === null &&
-        new Date(negativeDate).toJSON().indexOf(negativeYearString) !== -1 &&
-        Date.prototype.toJSON.call({ // generic
-            toISOString: function () {
-                return true;
-            }
-        })
-    );
-} catch (e) {
-}
-if (!dateToJSONIsSupported) {
-    Date.prototype.toJSON = function toJSON(key) {
-        // When the toJSON method is called with argument key, the following
-        // steps are taken:
-
-        // 1.  Let O be the result of calling ToObject, giving it the this
-        // value as its argument.
-        // 2. Let tv be toPrimitive(O, hint Number).
-        var o = Object(this),
-            tv = toPrimitive(o),
-            toISO;
-        // 3. If tv is a Number and is not finite, return null.
-        if (typeof tv === "number" && !isFinite(tv)) {
-            return null;
-        }
-        // 4. Let toISO be the result of calling the [[Get]] internal method of
-        // O with argument "toISOString".
-        toISO = o.toISOString;
-        // 5. If IsCallable(toISO) is false, throw a TypeError exception.
-        if (typeof toISO != "function") {
-            throw new TypeError("toISOString property is not callable");
-        }
-        // 6. Return the result of calling the [[Call]] internal method of
-        //  toISO with O as the this value and an empty argument list.
-        return toISO.call(o);
-
-        // NOTE 1 The argument is ignored.
-
-        // NOTE 2 The toJSON function is intentionally generic; it does not
-        // require that its this value be a Date object. Therefore, it can be
-        // transferred to other kinds of objects for use as a method. However,
-        // it does require that any such object have a toISOString method. An
-        // object is free to use the argument key to filter its
-        // stringification.
-    };
-}
-
-// ES5 15.9.4.2
-// http://es5.github.com/#x15.9.4.2
-// based on work shared by Daniel Friesen (dantman)
-// http://gist.github.com/303249
-if (!Date.parse || "Date.parse is buggy") {
-    // XXX global assignment won't work in embeddings that use
-    // an alternate object for the context.
-    Date = (function(NativeDate) {
-
-        // Date.length === 7
-        function Date(Y, M, D, h, m, s, ms) {
-            var length = arguments.length;
-            if (this instanceof NativeDate) {
-                var date = length == 1 && String(Y) === Y ? // isString(Y)
-                    // We explicitly pass it through parse:
-                    new NativeDate(Date.parse(Y)) :
-                    // We have to manually make calls depending on argument
-                    // length here
-                    length >= 7 ? new NativeDate(Y, M, D, h, m, s, ms) :
-                    length >= 6 ? new NativeDate(Y, M, D, h, m, s) :
-                    length >= 5 ? new NativeDate(Y, M, D, h, m) :
-                    length >= 4 ? new NativeDate(Y, M, D, h) :
-                    length >= 3 ? new NativeDate(Y, M, D) :
-                    length >= 2 ? new NativeDate(Y, M) :
-                    length >= 1 ? new NativeDate(Y) :
-                                  new NativeDate();
-                // Prevent mixups with unfixed Date object
-                date.constructor = Date;
-                return date;
-            }
-            return NativeDate.apply(this, arguments);
-        };
-
-        // 15.9.1.15 Date Time String Format.
-        var isoDateExpression = new RegExp("^" +
-            "(\\d{4}|[\+\-]\\d{6})" + // four-digit year capture or sign +
-                                      // 6-digit extended year
-            "(?:-(\\d{2})" + // optional month capture
-            "(?:-(\\d{2})" + // optional day capture
-            "(?:" + // capture hours:minutes:seconds.milliseconds
-                "T(\\d{2})" + // hours capture
-                ":(\\d{2})" + // minutes capture
-                "(?:" + // optional :seconds.milliseconds
-                    ":(\\d{2})" + // seconds capture
-                    "(?:(\\.\\d{1,}))?" + // milliseconds capture
-                ")?" +
-            "(" + // capture UTC offset component
-                "Z|" + // UTC capture
-                "(?:" + // offset specifier +/-hours:minutes
-                    "([-+])" + // sign capture
-                    "(\\d{2})" + // hours offset capture
-                    ":(\\d{2})" + // minutes offset capture
-                ")" +
-            ")?)?)?)?" +
-        "$");
-
-        var months = [
-            0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365
-        ];
-
-        function dayFromMonth(year, month) {
-            var t = month > 1 ? 1 : 0;
-            return (
-                months[month] +
-                Math.floor((year - 1969 + t) / 4) -
-                Math.floor((year - 1901 + t) / 100) +
-                Math.floor((year - 1601 + t) / 400) +
-                365 * (year - 1970)
-            );
-        }
-
-        // Copy any custom methods a 3rd party library may have added
-        for (var key in NativeDate) {
-            Date[key] = NativeDate[key];
-        }
-
-        // Copy "native" methods explicitly; they may be non-enumerable
-        Date.now = NativeDate.now;
-        Date.UTC = NativeDate.UTC;
-        Date.prototype = NativeDate.prototype;
-        Date.prototype.constructor = Date;
-
-        // Upgrade Date.parse to handle simplified ISO 8601 strings
-        Date.parse = function parse(string) {
-            var match = isoDateExpression.exec(string);
-            if (match) {
-                // parse months, days, hours, minutes, seconds, and milliseconds
-                // provide default values if necessary
-                // parse the UTC offset component
-                var year = Number(match[1]),
-                    month = Number(match[2] || 1) - 1,
-                    day = Number(match[3] || 1) - 1,
-                    hour = Number(match[4] || 0),
-                    minute = Number(match[5] || 0),
-                    second = Number(match[6] || 0),
-                    millisecond = Math.floor(Number(match[7] || 0) * 1000),
-                    // When time zone is missed, local offset should be used
-                    // (ES 5.1 bug)
-                    // see https://bugs.ecmascript.org/show_bug.cgi?id=112
-                    offset = !match[4] || match[8] ?
-                        0 : Number(new NativeDate(1970, 0)),
-                    signOffset = match[9] === "-" ? 1 : -1,
-                    hourOffset = Number(match[10] || 0),
-                    minuteOffset = Number(match[11] || 0),
-                    result;
-                if (
-                    hour < (
-                        minute > 0 || second > 0 || millisecond > 0 ?
-                        24 : 25
-                    ) &&
-                    minute < 60 && second < 60 && millisecond < 1000 &&
-                    month > -1 && month < 12 && hourOffset < 24 &&
-                    minuteOffset < 60 && // detect invalid offsets
-                    day > -1 &&
-                    day < (
-                        dayFromMonth(year, month + 1) -
-                        dayFromMonth(year, month)
-                    )
-                ) {
-                    result = (
-                        (dayFromMonth(year, month) + day) * 24 +
-                        hour +
-                        hourOffset * signOffset
-                    ) * 60;
-                    result = (
-                        (result + minute + minuteOffset * signOffset) * 60 +
-                        second
-                    ) * 1000 + millisecond + offset;
-                    if (-8.64e15 <= result && result <= 8.64e15) {
-                        return result;
-                    }
-                }
-                return NaN;
-            }
-            return NativeDate.parse.apply(this, arguments);
-        };
-
-        return Date;
-    })(Date);
-}
-
-// ES5 15.9.4.4
-// http://es5.github.com/#x15.9.4.4
-if (!Date.now) {
-    Date.now = function now() {
-        return new Date().getTime();
-    };
-}
-
-
-//
-// Number
-// ======
-//
-
-// ES5.1 15.7.4.5
-// http://es5.github.com/#x15.7.4.5
-if (!Number.prototype.toFixed || (0.00008).toFixed(3) !== '0.000' || (0.9).toFixed(0) === '0' || (1.255).toFixed(2) !== '1.25' || (1000000000000000128).toFixed(0) !== "1000000000000000128") {
-    // Hide these variables and functions
-    (function () {
-        var base, size, data, i;
-
-        base = 1e7;
-        size = 6;
-        data = [0, 0, 0, 0, 0, 0];
-
-        function multiply(n, c) {
-            var i = -1;
-            while (++i < size) {
-                c += n * data[i];
-                data[i] = c % base;
-                c = Math.floor(c / base);
-            }
-        }
-
-        function divide(n) {
-            var i = size, c = 0;
-            while (--i >= 0) {
-                c += data[i];
-                data[i] = Math.floor(c / n);
-                c = (c % n) * base;
-            }
-        }
-
-        function toString() {
-            var i = size;
-            var s = '';
-            while (--i >= 0) {
-                if (s !== '' || i === 0 || data[i] !== 0) {
-                    var t = String(data[i]);
-                    if (s === '') {
-                        s = t;
-                    } else {
-                        s += '0000000'.slice(0, 7 - t.length) + t;
-                    }
-                }
-            }
-            return s;
-        }
-
-        function pow(x, n, acc) {
-            return (n === 0 ? acc : (n % 2 === 1 ? pow(x, n - 1, acc * x) : pow(x * x, n / 2, acc)));
-        }
-
-        function log(x) {
-            var n = 0;
-            while (x >= 4096) {
-                n += 12;
-                x /= 4096;
-            }
-            while (x >= 2) {
-                n += 1;
-                x /= 2;
-            }
-            return n;
-        }
-
-        Number.prototype.toFixed = function (fractionDigits) {
-            var f, x, s, m, e, z, j, k;
-
-            // Test for NaN and round fractionDigits down
-            f = Number(fractionDigits);
-            f = f !== f ? 0 : Math.floor(f);
-
-            if (f < 0 || f > 20) {
-                throw new RangeError("Number.toFixed called with invalid number of decimals");
-            }
-
-            x = Number(this);
-
-            // Test for NaN
-            if (x !== x) {
-                return "NaN";
-            }
-
-            // If it is too big or small, return the string value of the number
-            if (x <= -1e21 || x >= 1e21) {
-                return String(x);
-            }
-
-            s = "";
-
-            if (x < 0) {
-                s = "-";
-                x = -x;
-            }
-
-            m = "0";
-
-            if (x > 1e-21) {
-                // 1e-21 < x < 1e21
-                // -70 < log2(x) < 70
-                e = log(x * pow(2, 69, 1)) - 69;
-                z = (e < 0 ? x * pow(2, -e, 1) : x / pow(2, e, 1));
-                z *= 0x10000000000000; // Math.pow(2, 52);
-                e = 52 - e;
-
-                // -18 < e < 122
-                // x = z / 2 ^ e
-                if (e > 0) {
-                    multiply(0, z);
-                    j = f;
-
-                    while (j >= 7) {
-                        multiply(1e7, 0);
-                        j -= 7;
-                    }
-
-                    multiply(pow(10, j, 1), 0);
-                    j = e - 1;
-
-                    while (j >= 23) {
-                        divide(1 << 23);
-                        j -= 23;
-                    }
-
-                    divide(1 << j);
-                    multiply(1, 1);
-                    divide(2);
-                    m = toString();
-                } else {
-                    multiply(0, z);
-                    multiply(1 << (-e), 0);
-                    m = toString() + '0.00000000000000000000'.slice(2, 2 + f);
-                }
-            }
-
-            if (f > 0) {
-                k = m.length;
-
-                if (k <= f) {
-                    m = s + '0.0000000000000000000'.slice(0, f - k + 2) + m;
-                } else {
-                    m = s + m.slice(0, k - f) + '.' + m.slice(k - f);
-                }
-            } else {
-                m = s + m;
-            }
-
-            return m;
-        }
-    }());
-}
-
-
-//
-// String
-// ======
-//
-
-
-// ES5 15.5.4.14
-// http://es5.github.com/#x15.5.4.14
-
-// [bugfix, IE lt 9, firefox 4, Konqueror, Opera, obscure browsers]
-// Many browsers do not split properly with regular expressions or they
-// do not perform the split correctly under obscure conditions.
-// See http://blog.stevenlevithan.com/archives/cross-browser-split
-// I've tested in many browsers and this seems to cover the deviant ones:
-//    'ab'.split(/(?:ab)*/) should be ["", ""], not [""]
-//    '.'.split(/(.?)(.?)/) should be ["", ".", "", ""], not ["", ""]
-//    'tesst'.split(/(s)*/) should be ["t", undefined, "e", "s", "t"], not
-//       [undefined, "t", undefined, "e", ...]
-//    ''.split(/.?/) should be [], not [""]
-//    '.'.split(/()()/) should be ["."], not ["", "", "."]
-
-var string_split = String.prototype.split;
-if (
-    'ab'.split(/(?:ab)*/).length !== 2 ||
-    '.'.split(/(.?)(.?)/).length !== 4 ||
-    'tesst'.split(/(s)*/)[1] === "t" ||
-    ''.split(/.?/).length === 0 ||
-    '.'.split(/()()/).length > 1
-) {
-    (function () {
-        var compliantExecNpcg = /()??/.exec("")[1] === void 0; // NPCG: nonparticipating capturing group
-
-        String.prototype.split = function (separator, limit) {
-            var string = this;
-            if (separator === void 0 && limit === 0)
-                return [];
-
-            // If `separator` is not a regex, use native split
-            if (Object.prototype.toString.call(separator) !== "[object RegExp]") {
-                return string_split.apply(this, arguments);
-            }
-
-            var output = [],
-                flags = (separator.ignoreCase ? "i" : "") +
-                        (separator.multiline  ? "m" : "") +
-                        (separator.extended   ? "x" : "") + // Proposed for ES6
-                        (separator.sticky     ? "y" : ""), // Firefox 3+
-                lastLastIndex = 0,
-                // Make `global` and avoid `lastIndex` issues by working with a copy
-                separator = new RegExp(separator.source, flags + "g"),
-                separator2, match, lastIndex, lastLength;
-            string += ""; // Type-convert
-            if (!compliantExecNpcg) {
-                // Doesn't need flags gy, but they don't hurt
-                separator2 = new RegExp("^" + separator.source + "$(?!\\s)", flags);
-            }
-            /* Values for `limit`, per the spec:
-             * If undefined: 4294967295 // Math.pow(2, 32) - 1
-             * If 0, Infinity, or NaN: 0
-             * If positive number: limit = Math.floor(limit); if (limit > 4294967295) limit -= 4294967296;
-             * If negative number: 4294967296 - Math.floor(Math.abs(limit))
-             * If other: Type-convert, then use the above rules
-             */
-            limit = limit === void 0 ?
-                -1 >>> 0 : // Math.pow(2, 32) - 1
-                limit >>> 0; // ToUint32(limit)
-            while (match = separator.exec(string)) {
-                // `separator.lastIndex` is not reliable cross-browser
-                lastIndex = match.index + match[0].length;
-                if (lastIndex > lastLastIndex) {
-                    output.push(string.slice(lastLastIndex, match.index));
-                    // Fix browsers whose `exec` methods don't consistently return `undefined` for
-                    // nonparticipating capturing groups
-                    if (!compliantExecNpcg && match.length > 1) {
-                        match[0].replace(separator2, function () {
-                            for (var i = 1; i < arguments.length - 2; i++) {
-                                if (arguments[i] === void 0) {
-                                    match[i] = void 0;
-                                }
-                            }
-                        });
-                    }
-                    if (match.length > 1 && match.index < string.length) {
-                        Array.prototype.push.apply(output, match.slice(1));
-                    }
-                    lastLength = match[0].length;
-                    lastLastIndex = lastIndex;
-                    if (output.length >= limit) {
-                        break;
-                    }
-                }
-                if (separator.lastIndex === match.index) {
-                    separator.lastIndex++; // Avoid an infinite loop
-                }
-            }
-            if (lastLastIndex === string.length) {
-                if (lastLength || !separator.test("")) {
-                    output.push("");
-                }
-            } else {
-                output.push(string.slice(lastLastIndex));
-            }
-            return output.length > limit ? output.slice(0, limit) : output;
-        };
-    }());
-
-// [bugfix, chrome]
-// If separator is undefined, then the result array contains just one String,
-// which is the this value (converted to a String). If limit is not undefined,
-// then the output array is truncated so that it contains no more than limit
-// elements.
-// "0".split(undefined, 0) -> []
-} else if ("0".split(void 0, 0).length) {
-    String.prototype.split = function(separator, limit) {
-        if (separator === void 0 && limit === 0) return [];
-        return string_split.apply(this, arguments);
-    }
-}
-
-
-// ECMA-262, 3rd B.2.3
-// Note an ECMAScript standart, although ECMAScript 3rd Edition has a
-// non-normative section suggesting uniform semantics and it should be
-// normalized across all browsers
-// [bugfix, IE lt 9] IE < 9 substr() with negative value not working in IE
-if("".substr && "0b".substr(-1) !== "b") {
-    var string_substr = String.prototype.substr;
-    /**
-     *  Get the substring of a string
-     *  @param  {integer}  start   where to start the substring
-     *  @param  {integer}  length  how many characters to return
-     *  @return {string}
-     */
-    String.prototype.substr = function(start, length) {
-        return string_substr.call(
-            this,
-            start < 0 ? ((start = this.length + start) < 0 ? 0 : start) : start,
-            length
-        );
-    }
-}
-
-// ES5 15.5.4.20
-// http://es5.github.com/#x15.5.4.20
-var ws = "\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003" +
-    "\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028" +
-    "\u2029\uFEFF";
-if (!String.prototype.trim || ws.trim()) {
-    // http://blog.stevenlevithan.com/archives/faster-trim-javascript
-    // http://perfectionkills.com/whitespace-deviations/
-    ws = "[" + ws + "]";
-    var trimBeginRegexp = new RegExp("^" + ws + ws + "*"),
-        trimEndRegexp = new RegExp(ws + ws + "*$");
-    String.prototype.trim = function trim() {
-        if (this === void 0 || this === null) {
-            throw new TypeError("can't convert "+this+" to object");
-        }
-        return String(this)
-            .replace(trimBeginRegexp, "")
-            .replace(trimEndRegexp, "");
-    };
-}
-
-//
-// Util
-// ======
-//
-
-// ES5 9.4
-// http://es5.github.com/#x9.4
-// http://jsperf.com/to-integer
-
-function toInteger(n) {
-    n = +n;
-    if (n !== n) { // isNaN
-        n = 0;
-    } else if (n !== 0 && n !== (1/0) && n !== -(1/0)) {
-        n = (n > 0 || -1) * Math.floor(Math.abs(n));
-    }
-    return n;
-}
-
-function isPrimitive(input) {
-    var type = typeof input;
-    return (
-        input === null ||
-        type === "undefined" ||
-        type === "boolean" ||
-        type === "number" ||
-        type === "string"
-    );
-}
-
-function toPrimitive(input) {
-    var val, valueOf, toString;
-    if (isPrimitive(input)) {
-        return input;
-    }
-    valueOf = input.valueOf;
-    if (typeof valueOf === "function") {
-        val = valueOf.call(input);
-        if (isPrimitive(val)) {
-            return val;
-        }
-    }
-    toString = input.toString;
-    if (typeof toString === "function") {
-        val = toString.call(input);
-        if (isPrimitive(val)) {
-            return val;
-        }
-    }
-    throw new TypeError();
-}
-
-// ES5 9.9
-// http://es5.github.com/#x9.9
-var toObject = function (o) {
-    if (o == null) { // this matches both null and undefined
-        throw new TypeError("can't convert "+o+" to object");
-    }
-    return Object(o);
-};
-
-});
-
-// Copyright 2009-2012 by contributors, MIT License
-// vim: ts=4 sts=4 sw=4 expandtab
-
-// Module systems magic dance
-(function (definition) {
-    // RequireJS
-    if (typeof define == "function") {
-        define('es5-sham',definition);
-    // YUI3
-    } else if (typeof YUI == "function") {
-        YUI.add("es5-sham", definition);
-    // CommonJS and <script>
-    } else {
-        definition();
-    }
-})(function () {
-
-
-var call = Function.prototype.call;
-var prototypeOfObject = Object.prototype;
-var owns = call.bind(prototypeOfObject.hasOwnProperty);
-
-// If JS engine supports accessors creating shortcuts.
-var defineGetter;
-var defineSetter;
-var lookupGetter;
-var lookupSetter;
-var supportsAccessors;
-if ((supportsAccessors = owns(prototypeOfObject, "__defineGetter__"))) {
-    defineGetter = call.bind(prototypeOfObject.__defineGetter__);
-    defineSetter = call.bind(prototypeOfObject.__defineSetter__);
-    lookupGetter = call.bind(prototypeOfObject.__lookupGetter__);
-    lookupSetter = call.bind(prototypeOfObject.__lookupSetter__);
-}
-
-// ES5 15.2.3.2
-// http://es5.github.com/#x15.2.3.2
-if (!Object.getPrototypeOf) {
-    // https://github.com/kriskowal/es5-shim/issues#issue/2
-    // http://ejohn.org/blog/objectgetprototypeof/
-    // recommended by fschaefer on github
-    Object.getPrototypeOf = function getPrototypeOf(object) {
-        return object.__proto__ || (
-            object.constructor
-                ? object.constructor.prototype
-                : prototypeOfObject
-        );
-    };
-}
-
-//ES5 15.2.3.3
-//http://es5.github.com/#x15.2.3.3
-
-function doesGetOwnPropertyDescriptorWork(object) {
-    try {
-        object.sentinel = 0;
-        return Object.getOwnPropertyDescriptor(
-                object,
-                "sentinel"
-        ).value === 0;
-    } catch (exception) {
-        // returns falsy
-    }
-}
-
-//check whether getOwnPropertyDescriptor works if it's given. Otherwise,
-//shim partially.
-if (Object.defineProperty) {
-    var getOwnPropertyDescriptorWorksOnObject = 
-        doesGetOwnPropertyDescriptorWork({});
-    var getOwnPropertyDescriptorWorksOnDom = typeof document == "undefined" ||
-    doesGetOwnPropertyDescriptorWork(document.createElement("div"));
-    if (!getOwnPropertyDescriptorWorksOnDom || 
-            !getOwnPropertyDescriptorWorksOnObject
-    ) {
-        var getOwnPropertyDescriptorFallback = Object.getOwnPropertyDescriptor;
-    }
-}
-
-if (!Object.getOwnPropertyDescriptor || getOwnPropertyDescriptorFallback) {
-    var ERR_NON_OBJECT = "Object.getOwnPropertyDescriptor called on a non-object: ";
-
-    Object.getOwnPropertyDescriptor = function getOwnPropertyDescriptor(object, property) {
-        if ((typeof object != "object" && typeof object != "function") || object === null) {
-            throw new TypeError(ERR_NON_OBJECT + object);
-        }
-
-        // make a valiant attempt to use the real getOwnPropertyDescriptor
-        // for I8's DOM elements.
-        if (getOwnPropertyDescriptorFallback) {
-            try {
-                return getOwnPropertyDescriptorFallback.call(Object, object, property);
-            } catch (exception) {
-                // try the shim if the real one doesn't work
-            }
-        }
-
-        // If object does not owns property return undefined immediately.
-        if (!owns(object, property)) {
-            return;
-        }
-
-        // If object has a property then it's for sure both `enumerable` and
-        // `configurable`.
-        var descriptor =  { enumerable: true, configurable: true };
-
-        // If JS engine supports accessor properties then property may be a
-        // getter or setter.
-        if (supportsAccessors) {
-            // Unfortunately `__lookupGetter__` will return a getter even
-            // if object has own non getter property along with a same named
-            // inherited getter. To avoid misbehavior we temporary remove
-            // `__proto__` so that `__lookupGetter__` will return getter only
-            // if it's owned by an object.
-            var prototype = object.__proto__;
-            object.__proto__ = prototypeOfObject;
-
-            var getter = lookupGetter(object, property);
-            var setter = lookupSetter(object, property);
-
-            // Once we have getter and setter we can put values back.
-            object.__proto__ = prototype;
-
-            if (getter || setter) {
-                if (getter) {
-                    descriptor.get = getter;
-                }
-                if (setter) {
-                    descriptor.set = setter;
-                }
-                // If it was accessor property we're done and return here
-                // in order to avoid adding `value` to the descriptor.
-                return descriptor;
-            }
-        }
-
-        // If we got this far we know that object has an own property that is
-        // not an accessor so we set it as a value and return descriptor.
-        descriptor.value = object[property];
-        descriptor.writable = true;
-        return descriptor;
-    };
-}
-
-// ES5 15.2.3.4
-// http://es5.github.com/#x15.2.3.4
-if (!Object.getOwnPropertyNames) {
-    Object.getOwnPropertyNames = function getOwnPropertyNames(object) {
-        return Object.keys(object);
-    };
-}
-
-// ES5 15.2.3.5
-// http://es5.github.com/#x15.2.3.5
-if (!Object.create) {
-
-    // Contributed by Brandon Benvie, October, 2012
-    var createEmpty;
-    var supportsProto = Object.prototype.__proto__ === null;
-    if (supportsProto || typeof document == 'undefined') {
-        createEmpty = function () {
-            return { "__proto__": null };
-        };
-    } else {
-        // In old IE __proto__ can't be used to manually set `null`, nor does
-        // any other method exist to make an object that inherits from nothing,
-        // aside from Object.prototype itself. Instead, create a new global
-        // object and *steal* its Object.prototype and strip it bare. This is
-        // used as the prototype to create nullary objects.
-        createEmpty = function () {
-            var iframe = document.createElement('iframe');
-            var parent = document.body || document.documentElement;
-            iframe.style.display = 'none';
-            parent.appendChild(iframe);
-            iframe.src = 'javascript:';
-            var empty = iframe.contentWindow.Object.prototype;
-            parent.removeChild(iframe);
-            iframe = null;
-            delete empty.constructor;
-            delete empty.hasOwnProperty;
-            delete empty.propertyIsEnumerable;
-            delete empty.isPrototypeOf;
-            delete empty.toLocaleString;
-            delete empty.toString;
-            delete empty.valueOf;
-            empty.__proto__ = null;
-
-            function Empty() {}
-            Empty.prototype = empty;
-            // short-circuit future calls
-            createEmpty = function () {
-                return new Empty();
-            };
-            return new Empty();
-        };
-    }
-
-    Object.create = function create(prototype, properties) {
-
-        var object;
-        function Type() {}  // An empty constructor.
-
-        if (prototype === null) {
-            object = createEmpty();
-        } else {
-            if (typeof prototype !== "object" && typeof prototype !== "function") {
-                // In the native implementation `parent` can be `null`
-                // OR *any* `instanceof Object`  (Object|Function|Array|RegExp|etc)
-                // Use `typeof` tho, b/c in old IE, DOM elements are not `instanceof Object`
-                // like they are in modern browsers. Using `Object.create` on DOM elements
-                // is...err...probably inappropriate, but the native version allows for it.
-                throw new TypeError("Object prototype may only be an Object or null"); // same msg as Chrome
-            }
-            Type.prototype = prototype;
-            object = new Type();
-            // IE has no built-in implementation of `Object.getPrototypeOf`
-            // neither `__proto__`, but this manually setting `__proto__` will
-            // guarantee that `Object.getPrototypeOf` will work as expected with
-            // objects created using `Object.create`
-            object.__proto__ = prototype;
-        }
-
-        if (properties !== void 0) {
-            Object.defineProperties(object, properties);
-        }
-
-        return object;
-    };
-}
-
-// ES5 15.2.3.6
-// http://es5.github.com/#x15.2.3.6
-
-// Patch for WebKit and IE8 standard mode
-// Designed by hax <hax.github.com>
-// related issue: https://github.com/kriskowal/es5-shim/issues#issue/5
-// IE8 Reference:
-//     http://msdn.microsoft.com/en-us/library/dd282900.aspx
-//     http://msdn.microsoft.com/en-us/library/dd229916.aspx
-// WebKit Bugs:
-//     https://bugs.webkit.org/show_bug.cgi?id=36423
-
-function doesDefinePropertyWork(object) {
-    try {
-        Object.defineProperty(object, "sentinel", {});
-        return "sentinel" in object;
-    } catch (exception) {
-        // returns falsy
-    }
-}
-
-// check whether defineProperty works if it's given. Otherwise,
-// shim partially.
-if (Object.defineProperty) {
-    var definePropertyWorksOnObject = doesDefinePropertyWork({});
-    var definePropertyWorksOnDom = typeof document == "undefined" ||
-        doesDefinePropertyWork(document.createElement("div"));
-    if (!definePropertyWorksOnObject || !definePropertyWorksOnDom) {
-        var definePropertyFallback = Object.defineProperty,
-            definePropertiesFallback = Object.defineProperties;
-    }
-}
-
-if (!Object.defineProperty || definePropertyFallback) {
-    var ERR_NON_OBJECT_DESCRIPTOR = "Property description must be an object: ";
-    var ERR_NON_OBJECT_TARGET = "Object.defineProperty called on non-object: "
-    var ERR_ACCESSORS_NOT_SUPPORTED = "getters & setters can not be defined " +
-                                      "on this javascript engine";
-
-    Object.defineProperty = function defineProperty(object, property, descriptor) {
-        if ((typeof object != "object" && typeof object != "function") || object === null) {
-            throw new TypeError(ERR_NON_OBJECT_TARGET + object);
-        }
-        if ((typeof descriptor != "object" && typeof descriptor != "function") || descriptor === null) {
-            throw new TypeError(ERR_NON_OBJECT_DESCRIPTOR + descriptor);
-        }
-        // make a valiant attempt to use the real defineProperty
-        // for I8's DOM elements.
-        if (definePropertyFallback) {
-            try {
-                return definePropertyFallback.call(Object, object, property, descriptor);
-            } catch (exception) {
-                // try the shim if the real one doesn't work
-            }
-        }
-
-        // If it's a data property.
-        if (owns(descriptor, "value")) {
-            // fail silently if "writable", "enumerable", or "configurable"
-            // are requested but not supported
-            /*
-            // alternate approach:
-            if ( // can't implement these features; allow false but not true
-                !(owns(descriptor, "writable") ? descriptor.writable : true) ||
-                !(owns(descriptor, "enumerable") ? descriptor.enumerable : true) ||
-                !(owns(descriptor, "configurable") ? descriptor.configurable : true)
-            )
-                throw new RangeError(
-                    "This implementation of Object.defineProperty does not " +
-                    "support configurable, enumerable, or writable."
-                );
-            */
-
-            if (supportsAccessors && (lookupGetter(object, property) ||
-                                      lookupSetter(object, property)))
-            {
-                // As accessors are supported only on engines implementing
-                // `__proto__` we can safely override `__proto__` while defining
-                // a property to make sure that we don't hit an inherited
-                // accessor.
-                var prototype = object.__proto__;
-                object.__proto__ = prototypeOfObject;
-                // Deleting a property anyway since getter / setter may be
-                // defined on object itself.
-                delete object[property];
-                object[property] = descriptor.value;
-                // Setting original `__proto__` back now.
-                object.__proto__ = prototype;
-            } else {
-                object[property] = descriptor.value;
-            }
-        } else {
-            if (!supportsAccessors) {
-                throw new TypeError(ERR_ACCESSORS_NOT_SUPPORTED);
-            }
-            // If we got that far then getters and setters can be defined !!
-            if (owns(descriptor, "get")) {
-                defineGetter(object, property, descriptor.get);
-            }
-            if (owns(descriptor, "set")) {
-                defineSetter(object, property, descriptor.set);
-            }
-        }
-        return object;
-    };
-}
-
-// ES5 15.2.3.7
-// http://es5.github.com/#x15.2.3.7
-if (!Object.defineProperties || definePropertiesFallback) {
-    Object.defineProperties = function defineProperties(object, properties) {
-        // make a valiant attempt to use the real defineProperties
-        if (definePropertiesFallback) {
-            try {
-                return definePropertiesFallback.call(Object, object, properties);
-            } catch (exception) {
-                // try the shim if the real one doesn't work
-            }
-        }
-
-        for (var property in properties) {
-            if (owns(properties, property) && property != "__proto__") {
-                Object.defineProperty(object, property, properties[property]);
-            }
-        }
-        return object;
-    };
-}
-
-// ES5 15.2.3.8
-// http://es5.github.com/#x15.2.3.8
-if (!Object.seal) {
-    Object.seal = function seal(object) {
-        // this is misleading and breaks feature-detection, but
-        // allows "securable" code to "gracefully" degrade to working
-        // but insecure code.
-        return object;
-    };
-}
-
-// ES5 15.2.3.9
-// http://es5.github.com/#x15.2.3.9
-if (!Object.freeze) {
-    Object.freeze = function freeze(object) {
-        // this is misleading and breaks feature-detection, but
-        // allows "securable" code to "gracefully" degrade to working
-        // but insecure code.
-        return object;
-    };
-}
-
-// detect a Rhino bug and patch it
-try {
-    Object.freeze(function () {});
-} catch (exception) {
-    Object.freeze = (function freeze(freezeObject) {
-        return function freeze(object) {
-            if (typeof object == "function") {
-                return object;
-            } else {
-                return freezeObject(object);
-            }
-        };
-    })(Object.freeze);
-}
-
-// ES5 15.2.3.10
-// http://es5.github.com/#x15.2.3.10
-if (!Object.preventExtensions) {
-    Object.preventExtensions = function preventExtensions(object) {
-        // this is misleading and breaks feature-detection, but
-        // allows "securable" code to "gracefully" degrade to working
-        // but insecure code.
-        return object;
-    };
-}
-
-// ES5 15.2.3.11
-// http://es5.github.com/#x15.2.3.11
-if (!Object.isSealed) {
-    Object.isSealed = function isSealed(object) {
-        return false;
-    };
-}
-
-// ES5 15.2.3.12
-// http://es5.github.com/#x15.2.3.12
-if (!Object.isFrozen) {
-    Object.isFrozen = function isFrozen(object) {
-        return false;
-    };
-}
-
-// ES5 15.2.3.13
-// http://es5.github.com/#x15.2.3.13
-if (!Object.isExtensible) {
-    Object.isExtensible = function isExtensible(object) {
-        // 1. If Type(O) is not Object throw a TypeError exception.
-        if (Object(object) !== object) {
-            throw new TypeError(); // TODO message
-        }
-        // 2. Return the Boolean value of the [[Extensible]] internal property of O.
-        var name = '';
-        while (owns(object, name)) {
-            name += '?';
-        }
-        object[name] = true;
-        var returnValue = owns(object, name);
-        delete object[name];
-        return returnValue;
-    };
-}
-
-});
-
 /**
- * Defines argsToArray, classOfIs, classOf, empty, and isset on the passed in context.
+ * Defines argsToArray, classOfIs, classOf, empty, isset, and namespace, on the passed in context.
  * @param {Object} context
  * @returns void
  * @todo make all functions ecmascript < 5 compatible
  */
 (function (context) {
 
-    var slice = Array.prototype.slice;
+    context.sjl = context.sjl || {};
 
-    if (typeof context.argsToArray !== 'function') {
-        context.argsToArray = function (args) {
+    var slice = Array.prototype.slice,
+        notLCaseFirst = typeof context.sjl.lcaseFirst !== 'function',
+        notUCaseFirst = typeof context.sjl.ucaseFirst !== 'function';
+
+    if (typeof context.sjl.argsToArray !== 'function') {
+        context.sjl.argsToArray = function (args) {
             return slice.call(args, 0, args.length);
         };
     }
 
-    if (typeof context.isset !== 'function') {
+    if (typeof context.sjl.isset !== 'function') {
 
         /**
          * Checks to see if value is set (not null and not undefined).
@@ -1793,7 +41,7 @@ if (!Object.isExtensible) {
          * is null or undefined.
          * @returns {boolean}
          */
-        context.isset = function () {
+        context.sjl.isset = function () {
             var retVal = false,
                 check;
 
@@ -1815,19 +63,23 @@ if (!Object.isExtensible) {
         };
     }
 
-    if (typeof context.classOf !== 'function') {
+    if (typeof context.sjl.classOf !== 'function') {
         /**
          * Returns the class name of an object from it's class string.
          * @param val {mixed}
          * @returns {string}
          */
-        context.classOf = function (val) {
-            return Object.prototype.toString.call(val)
-                .split(/\[object\s/)[1].split(']')[0];
+        context.sjl.classOf = function (val) {
+            return typeof val === 'undefined' ? 'Undefined' :
+                (val === null ? 'Null' :
+                    (function () {
+                        var retVal = Object.prototype.toString.call(val);
+                        return retVal.substring(8, retVal.length - 1);
+                    }()));
         };
     }
 
-    if (typeof context.classOfIs !== 'function') {
+    if (typeof context.sjl.classOfIs !== 'function') {
 
         /**
          * Checks to see if an object is of type humanString (class name) .
@@ -1835,12 +87,12 @@ if (!Object.isExtensible) {
          * @param obj {mixed}
          * @returns {boolean}
          */
-        context.classOfIs = function (obj, humanString) {
-            return classOf(obj) === humanString;
+        context.sjl.classOfIs = function (obj, humanString) {
+            return context.sjl.classOf(obj) === humanString;
         };
     }
 
-    if (typeof context.empty !== 'function') {
+    if (typeof context.sjl.empty !== 'function') {
         /**
          * Checks object's own properties to see if it is empty.
          * @param obj object to be checked
@@ -1867,12 +119,12 @@ if (!Object.isExtensible) {
             var retVal;
 
             // If value is an array or a string
-            if (classOfIs(value, 'Array') || classOfIs(value, 'String')) {
+            if (context.sjl.classOfIs(value, 'Array') || context.sjl.classOfIs(value, 'String')) {
                 retVal = value.length === 0;
             }
 
             // If value is a number and is not 0
-            else if (classOfIs(value, 'Number') && value !== 0) {
+            else if (context.sjl.classOfIs(value, 'Number') && value !== 0) {
                 retVal = false;
             }
 
@@ -1890,10 +142,10 @@ if (!Object.isExtensible) {
          * Checks to see if any of the arguments passed in are empty.
          * @returns {boolean}
          */
-        context.empty = function () {
+        context.sjl.empty = function () {
             var retVal, check,
                 i, item,
-                args = argsToArray(arguments);
+                args = context.sjl.argsToArray(arguments);
 
             // If multiple arguments
             if (args.length > 1) {
@@ -1926,193 +178,384 @@ if (!Object.isExtensible) {
         };
     }
 
-})(typeof window !== "undefined" ? window : global);
-define("checkjs", ["es5-shim"], function(){});
+    if (typeof context.sjl.namespace !== 'function') {
+        /**
+         * Takes a namespace string and fetches that location out from
+         * an object/Map.  If the namespace doesn't exists it is created then
+         * returned.
+         * Example: namespace('hello.world.how.are.you.doing', obj) will
+         * create/fetch within `obj`:
+         * hello: { world: { how: { are: { you: { doing: {} } } } } }
+         * @param ns_string {String} the namespace you wish to fetch
+         * @param objToSearch {Object} object to search for namespace on
+         * @param valueToSet {Object} optional, a value to set on the key
+         *  (last key if key string (a.b.c.d = value))
+         * @returns {Object}
+         */
+        context.sjl.namespace = function (ns_string, objToSearch, valueToSet) {
+            var parts = ns_string.split('.'),
+                parent = objToSearch,
+                shouldSetValue = context.sjl.classOfIs(valueToSet, 'Undefined')
+                    ? false : true,
+                i;
+
+            for (i = 0; i < parts.length; i += 1) {
+                if (context.sjl.classOfIs(parent[parts[i]], 'Undefined') && !shouldSetValue) {
+                    parent[parts[i]] = {};
+                }
+                else if (i === parts.length - 1 && shouldSetValue) {
+                    parent[parts[i]] = valueToSet;
+                }
+                parent = parent[parts[i]];
+            }
+
+            return parent;
+        };
+    }
+
+    if (notLCaseFirst || notUCaseFirst) {
+        /**
+         * Used when composing a function that needs to operate on the first character found and needs to
+         * return the original string with the modified character within it.
+         * @see sjl.lcaseFirst or sjl.ucaseFirst (search within this file)
+         * @param str {String} - string to search for first alpha char on
+         * @param func {String} - function to run on first alpha char found; i.e., found[func]()
+         * @param thisFuncsName {String} - the function name that is using this function (in order
+         *      to present a prettier error message on `TypeError`)
+         * @throws {TypeError} - If str is not of type "String"
+         * @returns {String} - composed string
+         */
+        function changeCaseOfFirstChar (str, func, thisFuncsName) {
+            var search, char, right, left;
+
+            // If typeof `str` is not of type "String" then bail
+            if (!context.sjl.classOfIs(str, 'String')) {
+                throw new TypeError(thisFuncsName + ' expects parameter 1 ' +
+                    'to be of type "String".  ' +
+                    'Value received: "' + context.sjl.classOf(str) + '".');
+            }
+
+            // Search for first alpha char
+            search = str.search(/[a-z]/i);
+
+            // If alpha char
+            if (search > -1) {
+
+                // Make it lower case
+                char = str[search][func]();
+
+                // Get string from `char`'s index
+                right = str.substr(search + 1, str.length - 1);
+
+                // Get string upto `char`'s index
+                left = search !== 0 ? str.substr(0, search) : '';
+
+                // Concatenate original string with lower case char in it
+                str = left + char + right;
+            }
+
+            return str;
+        }
+    }
+
+    if (notLCaseFirst) {
+        /**
+         * Lower cases first character of a string.
+         * @param {String} str
+         * @throws {TypeError}
+         * @returns {String}
+         */
+        context.sjl.lcaseFirst = function (str) {
+            return changeCaseOfFirstChar (str, 'toLowerCase', 'lcaseFirst');
+        }
+    }
+
+    if (notUCaseFirst) {
+        /**
+         * Upper cases first character of a string.
+         * @param {String} str
+         * @returns {String}
+         */
+        context.sjl.ucaseFirst = function (str) {
+            return changeCaseOfFirstChar (str, 'toUpperCase', 'ucaseFirst');
+        };
+    }
+
+    if (typeof context.sjl.camelCase) {
+
+        /**
+         * Make a string code friendly. Camel cases a dirty string into
+         * a valid javascript variable/constructor name;  Uses `replaceStrRegex`
+         * to replace unwanted characters with a '-' and then splits and merges
+         * the parts with the proper casing, pass in `true` for lcaseFirst
+         * to lower case the first character.
+         * @param {String} str
+         * @param {Boolean} lowerFirst default `false`
+         * @param {Regex} replaceStrRegex default /[^a-z0-9] * /i (without spaces before and after '*')
+         * @returns {String}
+         */
+        context.sjl.camelCase = function (str, upperFirst, replaceStrRegex) {
+            upperFirst = upperFirst || false;
+            replaceStrRegex = replaceStrRegex || /[^a-z\d]/i;
+            var newStr = "", i,
+
+            // Get clean string
+            parts = str.split(replaceStrRegex);
+
+            // Upper Case First char for parts
+            for (i = 0; i < parts.length; i += 1) {
+
+                // If alpha chars
+                if (/[a-z\d]/.test(parts[i])) {
+
+                    // ucase first char and append to new string,
+                    // if part is a digit just gets returned by `ucaseFirst`
+                    newStr += context.sjl.ucaseFirst(parts[i]);
+                }
+            }
+
+            // If should not be upper case first
+            if (!upperFirst) {
+                // Then lower case first
+                newStr = context.sjl.lcaseFirst(newStr);
+            }
+
+            return newStr;
+        };
+    }
+
+})(typeof window === 'undefined' ? global : window);
 
 /**
- * PhpJs - Small collection of php styled functions converted over to javascript
- *
- * Version 0.5.5
- *
- * LICENSE
- *
- * Copyright (C) 2011-2013  Ely De La Cruz http://www.elycruz.com
- *
- * All rights under the GNU General Public License v3.0 or later
- * (see http://opensource.org/licenses/GPL-3.0) and the MIT License
- * (see http://opensource.org/licenses/MIT) are reserved.
- *
- * All questions and/or comments concerning the software and its licenses
- * can be posted at: https://github.com/elycruz/phpjs/issues
- */
-
-/**
- * Defines empty, isset, lcaseFirst, ucaseFirst, and strToCamelCase
- * on the passed in context.
- * @param {Object} context
- * @returns void
+ * Created by Ely on 4/12/2014.
+ * Code copy pasted from "Javascript the definitive guide"
  */
 (function (context) {
 
-	if (typeof context.empty !== 'function') {
-		/**
-		 * Checks object's own properties to see if it is empty.
-		 * @param obj object to be checked
-		 * @returns {boolean}
-		 */
-		function isEmptyObj (obj) {
-            var retVal = obj === true ? false : true;
-			for (var key in obj) {
-				if (obj.hasOwnProperty(key)) {
-					retVal = false;
-                    break;
-				}
-			}
-			return retVal;
-		}
+    /**
+     * Make functions/constructors extendable
+     * @param constructor {function}
+     * @param methods {object} - optional
+     * @param statics {mixed|object|null|undefined} - optional
+     * @todo refactor this.  Figure out a way not to extend `Function`
+     * @returns {*}
+     */
+    Function.prototype.extend = function (constructor, methods, statics) {
+        return defineSubClass(this, constructor, methods, statics);
+    };
 
-		/**
-		 * Checks to see if value is empty (objects, arrays,
-		 * strings etc.).
-		 * @param value
-		 * @returns {boolean}
-		 */
-		function isEmptyValue(value) {
-			if (value instanceof Array || value instanceof String) {
-				return value.length === 0;
-			}
-			return (value === 0 || value === false
-				|| value === undefined || value === null
-				|| isEmptyObj(value));
-		}
+    /*
+     * Copy the enumerable properties of p to o, and return o.
+     * If o and p have a property by the same name, o's property is overwritten.
+     * This function does not handle getters and setters or copy attributes.
+     */
+    function extend(o, p) {
+        for (prop in p) { // For all props in p.
+            o[prop] = p[prop]; // Add the property to o.
+        }
+        return o;
+    }
 
-		/**
-		 * Checks to see if any of the arguments passed in are empty.
-		 * @return boolean
-		 */
-		context.empty = function () {
-            var retVal = true, check;
-			if (arguments.length > 1) {
-				for (var i in arguments) {
-					i = arguments[i];
-					check = isEmptyValue(i);
-                    if (check) {
-                        retVal = check;
-                        break;
-                    }
-				}
-			}
-			else if (arguments.length === 1) {
-				retVal = isEmptyValue(arguments[0]);
-			}
-			return retVal;
-		};
-	}
+    /*
+     * Copy the enumerable properties of p to o, and return o.
+     * If o and p have a property by the same name, o's property is left alone.
+     * This function does not handle getters and setters or copy attributes.
+     */
+    function merge(o, p) {
+        for (prop in p) { // For all props in p.
+            if (o.hasOwnProperty[prop]) continue; // Except those already in o.
+            o[prop] = p[prop]; // Add the property to o.
+        }
+        return o;
+    }
 
-	if (typeof context.isset !== 'function') {
+    /*
+     * Remove properties from o if there is not a property with the same name in p.
+     * Return o.
+     */
+    function restrict(o, p) {
+        for (prop in o) { // For all props in o
+            if (!(prop in p)) delete o[prop]; // Delete if not in p
+        }
+        return o;
+    }
 
-		/**
-		 * Checks to see if value is set (not null and not undefined).
-		 * @param value
-		 * @returns {boolean}
-		 */
-		function isSet (value) {
-			return (value !== undefined && value !== null);
-		}
+    /*
+     * For each property of p, delete the property with the same name from o.
+     * Return o.
+     */
+    function subtract(o, p) {
+        for (prop in p) { // For all props in p
+            delete o[prop]; // Delete from o (deleting a
+            // nonexistent prop is harmless)
+        }
+        return o;
+    }
 
-		/**
-		 * Checks to see if any of the arguments passed in are
-		 * set (not undefined and not null).
-		 * Returns false on the first argument encountered that
-		 * is null or undefined.
-		 * @return boolean
-		 */
-		context.isset = function () {
-            var retVal = false,
-                check;
+    /*
+     * Return a new object that holds the properties of both o and p.
+     * If o and p have properties by the same name, the values from p are used.
+     */
+    function union(o, p) {
+        return extend(extend({}, o), p);
+    }
 
-			if (arguments.length > 1) {
-				for (var i in arguments) {
-					i = arguments[i];
-					check = isSet(i);
-                    if (! check) {
-                        retVal = check;
-                        break;
-                    }
-				}
-			}
-			else if (arguments.length === 1) {
-				retVal = isSet(arguments[0]);
-			}
+    /*
+     * Return a new object that holds only the properties of o that also appear
+     * in p. This is something like the intersection of o and p, but the values of
+     * the properties in p are discarded
+     */
+    function intersection(o, p) {
+        return restrict(extend({}, o), p);
+    }
 
-			return retVal;
-		};
-	}
+    /*
+     * Return an array that holds the names of the enumerable own properties of o.
+     */
+    function keys(o) {
+        if (typeof o !== "object") throw TypeError('`keys` function expects param1 to be an object.'); // Object argument required
+        var result = []; // The array we will return
+        for (var prop in o) { // For all enumerable properties
+            if (o.hasOwnProperty(prop)) // If it is an own property
+                result.push(prop); // add it to the array.
+        }
+        return result; // Return the array.
+    }
 
-	if (typeof context.ucaseFirst !== 'function') {
-		/**
-		 * Upper cases first character of a string.
-		 * @param {String} str
-		 * @returns {String}
-		 */
-		context.ucaseFirst = function (str) {
-			str = str + "";
-			s0 = str.match(/^[a-z]/i);
-			if (!s0 instanceof Array) {
-				return null;
-			}
-			return s0[0].toUpperCase() + str.substr(1);
-		};
-	}
+    /**
+     *
+     * @param proto
+     * @returns {*}
+     */
+    function inherit(proto) {
+//        console.log(proto);
+        if (proto == null) throw TypeError('`inherit` function expects param1 to be a non-null value.'); // p must be a non-null object
+        if (Object.create) // If Object.create() is defined...
+            return Object.create(proto); // then just use it.
+        var type = typeof proto; // Otherwise do some more type checking
+        if (type !== "object" && type !== "function") throw TypeError();
+        function func() {
+        } // Define a dummy constructor function.
+        func.prototype = proto; // Set its prototype property to p.
+        return new func();
+    }
 
-	if (typeof context.lcaseFirst !== 'function') {
-		/**
-		 * Lower cases first character of a string.
-		 * @param {String} str
-		 * @returns {String}
-		 */
-		context.lcaseFirst = function (str) {
-			str = str + "";
-			return str.match(/[a-z]/i)[0].toLowerCase() + str.substr(1);
-		};
-	}
+    /**
+     * Defines a subclass using a `superclass`, `constructor`, methods and/or static methods
+     * @param superclass {Function}
+     * @param constructor {Function}
+     * @param methods {Object} - optional
+     * @param statics {Object} - optional
+     * @returns {*}
+     */
+    function defineSubClass(superclass, // Constructor of the superclass
+                            constructor, // The constructor for the new subclass
+                            methods, // Instance methods: copied to prototype
+                            statics) // Class properties: copied to constructor
+    {
+        // Set up the prototype object of the subclass
+        constructor.prototype = inherit(superclass.prototype);
 
-	if (typeof context.strToCamelCase) {
+        constructor.prototype.constructor = constructor;
 
-		/**
-		 * Make a string code friendly. Camel cases a dirty string into
-		 * a valid javascript variable/constructor name;  Uses `replaceStrRegex`
-		 * to replace unwanted characters with a '-' and then splits and merges
-		 * the parts with the proper casing, pass in `true` for lcaseFirst
-		 * to lower case the first character.
-		 * @param {String} str
-		 * @param {Boolean} lowerFirst default `false`
-		 * @param {Regex} replaceStrRegex default /[^a-z0-9\-_] * /i (without spaces before and after '*')
-		 * @returns {String}
-		 */
-		context.strToCamelCase = function (str, lowerFirst, replaceStrRegex) {
-			lowerFirst = lowerFirst || false;
-			replaceStrRegex = replaceStrRegex || /[^a-z0-9\-_]*/i;
-			var newStr = "";
-			str = str + "";
-			str = str.replace(replaceStrRegex, '-');
-			str.split('-').forEach(function (str) {
-				if (/^[a-z]/i.test(str)) {
-					newStr += ucaseFirst(str);
-				}
-				else {
-					newStr += str;
-				}
-			});
-			if (lowerFirst) {
-				newStr = lcaseFirst(newStr);
-			}
-			return newStr;
-		};
-	}
-})(typeof window !== "undefined" ? window : global);
+        // Copy the methods and statics as we would for a regular class
+        if (methods) extend(constructor.prototype, methods);
 
-define("phpjs", function(){});
+        if (statics) extend(constructor, statics);
+
+        // Return the class
+        return constructor;
+    }
+
+    /**
+     * The `Extendable` constructor
+     * @constructor
+     */
+    function Extendable() {}
+
+    // Get a handle to Extendable's prototype
+    var proto = Extendable.prototype;
+
+    /**
+     * Creates a subclass off of `constructor`
+     * @param constructor {Function}
+     * @param methods {Object} - optional
+     * @param statics {Object} - optional
+     * @returns {*}
+     */
+    proto.extend = function (constructor, methods, statics) {
+        return defineSubClass(this, constructor, methods, statics);
+    };
+
+    proto.intersect = intersection;
+
+    proto.keys = keys;
+
+    proto.merge = merge;
+
+    proto.restrict = restrict;
+
+    proto.subtract = subtract;
+
+    proto.union = union;
+
+    context.sjl.Extendable = Extendable;
+
+})(typeof window === 'undefined' ? global : window);
+
+
+/**
+ * Created by Ely on 4/12/2014.
+ */
+(function (context) {
+
+    context.sjl.Iterator = context.sjl.Extendable.extend(
+        function Iterator(values, pointer) {
+            this.collection = values || [];
+            this.pointer = pointer || 0;
+        },
+        {
+            current: function () {
+                var self = this;
+                return {
+                    done: this.valid(),
+                    value: self.getCollection()[self.getPointer()]
+                };
+            },
+
+            next: function () {
+                var self = this,
+                    pointer = self.getPointer()
+
+                self.pointer = pointer += 1;
+
+                return {
+                    done: self.valid(),
+                    value: self.getCollection()[pointer]
+                };
+            },
+
+            rewind: function () {
+                this.pointer = 0;
+            },
+
+            valid: function () {
+                return this.getCollection().length - 1 <= this.getPointer();
+            },
+
+            getPointer: function () {
+                return /^\d+$/.test(this.pointer + '') ? 0 : this.pointer;
+            },
+
+            getCollection: function () {
+                return context.sjl.classOfIs(this.collection, 'Array') ? this.collection : [];
+            }
+
+        });
+
+})(typeof window === 'undefined' ? global : window);
+
+define("sjl", function(){});
 
 //     Underscore.js 1.4.4
 //     http://underscorejs.org
@@ -16901,13 +15344,13 @@ _.extend(Marionette.Module, {
 }));
 
 /*!
- * VERSION: 1.11.2
- * DATE: 2013-11-20
+ * VERSION: 1.11.6
+ * DATE: 2014-03-26
  * UPDATES AND DOCS AT: http://www.greensock.com
  * 
  * Includes all of the following: TweenLite, TweenMax, TimelineLite, TimelineMax, EasePack, CSSPlugin, RoundPropsPlugin, BezierPlugin, AttrPlugin, DirectionalRotationPlugin
  *
- * @license Copyright (c) 2008-2013, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2014, GreenSock. All rights reserved.
  * This work is subject to the terms at http://www.greensock.com/terms_of_use.html or for
  * Club GreenSock members, the software agreement that was issued with your membership.
  * 
@@ -16936,7 +15379,7 @@ _.extend(Marionette.Module, {
 			p = TweenMax.prototype = TweenLite.to({}, 0.1, {}),
 			_blankArray = [];
 
-		TweenMax.version = "1.11.2";
+		TweenMax.version = "1.11.6";
 		p.constructor = TweenMax;
 		p.kill()._gc = false;
 		TweenMax.killTweensOf = TweenMax.killDelayedCallsTo = TweenLite.killTweensOf;
@@ -16953,7 +15396,7 @@ _.extend(Marionette.Module, {
 		
 		p.updateTo = function(vars, resetDuration) {
 			var curRatio = this.ratio, p;
-			if (resetDuration && this.timeline && this._startTime < this._timeline._time) {
+			if (resetDuration && this._startTime < this._timeline._time) {
 				this._startTime = this._timeline._time;
 				this._uncache(false);
 				if (this._gc) {
@@ -16969,6 +15412,9 @@ _.extend(Marionette.Module, {
 				if (resetDuration) {
 					this._initted = false;
 				} else {
+					if (this._gc) {
+						this._enabled(true, false);
+					}
 					if (this._notifyPluginsOfEnabled && this._firstPT) {
 						TweenLite._onPluginEvent("_onDisable", this); //in case a plugin like MotionBlur must perform some cleanup tasks
 					}
@@ -17020,19 +15466,22 @@ _.extend(Marionette.Module, {
 				}
 				if (duration === 0) { //zero-duration tweens are tricky because we must discern the momentum/direction of time in order to determine whether the starting values should be rendered or the ending values. If the "playhead" of its timeline goes past the zero-duration tween in the forward direction or lands directly on it, the end values should be rendered, but if the timeline's "playhead" moves past it in the backward direction (from a postitive time to a negative time), the starting values must be rendered.
 					rawPrevTime = this._rawPrevTime;
+					if (this._startTime === this._timeline._duration) { //if a zero-duration tween is at the VERY end of a timeline and that timeline renders at its end, it will typically add a tiny bit of cushion to the render time to prevent rounding errors from getting in the way of tweens rendering their VERY end. If we then reverse() that timeline, the zero-duration tween will trigger its onReverseComplete even though technically the playhead didn't pass over it again. It's a very specific edge case we must accommodate.
+						time = 0;
+					}
 					if (time === 0 || rawPrevTime < 0 || rawPrevTime === _tinyNum) if (rawPrevTime !== time) {
 						force = true;
 						if (rawPrevTime > _tinyNum) {
 							callback = "onReverseComplete";
 						}
 					}
-					this._rawPrevTime = rawPrevTime = (!suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				}
 				
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
 				this._totalTime = this._time = this._cycle = 0;
 				this.ratio = this._ease._calcEnd ? this._ease.getRatio(0) : 0;
-				if (prevTotalTime !== 0 || (duration === 0 && this._rawPrevTime > _tinyNum)) {
+				if (prevTotalTime !== 0 || (duration === 0 && this._rawPrevTime > 0 && this._rawPrevTime !== _tinyNum)) {
 					callback = "onReverseComplete";
 					isComplete = this._reversed;
 				}
@@ -17042,7 +15491,7 @@ _.extend(Marionette.Module, {
 						if (this._rawPrevTime >= 0) {
 							force = true;
 						}
-						this._rawPrevTime = rawPrevTime = (!suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					}
 				} else if (!this._initted) { //if we render the very beginning (time == 0) of a fromTo(), we must force the render (normal tweens wouldn't need to render at a time of 0 when the prevTime was also 0). This is also mandatory to make sure overwriting kicks in immediately.
 					force = true;
@@ -17151,7 +15600,7 @@ _.extend(Marionette.Module, {
 				if (time < 0) if (this._startAt && this._startTime) { //if the tween is positioned at the VERY beginning (_startTime 0) of its parent timeline, it's illegal for the playhead to go back further, so we should not render the recorded startAt values.
 					this._startAt.render(time, suppressEvents, force); //note: for performance reasons, we tuck this conditional logic inside less traveled areas (most tweens don't have an onUpdate). We'd just have it at the end before the onComplete, but the values should be updated before any onUpdate is called, so we ALSO put it here and then if it's not called, we do so later near the onComplete.
 				}
-				if (!suppressEvents) {
+				if (!suppressEvents) if (this._totalTime !== prevTotalTime || isComplete) {
 					this._onUpdate.apply(this.vars.onUpdateScope || this, this.vars.onUpdateParams || _blankArray);
 				}
 			}
@@ -17309,7 +15758,7 @@ _.extend(Marionette.Module, {
 				parent = TweenLite.selector(parent) || parent;
 			}
 			if (_isSelector(parent)) {
-				parent = _slice(parent, 0);
+				parent = _slice.call(parent, 0);
 			}
 			if (_isArray(parent)) {
 				i = parent.length;
@@ -17506,7 +15955,7 @@ _.extend(Marionette.Module, {
 			_slice = _blankArray.slice,
 			p = TimelineLite.prototype = new SimpleTimeline();
 
-		TimelineLite.version = "1.11.0";
+		TimelineLite.version = "1.11.6";
 		p.constructor = TimelineLite;
 		p.kill()._gc = false;
 
@@ -17523,7 +15972,7 @@ _.extend(Marionette.Module, {
 		};
 
 		p.staggerTo = function(targets, duration, vars, stagger, position, onCompleteAll, onCompleteAllParams, onCompleteAllScope) {
-			var tl = new TimelineLite({onComplete:onCompleteAll, onCompleteParams:onCompleteAllParams, onCompleteScope:onCompleteAllScope}),
+			var tl = new TimelineLite({onComplete:onCompleteAll, onCompleteParams:onCompleteAllParams, onCompleteScope:onCompleteAllScope, smoothChildTiming:this.smoothChildTiming}),
 				i;
 			if (typeof(targets) === "string") {
 				targets = TweenLite.selector(targets) || targets;
@@ -17628,15 +16077,15 @@ _.extend(Marionette.Module, {
 
 			SimpleTimeline.prototype.add.call(this, value, position);
 
-			//if the timeline has already ended but the inserted tween/timeline extends the duration, we should enable this timeline again so that it renders properly.
-			if (this._gc) if (!this._paused) if (this._duration < this.duration()) {
-				//in case any of the anscestors had completed but should now be enabled...
+			//if the timeline has already ended but the inserted tween/timeline extends the duration, we should enable this timeline again so that it renders properly. We should also align the playhead with the parent timeline's when appropriate.
+			if (this._gc || this._time === this._duration) if (!this._paused) if (this._duration < this.duration()) {
+				//in case any of the ancestors had completed but should now be enabled...
 				tl = this;
 				beforeRawTime = (tl.rawTime() > value._startTime); //if the tween is placed on the timeline so that it starts BEFORE the current rawTime, we should align the playhead (move the timeline). This is because sometimes users will create a timeline, let it finish, and much later append a tween and expect it to run instead of jumping to its end state. While technically one could argue that it should jump to its end state, that's not what users intuitively expect.
-				while (tl._gc && tl._timeline) {
-					if (tl._timeline.smoothChildTiming && beforeRawTime) {
+				while (tl._timeline) {
+					if (beforeRawTime && tl._timeline.smoothChildTiming) {
 						tl.totalTime(tl._totalTime, true); //moves the timeline (shifts its startTime) if necessary, and also enables it.
-					} else {
+					} else if (tl._gc) {
 						tl._enabled(true, false);
 					}
 					tl = tl._timeline;
@@ -17665,7 +16114,7 @@ _.extend(Marionette.Module, {
 			SimpleTimeline.prototype._remove.call(this, tween, skipDisable);
 			var last = this._last;
 			if (!last) {
-				this._time = this._totalTime = 0;
+				this._time = this._totalTime = this._duration = this._totalDuration = 0;
 			} else if (this._time > last._startTime + last._totalDuration / last._timeScale) {
 				this._time = this.duration();
 				this._totalTime = this._totalDuration;
@@ -17774,12 +16223,12 @@ _.extend(Marionette.Module, {
 						}
 					}
 				}
-				this._rawPrevTime = (this._duration || !suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
-				time = totalDur + 0.000001; //to avoid occasional floating point rounding errors - sometimes child tweens/timelines were not being fully completed (their progress might be 0.999999999999998 instead of 1 because when _time - tween._startTime is performed, floating point errors would return a value that was SLIGHTLY off)
+				this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+				time = totalDur + 0.0001; //to avoid occasional floating point rounding errors - sometimes child tweens/timelines were not being fully completed (their progress might be 0.999999999999998 instead of 1 because when _time - tween._startTime is performed, floating point errors would return a value that was SLIGHTLY off). Try (999999999999.7 - 999999999999) * 1 = 0.699951171875 instead of 0.7.
 
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
 				this._totalTime = this._time = 0;
-				if (prevTime !== 0 || (this._duration === 0 && (this._rawPrevTime > _tinyNum || (time < 0 && this._rawPrevTime >= 0)))) {
+				if (prevTime !== 0 || (this._duration === 0 && this._rawPrevTime !== _tinyNum && (this._rawPrevTime > 0 || (time < 0 && this._rawPrevTime >= 0)))) {
 					callback = "onReverseComplete";
 					isComplete = this._reversed;
 				}
@@ -17790,7 +16239,7 @@ _.extend(Marionette.Module, {
 					}
 					this._rawPrevTime = time;
 				} else {
-					this._rawPrevTime = (this._duration || !suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 
 					time = 0; //to avoid occasional floating point rounding errors (could cause problems especially with zero-duration tweens at the very beginning of the timeline)
 					if (!this._initted) {
@@ -18103,7 +16552,7 @@ _.extend(Marionette.Module, {
 
 		p.constructor = TimelineMax;
 		p.kill()._gc = false;
-		TimelineMax.version = "1.11.0";
+		TimelineMax.version = "1.11.6";
 
 		p.invalidate = function() {
 			this._yoyo = (this.vars.yoyo === true);
@@ -18137,15 +16586,17 @@ _.extend(Marionette.Module, {
 
 		p.tweenTo = function(position, vars) {
 			vars = vars || {};
-			var copy = {ease:_easeNone, overwrite:2, useFrames:this.usesFrames(), immediateRender:false}, p, t;
+			var copy = {ease:_easeNone, overwrite:2, useFrames:this.usesFrames(), immediateRender:false},
+				duration, p, t;
 			for (p in vars) {
 				copy[p] = vars[p];
 			}
 			copy.time = this._parseTimeOrLabel(position);
-			t = new TweenLite(this, (Math.abs(Number(copy.time) - this._time) / this._timeScale) || 0.001, copy);
+			duration = (Math.abs(Number(copy.time) - this._time) / this._timeScale) || 0.001;
+			t = new TweenLite(this, duration, copy);
 			copy.onStart = function() {
 				t.target.paused(true);
-				if (t.vars.time !== t.target.time()) { //don't make the duration zero - if it's supposed to be zero, don't worry because it's already initting the tween and will complete immediately, effectively making the duration zero anyway. If we make duration zero, the tween won't run at all.
+				if (t.vars.time !== t.target.time() && duration === t.duration()) { //don't make the duration zero - if it's supposed to be zero, don't worry because it's already initting the tween and will complete immediately, effectively making the duration zero anyway. If we make duration zero, the tween won't run at all.
 					t.duration( Math.abs( t.vars.time - t.target.time()) / t.target._timeScale );
 				}
 				if (vars.onStart) { //in case the user had an onStart in the vars - we don't want to overwrite it.
@@ -18193,12 +16644,12 @@ _.extend(Marionette.Module, {
 						}
 					}
 				}
-				this._rawPrevTime = (this._duration || !suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+				this._rawPrevTime = (this._duration || !suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				if (this._yoyo && (this._cycle & 1) !== 0) {
 					this._time = time = 0;
 				} else {
 					this._time = dur;
-					time = dur + 0.000001; //to avoid occasional floating point rounding errors
+					time = dur + 0.0001; //to avoid occasional floating point rounding errors - sometimes child tweens/timelines were not being fully completed (their progress might be 0.999999999999998 instead of 1 because when _time - tween._startTime is performed, floating point errors would return a value that was SLIGHTLY off). Try (999999999999.7 - 999999999999) * 1 = 0.699951171875 instead of 0.7. We cannot do less then 0.0001 because the same issue can occur when the duration is extremely large like 999999999999 in which case adding 0.00000001, for example, causes it to act like nothing was added.
 				}
 
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
@@ -18206,7 +16657,7 @@ _.extend(Marionette.Module, {
 					this._totalTime = this._cycle = 0;
 				}
 				this._time = 0;
-				if (prevTime !== 0 || (dur === 0 && (prevRawPrevTime > _tinyNum || (time < 0 && prevRawPrevTime >= 0)) && !this._locked)) { //edge case for checking time < 0 && prevRawPrevTime >= 0: a zero-duration fromTo() tween inside a zero-duration timeline (yeah, very rare)
+				if (prevTime !== 0 || (dur === 0 && prevRawPrevTime !== _tinyNum && (prevRawPrevTime > 0 || (time < 0 && prevRawPrevTime >= 0)) && !this._locked)) { //edge case for checking time < 0 && prevRawPrevTime >= 0: a zero-duration fromTo() tween inside a zero-duration timeline (yeah, very rare)
 					callback = "onReverseComplete";
 					isComplete = this._reversed;
 				}
@@ -18217,7 +16668,7 @@ _.extend(Marionette.Module, {
 					}
 					this._rawPrevTime = time;
 				} else {
-					this._rawPrevTime = (dur || !suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = (dur || !suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration timeline or tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					time = 0; //to avoid occasional floating point rounding errors (could cause problems especially with zero-duration tweens at the very beginning of the timeline)
 					if (!this._initted) {
 						internalForce = true;
@@ -18243,7 +16694,7 @@ _.extend(Marionette.Module, {
 						}
 						if (this._time > dur) {
 							this._time = dur;
-							time = dur + 0.000001; //to avoid occasional floating point rounding error
+							time = dur + 0.0001; //to avoid occasional floating point rounding error
 						} else if (this._time < 0) {
 							this._time = time = 0;
 						} else {
@@ -18277,7 +16728,7 @@ _.extend(Marionette.Module, {
 				}
 				this._time = prevTime; //temporarily revert _time so that render() renders the children in the correct order. Without this, tweens won't rewind correctly. We could arhictect things in a "cleaner" way by splitting out the rendering queue into a separate method but for performance reasons, we kept it all inside this method.
 
-				this._rawPrevTime = (dur === 0) ? prevRawPrevTime - 0.00001 : prevRawPrevTime;
+				this._rawPrevTime = (dur === 0) ? prevRawPrevTime - 0.0001 : prevRawPrevTime;
 				this._cycle = prevCycle;
 				this._locked = true; //prevents changes to totalTime and skips repeat/yoyo behavior when we recursively call render()
 				prevTime = (backwards) ? 0 : dur;
@@ -18288,7 +16739,7 @@ _.extend(Marionette.Module, {
 					}
 				}
 				if (wrap) {
-					prevTime = (backwards) ? dur + 0.000001 : -0.000001;
+					prevTime = (backwards) ? dur + 0.0001 : -0.0001;
 					this.render(prevTime, true, false);
 				}
 				this._locked = false;
@@ -18822,6 +17273,7 @@ _.extend(Marionette.Module, {
 			BezierPlugin = window._gsDefine.plugin({
 					propName: "bezier",
 					priority: -1,
+					version: "1.3.1",
 					API: 2,
 					global:true,
 
@@ -18873,6 +17325,7 @@ _.extend(Marionette.Module, {
 						}
 
 						if ((autoRotate = this._autoRotate)) {
+							this._initialRotations = [];
 							if (!(autoRotate[0] instanceof Array)) {
 								this._autoRotate = autoRotate = [autoRotate];
 							}
@@ -18882,8 +17335,11 @@ _.extend(Marionette.Module, {
 									p = autoRotate[i][j];
 									this._func[p] = (typeof(target[p]) === "function") ? target[ ((p.indexOf("set") || typeof(target["get" + p.substr(3)]) !== "function") ? p : "get" + p.substr(3)) ] : false;
 								}
+								p = autoRotate[i][2];
+								this._initialRotations[i] = this._func[p] ? this._func[p].call(this._target) : this._target[p];
 							}
 						}
+						this._startRatio = tween.vars.runBackwards ? 1 : 0; //we determine the starting ratio when the tween inits which is always 0 unless the tween has runBackwards:true (indicating it's a from() tween) in which case it's 1.
 						return true;
 					},
 
@@ -18892,6 +17348,7 @@ _.extend(Marionette.Module, {
 						var segments = this._segCount,
 							func = this._func,
 							target = this._target,
+							notStart = (v !== this._startRatio),
 							curIndex, inv, i, p, b, t, val, l, lengths, curSeg;
 						if (!this._timeRes) {
 							curIndex = (v < 0) ? 0 : (v >= 1) ? segments - 1 : (segments * v) >> 0;
@@ -18985,7 +17442,7 @@ _.extend(Marionette.Module, {
 									y1 += (y2 - y1) * t;
 									y2 += ((b2.c + (b2.d - b2.c) * t) - y2) * t;
 
-									val = Math.atan2(y2 - y1, x2 - x1) * conv + add;
+									val = notStart ? Math.atan2(y2 - y1, x2 - x1) * conv + add : this._initialRotations[i];
 
 									if (func[p]) {
 										target[p](val);
@@ -19123,11 +17580,12 @@ _.extend(Marionette.Module, {
 			p = CSSPlugin.prototype = new TweenPlugin("css");
 
 		p.constructor = CSSPlugin;
-		CSSPlugin.version = "1.11.2";
+		CSSPlugin.version = "1.11.6";
 		CSSPlugin.API = 2;
 		CSSPlugin.defaultTransformPerspective = 0;
+		CSSPlugin.defaultSkewType = "compensated";
 		p = "px"; //we'll reuse the "p" variable to keep file size down
-		CSSPlugin.suffixMap = {top:p, right:p, bottom:p, left:p, width:p, height:p, fontSize:p, padding:p, margin:p, perspective:p};
+		CSSPlugin.suffixMap = {top:p, right:p, bottom:p, left:p, width:p, height:p, fontSize:p, padding:p, margin:p, perspective:p, lineHeight:""};
 
 
 		var _numExp = /(?:\d|\-\d|\.\d|\-\.\d)+/g,
@@ -19189,7 +17647,7 @@ _.extend(Marionette.Module, {
 			_prefixCSS = "", //the non-camelCase vendor prefix like "-o-", "-moz-", "-ms-", or "-webkit-"
 			_prefix = "", //camelCase vendor prefix like "O", "ms", "Webkit", or "Moz".
 
-			//@private feed in a camelCase property name like "transform" and it will check to see if it is valid as-is or if it needs a vendor prefix. It returns the corrected camelCase property name (i.e. "WebkitTransform" or "MozTransform" or "transform" or null if no such property is found, like if the browser is IE8 or before, "transform" won't be found at all)
+			// @private feed in a camelCase property name like "transform" and it will check to see if it is valid as-is or if it needs a vendor prefix. It returns the corrected camelCase property name (i.e. "WebkitTransform" or "MozTransform" or "transform" or null if no such property is found, like if the browser is IE8 or before, "transform" won't be found at all)
 			_checkPropPrefix = function(p, e) {
 				e = e || _tempDiv;
 				var s = e.style,
@@ -19247,7 +17705,7 @@ _.extend(Marionette.Module, {
 			 * @param {boolean=} recurse If true, the call is a recursive one. In some browsers (like IE7/8), occasionally the value isn't accurately reported initially, but if we run the function again it will take effect.
 			 * @return {number} value in pixels
 			 */
-			_convertToPixels = function(t, p, v, sfx, recurse) {
+			_convertToPixels = _internals.convertToPixels = function(t, p, v, sfx, recurse) {
 				if (sfx === "px" || !sfx) { return v; }
 				if (sfx === "auto" || !v) { return 0; }
 				var horiz = _horizExp.test(p),
@@ -19277,14 +17735,14 @@ _.extend(Marionette.Module, {
 				}
 				return neg ? -pix : pix;
 			},
-			_calculateOffset = function(t, p, cs) { //for figuring out "top" or "left" in px when it's "auto". We need to factor in margin with the offsetLeft/offsetTop
+			_calculateOffset = _internals.calculateOffset = function(t, p, cs) { //for figuring out "top" or "left" in px when it's "auto". We need to factor in margin with the offsetLeft/offsetTop
 				if (_getStyle(t, "position", cs) !== "absolute") { return 0; }
 				var dim = ((p === "left") ? "Left" : "Top"),
 					v = _getStyle(t, "margin" + dim, cs);
 				return t["offset" + dim] - (_convertToPixels(t, p, parseFloat(v), v.replace(_suffixExp, "")) || 0);
 			},
 
-			//@private returns at object containing ALL of the style properties in camelCase and their associated values.
+			// @private returns at object containing ALL of the style properties in camelCase and their associated values.
 			_getAllStyles = function(t, cs) {
 				var s = {},
 					i, tr;
@@ -19300,7 +17758,7 @@ _.extend(Marionette.Module, {
 					}
 				} else if ((cs = t.currentStyle || t.style)) {
 					for (i in cs) {
-						if (typeof(i) === "string" && s[i] !== undefined) {
+						if (typeof(i) === "string" && s[i] === undefined) {
 							s[i.replace(_camelExp, _camelFunc)] = cs[i];
 						}
 					}
@@ -19327,7 +17785,7 @@ _.extend(Marionette.Module, {
 				return s;
 			},
 
-			//@private analyzes two style objects (as returned by _getAllStyles()) and only looks for differences between them that contain tweenable values (like a number or color). It returns an object with a "difs" property which refers to an object containing only those isolated properties and values for tweening, and a "firstMPT" property which refers to the first MiniPropTween instance in a linked list that recorded all the starting values of the different properties so that we can revert to them at the end or beginning of the tween - we don't want the cascading to get messed up. The forceLookup parameter is an optional generic object with properties that should be forced into the results - this is necessary for className tweens that are overwriting others because imagine a scenario where a rollover/rollout adds/removes a class and the user swipes the mouse over the target SUPER fast, thus nothing actually changed yet and the subsequent comparison of the properties would indicate they match (especially when px rounding is taken into consideration), thus no tweening is necessary even though it SHOULD tween and remove those properties after the tween (otherwise the inline styles will contaminate things). See the className SpecialProp code for details.
+			// @private analyzes two style objects (as returned by _getAllStyles()) and only looks for differences between them that contain tweenable values (like a number or color). It returns an object with a "difs" property which refers to an object containing only those isolated properties and values for tweening, and a "firstMPT" property which refers to the first MiniPropTween instance in a linked list that recorded all the starting values of the different properties so that we can revert to them at the end or beginning of the tween - we don't want the cascading to get messed up. The forceLookup parameter is an optional generic object with properties that should be forced into the results - this is necessary for className tweens that are overwriting others because imagine a scenario where a rollover/rollout adds/removes a class and the user swipes the mouse over the target SUPER fast, thus nothing actually changed yet and the subsequent comparison of the properties would indicate they match (especially when px rounding is taken into consideration), thus no tweening is necessary even though it SHOULD tween and remove those properties after the tween (otherwise the inline styles will contaminate things). See the className SpecialProp code for details.
 			_cssDif = function(t, s1, s2, vars, forceLookup) {
 				var difs = {},
 					style = t.style,
@@ -19371,7 +17829,7 @@ _.extend(Marionette.Module, {
 				return v;
 			},
 
-			//@private Parses position-related complex strings like "top left" or "50px 10px" or "70% 20%", etc. which are used for things like transformOrigin or backgroundPosition. Optionally decorates a supplied object (recObj) with the following properties: "ox" (offsetX), "oy" (offsetY), "oxp" (if true, "ox" is a percentage not a pixel value), and "oxy" (if true, "oy" is a percentage not a pixel value)
+			// @private Parses position-related complex strings like "top left" or "50px 10px" or "70% 20%", etc. which are used for things like transformOrigin or backgroundPosition. Optionally decorates a supplied object (recObj) with the following properties: "ox" (offsetX), "oy" (offsetY), "oxp" (if true, "ox" is a percentage not a pixel value), and "oxy" (if true, "oy" is a percentage not a pixel value)
 			_parsePosition = function(v, recObj) {
 				if (v == null || v === "" || v === "auto" || v === "auto auto") { //note: Firefox uses "auto auto" as default whereas Chrome uses "auto".
 					v = "0 0";
@@ -19635,7 +18093,7 @@ _.extend(Marionette.Module, {
 				};
 			},
 
-			//@private used when other plugins must tween values first, like BezierPlugin or ThrowPropsPlugin, etc. That plugin's setRatio() gets called first so that the values are updated, and then we loop through the MiniPropTweens  which handle copying the values into their appropriate slots so that they can then be applied correctly in the main CSSPlugin setRatio() method. Remember, we typically create a proxy object that has a bunch of uniquely-named properties that we feed to the sub-plugin and it does its magic normally, and then we must interpret those values and apply them to the css because often numbers must get combined/concatenated, suffixes added, etc. to work with css, like boxShadow could have 4 values plus a color.
+			// @private used when other plugins must tween values first, like BezierPlugin or ThrowPropsPlugin, etc. That plugin's setRatio() gets called first so that the values are updated, and then we loop through the MiniPropTweens  which handle copying the values into their appropriate slots so that they can then be applied correctly in the main CSSPlugin setRatio() method. Remember, we typically create a proxy object that has a bunch of uniquely-named properties that we feed to the sub-plugin and it does its magic normally, and then we must interpret those values and apply them to the css because often numbers must get combined/concatenated, suffixes added, etc. to work with css, like boxShadow could have 4 values plus a color.
 			_setPluginRatio = _internals._setPluginRatio = function(v) {
 				this.plugin.setRatio(v);
 				var d = this.data,
@@ -20136,6 +18594,9 @@ _.extend(Marionette.Module, {
 			_transformPropCSS = _prefixCSS + "transform",
 			_transformOriginProp = _checkPropPrefix("transformOrigin"),
 			_supports3D = (_checkPropPrefix("perspective") !== null),
+			Transform = _internals.Transform = function() {
+				this.skewY = 0;
+			},
 
 			/**
 			 * Parses the transform values for an element, returning an object with x, y, z, scaleX, scaleY, scaleZ, rotation, rotationX, rotationY, skewX, and skewY properties. Note: by default (for performance reasons), all skewing is combined into skewX and rotation but skewY still has a place in the transform object so that we can record how much of the skew is attributed to skewX vs skewY. Remember, a skewY of 10 looks the same as a rotation of 10 and skewX of -10.
@@ -20145,11 +18606,11 @@ _.extend(Marionette.Module, {
 			 * @param {boolean=} parse if true, we'll ignore any _gsTransform values that already exist on the element, and force a reparsing of the css (calculated style)
 			 * @return {object} object containing all of the transform properties/values like {x:0, y:0, z:0, scaleX:1...}
 			 */
-			_getTransform = function(t, cs, rec, parse) {
+			_getTransform = _internals.getTransform = function(t, cs, rec, parse) {
 				if (t._gsTransform && rec && !parse) {
 					return t._gsTransform; //if the element already has a _gsTransform, use that. Note: some browsers don't accurately return the calculated style for the transform (particularly for SVG), so it's almost always safest to just use the values we've already applied rather than re-parsing things.
 				}
-				var tm = rec ? t._gsTransform || {skewY:0} : {skewY:0},
+				var tm = rec ? t._gsTransform || new Transform() : new Transform(),
 					invX = (tm.scaleX < 0), //in order to interpret things properly, we need to know if the user applied a negative scaleX previously so that we can adjust the rotation and skewX accordingly. Otherwise, if we always interpret a flipped matrix as affecting scaleY and the user only wants to tween the scaleX on multiple sequential tweens, it would keep the negative scaleY without that being the user's intent.
 					min = 0.00002,
 					rnd = 100000,
@@ -20391,7 +18852,7 @@ _.extend(Marionette.Module, {
 				}
 			},
 
-			_set3DTransformRatio = function(v) {
+			_set3DTransformRatio = _internals.set3DTransformRatio = function(v) {
 				var t = this.data, //refers to the element's _gsTransform object
 					style = this.t.style,
 					angle = t.rotation * _DEG2RAD,
@@ -20401,16 +18862,7 @@ _.extend(Marionette.Module, {
 					perspective = t.perspective,
 					a11, a12, a13, a14,	a21, a22, a23, a24, a31, a32, a33, a34,	a41, a42, a43,
 					zOrigin, rnd, cos, sin, t1, t2, t3, t4;
-				if (_isFirefox) { //Firefox has a
-					/*
-					// It seems Firefox fixed the bug that causes 3D elements to randomly disappear during animation unless a repaint is forced (in version 25), so we're commenting out the fix as of CSSPlugin version 1.11.2, but leaving it in the source in case it's useful later. One way we were working around this was change "top" or "bottom" by 0.05 which is imperceptible, so we go back and forth. Another way is to change the display to "none", read the clientTop, and then revert the display but that is much slower.
-					var ffProp = style.top ? "top" : style.bottom ? "bottom" : parseFloat(_getStyle(this.t, "top", null, false)) ? "bottom" : "top";
-					t1 = _getStyle(this.t, ffProp, null, false);
-					n = parseFloat(t1) || 0;
-					var sfx = t1.substr((n + "").length) || "px";
-					t._ffFix = !t._ffFix;
-					style[ffProp] = (t._ffFix ? n + 0.05 : n - 0.05) + sfx;
-					*/
+				if (_isFirefox) {
 					var n = 0.0001;
 					if (sx < n && sx > -n) { //Firefox has a bug (at least in v25) that causes it to render the transparent part of 32-bit PNG images as black when displayed inside an iframe and the 3D scale is very small and doesn't change sufficiently enough between renders (like if you use a Power4.easeInOut to scale from 0 to 1 where the beginning values only change a tiny amount to begin the tween before accelerating). In this case, we force the scale to be 0.00002 instead which is visually the same but works around the Firefox issue.
 						sx = sz = 0.00002;
@@ -20431,9 +18883,16 @@ _.extend(Marionette.Module, {
 						angle -= t.skewX * _DEG2RAD;
 						cos = Math.cos(angle);
 						sin = Math.sin(angle);
+						if (t.skewType === "simple") { //by default, we compensate skewing on the other axis to make it look more natural, but you can set the skewType to "simple" to use the uncompensated skewing that CSS does
+							t1 = Math.tan(t.skewX * _DEG2RAD);
+							t1 = Math.sqrt(1 + t1 * t1);
+							cos *= t1;
+							sin *= t1;
+						}
 					}
 					a12 = -sin;
 					a22 = cos;
+
 				} else if (!t.rotationY && !t.rotationX && sz === 1 && !perspective) { //if we're only translating and/or 2D scaling, this is faster...
 					style[_transformProp] = "translate3d(" + t.x + "px," + t.y + "px," + t.z +"px)" + ((sx !== 1 || sy !== 1) ? " scale(" + sx + "," + sy + ")" : "");
 					return;
@@ -20507,18 +18966,15 @@ _.extend(Marionette.Module, {
 				style[_transformProp] = "matrix3d(" + [ (((a11 * rnd) | 0) / rnd), (((a21 * rnd) | 0) / rnd), (((a31 * rnd) | 0) / rnd), (((a41 * rnd) | 0) / rnd), (((a12 * rnd) | 0) / rnd), (((a22 * rnd) | 0) / rnd), (((a32 * rnd) | 0) / rnd), (((a42 * rnd) | 0) / rnd), (((a13 * rnd) | 0) / rnd), (((a23 * rnd) | 0) / rnd), (((a33 * rnd) | 0) / rnd), (((a43 * rnd) | 0) / rnd), a14, a24, a34, (perspective ? (1 + (-a34 / perspective)) : 1) ].join(",") + ")";
 			},
 
-			_set2DTransformRatio = function(v) {
+			_set2DTransformRatio = _internals.set2DTransformRatio = function(v) {
 				var t = this.data, //refers to the element's _gsTransform object
 					targ = this.t,
 					style = targ.style,
-					ffProp, t1, n, sfx, ang, skew, rnd, sx, sy;
-				if (_isFirefox) { //Firefox has a bug that causes elements to randomly disappear during animation unless a repaint is forced. One way to do this is change "top" or "bottom" by 0.05 which is imperceptible, so we go back and forth. Another way is to change the display to "none", read the clientTop, and then revert the display but that is much slower.
-					ffProp = style.top ? "top" : style.bottom ? "bottom" : parseFloat(_getStyle(targ, "top", null, false)) ? "bottom" : "top";
-					t1 = _getStyle(targ, ffProp, null, false);
-					n = parseFloat(t1) || 0;
-					sfx = t1.substr((n + "").length) || "px";
-					t._ffFix = !t._ffFix;
-					style[ffProp] = (t._ffFix ? n + 0.05 : n - 0.05) + sfx;
+					ang, skew, rnd, sx, sy;
+				if (t.rotationX || t.rotationY || t.z || t.force3D) { //if a 3D tween begins while a 2D one is running, we need to kick the rendering over to the 3D method. For example, imagine a yoyo-ing, infinitely repeating scale tween running, and then the object gets rotated in 3D space with a different tween.
+					this.setRatio = _set3DTransformRatio;
+					_set3DTransformRatio.call(this, v);
+					return;
 				}
 				if (!t.rotation && !t.skewX) {
 					style[_transformProp] = "matrix(" + t.scaleX + ",0,0," + t.scaleY + "," + t.x + "," + t.y + ")";
@@ -20533,7 +18989,7 @@ _.extend(Marionette.Module, {
 				}
 			};
 
-		_registerComplexSpecialProp("transform,scale,scaleX,scaleY,scaleZ,x,y,z,rotation,rotationX,rotationY,rotationZ,skewX,skewY,shortRotation,shortRotationX,shortRotationY,shortRotationZ,transformOrigin,transformPerspective,directionalRotation,parseTransform,force3D", {parser:function(t, e, p, cssp, pt, plugin, vars) {
+		_registerComplexSpecialProp("transform,scale,scaleX,scaleY,scaleZ,x,y,z,rotation,rotationX,rotationY,rotationZ,skewX,skewY,shortRotation,shortRotationX,shortRotationY,shortRotationZ,transformOrigin,transformPerspective,directionalRotation,parseTransform,force3D,skewType", {parser:function(t, e, p, cssp, pt, plugin, vars) {
 			if (cssp._transform) { return pt; } //only need to parse the transform once, and only if the browser supports it.
 			var m1 = cssp._transform = _getTransform(t, _cs, true, vars.parseTransform),
 				style = t.style,
@@ -20552,7 +19008,7 @@ _.extend(Marionette.Module, {
 			} else if (typeof(v) === "object") { //for values like scaleX, scaleY, rotation, x, y, skewX, and skewY or transform:{...} (object)
 				m2 = {scaleX:_parseVal((v.scaleX != null) ? v.scaleX : v.scale, m1.scaleX),
 					scaleY:_parseVal((v.scaleY != null) ? v.scaleY : v.scale, m1.scaleY),
-					scaleZ:_parseVal((v.scaleZ != null) ? v.scaleZ : v.scale, m1.scaleZ),
+					scaleZ:_parseVal(v.scaleZ, m1.scaleZ),
 					x:_parseVal(v.x, m1.x),
 					y:_parseVal(v.y, m1.y),
 					z:_parseVal(v.z, m1.z),
@@ -20582,10 +19038,12 @@ _.extend(Marionette.Module, {
 				}
 			}
 
-			if (v.force3D != null) {
+			if (_supports3D && v.force3D != null) {
 				m1.force3D = v.force3D;
 				hasChange = true;
 			}
+
+			m1.skewType = v.skewType || m1.skewType || CSSPlugin.defaultSkewType;
 
 			has3D = (m1.force3D || m1.z || m1.rotationX || m1.rotationY || m2.z || m2.rotationX || m2.rotationY || m2.perspective);
 			if (!has3D && v.scale != null) {
@@ -20754,6 +19212,7 @@ _.extend(Marionette.Module, {
 				var a = v.split(" ");
 				return a[0] + " " + (a[1] || "solid") + " " + (v.match(_colorExp) || ["#000"])[0];
 			}});
+		_registerComplexSpecialProp("borderWidth", {parser:_getEdgeParser("borderTopWidth,borderRightWidth,borderBottomWidth,borderLeftWidth")}); //Firefox doesn't pick up on borderWidth set in style sheets (only inline).
 		_registerComplexSpecialProp("float,cssFloat,styleFloat", {parser:function(t, e, p, cssp, pt, plugin) {
 			var s = t.style,
 				prop = ("cssFloat" in s) ? "cssFloat" : "styleFloat";
@@ -21090,7 +19549,7 @@ _.extend(Marionette.Module, {
 						}
 
 						if (esfx === "") {
-							esfx = _suffixMap[p] || bsfx; //populate the end suffix, prioritizing the map, then if none is found, use the beginning suffix.
+							esfx = (p in _suffixMap) ? _suffixMap[p] : bsfx; //populate the end suffix, prioritizing the map, then if none is found, use the beginning suffix.
 						}
 
 						es = (en || en === 0) ? (rel ? en + bn : en) + esfx : vars[p]; //ensures that any += or -= prefixes are taken care of. Record the end value before normalizing the suffix because we always want to end the tween on exactly what they intended even if it doesn't match the beginning value's suffix.
@@ -21100,9 +19559,6 @@ _.extend(Marionette.Module, {
 							bn = _convertToPixels(target, p, bn, bsfx);
 							if (esfx === "%") {
 								bn /= _convertToPixels(target, p, 100, "%") / 100;
-								if (bn > 100) { //extremely rare
-									bn = 100;
-								}
 								if (vars.strictUnits !== true) { //some browsers report only "px" values instead of allowing "%" with getComputedStyle(), so we assume that if we're tweening to a %, we should start there too unless strictUnits:true is defined. This approach is particularly useful for responsive designs that use from() tweens.
 									bs = bn + "%";
 								}
@@ -21458,6 +19914,7 @@ _.extend(Marionette.Module, {
 	window._gsDefine.plugin({
 		propName: "attr",
 		API: 2,
+		version: "0.2.0",
 
 		//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
 		init: function(target, value, tween) {
@@ -21506,6 +19963,7 @@ _.extend(Marionette.Module, {
 	window._gsDefine.plugin({
 		propName: "directionalRotation",
 		API: 2,
+		version: "0.2.0",
 
 		//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
 		init: function(target, value, tween) {
@@ -21949,7 +20407,7 @@ _.extend(Marionette.Module, {
 				var toString = Object.prototype.toString,
 					array = toString.call([]);
 				return function(obj) {
-					return (obj instanceof Array || (typeof(obj) === "object" && !!obj.push && toString.call(obj) === array));
+					return obj != null && (obj instanceof Array || (typeof(obj) === "object" && !!obj.push && toString.call(obj) === array));
 				};
 			}()),
 			a, i, p, _ticker, _tickerActive,
@@ -22329,21 +20787,21 @@ _.extend(Marionette.Module, {
 
 
 		p.play = function(from, suppressEvents) {
-			if (arguments.length) {
+			if (from != null) {
 				this.seek(from, suppressEvents);
 			}
 			return this.reversed(false).paused(false);
 		};
 
 		p.pause = function(atTime, suppressEvents) {
-			if (arguments.length) {
+			if (atTime != null) {
 				this.seek(atTime, suppressEvents);
 			}
 			return this.paused(true);
 		};
 
 		p.resume = function(from, suppressEvents) {
-			if (arguments.length) {
+			if (from != null) {
 				this.seek(from, suppressEvents);
 			}
 			return this.paused(false);
@@ -22358,7 +20816,7 @@ _.extend(Marionette.Module, {
 		};
 
 		p.reverse = function(from, suppressEvents) {
-			if (arguments.length) {
+			if (from != null) {
 				this.seek((from || this.totalDuration()), suppressEvents);
 			}
 			return this.reversed(true).paused(false);
@@ -22567,7 +21025,7 @@ _.extend(Marionette.Module, {
 			}
 			if (value != this._reversed) {
 				this._reversed = value;
-				this.totalTime(this._totalTime, true);
+				this.totalTime(((this._timeline && !this._timeline.smoothChildTiming) ? this.totalDuration() - this._totalTime : this._totalTime), true);
 			}
 			return this;
 		};
@@ -22789,7 +21247,7 @@ _.extend(Marionette.Module, {
 		p._firstPT = p._targets = p._overwrittenProps = p._startAt = null;
 		p._notifyPluginsOfEnabled = false;
 
-		TweenLite.version = "1.11.2";
+		TweenLite.version = "1.11.6";
 		TweenLite.defaultEase = p._ease = new Ease(null, null, 1, 1);
 		TweenLite.defaultOverwrite = "auto";
 		TweenLite.ticker = _ticker;
@@ -22890,7 +21348,7 @@ _.extend(Marionette.Module, {
 						if (_checkOverlap(curTween, globalStart, zeroDur) === 0) {
 							overlaps[oCount++] = curTween;
 						}
-					} else if (curTween._startTime <= startTime) if (curTween._startTime + curTween.totalDuration() / curTween._timeScale + _tinyNum > startTime) if (!((zeroDur || !curTween._initted) && startTime - curTween._startTime <= 0.0000000002)) {
+					} else if (curTween._startTime <= startTime) if (curTween._startTime + curTween.totalDuration() / curTween._timeScale > startTime) if (!((zeroDur || !curTween._initted) && startTime - curTween._startTime <= 0.0000000002)) {
 						overlaps[oCount++] = curTween;
 					}
 				}
@@ -23082,19 +21540,22 @@ _.extend(Marionette.Module, {
 				}
 				if (duration === 0) { //zero-duration tweens are tricky because we must discern the momentum/direction of time in order to determine whether the starting values should be rendered or the ending values. If the "playhead" of its timeline goes past the zero-duration tween in the forward direction or lands directly on it, the end values should be rendered, but if the timeline's "playhead" moves past it in the backward direction (from a postitive time to a negative time), the starting values must be rendered.
 					rawPrevTime = this._rawPrevTime;
+					if (this._startTime === this._timeline._duration) { //if a zero-duration tween is at the VERY end of a timeline and that timeline renders at its end, it will typically add a tiny bit of cushion to the render time to prevent rounding errors from getting in the way of tweens rendering their VERY end. If we then reverse() that timeline, the zero-duration tween will trigger its onReverseComplete even though technically the playhead didn't pass over it again. It's a very specific edge case we must accommodate.
+						time = 0;
+					}
 					if (time === 0 || rawPrevTime < 0 || rawPrevTime === _tinyNum) if (rawPrevTime !== time) {
 						force = true;
 						if (rawPrevTime > _tinyNum) {
 							callback = "onReverseComplete";
 						}
 					}
-					this._rawPrevTime = rawPrevTime = (!suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 				}
 
 			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
 				this._totalTime = this._time = 0;
 				this.ratio = this._ease._calcEnd ? this._ease.getRatio(0) : 0;
-				if (prevTime !== 0 || (duration === 0 && this._rawPrevTime > _tinyNum)) {
+				if (prevTime !== 0 || (duration === 0 && this._rawPrevTime > 0 && this._rawPrevTime !== _tinyNum)) {
 					callback = "onReverseComplete";
 					isComplete = this._reversed;
 				}
@@ -23104,7 +21565,7 @@ _.extend(Marionette.Module, {
 						if (this._rawPrevTime >= 0) {
 							force = true;
 						}
-						this._rawPrevTime = rawPrevTime = (!suppressEvents || time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || this._rawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
 					}
 				} else if (!this._initted) { //if we render the very beginning (time == 0) of a fromTo(), we must force the render (normal tweens wouldn't need to render at a time of 0 when the prevTime was also 0). This is also mandatory to make sure overwriting kicks in immediately.
 					force = true;
@@ -23191,7 +21652,7 @@ _.extend(Marionette.Module, {
 				if (time < 0) if (this._startAt && this._startTime) { //if the tween is positioned at the VERY beginning (_startTime 0) of its parent timeline, it's illegal for the playhead to go back further, so we should not render the recorded startAt values.
 					this._startAt.render(time, suppressEvents, force); //note: for performance reasons, we tuck this conditional logic inside less traveled areas (most tweens don't have an onUpdate). We'd just have it at the end before the onComplete, but the values should be updated before any onUpdate is called, so we ALSO put it here and then if it's not called, we do so later near the onComplete.
 				}
-				if (!suppressEvents) if (!(force && this._time === 0 && prevTime === 0)) {
+				if (!suppressEvents) if (this._time !== prevTime || isComplete) {
 					this._onUpdate.apply(this.vars.onUpdateScope || this, this.vars.onUpdateParams || _blankArray);
 				}
 			}
@@ -30346,623 +28807,7 @@ define('hbs/json2',[],function(){
     
 }).call(this, this);
 ;
-/**
- * @license Handlebars hbs 0.4.0 - Alex Sexton, but Handlebars has it's own licensing junk
- *
- * Available via the MIT or new BSD license.
- * see: http://github.com/jrburke/require-cs for details on the plugin this was based off of
- */
-
-/* Yes, deliciously evil. */
-/*jslint evil: true, strict: false, plusplus: false, regexp: false */
-/*global require: false, XMLHttpRequest: false, ActiveXObject: false,
-define: false, process: false, window: false */
-define('hbs',[
-  'hbs/handlebars', 'hbs/underscore', 'hbs/i18nprecompile', 'hbs/json2'
-], function (
-  Handlebars, _, precompile, JSON
-) {
-    var fs;
-  var getXhr;
-  var progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'];
-  var fetchText = function () {
-      throw new Error('Environment unsupported.');
-  };
-  var buildMap = [];
-  var filecode = 'w+';
-  var templateExtension = 'hbs';
-  var customNameExtension = '@hbs';
-  var devStyleDirectory = '/styles/';
-  var buildStyleDirectory = '/demo-build/styles/';
-  var helperDirectory = 'templates/helpers/';
-  var i18nDirectory = 'templates/i18n/';
-  var buildCSSFileName = 'screen.build.css';
-
-  Handlebars.registerHelper('$', function() {
-    //placeholder for translation helper
-  });
-
-  if (typeof window !== 'undefined' && window.navigator && window.document && !window.navigator.userAgent.match(/Node.js/)) {
-    // Browser action
-    getXhr = function () {
-      // Would love to dump the ActiveX crap in here. Need IE 6 to die first.
-      var xhr;
-      var i;
-      var progId;
-      if (typeof XMLHttpRequest !== 'undefined') {
-        return ((arguments[0] === true)) ? new XDomainRequest() : new XMLHttpRequest();
-      }
-      else {
-        for (i = 0; i < 3; i++) {
-          progId = progIds[i];
-          try {
-            xhr = new ActiveXObject(progId);
-          }
-          catch (e) {}
-
-          if (xhr) {
-            // Faster next time
-            progIds = [progId];
-            break;
-          }
-        }
-      }
-
-      if (!xhr) {
-          throw new Error('getXhr(): XMLHttpRequest not available');
-      }
-
-      return xhr;
-    };
-
-    // Returns the version of Windows Internet Explorer or a -1
-    // (indicating the use of another browser).
-    // Note: this is only for development mode. Does not run in production.
-    getIEVersion = function(){
-      // Return value assumes failure.
-      var rv = -1;
-      if (navigator.appName == 'Microsoft Internet Explorer') {
-        var ua = navigator.userAgent;
-        var re = new RegExp('MSIE ([0-9]{1,}[\.0-9]{0,})');
-        if (re.exec(ua) != null) {
-          rv = parseFloat( RegExp.$1 );
-        }
-      }
-      return rv;
-    };
-
-    fetchText = function (url, callback) {
-      var xdm = false;  
-      // If url is a fully qualified URL, it might be a cross domain request. Check for that.
-	  // IF url is a relative url, it cannot be cross domain.
-      if (url.indexOf('http') != 0 ){
-          xdm = false;
-      }else{
-          var uidx = (url.substr(0,5) === 'https') ? 8 : 7;
-          var hidx = (window.location.href.substr(0,5) === 'https') ? 8 : 7;
-          var dom = url.substr(uidx).split('/').shift();
-          var msie = getIEVersion();
-              xdm = ( dom != window.location.href.substr(hidx).split('/').shift() ) && (msie >= 7);
-      }
-      
-      if ( xdm ) {
-         var xdr = getXhr(true);
-        xdr.open('GET', url);
-        xdr.onload = function() {
-          callback(xdr.responseText);
-        };
-        xdr.onprogress = function(){};
-        xdr.ontimeout = function(){};
-        xdr.onerror = function(){};
-        setTimeout(function(){
-          xdr.send();
-        }, 0);
-      }
-      else {
-        var xhr = getXhr();
-        xhr.open('GET', url, true);
-        xhr.onreadystatechange = function (evt) {
-          //Do not explicitly handle errors, those should be
-          //visible via console output in the browser.
-          if (xhr.readyState === 4) {
-            callback(xhr.responseText);
-          }
-        };
-        xhr.send(null);
-      }
-    };
-
-  }
-  else if (
-    typeof process !== 'undefined' &&
-    process.versions &&
-    !!process.versions.node
-  ) {
-    //Using special require.nodeRequire, something added by r.js.
-    fs = require.nodeRequire('fs');
-    fetchText = function ( path, callback ) {
-      var body = fs.readFileSync(path, 'utf8') || '';
-      // we need to remove BOM stuff from the file content
-      body = body.replace(/^\uFEFF/, '');
-      callback(body);
-    };
-  }
-  else if (typeof java !== 'undefined' && typeof java.io !== 'undefined') {
-    fetchText = function(path, callback) {
-      var f = new java.io.File(path);
-      var is = new java.io.FileReader(f);
-      var reader = new java.io.BufferedReader(is);
-      var line;
-      var text = '';
-      while ((line = reader.readLine()) !== null) {
-        text += new String(line) + '\n';
-      }
-      reader.close();
-      callback(text);
-    };
-  }
-
-  var cache = {};
-  var fetchOrGetCached = function ( path, callback ){
-    if ( cache[path] ){
-      callback(cache[path]);
-    }
-    else {
-      fetchText(path, function(data){
-        cache[path] = data;
-        callback.call(this, data);
-      });
-    }
-  };
-  var styleList = [];
-  var styleMap = {};
-  
-  return {
-
-    get: function () {
-      return Handlebars;
-    },
-
-    write: function (pluginName, name, write) {
-      if ( (name + customNameExtension ) in buildMap) {
-        var text = buildMap[name + customNameExtension];
-        write.asModule(pluginName + '!' + name, text);
-      }
-    },
-
-    version: '0.5.0',
-
-    load: function (name, parentRequire, load, config) {
-      
-      var compiledName = name + customNameExtension;
-      config.hbs = config.hbs || {};
-      var disableI18n = !(config.hbs.i18n == true); // by default we disable i18n unless config.hbs.i18n is true
-      var disableHelpers = (config.hbs.helpers == false); // be default we enable helpers unless config.hbs.helpers is false
-      var partialsUrl = '';
-      if(config.hbs.partialsUrl) {
-        partialsUrl = config.hbs.partialsUrl;
-        if(!partialsUrl.match(/\/$/)) partialsUrl += '/';
-      }
-
-      var partialDeps = [];
-
-      function recursiveNodeSearch( statements, res ) {
-        _(statements).forEach(function ( statement ) {
-          if ( statement && statement.type && statement.type === 'partial' ) {
-            res.push(statement.partialName.name);
-          }
-          if ( statement && statement.program && statement.program.statements ) {
-            recursiveNodeSearch( statement.program.statements, res );
-          }
-          if ( statement && statement.program && statement.program.inverse && statement.program.inverse.statements ) {
-            recursiveNodeSearch( statement.program.inverse.statements, res );
-          }
-        });
-        return res;
-      }
-
-      // TODO :: use the parser to do this!
-      function findPartialDeps( nodes ) {
-        var res = [];
-        if ( nodes && nodes.statements ) {
-          res = recursiveNodeSearch( nodes.statements, [] );
-        }
-        return _(res).unique();
-      }
-
-      // See if the first item is a comment that's json
-      function getMetaData( nodes ) {
-        var statement, res, test;
-        if ( nodes && nodes.statements ) {
-          statement = nodes.statements[0];
-          if ( statement && statement.type === 'comment' ) {
-            try {
-              res = ( statement.comment ).replace(new RegExp('^[\\s]+|[\\s]+$', 'g'), '');
-              test = JSON.parse(res);
-              return res;
-            }
-            catch (e) {
-              return '{ \'description\' : \'' + statement.comment + '\' }';
-            }
-          }
-        }
-        return '{}';
-      }
-
-      function composeParts ( parts ) {
-        if ( !parts ) {
-          return [];
-        }
-        var res = [parts[0]];
-        var cur = parts[0];
-        var i;
-
-        for (i = 1; i < parts.length; ++i) {
-          if ( parts.hasOwnProperty(i) ) {
-            cur += '.' + parts[i];
-            res.push( cur );
-          }
-        }
-        return res;
-      }
-
-      function recursiveVarSearch( statements, res, prefix, helpersres ) {
-        prefix = prefix ? prefix + '.' : '';
-
-        var  newprefix = '';
-        var flag = false;
-
-        // loop through each statement
-        _(statements).forEach(function(statement) {
-          var parts;
-          var part;
-          var sideways;
-
-          // if it's a mustache block
-          if ( statement && statement.type && statement.type === 'mustache' ) {
-
-            // If it has params, the first part is a helper or something
-            if ( !statement.params || ! statement.params.length ) {
-              parts = composeParts( statement.id.parts );
-              for( part in parts ) {
-                if ( parts[ part ] ) {
-                  newprefix = parts[ part ] || newprefix;
-                  res.push( prefix + parts[ part ] );
-                }
-              }
-              res.push(prefix + statement.id.string);
-            }
-
-            var paramsWithoutParts = ['this', '.', '..', './..', '../..', '../../..'];
-
-            // grab the params
-            if ( statement.params && typeof Handlebars.helpers[statement.id.string] === 'undefined') {
-              _(statement.params).forEach(function(param) {
-                if ( _(paramsWithoutParts).contains(param.original)
-                  || param instanceof Handlebars.AST.StringNode
-                  || param instanceof Handlebars.AST.IntegerNode
-                  || param instanceof Handlebars.AST.BooleanNode
-                ) {
-                  helpersres.push(statement.id.string);
-                }
-
-                parts = composeParts( param.parts );
-
-                for(var part in parts ) {
-                  if ( parts[ part ] ) {
-                    newprefix = parts[part] || newprefix;
-                    helpersres.push(statement.id.string);
-                    res.push( prefix + parts[ part ] );
-                  }
-                }
-              });
-            }
-          }
-
-          // If it's a meta block
-          if ( statement && statement.mustache  ) {
-            recursiveVarSearch( [statement.mustache], res, prefix + newprefix, helpersres );
-          }
-
-          // if it's a whole new program
-          if ( statement && statement.program && statement.program.statements ) {
-            sideways = recursiveVarSearch([statement.mustache],[], '', helpersres)[0] || '';
-            if ( statement.program.inverse && statement.program.inverse.statements ) {
-              recursiveVarSearch( statement.program.inverse.statements, res, prefix + newprefix + (sideways ? (prefix+newprefix) ? '.'+sideways : sideways : ''), helpersres);
-            }
-            recursiveVarSearch( statement.program.statements, res, prefix + newprefix + (sideways ? (prefix+newprefix) ? '.'+sideways : sideways : ''), helpersres);
-          }
-        });
-        return res;
-      }
-
-      // This finds the Helper dependencies since it's soooo similar
-      function getExternalDeps( nodes ) {
-        var res   = [];
-        var helpersres = [];
-
-        if ( nodes && nodes.statements ) {
-          res = recursiveVarSearch( nodes.statements, [], undefined, helpersres );
-        }
-
-        var defaultHelpers = [
-          'helperMissing',
-          'blockHelperMissing',
-          'each',
-          'if',
-          'unless',
-          'with'
-        ];
-
-        return {
-          vars: _(res).chain().unique().map(function(e) {
-            if ( e === '' ) {
-              return '.';
-            }
-            if ( e.length && e[e.length-1] === '.' ) {
-              return e.substr(0,e.length-1) + '[]';
-            }
-            return e;
-          }).value(),
-
-          helpers: _(helpersres).chain().unique().map(function(e){
-            if ( _(defaultHelpers).contains(e) ) {
-              return undefined;
-            }
-            return e;
-          }).compact().value()
-        };
-      }
-
-      function cleanPath(path) {
-        var tokens = path.split('/');
-        for(var i=0;i<tokens.length; i++) {
-          if(tokens[i] == '..') {
-            delete tokens[i-1];
-            delete tokens[i];
-          }
-        }
-        return tokens.join('/').replace(/\/\/+/g,'/');
-      };
-
-      function fetchAndRegister(langMap) {
-        fetchText(path, function(text) {
-          // for some reason it doesn't include hbs _first_ when i don't add it here...
-          var nodes = Handlebars.parse(text);
-          var partials = findPartialDeps( nodes );
-          var meta = getMetaData( nodes );
-          var extDeps = getExternalDeps( nodes );
-          var vars = extDeps.vars;
-          var helps = (extDeps.helpers || []);
-          var debugOutputStart = '';
-          var debugOutputEnd   = '';
-          var debugProperties = '';
-          var deps = [];
-          var depStr, helpDepStr, metaObj, head, linkElem;
-          var baseDir = name.substr(0,name.lastIndexOf('/')+1);
-
-          require.config.hbs = require.config.hbs || {};
-          require.config.hbs._partials = require.config.hbs._partials || {};
-
-          if(meta !== '{}') {
-            try {
-              metaObj = JSON.parse(meta);
-            } catch(e) {
-              console.log('couldn\'t parse meta for %s', path);
-            }
-          }
-
-          for ( var i in partials ) {
-            if ( partials.hasOwnProperty(i) && typeof partials[i] === 'string') {  // make sure string, because we're iterating over all props
-              var partialReference = partials[i];
-
-              var path;
-              if(partialReference.match(/^(\.|\/)+/)) {
-                // relative path
-                path = cleanPath(baseDir + partialReference) 
-              }
-              else {
-                // absolute path relative to config.hbs.partialsUrl if defined
-                path = cleanPath(partialsUrl + partialReference);
-              }
-
-              require.config.hbs._partials[path] = require.config.hbs._partials[path] || [];
-
-              // we can reference a same template with different paths (with absolute or relative)
-              require.config.hbs._partials[path].references = require.config.hbs._partials[path].references || [];
-              require.config.hbs._partials[path].references.push(partialReference);
-
-              require.config.hbs._loadedDeps = require.config.hbs._loadedDeps || {};
-
-              deps[i] = "hbs!"+path;
-            }
-          }
-
-          depStr = deps.join("', 'hbs!");
-
-          helps = helps.concat((metaObj && metaObj.helpers) ? metaObj.helpers : []);
-          helpDepStr = disableHelpers ?
-            '' : (function (){
-              var i;
-              var paths = [];
-              var pathGetter = config.hbs && config.hbs.helperPathCallback
-                ? config.hbs.helperPathCallback
-                : function (name){
-                  return (config.hbs && config.hbs.helperDirectory ? config.hbs.helperDirectory : helperDirectory) + name;
-                };
-
-              for ( i = 0; i < helps.length; i++ ) {
-                paths[i] = "'" + pathGetter(helps[i], path) + "'"
-              }
-              return paths;
-            })().join(',');
-
-          if ( helpDepStr ) {
-            helpDepStr = ',' + helpDepStr;
-          }
-
-          if (metaObj) {
-            try {
-              if (metaObj.styles) {
-                styleList = _.union(styleList, metaObj.styles);
-
-                // In dev mode in the browser
-                if ( require.isBrowser && ! config.isBuild ) {
-                  head = document.head || document.getElementsByTagName('head')[0];
-                  _(metaObj.styles).forEach(function (style) {
-                    if ( !styleMap[style] ) {
-                      linkElem = document.createElement('link');
-                      linkElem.href = config.baseUrl + devStyleDirectory + style + '.css';
-                      linkElem.media = 'all';
-                      linkElem.rel = 'stylesheet';
-                      linkElem.type = 'text/css';
-                      head.appendChild(linkElem);
-                      styleMap[style] = linkElem;
-                    }
-                  });
-                }
-                else if ( config.isBuild ) {
-                  (function(){
-                    var fs  = require.nodeRequire('fs');
-                    var str = _(metaObj.styles).map(function (style) {
-                      if (!styleMap[style]) {
-                        styleMap[style] = true;
-                        return '@import url('+style+'.css);\n';
-                      }
-                      return '';
-                    }).join('\n');
-
-                    // I write out my import statements to a file in order to help me build stuff.
-                    // Then I use a tool to inline my import statements afterwards. (you can run r.js on it too)
-                    fs.open(__dirname + buildStyleDirectory + buildCSSFileName, filecode, '0666', function( e, id ) {
-                      fs.writeSync(id, str, null, encoding='utf8');
-                      fs.close(id);
-                    });
-                    filecode = 'a';
-                  })();
-                }
-              }
-            }
-            catch(e){
-              console.log('error injecting styles');
-            }
-          }
-
-          if ( ! config.isBuild && ! config.serverRender ) {
-            debugOutputStart = '<!-- START - ' + name + ' -->';
-            debugOutputEnd = '<!-- END - ' + name + ' -->';
-            debugProperties = 't.meta = ' + meta + ';\n' +
-                              't.helpers = ' + JSON.stringify(helps) + ';\n' +
-                              't.deps = ' + JSON.stringify(deps) + ';\n' +
-                              't.vars = ' + JSON.stringify(vars) + ';\n';
-          }
-
-          var mapping = disableI18n? false : _.extend( langMap, config.localeMapping );
-          var configHbs = config.hbs || {};
-          var options = _.extend(configHbs.compileOptions || {}, { originalKeyFallback: configHbs.originalKeyFallback });
-          var prec = precompile( text, mapping, options);
-          var tmplName = config.isBuild ? '' : "'" + name + "',";
-
-          if(depStr) depStr = ", '"+depStr+"'";
-
-          var partialReferences = []; 
-          if(require.config.hbs._partials[name])
-            partialReferences = require.config.hbs._partials[name].references; 
-
-          text = '/* START_TEMPLATE */\n' +
-                 'define('+tmplName+"['hbs','hbs/handlebars'"+depStr+helpDepStr+'], function( hbs, Handlebars ){ \n' +
-                   'var t = Handlebars.template(' + prec + ');\n';
-
-          for(var i=0; i<partialReferences.length;i++)
-            text += "Handlebars.registerPartial('" + partialReferences[i] + "', t);\n";
-
-          text += debugProperties +
-                   'return t;\n' +
-                 '});\n' +
-                 '/* END_TEMPLATE */\n';
-
-          //Hold on to the transformed text if a build.
-          if (config.isBuild) {
-            buildMap[compiledName] = text;
-          }
-
-          //IE with conditional comments on cannot handle the
-          //sourceURL trick, so skip it if enabled.
-          /*@if (@_jscript) @else @*/
-          if (!config.isBuild) {
-            text += '\r\n//@ sourceURL=' + path;
-          }
-          /*@end@*/
-
-          if ( !config.isBuild ) {
-            require( deps, function (){
-              load.fromText(text);
-
-              //Give result to load. Need to wait until the module
-              //is fully parse, which will happen after this
-              //execution.
-              parentRequire([name], function (value) {
-                load(value);
-              });
-            });
-          }
-          else {
-            load.fromText(name, text);
-
-            //Give result to load. Need to wait until the module
-            //is fully parse, which will happen after this
-            //execution.
-            parentRequire([name], function (value) {
-              load(value);
-            });
-          }
-
-          if ( config.removeCombined ) {
-            fs.unlinkSync(path);
-          }
-
-        });
-      }
-
-      var path;
-      var omitExtension = config.hbs && config.hbs.templateExtension === false;
-
-      if (omitExtension) {
-        path = parentRequire.toUrl(name);
-      }
-      else {
-        path = parentRequire.toUrl(name +'.'+ (config.hbs && config.hbs.templateExtension ? config.hbs.templateExtension : templateExtension));
-      }
-
-      if (disableI18n){
-        fetchAndRegister(false);
-      }
-      else {
-        // Workaround until jam is able to pass config info or we move i18n to a separate module.
-        // This logs a warning and disables i18n if there's an error loading the language file
-        var langMapPath = (config.hbs && config.hbs.i18nDirectory ? config.hbs.i18nDirectory : i18nDirectory) + (config.locale || 'en_us') + '.json';
-        try {
-          fetchOrGetCached(parentRequire.toUrl(langMapPath), function (langMap) {
-            fetchAndRegister(JSON.parse(langMap));
-          });
-        }
-        catch(er) {
-          // if there's no configuration at all, log a warning and disable i18n for this and subsequent templates
-          if(!config.hbs) {
-            console.warn('hbs: Error reading ' + langMapPath + ', disabling i18n. Ignore this if you\'re using jam, otherwise check your i18n configuration.\n');
-            config.hbs = {i18n: false, helpers: true};
-            fetchAndRegister(false);
-          }
-          else {
-            throw er;
-          }
-        }
-      }
-          }
-  };
-});
-/* END_hbs_PLUGIN */
-;
+define('hbs',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 define('communicator',[
 	'backbone',
 	'backbone.marionette'
@@ -31014,7 +28859,7 @@ define('routers/Router',[
             action = action || 'index';
 
             var controllerClassName = this.getControllerClassName(controller),
-                actionName = this.getActionName(action || 'index'),
+                actionName = this.getActionName(typeof action !== 'function' ? action : 'index'),
                 requestParams = Array.prototype.slice.call(arguments, 3)[0],
                 E,
 
@@ -31041,7 +28886,7 @@ define('routers/Router',[
         },
 
         getActionName: function (action) {
-            return strToCamelCase(action, true)
+            return sjl.camelCase(action)
                 + this.actionNameSuffix;
         },
 
@@ -31050,11 +28895,13 @@ define('routers/Router',[
             if (!this.objAliasRegex.test(alias)) {
                 return null;
             }
-            return strToCamelCase(alias);
+            return sjl.camelCase(alias, true);
         }
 
     });
+
 });
+
 define('controllers/BaseController',['backbone.marionette'], function(Marionette) {
     'use strict';
 
@@ -31074,15 +28921,15 @@ define('controllers/BaseController',['backbone.marionette'], function(Marionette
             return this.requestParams;
         },
         getViewClassName: function () {
-            return strToCamelCase(this.requestParams.action
-                + this.viewClassSuffix);
+            return sjl.camelCase(this.requestParams.action
+                + this.viewClassSuffix, true);
         },
 
         dispatch: function (actionName) {
-            if (isset(this[actionName]) && typeof this[actionName] === 'function') {
+            if (sjl.isset(this[actionName]) && typeof this[actionName] === 'function') {
                 this[actionName]();
             }
-            if (isset(this.showView) && typeof this.showView === 'function') {
+            if (sjl.isset(this.showView) && typeof this.showView === 'function') {
                 this.showView();
             }
         }
@@ -31233,11 +29080,11 @@ return t;
 /* END_TEMPLATE */
 ;
 /*!
- * VERSION: beta 1.7.1
- * DATE: 2013-10-23
+ * VERSION: 1.7.3
+ * DATE: 2014-01-14
  * UPDATES AND DOCS AT: http://www.greensock.com
  *
- * @license Copyright (c) 2008-2013, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2014, GreenSock. All rights reserved.
  * This work is subject to the terms at http://www.greensock.com/terms_of_use.html or for
  * Club GreenSock members, the software agreement that was issued with your membership.
  * 
@@ -31260,6 +29107,7 @@ return t;
 		ScrollToPlugin = window._gsDefine.plugin({
 			propName: "scrollTo",
 			API: 2,
+			version:"1.7.3",
 
 			//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
 			init: function(target, value, tween) {
@@ -31274,11 +29122,13 @@ return t;
 				this.y = this.yPrev = this.getY();
 				if (value.x != null) {
 					this._addTween(this, "x", this.x, (value.x === "max") ? _max(target, "x") : value.x, "scrollTo_x", true);
+					this._overwriteProps.push("scrollTo_x");
 				} else {
 					this.skipX = true;
 				}
 				if (value.y != null) {
 					this._addTween(this, "y", this.y, (value.y === "max") ? _max(target, "y") : value.y, "scrollTo_y", true);
+					this._overwriteProps.push("scrollTo_y");
 				} else {
 					this.skipY = true;
 				}
@@ -31296,10 +29146,10 @@ return t;
 
 				if (this._autoKill) {
 					//note: iOS has a bug that throws off the scroll by several pixels, so we need to check if it's within 7 pixels of the previous one that we set instead of just looking for an exact match.
-					if (!this.skipX && (xDif > 7 || xDif < -7)) {
+					if (!this.skipX && (xDif > 7 || xDif < -7) && x < _max(this._target, "x")) {
 						this.skipX = true; //if the user scrolls separately, we should stop tweening!
 					}
-					if (!this.skipY && (yDif > 7 || yDif < -7)) {
+					if (!this.skipY && (yDif > 7 || yDif < -7) && y < _max(this._target, "y")) {
 						this.skipY = true; //if the user scrolls separately, we should stop tweening!
 					}
 					if (this.skipX && this.skipY) {
@@ -31598,7 +29448,7 @@ function( Backbone, tmpl ) {
             var self = this;
 
             self.ui.toggleCreationStateBtn.click(function () {
-                if (!empty(self.scrollPanes)) {
+                if (!sjl.empty(self.scrollPanes)) {
                     self.scrollPanes.juiScrollPane('destroy');
                     self.scrollPanes = null;
                 }
@@ -31609,7 +29459,7 @@ function( Backbone, tmpl ) {
             });
 
             self.ui.toggleMimickBrowserBtn.click(function () {
-                if (empty(self.scrollPanes)) {
+                if (sjl.empty(self.scrollPanes)) {
                     self.ui.toggleCreationStateBtn.trigger('click');
                 }
                 var currVal = self.scrollPanes.juiScrollPane('option', 'mimickBrowser');
@@ -31818,7 +29668,7 @@ case 27:t.datepicker._hideDatepicker();break;case 33:t.datepicker._adjustDate(e.
 if(n){if(a=this._find(s),a.length)return a.find(".ui-tooltip-content").html(n),void 0;s.is("[title]")&&(i&&"mouseover"===i.type?s.attr("title",""):s.removeAttr("title")),a=this._tooltip(s),e(s,a.attr("id")),a.find(".ui-tooltip-content").html(n),this.options.track&&i&&/^mouse/.test(i.type)?(this._on(this.document,{mousemove:o}),o(i)):a.position(t.extend({of:s},this.options.position)),a.hide(),this._show(a,this.options.show),this.options.show&&this.options.show.delay&&(h=this.delayedShow=setInterval(function(){a.is(":visible")&&(o(l.of),clearInterval(h))},t.fx.interval)),this._trigger("open",i,{tooltip:a}),r={keyup:function(e){if(e.keyCode===t.ui.keyCode.ESCAPE){var i=t.Event(e);i.currentTarget=s[0],this.close(i,!0)}},remove:function(){this._removeTooltip(a)}},i&&"mouseover"!==i.type||(r.mouseleave="close"),i&&"focusin"!==i.type||(r.focusout="close"),this._on(!0,s,r)}},close:function(e){var s=this,n=t(e?e.currentTarget:this.element),o=this._find(n);this.closing||(clearInterval(this.delayedShow),n.data("ui-tooltip-title")&&n.attr("title",n.data("ui-tooltip-title")),i(n),o.stop(!0),this._hide(o,this.options.hide,function(){s._removeTooltip(t(this))}),n.removeData("ui-tooltip-open"),this._off(n,"mouseleave focusout keyup"),n[0]!==this.element[0]&&this._off(n,"remove"),this._off(this.document,"mousemove"),e&&"mouseleave"===e.type&&t.each(this.parents,function(e,i){t(i.element).attr("title",i.title),delete s.parents[e]}),this.closing=!0,this._trigger("close",e,{tooltip:o}),this.closing=!1)},_tooltip:function(e){var i="ui-tooltip-"+s++,n=t("<div>").attr({id:i,role:"tooltip"}).addClass("ui-tooltip ui-widget ui-corner-all ui-widget-content "+(this.options.tooltipClass||""));return t("<div>").addClass("ui-tooltip-content").appendTo(n),n.appendTo(this.document[0].body),this.tooltips[i]=e,n},_find:function(e){var i=e.data("ui-tooltip-id");return i?t("#"+i):t()},_removeTooltip:function(t){t.remove(),delete this.tooltips[t.attr("id")]},_destroy:function(){var e=this;t.each(this.tooltips,function(i,s){var n=t.Event("blur");n.target=n.currentTarget=s[0],e.close(n,!0),t("#"+i).remove(),s.data("ui-tooltip-title")&&(s.attr("title",s.data("ui-tooltip-title")),s.removeData("ui-tooltip-title"))})}})}(jQuery);
 define("jquery-ui", ["jquery"], function(){});
 
-/*! jui-commons 2014-04-10 */
+/*! jui-commons 2014-04-22 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -31826,27 +29676,27 @@ $.widget("jui.juiBase", {
         ui: {}
     },
     _namespace: function(a, b, c) {
-        var d, e = a.split("."), f = isset(b) ? b : this.options;
+        var d, e = a.split("."), f = sjl.isset(b) ? b : this.options;
         for (d = 0; d < e.length; d += 1) "undefined" == typeof f[e[d]] && (f[e[d]] = {}), 
         d === e.length - 1 && "undefined" != typeof c && (f[e[d]] = c), f = f[e[d]];
         return f;
     },
     _populateUiElementsFromOptions: function(a) {
-        var b = this, c = isset(a) ? a : this.options;
-        isset(c.ui) || (c.ui = {}), c = c.ui;
+        var b = this, c = sjl.isset(a) ? a : this.options;
+        sjl.isset(c.ui) || (c.ui = {}), c = c.ui;
         for (var d in c) if (c.hasOwnProperty(d) && ("string" == typeof c[d] && (c[d] = c[d] = $(c[d], b.element)), 
         $.isPlainObject(c[d]))) {
-            if (isset(c[d].elm) && c[d].elm.length > 0) return;
+            if (sjl.isset(c[d].elm) && c[d].elm.length > 0) return;
             c[d].elm = b._getElementFromOptions(c[d]);
         }
     },
     _getElementFromOptions: function(a) {
         var b = this, c = b.options, d = a;
         return "string" == typeof d && (d = b._namespace(d, c)), "function" == typeof d && (d = d()), 
-        empty(d) ? null : d instanceof $ && d.length > 0 ? d : isset(d.elm) && d.elm instanceof $ && d.length > 0 ? d.elm : (isset(d.selector) && empty(d.elm) && "string" == typeof d.selector && (d.elm = "string" == typeof d.appendTo && d.appendTo.length > 0 && -1 === d.appendTo.indexOf("this") ? $(d.selector, b.getUiElement(d.appendTo)) : $(d.selector, b.element)), 
-        !empty(d.html) && d.create && "string" == typeof d.html && (d.elm = this._createElementFromOptions(d), 
-        isset(d.appendTo) && "string" == typeof d.appendTo && b._appendElementFromOptions(d)), 
-        empty(d.elm) ? null : d.elm);
+        sjl.empty(d) ? null : d instanceof $ && d.length > 0 ? d : sjl.isset(d.elm) && d.elm instanceof $ && d.length > 0 ? d.elm : (sjl.isset(d.selector) && sjl.empty(d.elm) && "string" == typeof d.selector && (d.elm = "string" == typeof d.appendTo && d.appendTo.length > 0 && -1 === d.appendTo.indexOf("this") ? $(d.selector, b.getUiElement(d.appendTo)) : $(d.selector, b.element)), 
+        !sjl.empty(d.html) && d.create && "string" == typeof d.html && (d.elm = this._createElementFromOptions(d), 
+        sjl.isset(d.appendTo) && "string" == typeof d.appendTo && b._appendElementFromOptions(d)), 
+        sjl.empty(d.elm) ? null : d.elm);
     },
     _appendElementFromOptions: function(a) {
         var b = this.element.parent();
@@ -31857,8 +29707,9 @@ $.widget("jui.juiBase", {
     },
     _createElementFromOptions: function(a) {
         var b = null;
-        return isset(a) && "string" == typeof a && (a = this._namespace(a)), empty(a) ? null : (a.html && (b = $(a.html), 
-        isset(a.attribs) && $.isPlainObject(a.attribs) && b.attr(a.attribs)), b);
+        return sjl.isset(a) && "string" == typeof a && (a = this._namespace(a)), 
+        sjl.empty(a) ? null : (a.html && (b = $(a.html), sjl.isset(a.attribs) && $.isPlainObject(a.attribs) && b.attr(a.attribs)), 
+        b);
     },
     _removeCreatedElements: function() {
         var a = this, b = a.options;
@@ -31869,17 +29720,36 @@ $.widget("jui.juiBase", {
     },
     _setOptions: function(a) {
         var b = this;
-        if (isset(a)) return $.each(a, function(a, c) {
+        if (sjl.isset(a)) return $.each(a, function(a, c) {
             b._callSetterForKey(a, c);
         }), b;
     },
     _callSetterForKey: function(a, b) {
-        var c = "set" + strToCamelCase(a), d = this;
-        isset(d[c]) ? d[c](b) : d._setOption(a, b);
+        var c = "set" + sjl.camelCase(a, !0), d = this;
+        sjl.isset(d[c]) ? d[c](b) : d._setOption(a, b);
+    },
+    _initAnimationTimeline: function(a, b, c) {
+        var d, e, f, g, h, i, j, k = this;
+        if (a = sjl.isset(a) ? a : this.getAnimationTimeline(), c = c || k.options, 
+        b = b || null, d = c, sjl.isset(d.defaultAnimations) && d.defaultAnimations instanceof Array && (j = d.defaultAnimations), 
+        sjl.isset(d.animations) && d.animations instanceof Array && sjl.isset(j) && (j = sjl.isset(b) ? $.extend(!0, j, d.animations) : d.animations), 
+        sjl.isset(b) && sjl.isset(j)) b = $.extend(!0, j, b); else {
+            if (!sjl.isset(j)) return;
+            b = j;
+        }
+        for (e = 0; e < b.length; e += 1) f = b[e], g = k.getUiElement(f.elmAlias), 
+        h = f.duration, i = f.props, sjl.isset(f.preInit) && "function" == typeof f.preInit && f.preInit.apply(this), 
+        a[f.type](g, h, i), sjl.isset(f.postInit) && "function" == typeof f.postInit && f.postInit.apply(this);
+    },
+    _removeDisabledElements: function(a) {
+        ops = sjl.isset(a) ? a : this.options, sjl.isset(ops.ui) || (ops.ui = {}), 
+        ops = ops.ui, Object.keys(ops).forEach(function(a) {
+            $.isPlainObject(ops[a]) && !ops.enabled && sjl.isset(ops[a].elm) && ops[a].elm.length > 0 && ops[a].elm.remove();
+        });
     },
     getUiElement: function(a) {
         var b = this.options, c = null;
-        return isset(b.ui[a]) && (c = b.ui[a].elm, c instanceof $ && c.length > 0) ? c : this._getElementFromOptions("ui." + a);
+        return sjl.isset(b.ui[a]) && (c = b.ui[a].elm, c instanceof $ && c.length > 0) ? c : this._getElementFromOptions("ui." + a);
     },
     setCssOnUiElement: function(a, b) {
         var c = this.getUiElement(a);
@@ -31887,21 +29757,8 @@ $.widget("jui.juiBase", {
     },
     getAnimationTimeline: function() {
         var a = this.options.timeline;
-        return empty(a) && (a = this.options.timeline = new window[this.options.defaultTimelineClass]()), 
+        return sjl.empty(a) && (a = this.options.timeline = new window[this.options.defaultTimelineClass]()), 
         a;
-    },
-    _initAnimationTimeline: function(a, b, c) {
-        var d, e, f, g, h, i, j, k = this;
-        if (a = isset(a) ? a : this.getAnimationTimeline(), c = c || k.options, 
-        b = b || null, d = c, isset(d.defaultAnimations) && d.defaultAnimations instanceof Array && (j = d.defaultAnimations), 
-        isset(d.animations) && d.animations instanceof Array && isset(j) && (j = isset(b) ? $.extend(!0, j, d.animations) : d.animations), 
-        isset(b) && isset(j)) b = $.extend(!0, j, b); else {
-            if (!isset(j)) return;
-            b = j;
-        }
-        for (e = 0; e < b.length; e += 1) f = b[e], g = k.getUiElement(f.elmAlias), 
-        h = f.duration, i = f.props, isset(f.preInit) && "function" == typeof f.preInit && f.preInit.apply(this), 
-        a[f.type](g, h, i), isset(f.postInit) && "function" == typeof f.postInit && f.postInit.apply(this);
     },
     getValueFromOptions: function(a, b, c) {
         return this.getValueFromHash(a, this.options, b, c);
@@ -31910,7 +29767,7 @@ $.widget("jui.juiBase", {
         c = c || null, d = d || !1;
         var e = null;
         return "string" == typeof a && $.isPlainObject(b) && (e = this._namespace(a, b), 
-        "function" == typeof e && empty(d) && (e = c ? e.apply(this, c) : e.apply(this))), 
+        "function" == typeof e && sjl.empty(d) && (e = c ? e.apply(this, c) : e.apply(this))), 
         e;
     },
     setValueOnHash: function(a, b, c) {
@@ -31918,7 +29775,7 @@ $.widget("jui.juiBase", {
     },
     getTimelineClassName: function() {
         var a = this.options;
-        return isset(a.timelineClassName) ? a.timelineClassName : a.defaultTimelineClassName;
+        return sjl.isset(a.timelineClassName) ? a.timelineClassName : a.defaultTimelineClassName;
     }
 }), $.widget("jui.splitText", {
     options: {
@@ -32016,13 +29873,16 @@ $.widget("jui.juiBase", {
         }), g = c.scrollableElm;
         c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
         g.bind("scroll resize orientationchange load", function() {
-            var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), isset(a.bottom) ? a.bottom : 0), k = isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
-            g.width() - k, c.realtime && (a = b._getUserDefinedOffset()), e && (isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
+            {
+                var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
+                g.width() - k;
+            }
+            c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
                 position: "fixed",
                 top: a.top,
                 bottom: "auto"
             }) : i <= f.top && (d.css("position", f.position), d.css("top", f.top), 
-            d.css("bottom", "auto"))), isset(a.bottom) && (f.top - l <= i ? d.css({
+            d.css("bottom", "auto"))), sjl.isset(a.bottom) && (f.top - l <= i ? d.css({
                 position: f.position,
                 top: f.top,
                 bottom: f.bottom
@@ -32036,10 +29896,236 @@ $.widget("jui.juiBase", {
     _getUserDefinedOffset: function() {
         var a = this, b = a.options, c = a.getValueFromOptions("offset");
         return $.each([ "top", "right", "bottom", "left" ], function(d, e) {
-            isset(c[e]) || (b.offset[e] = a.element.attr("data-offset-" + c[e]) || null);
+            sjl.isset(c[e]) || (b.offset[e] = a.element.attr("data-offset-" + c[e]) || null);
         }), c;
     }
-}), $.widget("jui.juiBasicPaginator", $.jui.juiAbstractPaginator, {
+}), function() {
+    function a() {
+        this.resolveFromSecs = function(a) {
+            var b = {
+                hours: 0,
+                minutes: 0,
+                seconds: 0
+            };
+            return b.minutes = a >= 60 ? Math.floor(a / 60) : 0, b.seconds = a >= 60 ? Math.floor(a % 60) : Math.floor(a), 
+            b.hours = b.minutes >= 60 ? Math.floor(b.minutes / 60) : 0, b;
+        }, this.leadingZero = function(a) {
+            return 10 > a && (a = "0" + a), a;
+        }, this.prettyPrint = function(a) {
+            var b = (sjl.empty(arguments[1]) ? "" : this.leadingZero(a.hours) + ":") + this.leadingZero(a.minutes) + ":" + this.leadingZero(a.seconds);
+            return b;
+        }, this.prettyPrintFromSecs = function(a) {
+            return sjl.empty(arguments[1]) ? this.prettyPrint(this.resolveFromSecs(a)) : this.prettyPrint(this.resolveFromSecs(a), arguments[1]);
+        };
+    }
+    $.widget("jui.juiAudioPlayer", $.jui.juiBase, {
+        options: {
+            template: '<a class="ap-btn prev-btn"><span class="ui-icon ui-icon-seek-prev"></span></a><a class="ap-btn stop-btn"><span class="ui-icon ui-icon-stop"></span></a><a class="ap-btn play-btn"><span class="ui-icon ui-icon-play"></span></a><a class="ap-btn next-btn"><span class="ui-icon ui-icon-seek-next"></span></a><div class="lcd-screen"><div class="song-info"></div></div><div class="volume-panel"><a class="ap-btn volume-btn"><span class="ui-icon ui-icon-volume-on"></span></a><div class="slider-holder cb fl"><span class="ui-icon ui-icon-plus"></span><div class="slider"></div><span class="ui-icon ui-icon-minus"></span></div><br class="cb" /></div><!--/.volume-panel--><div class="progress-bars"><div class="load-progress-bar progress-bar"></div><div class="play-progress-bar progress-bar"></div></div><br class="cb" />',
+            width: 550,
+            height: 36,
+            animation: {
+                speed: 300
+            },
+            audio: {
+                autoplay: !0,
+                preload: !1,
+                volume: .6,
+                lastVolume: .6,
+                obj: null,
+                pointer: 0,
+                pointer_direction: 1,
+                xmlList: null,
+                timeHelper: null,
+                playing: !1
+            },
+            ui: {
+                firstBtn: {
+                    elm: null,
+                    selector: ".first-btn.btn",
+                    enabled: !0
+                },
+                prevBtn: {
+                    elm: null,
+                    selector: ".prev-btn.btn",
+                    enabled: !0
+                },
+                stopBtn: {
+                    elm: null,
+                    selector: ".stop-btn.btn",
+                    enabled: !0
+                },
+                playBtn: {
+                    elm: null,
+                    selector: ".play-btn.btn",
+                    onIconCssClass: "ui-icon-play",
+                    offIconCssClass: "ui-icon-pause",
+                    enabled: !0
+                },
+                nextBtn: {
+                    elm: null,
+                    selector: ".next-btn.btn",
+                    enabled: !0
+                },
+                lastBtn: {
+                    elm: null,
+                    selector: ".last-btn.btn",
+                    enabled: !0
+                },
+                volumeBtn: {
+                    elm: null,
+                    selector: ".volume-btn.btn",
+                    onIconCssClass: "ui-icon-volume-on",
+                    offIconCssClass: "ui-icon-volume-off",
+                    enabled: !0
+                },
+                volumeSlider: {
+                    elm: null,
+                    selector: ".volume-slider",
+                    enabled: !0
+                },
+                audioPlayProgressBar: {
+                    elm: null,
+                    selector: ".play-progress-bar",
+                    enabled: !0
+                },
+                audioLoadProgressBar: {
+                    elm: null,
+                    selector: ".load-progress-bar",
+                    enabled: !0
+                },
+                audioTitleElm: {
+                    elm: null,
+                    selector: ".audio-title",
+                    loadingText: "Loading...",
+                    enabled: !0
+                },
+                audioTotalTimeElm: {
+                    elm: null,
+                    selector: ".audio-total-time",
+                    enabled: !0
+                },
+                audioCurrentTimeElm: {
+                    elm: null,
+                    selector: ".audio-current-time",
+                    enabled: !0
+                }
+            },
+            playlist: null,
+            debug_output: "",
+            debug: !0
+        },
+        _create: function() {
+            {
+                var b = this;
+                b.options;
+            }
+            "function" != typeof Audio && alert("Html 5 Audio not supported by this browser."), 
+            this.element.html(this.options.template);
+            var c = this.options.audio;
+            c.obj = c.obj || new Audio(), c.obj.volume = c.volume, c.obj.autoplay = c.autoplay, 
+            c.obj.preload = c.preload, sjl.empty(c.timeHelper) && (c.timeHelper = new a()), 
+            this._addControlListeners(), this._addAudioObjectListeners(), this.setAudioTitleElmText("Loading..."), 
+            this.gotoAudioSrcNum(0), this.changeVolume(c.obj.volume), this.options.controls.volumeSlider.enabled && this.options.controls.volumeSlider.elm.slider("value", 100 * c.obj.volume);
+        },
+        nextAudio: function() {
+            this.options.audio.playing = !1, this.gotoAudioSrcNum(this.options.audio.pointer);
+        },
+        prevAudio: function() {
+            this.options.audio.playing = !1, this.gotoAudioSrcNum(this.options.audio.pointer);
+        },
+        playAudio: function() {
+            var a, b, c = this.options.audio;
+            c.playing === !1 ? (this.options.audio.playing = !0, this.options.audio.obj.play(), 
+            b = this.options.controls.playBtn.offIconCssClass, a = this.options.controls.playBtn.onIconCssClass) : (this.options.audio.playing = !1, 
+            this.options.audio.obj.pause(), b = this.options.controls.playBtn.onIconCssClass, 
+            a = this.options.controls.playBtn.offIconCssClass), $("span", this.options.controls.playBtn.elm).switchClass(a, b);
+        },
+        stopAudio: function() {
+            this.options.audio.obj.pause(), this.options.audio.obj.currentTime = 0;
+        },
+        seekAudio: function(a) {
+            return a = a, a < this.options.audio.obj.duration && a > -1 ? (this.options.audio.obj.currentTime = a, 
+            void 0) : (alert("Range Exception: Jquery Simple Audio Player Widget says: Cannot not seek audio to position: " + a + "Position out of range."), 
+            void 0);
+        },
+        volumeToggle: function() {
+            var a, b = this.options.audio, c = this;
+            b.obj.volume > 0 ? (b.lastVolume = b.obj.volume, a = 0) : a = b.lastVolume || b.volume, 
+            this.changeVolume(a), c.options.controls.volumeSlider.elm.slider({
+                value: 100 * b.obj.volume
+            });
+        },
+        changeVolume: function(a) {
+            var b, c, d = this;
+            a > 1 && (a = 1), 1 >= a && a > 0 && (c = d.options.controls.volumeBtn.onIconCssClass, 
+            b = d.options.controls.volumeBtn.offIconCssClass), 0 > a && (a = 0), 0 === a && (c = d.options.controls.volumeBtn.offIconCssClass, 
+            b = d.options.controls.volumeBtn.onIconCssClass), $("span", d.options.controls.volumeBtn.elm).switchClass(b, c), 
+            this.options.audio.obj.volume = a;
+        },
+        gotoAudioSrcNum: function(a) {
+            var b = this.getAudioSrcElement(a);
+            this.options.audio.obj.src = $("directory", this.options.playlist.xml).eq(0).attr("name") + "/" + b.attr("name"), 
+            $("span", this.options.controls.playBtn.elm).switchClass(this.options.controls.playBtn.onIconCssClass, this.options.controls.playBtn.offIconCssClass, "slow"), 
+            this.options.audio.playing = !0, this.setAudioTitleElmText(b.attr("name"));
+        },
+        setAudioTitleElmText: function(a) {
+            var b = this, c = this.options.controls.audioTitleElm.elm;
+            c.fadeOut(b.options.animation.speed, function() {
+                $(this).text(decodeURI(a)).fadeIn(b.options.animation.speed);
+            });
+        },
+        getAudioTitleElmText: function() {
+            return this.options.audioTitleElm.text();
+        },
+        getAudioSrcElement: function(a) {
+            return a = a, a <= this.options.audio.xmlList.length && a >= 0 ? this.options.audio.xmlList.eq(a) : (alert('Range Exception: Jquery Edlc Audio Player Widget says: "Cannot get Audio Source Element Index`' + a + '`.  Index out of range"'), 
+            0);
+        },
+        _addControlListeners: function() {
+            var a = this.options.controls, b = this;
+            a.prevBtn.enabled && a.prevBtn.elm.bind("click", function() {
+                b.prevAudio();
+            }), a.nextBtn.enabled && a.nextBtn.elm.bind("click", function() {
+                b.nextAudio();
+            }), a.playBtn.enabled && a.playBtn.elm.bind("click", function() {
+                b.playAudio();
+            }), a.stopBtn.enabled && a.stopBtn.elm.bind("click", function() {
+                b.stopAudio();
+            }), a.volumeBtn.enabled && a.volumeBtn.elm.bind("click", function() {
+                b.volumeToggle();
+            }), a.volumeSlider.enabled && a.volumeSlider.elm.bind("slide", function(a, c) {
+                b.changeVolume(.01 * c.value);
+            }), a.audioPlayProgressBar.enabled && a.audioPlayProgressBar.elm.bind("click", function(a) {
+                var c = $(this), d = .01 * ((a.pageX - c.offset().left) / c.width()) * 100;
+                c.progressbar("value", d), b.seekAudio(d * b.options.audio.obj.duration);
+            });
+        },
+        _addAudioObjectListeners: function() {
+            var a = this.options.audio, b = this;
+            $(a.obj).bind("playing", function() {
+                a.obj.readyState === a.obj.HAVE_ENOUGH_DATA && b.options.controls.audioLoadProgressBar.elm.progressbar("value", 100);
+            }), $(a.obj).bind("ended", function() {
+                b.nextAudio();
+            }), $(a.obj).bind("loadedmetadata", function() {
+                if (b.options.controls.audioPlayProgressBar.elm.progressbar("value", 0), 
+                b.options.controls.audioCurrentTimeElm.enabled) {
+                    var c = a.timeHelper.prettyPrintFromSecs(a.obj.duration);
+                    b.options.controls.audioTotalTimeElm.elm.text(c);
+                }
+            }), $(a.obj).bind("progress", function() {
+                var c = a.obj.buffered.end(0) / a.obj.duration * 100, d = b.options.controls.audioLoadProgressBar.elm;
+                d.progressbar("value", c);
+            }), $(a.obj).bind("timeupdate", function() {
+                var c = a.obj.currentTime / a.obj.duration * 100, d = b.options.controls.audioPlayProgressBar.elm;
+                if (b.options.controls.audioCurrentTimeElm.enabled) {
+                    var e = a.timeHelper.prettyPrintFromSecs(a.obj.currentTime);
+                    b.options.controls.audioCurrentTimeElm.elm.text(e);
+                }
+                d.progressbar("value", c);
+            });
+        }
+    });
+}(), $.widget("jui.juiBasicPaginator", $.jui.juiAbstractPaginator, {
     options: {
         template: null,
         className: "jui-basic-paginator",
@@ -32109,18 +30195,18 @@ $.widget("jui.juiBase", {
         var a = this, b = a.options;
         "string" == typeof b.className && b.className.length > 0 && a.element.addClass(b.className), 
         "string" == typeof b.template && b.template.length > 0 && a.element.append(b.template), 
-        a._populateUiElementsFromOptions(b), a._addEventListeners(), empty(b.skipPagesCalculation) && a._calculateNumberOfPages(b), 
+        a._populateUiElementsFromOptions(b), a._addEventListeners(), sjl.empty(b.skipPagesCalculation) && a._calculateNumberOfPages(b), 
         a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.getFirstBtnElm(), c = a.getNextBtnElm(), d = a.getPrevBtnElm(), e = a.getLastBtnElm();
-        isset(b) && b.length > 0 && b.on("click", function(b) {
+        sjl.isset(b) && b.length > 0 && b.on("click", function(b) {
             b.preventDefault(), a.firstPage();
-        }), isset(d) && d.length > 0 && d.on("click", function(b) {
+        }), sjl.isset(d) && d.length > 0 && d.on("click", function(b) {
             b.preventDefault(), a.prevPage();
-        }), isset(c) && c.length > 0 && c.on("click", function(b) {
+        }), sjl.isset(c) && c.length > 0 && c.on("click", function(b) {
             b.preventDefault(), a.nextPage();
-        }), isset(e) && e.length > 0 && e.on("click", function(b) {
+        }), sjl.isset(e) && e.length > 0 && e.on("click", function(b) {
             b.preventDefault(), a.lastPage();
         });
     },
@@ -32160,8 +30246,8 @@ $.widget("jui.juiBase", {
     }
 }), function() {
     function a() {
-        return argsToArray(arguments).filter(function(a) {
-            return isset(a);
+        return sjl.argsToArray(arguments).filter(function(a) {
+            return sjl.isset(a);
         });
     }
     $.widget("jui.juiDialog", $.jui.juiBase, {
@@ -32258,7 +30344,7 @@ $.widget("jui.juiBase", {
         },
         _setClassNameFromOptions: function() {
             var a = this, b = a.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
-            empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
+            sjl.empty(c) || (sjl.empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
             a.getUiElement("wrapperElm").attr("class", b.ui.wrapperElm.attribs["class"]);
         },
         _setContentFromThisElement: function() {
@@ -32370,7 +30456,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -32467,8 +30553,11 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        var a = this;
-        a.options, a.element.addClass(a.options.className), a._super();
+        {
+            var a = this;
+            a.options;
+        }
+        a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -32479,8 +30568,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
@@ -32526,7 +30615,7 @@ $.widget("jui.juiBase", {
     },
     _create: function() {},
     _init: function() {
-        isset(this.options._eventListenersHaveBeenAdded) || (this._addEventListeners(), 
+        sjl.isset(this.options._eventListenersHaveBeenAdded) || (this._addEventListeners(), 
         this.options._eventListenersHaveBeenAdded = !0);
     },
     _addEventListeners: function() {
@@ -32543,7 +30632,7 @@ $.widget("jui.juiBase", {
     },
     _getOverridingDuration: function() {
         var a = this.options, b = null;
-        return b = isset(a.duration) ? a.defaultDurationsVal : a.duration;
+        return b = sjl.isset(a.duration) ? a.defaultDurationsVal : a.duration;
     },
     _removeEventListeners: function() {
         this.element.unbind();
@@ -32555,7 +30644,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = 2 * (this.getUiElement("contentHolder").height() / 3 / 3), classOfIs(a, "Number") ? a : 0;
+            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, sjl.classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,
@@ -32631,7 +30720,7 @@ $.widget("jui.juiBase", {
         c > b.width() ? e.initScrollbar(a.scrollbarOriented.HORIZONTALLY) : e.getUiElement("horizScrollbar").css("display", "none"), 
         b.bind("mousewheel", function(a, c, d, f) {
             var g, h, i = e.getValueFromOptions("mimickBrowser");
-            i || (a.preventDefault(), a.stopPropagation()), c = isset(c) ? c : isset(d) ? d : f, 
+            i || (a.preventDefault(), a.stopPropagation()), c = sjl.isset(c) ? c : sjl.isset(d) ? d : f, 
             g = e.getValueFromOptions("scrollSpeed"), h = 1 > c ? g : -g, 0 !== d && 0 === f ? (e.scrollHorizontally(b.scrollLeft() + h), 
             i && 0 !== b.scrollLeft() && b.scrollLeft() !== b.get(0).scrollWidth && (a.preventDefault(), 
             a.stopPropagation())) : 0 === d && 0 !== f && (e.scrollVertically(b.scrollTop() + h), 
@@ -32660,13 +30749,13 @@ $.widget("jui.juiBase", {
         });
     },
     _scrollByOrientation: function(a, b) {
-        var c, d = (this.options, this.getUiElement("contentHolder")), e = b, f = this.getScrollDirVars(e), g = f.scrollAmountTotal, h = this.getScrollbarHandleByOrientation(e), i = this.getScrollbarByOrientation(e), j = f.cssCalcDir, k = "outer" + ucaseFirst(f.scrollbarDimProp);
-        d[f.scrollbarDimProp]() >= g || (g >= a && a >= 0 ? (d["scroll" + ucaseFirst(j)](a), 
+        var c, d = (this.options, this.getUiElement("contentHolder")), e = b, f = this.getScrollDirVars(e), g = f.scrollAmountTotal, h = this.getScrollbarHandleByOrientation(e), i = this.getScrollbarByOrientation(e), j = f.cssCalcDir, k = "outer" + sjl.ucaseFirst(f.scrollbarDimProp);
+        d[f.scrollbarDimProp]() >= g || (g >= a && a >= 0 ? (d["scroll" + sjl.ucaseFirst(j)](a), 
         c = a / g, h.css(j, i[k]() * c)) : a > g ? h.css(j, i[k]() - h[k]()) : 0 > a && h.css(j, 0), 
         this.scrollContentHolder(e), this.constrainHandle(e));
     },
     scrollContentHolder: function(a) {
-        var b = this.getScrollbarHandleByOrientation(a), c = this.getScrollbarByOrientation(a), d = this.getUiElement("contentHolder"), e = this.getScrollDirVars(a), f = e.scrollAmountTotal, g = e.cssCalcDir, h = e.scrollbarDimProp, i = b.position()[g] / c[h](), j = i * f, k = "scroll" + ucaseFirst(g);
+        var b = this.getScrollbarHandleByOrientation(a), c = this.getScrollbarByOrientation(a), d = this.getUiElement("contentHolder"), e = this.getScrollDirVars(a), f = e.scrollAmountTotal, g = e.cssCalcDir, h = e.scrollbarDimProp, i = b.position()[g] / c[h](), j = i * f, k = "scroll" + sjl.ucaseFirst(g);
         j >= 0 && f >= j ? d[k](i * f) : 0 > j ? d[k](0) : j > f && d[k](f);
     },
     constrainHandle: function(a) {
@@ -32682,7 +30771,7 @@ $.widget("jui.juiBase", {
             axis: g,
             drag: function(a, c) {
                 var e = c.position[h] / b[i]();
-                d["scroll" + ucaseFirst(h)](e * f.scrollAmountTotal);
+                d["scroll" + sjl.ucaseFirst(h)](e * f.scrollAmountTotal);
             }
         }), b.bind("click", function(b) {
             b.stopPropagation(), c.css(h, b["offset" + g.toUpperCase()] - c[i]() / 2), 
@@ -32690,7 +30779,7 @@ $.widget("jui.juiBase", {
         });
     },
     initScrollbarHandle: function(a) {
-        var b = this.getUiElement("contentHolder"), c = this.getScrollbarByOrientation(a), d = this.getScrollbarHandleByOrientation(a), e = this.getScrollDirVars(a), f = e.scrollbarDimProp, g = b[f](), h = b.get(0)["scroll" + ucaseFirst(f)], i = c[f]();
+        var b = this.getUiElement("contentHolder"), c = this.getScrollbarByOrientation(a), d = this.getScrollbarHandleByOrientation(a), e = this.getScrollDirVars(a), f = e.scrollbarDimProp, g = b[f](), h = b.get(0)["scroll" + sjl.ucaseFirst(f)], i = c[f]();
         d[f](g * i / h);
     },
     getScrollDirVars: function(a) {
@@ -32786,7 +30875,7 @@ $.widget("jui.juiBase", {
                 onComplete: a
             });
         } catch (e) {
-            throw new Error('Could not create a new "' + d.defaultTimelineClass + '"' + "when trying to create a timeline object.");
+            throw new Error('Could not create a new "' + d.defaultTimelineClass + '"when trying to create a timeline object.');
         }
     },
     _init: function() {
@@ -32836,7 +30925,7 @@ $.widget("jui.juiBase", {
     },
     _initScrollbar: function() {
         var a = this.options, b = this._namespace("ui.scrollbar");
-        !empty(b.elm) && b.elm.length > 0 || (this.element.juiScrollPane({
+        !sjl.empty(b.elm) && b.elm.length > 0 || (this.element.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement("contentElm"),
@@ -32849,7 +30938,7 @@ $.widget("jui.juiBase", {
         this._initAnimationTimeline();
     },
     _initTimeline: function() {
-        empty(this.options.timeline) && this.initAnimationTimeline();
+        sjl.empty(this.options.timeline) && this.initAnimationTimeline();
     },
     ensureAnimationFunctionality: function() {
         this._initScrollbar(), this._initTimeline();
@@ -32962,7 +31051,7 @@ $.widget("jui.juiBase", {
     },
     _init: function() {
         var a = this, b = this.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
-        empty(c) || (empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
+        sjl.empty(c) || (sjl.empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
         this.options.timeline = new TimelineLite({
             paused: !0
         }), this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
@@ -32974,11 +31063,11 @@ $.widget("jui.juiBase", {
         c.each(function(b, f) {
             if (f = $(f), 0 !== b || !e.skipFirstOptionItem) {
                 var g = a.getValueFromOptionElm(f), h = a.getLabelFromOptionElm(f), i = f.attr("class"), j = "";
-                isset(e.selectedValue) && e.selectedValue === g && (empty(j) ? j = e.ui.optionsElm.optionSelectedClassName : (j.length > 0 && (j += " "), 
+                sjl.isset(e.selectedValue) && e.selectedValue === g && (sjl.empty(j) ? j = e.ui.optionsElm.optionSelectedClassName : (j.length > 0 && (j += " "), 
                 j += e.ui.optionsElm.optionSelectedClassName), j = ' class="' + j + '"'), 
-                i = empty(i) ? "" : 'class="' + i + '" ', g = ' data-value="' + g + '" ';
+                i = sjl.empty(i) ? "" : 'class="' + i + '" ', g = ' data-value="' + g + '" ';
                 var k = $("<li" + j + "><a " + i + 'href="javascript: void(0);"' + g + ">" + h + "</a></li>");
-                0 !== b || empty(e.ui.buttonElm.text) ? 1 === b && empty(e.ui.buttonElm.text) && k.addClass("first") : k.addClass("first"), 
+                0 !== b || sjl.empty(e.ui.buttonElm.text) ? 1 === b && sjl.empty(e.ui.buttonElm.text) && k.addClass("first") : k.addClass("first"), 
                 b === c.length - 1 && k.addClass("last"), d.append(k);
             }
         }), b.append(d);
@@ -32993,7 +31082,7 @@ $.widget("jui.juiBase", {
             a.clearSelected(), a.setSelected(d), b.timeline.reverse();
         }), this.element.on("change", function() {
             var b = $(this), c = b.val();
-            isset(c) && a.setSelectedItemLabelText(c);
+            sjl.isset(c) && a.setSelectedItemLabelText(c);
         });
     },
     _removeCreatedOptions: function() {
@@ -33010,7 +31099,7 @@ $.widget("jui.juiBase", {
                     selector: h.ui.optionsElm.selector + ""
                 }
             }
-        }, isset(h.expandOn) && (d.expandOn = h.expandOn), isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
+        }, sjl.isset(h.expandOn) && (d.expandOn = h.expandOn), sjl.isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
         c = i.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
         b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
             height: i.css("max-height")
@@ -33019,7 +31108,7 @@ $.widget("jui.juiBase", {
             autoAlpha: 1,
             delay: -.3
         }), TweenLite.to(a, k, {
-            autoAlpha: 1,
+            opacity: 1,
             delay: -.2
         }) ], e = 0; e < f.length; e += 1) b.add(f[e]);
     },
@@ -33032,7 +31121,7 @@ $.widget("jui.juiBase", {
     },
     setSelectedItemLabelText: function(a, b, c) {
         var d, e, f = this.options, g = f.ui.selectedItemLabelElm, h = this.getUiElement("selectedItemLabelElm").eq(0);
-        a = a || "", b = b || "text", c = isset(c) ? c : f.useSelectedLabelPrefixAndSuffix, 
+        a = a || "", b = b || "text", c = sjl.isset(c) ? c : f.useSelectedLabelPrefixAndSuffix, 
         c && (d = f.selectedLabelPrefix || g.prefixText || "", e = f.selectedLabelSuffix || g.suffixText || "", 
         a = d + a + e), TweenMax.to(h, .16, {
             autoAlpha: 0,
@@ -33046,7 +31135,7 @@ $.widget("jui.juiBase", {
         });
     },
     setLabelText: function(a, b) {
-        b = b || "text", a = a || (empty(this.options.ui.buttonElm.text) ? empty(this.options.labelText) ? this.element.find("option").eq(0).text() : this.options.labelText : this.options.ui.buttonElm.text), 
+        b = b || "text", a = a || (sjl.empty(this.options.ui.buttonElm.text) ? sjl.empty(this.options.labelText) ? this.element.find("option").eq(0).text() : this.options.labelText : this.options.ui.buttonElm.text), 
         this.getUiElement("labelElm").eq(0)[b](a);
     },
     setSelected: function(a) {
@@ -33073,13 +31162,13 @@ $.widget("jui.juiBase", {
     },
     getValueFromOptionElm: function(a) {
         var b, c = this.options;
-        return empty(a) ? null : (isset(c.valueAttribName) && (b = a.attr(c.valueAttribName)), 
-        isset(b) ? b : a.text());
+        return sjl.empty(a) ? null : (sjl.isset(c.valueAttribName) && (b = a.attr(c.valueAttribName)), 
+        sjl.isset(b) ? b : a.text());
     },
     getLabelFromOptionElm: function(a) {
         var b, c = this.options;
-        return empty(a) ? null : (isset(c.labelAttribName) && (b = a.attr(c.labelAtribName)), 
-        isset(b) ? b : a.text());
+        return sjl.empty(a) ? null : (sjl.isset(c.labelAttribName) && (b = a.attr(c.labelAtribName)), 
+        sjl.isset(b) ? b : a.text());
     }
 });
 define("jui-commons", ["jquery","jquery-ui"], function(){});
@@ -33125,7 +31214,7 @@ function( Backbone, tmpl ) {
 /*! Copyright (c) 2013 Brandon Aaron (http://brandon.aaron.sh)
  * Licensed under the MIT License (LICENSE.txt).
  *
- * Version: 3.1.9
+ * Version: 3.1.11
  *
  * Requires: jQuery 1.2.2+
  */
@@ -33156,7 +31245,7 @@ function( Backbone, tmpl ) {
     }
 
     var special = $.event.special.mousewheel = {
-        version: '3.1.9',
+        version: '3.1.11',
 
         setup: function() {
             if ( this.addEventListener ) {
@@ -33179,10 +31268,17 @@ function( Backbone, tmpl ) {
             } else {
                 this.onmousewheel = null;
             }
+            // Clean up the data we added to the element
+            $.removeData(this, 'mousewheel-line-height');
+            $.removeData(this, 'mousewheel-page-height');
         },
 
         getLineHeight: function(elem) {
-            return parseInt($(elem)['offsetParent' in $.fn ? 'offsetParent' : 'parent']().css('fontSize'), 10);
+            var $parent = $(elem)['offsetParent' in $.fn ? 'offsetParent' : 'parent']();
+            if (!$parent.length) {
+                $parent = $('body');
+            }
+            return parseInt($parent.css('fontSize'), 10);
         },
 
         getPageHeight: function(elem) {
@@ -33190,7 +31286,8 @@ function( Backbone, tmpl ) {
         },
 
         settings: {
-            adjustOldDeltas: true
+            adjustOldDeltas: true, // see shouldAdjustOldDeltas() below
+            normalizeOffset: true  // calls getBoundingClientRect for each event
         }
     };
 
@@ -33211,7 +31308,9 @@ function( Backbone, tmpl ) {
             delta      = 0,
             deltaX     = 0,
             deltaY     = 0,
-            absDelta   = 0;
+            absDelta   = 0,
+            offsetX    = 0,
+            offsetY    = 0;
         event = $.event.fix(orgEvent);
         event.type = 'mousewheel';
 
@@ -33285,10 +31384,19 @@ function( Backbone, tmpl ) {
         deltaX = Math[ deltaX >= 1 ? 'floor' : 'ceil' ](deltaX / lowestDelta);
         deltaY = Math[ deltaY >= 1 ? 'floor' : 'ceil' ](deltaY / lowestDelta);
 
+        // Normalise offsetX and offsetY properties
+        if ( special.settings.normalizeOffset && this.getBoundingClientRect ) {
+            var boundingRect = this.getBoundingClientRect();
+            offsetX = event.clientX - boundingRect.left;
+            offsetY = event.clientY - boundingRect.top;
+        }
+
         // Add information to the event object
         event.deltaX = deltaX;
         event.deltaY = deltaY;
         event.deltaFactor = lowestDelta;
+        event.offsetX = offsetX;
+        event.offsetY = offsetY;
         // Go ahead and set deltaMode to 0 since we converted to pixels
         // Although this is a little odd since we overwrite the deltaX/Y
         // properties with normalized deltas.
@@ -33372,7 +31480,7 @@ define('controllers/IndexController',[
                 var self = this;
                 self.layout = new Layout();
                 communicator.mediator.on('routeTo:IndexController', function (data) {
-                    if ($.isPlainObject(data) && !empty(data.requestParams)) {
+                    if ($.isPlainObject(data) && !sjl.empty(data.requestParams)) {
                         self.mergeRequestParams(data.requestParams);
                     }
                     self.dispatch();
@@ -33394,8 +31502,8 @@ define('controllers/IndexController',[
             },
 
             getViewClassName: function () {
-                return strToCamelCase(this.requestParams.action
-                    + this.viewClassSuffix);
+                return sjl.camelCase(this.requestParams.action
+                    + this.viewClassSuffix, true);
             },
             
             showView: function () {
@@ -33406,10 +31514,10 @@ define('controllers/IndexController',[
             },
 
             dispatch: function (actionName) {
-                if (isset(this[actionName]) && typeof this[actionName] === 'function') {
+                if (sjl.isset(this[actionName]) && typeof this[actionName] === 'function') {
                     this[actionName]();
                 }
-                if (isset(this.showView) && typeof this.showView === 'function') {
+                if (sjl.isset(this.showView) && typeof this.showView === 'function') {
                     this.showView();
                 }
             }
@@ -33502,16 +31610,11 @@ function ( Backbone, App ) {
 	App.start();
 });
 
-define("main", ["es5-shim","phpjs"], function(){});
+define("main", function(){});
 
 require.config({
 
-//    baseUrl: './scripts',
-
-    deps: [
-        'es5-shim', 'es5-sham', 'checkjs', 'phpjs',
-        'backbone.marionette', 'jquery', 'TweenMax', 'hbs', 'main'
-    ],
+    deps: ['sjl', 'backbone.marionette', 'jquery', 'TweenMax', 'hbs', 'main' ],
 
     shim: {
         'gsap-scrollto-plugin': {
@@ -33534,12 +31637,6 @@ require.config({
         },
         'hbs': {
             deps: ['handlebars']
-        },
-        'main' : {
-            deps: ['es5-shim', 'phpjs']
-        },
-        'checkjs': {
-            deps: ['es5-shim']
         }
     },
 
@@ -33548,10 +31645,9 @@ require.config({
         'backbone.babysitter':  '../bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
         'backbone.marionette':  '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
         'backbone.wreqr':       '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
-        'checkjs':              '../bower_components/checkjs/check',
+        'sjl':                  '../bower_components/sjljs/sjl',
 
-        'es5-sham':             '../bower_components/es5-shim/es5-sham',
-        'es5-shim':             '../bower_components/es5-shim/es5-shim',
+
         'gsap-scrollto-plugin': '../bower_components/greensock/src/uncompressed/plugins/ScrollToPlugin',
         'jui-commons':          '../../distro/jui-commons',
 
@@ -33560,7 +31656,6 @@ require.config({
         'jquery-smartresize':   '../bower_components/jquery-smartresize/jquery.debouncedresize',
         'jquery-ui':            '../bower_components/jquery-ui/ui/minified/jquery-ui.min',
 
-        phpjs:      '../../bower_components/phpjs/phpjs-shim',
         handlebars:     '../bower_components/handlebars/handlebars.amd',
         hbs:     '../bower_components/require-handlebars-plugin/hbs',
         text:       '../bower_components/requirejs-text/text',
@@ -33575,6 +31670,7 @@ require.config({
         partialsUrl: ''           // default: ''
     }
 });
+
 
 define("init", function(){});
 }());

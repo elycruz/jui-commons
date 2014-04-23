@@ -5,4 +5,3 @@ start cmd /k grunt develop --force
 cd examples
 start cmd /k grunt develop --force
 
-exit
