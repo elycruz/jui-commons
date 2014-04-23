@@ -209,8 +209,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
 
         // Resolve class name
-        if (!empty(className)) {
-            if (!empty(currentClassName)
+        if (!sjl.empty(className)) {
+            if (!sjl.empty(currentClassName)
                 && typeof currentClassName === 'string') {
                 ops.ui.wrapperElm.attribs['class'] += ' ' + className;
             }
@@ -271,9 +271,9 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 liClassValue = '';
 
             // Preselect item if necessary
-            if (isset(ops.selectedValue) &&
+            if (sjl.isset(ops.selectedValue) &&
                 (ops.selectedValue === value)) {
-                if (!empty(liClassValue)) {
+                if (!sjl.empty(liClassValue)) {
                     if (liClassValue.length > 0) {
                         liClassValue += ' ';
                     }
@@ -287,7 +287,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             }
 
             // Resolve class attribute and data-value attribute
-            classValue = !empty(classValue) ? 'class="' + classValue + '" ' : '';
+            classValue = !sjl.empty(classValue) ? 'class="' + classValue + '" ' : '';
             value = ' data-value="' + value + '" ';
 
             // Build list element
@@ -295,10 +295,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 + value + '>' + label + '</a></li>');
 
             // Add first class
-            if (i === 0 && !empty(ops.ui.buttonElm.text)) {
+            if (i === 0 && !sjl.empty(ops.ui.buttonElm.text)) {
                 li.addClass('first');
             }
-            else if (i === 1 && empty(ops.ui.buttonElm.text)) {
+            else if (i === 1 && sjl.empty(ops.ui.buttonElm.text)) {
                 li.addClass('first');
             }
 
@@ -352,7 +352,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this.element.on('change', function (e) {
             var elm = $(this),
                 val = elm.val();
-            if (isset(val)) {
+            if (sjl.isset(val)) {
                 self.setSelectedItemLabelText(val);
 //                self.setSelected(self.getOwnOptionElmByValue(val));
             }
@@ -397,12 +397,12 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             }};
 
         // Set expands on event value
-        if (isset(ops.expandOn)) {
+        if (sjl.isset(ops.expandOn)) {
             dropDownOptions.expandOn = ops.expandOn;
         }
 
         // Set collapses on event value
-        if (isset(ops.collapseOn)) {
+        if (sjl.isset(ops.collapseOn)) {
             dropDownOptions.collapseOn = ops.collapseOn;
         }
 
@@ -475,7 +475,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         text = text || '';
         textType = textType || 'text';
-        usePrefixAndSuffix = isset(usePrefixAndSuffix)
+        usePrefixAndSuffix = sjl.isset(usePrefixAndSuffix)
             ? usePrefixAndSuffix : ops.useSelectedLabelPrefixAndSuffix;
 
         if (usePrefixAndSuffix) {
@@ -507,9 +507,9 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      */
     setLabelText: function (text, textType) {
         textType = textType || 'text';
-        text = text || (!empty(this.options.ui.buttonElm.text)
+        text = text || (!sjl.empty(this.options.ui.buttonElm.text)
             ? this.options.ui.buttonElm.text
-            : (!empty(this.options.labelText) ? this.options.labelText :
+            : (!sjl.empty(this.options.labelText) ? this.options.labelText :
             this.element.find('option').eq(0).text()));
         this.getUiElement('labelElm').eq(0)[textType](text);
     },
@@ -596,17 +596,17 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             value;
 
         // If no selection
-        if (empty(option)) {
+        if (sjl.empty(option)) {
             return null;
         }
 
         // If we have a value attribute name, get value by attribute name
-        if (isset(ops.valueAttribName)) {
+        if (sjl.isset(ops.valueAttribName)) {
             value = option.attr(ops.valueAttribName);
         }
 
         // Else use the option elements text
-        return !isset(value) ? option.text() : value;
+        return !sjl.isset(value) ? option.text() : value;
     },
     
     /**
@@ -619,17 +619,17 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             label;
 
         // If no selection
-        if (empty(option)) {
+        if (sjl.empty(option)) {
             return null;
         }
 
         // If we have a label attribute name, get label by attribute name
-        if (isset(ops.labelAttribName)) {
+        if (sjl.isset(ops.labelAttribName)) {
             label = option.attr(ops.labelAtribName);
         }
 
         // Else use the option elements text
-        return !isset(label) ? option.text() : label;
+        return !sjl.isset(label) ? option.text() : label;
     }
 
 });

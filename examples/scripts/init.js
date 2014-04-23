@@ -1,9 +1,7 @@
 require.config({
 
-//    baseUrl: './scripts',
-
     deps: [
-        'es5-shim', 'es5-sham', 'checkjs', 'phpjs',
+        'checkjs', 'phpjs', 'sjl',
         'backbone.marionette', 'jquery', 'TweenMax', 'hbs', 'main'
     ],
 
@@ -43,6 +41,7 @@ require.config({
         'backbone.marionette':  '../bower_components/backbone.marionette/lib/core/amd/backbone.marionette',
         'backbone.wreqr':       '../bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
         'checkjs':              '../bower_components/checkjs/check',
+        'sjl':                  '../bower_components/sjljs/sjl',
 
         'es5-sham':             '../bower_components/es5-shim/es5-sham',
         'es5-shim':             '../bower_components/es5-shim/es5-shim',
@@ -69,3 +68,4 @@ require.config({
         partialsUrl: ''           // default: ''
     }
 });
+

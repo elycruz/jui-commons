@@ -17,6 +17,7 @@
     "chai": "~1.8.1",
     "mocha": "~1.16.2",
     "requirejs": "~2.1.9",
-    "checkjs": "elycruz/checkjs#~0.2.0"
+    "checkjs": "elycruz/checkjs#~0.2.0",
+    "sjljs": "elycruz/sjljs"
   }
 }

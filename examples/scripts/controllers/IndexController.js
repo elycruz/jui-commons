@@ -46,7 +46,7 @@ define([
                 var self = this;
                 self.layout = new Layout();
                 communicator.mediator.on('routeTo:IndexController', function (data) {
-                    if ($.isPlainObject(data) && !empty(data.requestParams)) {
+                    if ($.isPlainObject(data) && !sjl.empty(data.requestParams)) {
                         self.mergeRequestParams(data.requestParams);
                     }
                     self.dispatch();
@@ -68,8 +68,8 @@ define([
             },
 
             getViewClassName: function () {
-                return strToCamelCase(this.requestParams.action
-                    + this.viewClassSuffix);
+                return sjl.camelCase(this.requestParams.action
+                    + this.viewClassSuffix, true);
             },
             
             showView: function () {
@@ -80,10 +80,10 @@ define([
             },
 
             dispatch: function (actionName) {
-                if (isset(this[actionName]) && typeof this[actionName] === 'function') {
+                if (sjl.isset(this[actionName]) && typeof this[actionName] === 'function') {
                     this[actionName]();
                 }
-                if (isset(this.showView) && typeof this.showView === 'function') {
+                if (sjl.isset(this.showView) && typeof this.showView === 'function') {
                     this.showView();
                 }
             }

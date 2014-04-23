@@ -233,7 +233,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         var ops = this.options,
             scrollbar = this._namespace('ui.scrollbar');
 
-        if (!empty(scrollbar.elm) && scrollbar.elm.length > 0) {
+        if (!sjl.empty(scrollbar.elm) && scrollbar.elm.length > 0) {
             return;
         }
 
@@ -254,7 +254,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     },
 
     _initTimeline: function () {
-        if (empty(this.options.timeline)) {
+        if (sjl.empty(this.options.timeline)) {
             this.initAnimationTimeline()
         }
     },

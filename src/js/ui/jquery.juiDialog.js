@@ -4,8 +4,8 @@
 (function () {
 
     function returnSetVars() {
-        return argsToArray(arguments).filter(function (value) {
-            return isset(value);
+        return sjl.argsToArray(arguments).filter(function (value) {
+            return sjl.isset(value);
         });
     }
 
@@ -170,8 +170,8 @@
                     self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
 
             // Resolve class name
-            if (!empty(className)) {
-                if (!empty(currentClassName)
+            if (!sjl.empty(className)) {
+                if (!sjl.empty(currentClassName)
                     && typeof currentClassName === 'string') {
                     ops.ui.wrapperElm.attribs['class'] += ' ' + className;
                 }

@@ -123,7 +123,7 @@ $.widget('jui.juiBase', {
         }
 
         // If config is empty return
-        if (empty(config)) {
+        if (sjl.empty(config)) {
             return null;
         }
 
@@ -138,7 +138,7 @@ $.widget('jui.juiBase', {
 
         // If Selector
         if (isset(config.selector)
-            && empty(config.elm) && typeof config.selector === 'string') {
+            && sjl.empty(config.elm) && typeof config.selector === 'string') {
             if (typeof config.appendTo === 'string'
                 && config.appendTo.length > 0
                 && config.appendTo.indexOf('this') === -1) {
@@ -151,7 +151,7 @@ $.widget('jui.juiBase', {
         }
 
         // Create element and `append to` config section if necessary
-        if (!empty(config.html) && config.create
+        if (!sjl.empty(config.html) && config.create
             && typeof config.html === 'string') {
 
             // Create element
@@ -165,7 +165,7 @@ $.widget('jui.juiBase', {
         }
 
         // Return element
-        return !empty(config.elm) ? config.elm : null;
+        return !sjl.empty(config.elm) ? config.elm : null;
     },
 
     _appendElementFromOptions: function (config) {
@@ -216,7 +216,7 @@ $.widget('jui.juiBase', {
         }
 
         // If config is empty
-        if (empty(config)) {
+        if (sjl.empty(config)) {
             return null;
         }
 
@@ -260,7 +260,7 @@ $.widget('jui.juiBase', {
     },
 
     _callSetterForKey: function (key, value) {
-        var setterFunc = 'set' + strToCamelCase(key),
+        var setterFunc = 'set' + sjl.camelCase(key, true),
             self = this;
         if (isset(self[setterFunc])) {
             self[setterFunc](value);
@@ -399,7 +399,7 @@ $.widget('jui.juiBase', {
      */
     getAnimationTimeline: function () {
         var timeline = this.options.timeline;
-        if (empty(timeline)) {
+        if (sjl.empty(timeline)) {
             timeline =
                 this.options.timeline =
                     new window[this.options.defaultTimelineClass];
@@ -434,7 +434,7 @@ $.widget('jui.juiBase', {
         var retVal = null;
         if (typeof key === 'string' && $.isPlainObject(hash)) {
             retVal = this._namespace(key, hash);
-            if (typeof retVal === 'function' && empty(raw)) {
+            if (typeof retVal === 'function' && sjl.empty(raw)) {
                 retVal = args ? retVal.apply(this, args) : retVal.apply(this);
             }
         }
