@@ -29479,7 +29479,7 @@ helpers = this.merge(helpers, Handlebars.helpers);
   
 
 
-  return "<div id=\"jui-select-picker-examples\">\r\n\r\n    <!-- Select Picker 1 (expands on click) -->\r\n    <div class=\"example-1 grid-45 view-module-1 clearfix\">\r\n        <h3>Select Picker - On Click</h3><br/>\r\n        <button class=\"btn toggle-select-element\">Toggle Original Element\r\n        </button>\r\n        <button class=\"btn add-items-to-select-element\">Add Items to Select\r\n            Element\r\n        </button>\r\n        <br/><br/>\r\n        <label for=\"categories\">Categories: </label><br/>\r\n        <select name=\"categories\" id=\"categories\">\r\n            <option value=\"null\">-- Select a Category --</option>\r\n            <option value=\"1\">Category 1</option>\r\n            <option value=\"2\">Category 2</option>\r\n            <option value=\"3\">Category 3</option>\r\n            <option value=\"4\">Category 4</option>\r\n            <option value=\"5\">Category 5</option>\r\n            <option value=\"6\">Category 6</option>\r\n            <option value=\"7\">Category 7</option>\r\n            <option value=\"8\">Category 8</option>\r\n            <option value=\"9\">Category 9</option>\r\n            <option value=\"10\">Category 10</option>\r\n            <option value=\"11\">Category 11</option>\r\n            <option value=\"12\">Category 12</option>\r\n            <option value=\"13\">Category 13</option>\r\n            <option value=\"14\">Category 14</option>\r\n            <option value=\"15\">Category 15</option>\r\n            <option value=\"16\">Category 16</option>\r\n            <option value=\"17\">Category 17</option>\r\n            <option value=\"18\">Category 18</option>\r\n            <option value=\"19\">Category 19</option>\r\n            <option value=\"20\">Category 20</option>\r\n        </select>\r\n    </div>\r\n    <!-- /Select Picker 1 -->\r\n\r\n    <!-- Select Picker 2 (expands on mouseenter) -->\r\n    <div class=\"example-2 grid-45 view-module-1 clearfix\">\r\n        <h3>Select Picker - On Hover</h3><br/>\r\n        <button class=\"btn toggle-select-element\">Toggle Original Element\r\n        </button>\r\n        <br/><br/>\r\n        <label for=\"other-options\">Other Option: </label><br/>\r\n        <select name=\"other-options\" id=\"other-options\">\r\n            <option>-- Select an \"Other Option\" --</option>\r\n            <option value=\"1\">Other Option 1</option>\r\n            <option value=\"2\">Other Option 2</option>\r\n            <option value=\"3\">Other Option 3</option>\r\n            <option value=\"4\">Other Option 4</option>\r\n            <option value=\"5\">Other Option 5</option>\r\n            <option value=\"6\">Other Option 6</option>\r\n            <option value=\"7\">Other Option 7</option>\r\n            <option value=\"8\">Other Option 8</option>\r\n            <option value=\"9\">Other Option 9</option>\r\n            <option value=\"10\">Other Option 10</option>\r\n            <option value=\"11\">Other Option 11</option>\r\n            <option value=\"12\">Other Option 12</option>\r\n            <option value=\"13\">Other Option 13</option>\r\n            <option value=\"14\">Other Option 14</option>\r\n            <option value=\"15\">Other Option 15</option>\r\n            <option value=\"16\">Other Option 16</option>\r\n            <option value=\"17\">Other Option 17</option>\r\n            <option value=\"18\">Other Option 18</option>\r\n            <option value=\"19\">Other Option 19</option>\r\n            <option value=\"20\">Other Option 20</option>\r\n        </select>\r\n    </div>\r\n    <!-- /Select Picker 2 -->\r\n\r\n\r\n    <!-- Select Picker 3 (expands on mouseenter has no value attributes in select element) -->\r\n    <div class=\"example-3 grid-45 view-module-1 clearfix\">\r\n        <h3>Select Picker - On Hover</h3><br/>\r\n        <button class=\"btn toggle-select-element\">Toggle Original Element\r\n        </button>\r\n        <br/><br/>\r\n        <label for=\"other-options\">Other Option: </label><br/>\r\n        <select name=\"other-options\" id=\"other-options\">\r\n            <option>-- Select an \"Other Option 2\" --</option>\r\n            <option>Other Option 1</option>\r\n            <option>Other Option 2</option>\r\n            <option>Other Option 3</option>\r\n            <option>Other Option 4</option>\r\n            <option>Other Option 5</option>\r\n            <option>Other Option 6</option>\r\n            <option>Other Option 7</option>\r\n            <option>Other Option 8</option>\r\n            <option>Other Option 9</option>\r\n            <option>Other Option 10</option>\r\n            <option>Other Option 11</option>\r\n            <option>Other Option 12</option>\r\n            <option>Other Option 13</option>\r\n            <option>Other Option 14</option>\r\n            <option>Other Option 15</option>\r\n            <option>Other Option 16</option>\r\n            <option>Other Option 17</option>\r\n            <option>Other Option 18</option>\r\n            <option>Other Option 19</option>\r\n            <option>Other Option 20</option>\r\n        </select>\r\n    </div>\r\n    <!-- /Select Picker 3 -->\r\n\r\n</div>\r\n<!-- Wrapper -->";
+  return "<div id=\"jui-select-picker-examples\">\r\n\r\n    <!-- Select Picker 1 (expands on click) -->\r\n    <div class=\"example-1 grid-45 view-module-1 clearfix\">\r\n        <h3>Select Picker - On Click</h3><br/>\r\n        <button class=\"btn toggle-select-element\">Toggle Original Element\r\n        </button>\r\n        <button class=\"btn add-items-to-select-element\">Add Items to Select\r\n            Element\r\n        </button>\r\n        <br/><br/>\r\n        <label for=\"categories\">Categories: </label><br/>\r\n        <select name=\"categories\" id=\"categories\">\r\n            <option value=\"null\">-- Select a Category --</option>\r\n            <option value=\"1\">Category 1</option>\r\n            <option value=\"2\">Category 2</option>\r\n            <option value=\"3\">Category 3</option>\r\n            <option value=\"4\">Category 4</option>\r\n            <option value=\"5\">Category 5</option>\r\n            <option value=\"6\">Category 6</option>\r\n            <option value=\"7\">Category 7</option>\r\n            <option value=\"8\">Category 8</option>\r\n            <option value=\"9\">Category 9</option>\r\n            <option value=\"10\">Category 10</option>\r\n            <option value=\"11\">Category 11</option>\r\n            <option value=\"12\">Category 12</option>\r\n            <option value=\"13\">Category 13</option>\r\n            <option value=\"14\">Category 14</option>\r\n            <option value=\"15\">Category 15</option>\r\n            <option value=\"16\">Category 16</option>\r\n            <option value=\"17\">Category 17</option>\r\n            <option value=\"18\">Category 18</option>\r\n            <option value=\"19\">Category 19</option>\r\n            <option value=\"20\">Category 20</option>\r\n        </select>\r\n    </div>\r\n\r\n    <!-- Select Picker 2 (expands on mouseenter) -->\r\n    <div class=\"example-2 grid-45 view-module-1 clearfix\">\r\n        <h3>Select Picker - On Hover</h3><br/>\r\n        <button class=\"btn toggle-select-element\">Toggle Original Element\r\n        </button>\r\n        <br/><br/>\r\n        <label for=\"other-options\">Other Option: </label><br/>\r\n        <select name=\"other-options\" id=\"other-options\">\r\n            <option>-- Select an \"Other Option\" --</option>\r\n            <option value=\"1\">Other Option 1</option>\r\n            <option value=\"2\">Other Option 2</option>\r\n            <option value=\"3\">Other Option 3</option>\r\n            <option value=\"4\">Other Option 4</option>\r\n            <option value=\"5\">Other Option 5</option>\r\n            <option value=\"6\">Other Option 6</option>\r\n            <option value=\"7\">Other Option 7</option>\r\n            <option value=\"8\">Other Option 8</option>\r\n        </select>\r\n    </div>\r\n\r\n\r\n    <!-- Select Picker 3 (expands on mouseenter has no value attributes in select element) -->\r\n    <div class=\"example-3 grid-45 view-module-1 clearfix\">\r\n        <h3>Select Picker - On Hover</h3><br/>\r\n        <button class=\"btn toggle-select-element\">Toggle Original Element\r\n        </button>\r\n        <br/><br/>\r\n        <label for=\"other-options\">Other Option: </label><br/>\r\n        <select name=\"other-options\" id=\"other-options\">\r\n            <option>-- Select an \"Other Option 2\" --</option>\r\n            <option>Other Option 1</option>\r\n            <option>Other Option 2</option>\r\n            <option>Other Option 3</option>\r\n            <option>Other Option 4</option>\r\n            <option>Other Option 5</option>\r\n        </select>\r\n    </div>\r\n\r\n    <!-- Select Picker 4 (expands on mouseenter has no value attributes in select element) -->\r\n    <div class=\"example-4 grid-45 view-module-1 clearfix\">\r\n        <h3>Select Picker - Dynamic Height</h3><br/>\r\n        <p>For drop downs with content with less height than the max content area height</p>\r\n        <button class=\"btn toggle-select-element\">Toggle Original Element\r\n        </button>\r\n        <br/><br/>\r\n        <label for=\"other-options\">Other Option: </label><br/>\r\n        <select name=\"example-4-options\" id=\"example-4-options\">\r\n            <option>-- Select an Option --</option>\r\n            <option>Other Option 1</option>\r\n            <option>Other Option 2</option>\r\n            <option>Other Option 3</option>\r\n        </select>\r\n    </div>\r\n\r\n</div>\r\n<!-- Wrapper -->";
   });
 return t;
 });
@@ -29499,7 +29499,8 @@ function (Backbone, tmpl) {
         ui: {
             example1: '#categories',
             example2: '#other-options',
-            example3: '#other-options-2'
+            example3: '#other-options-2',
+            example4: '#example-4-options'
         },
 
         template: tmpl,
@@ -29550,6 +29551,17 @@ function (Backbone, tmpl) {
                 labelText: '"Option":',
                 expandOn: 'mouseenter',
                 collapseOn: 'mouseleave'
+            }),
+
+            // Example 4 - expands on click
+            $example4 = ui.example4.juiSelectPicker({
+                useSelectedLabelPrefixAndSuffix: true,
+                selectedLabelPrefix: '< "',
+                selectedLabelSuffix: '" >',
+                labelText: 'Select a Category:',
+                skipFirstOptionItem: true,
+                expandOn: 'click',
+                collapseOn: 'click'
             });
 
             // Trigger tests
@@ -29583,8 +29595,12 @@ function (Backbone, tmpl) {
             var ui = this.ui;
             ui.example1.juiSelectPicker('destroy');
             ui.example2.juiSelectPicker('destroy');
+            ui.example3.juiSelectPicker('destroy');
+            ui.example4.juiSelectPicker('destroy');
             delete ui.example1;
             delete ui.example2;
+            delete ui.example3;
+            delete ui.example4;
         }
     });
 
@@ -29668,7 +29684,7 @@ case 27:t.datepicker._hideDatepicker();break;case 33:t.datepicker._adjustDate(e.
 if(n){if(a=this._find(s),a.length)return a.find(".ui-tooltip-content").html(n),void 0;s.is("[title]")&&(i&&"mouseover"===i.type?s.attr("title",""):s.removeAttr("title")),a=this._tooltip(s),e(s,a.attr("id")),a.find(".ui-tooltip-content").html(n),this.options.track&&i&&/^mouse/.test(i.type)?(this._on(this.document,{mousemove:o}),o(i)):a.position(t.extend({of:s},this.options.position)),a.hide(),this._show(a,this.options.show),this.options.show&&this.options.show.delay&&(h=this.delayedShow=setInterval(function(){a.is(":visible")&&(o(l.of),clearInterval(h))},t.fx.interval)),this._trigger("open",i,{tooltip:a}),r={keyup:function(e){if(e.keyCode===t.ui.keyCode.ESCAPE){var i=t.Event(e);i.currentTarget=s[0],this.close(i,!0)}},remove:function(){this._removeTooltip(a)}},i&&"mouseover"!==i.type||(r.mouseleave="close"),i&&"focusin"!==i.type||(r.focusout="close"),this._on(!0,s,r)}},close:function(e){var s=this,n=t(e?e.currentTarget:this.element),o=this._find(n);this.closing||(clearInterval(this.delayedShow),n.data("ui-tooltip-title")&&n.attr("title",n.data("ui-tooltip-title")),i(n),o.stop(!0),this._hide(o,this.options.hide,function(){s._removeTooltip(t(this))}),n.removeData("ui-tooltip-open"),this._off(n,"mouseleave focusout keyup"),n[0]!==this.element[0]&&this._off(n,"remove"),this._off(this.document,"mousemove"),e&&"mouseleave"===e.type&&t.each(this.parents,function(e,i){t(i.element).attr("title",i.title),delete s.parents[e]}),this.closing=!0,this._trigger("close",e,{tooltip:o}),this.closing=!1)},_tooltip:function(e){var i="ui-tooltip-"+s++,n=t("<div>").attr({id:i,role:"tooltip"}).addClass("ui-tooltip ui-widget ui-corner-all ui-widget-content "+(this.options.tooltipClass||""));return t("<div>").addClass("ui-tooltip-content").appendTo(n),n.appendTo(this.document[0].body),this.tooltips[i]=e,n},_find:function(e){var i=e.data("ui-tooltip-id");return i?t("#"+i):t()},_removeTooltip:function(t){t.remove(),delete this.tooltips[t.attr("id")]},_destroy:function(){var e=this;t.each(this.tooltips,function(i,s){var n=t.Event("blur");n.target=n.currentTarget=s[0],e.close(n,!0),t("#"+i).remove(),s.data("ui-tooltip-title")&&(s.attr("title",s.data("ui-tooltip-title")),s.removeData("ui-tooltip-title"))})}})}(jQuery);
 define("jquery-ui", ["jquery"], function(){});
 
-/*! jui-commons 2014-04-22 */
+/*! jui-commons 2014-04-28 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -29873,11 +29889,8 @@ $.widget("jui.juiBase", {
         }), g = c.scrollableElm;
         c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
         g.bind("scroll resize orientationchange load", function() {
-            {
-                var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
-                g.width() - k;
-            }
-            c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
+            var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
+            g.width() - k, c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
                 position: "fixed",
                 top: a.top,
                 bottom: "auto"
@@ -30015,11 +30028,8 @@ $.widget("jui.juiBase", {
             debug: !0
         },
         _create: function() {
-            {
-                var b = this;
-                b.options;
-            }
-            "function" != typeof Audio && alert("Html 5 Audio not supported by this browser."), 
+            var b = this;
+            b.options, "function" != typeof Audio && alert("Html 5 Audio not supported by this browser."), 
             this.element.html(this.options.template);
             var c = this.options.audio;
             c.obj = c.obj || new Audio(), c.obj.volume = c.volume, c.obj.autoplay = c.autoplay, 
@@ -30096,7 +30106,7 @@ $.widget("jui.juiBase", {
             }), a.volumeSlider.enabled && a.volumeSlider.elm.bind("slide", function(a, c) {
                 b.changeVolume(.01 * c.value);
             }), a.audioPlayProgressBar.enabled && a.audioPlayProgressBar.elm.bind("click", function(a) {
-                var c = $(this), d = .01 * ((a.pageX - c.offset().left) / c.width()) * 100;
+                var c = $(this), d = .01 * 100 * ((a.pageX - c.offset().left) / c.width());
                 c.progressbar("value", d), b.seekAudio(d * b.options.audio.obj.duration);
             });
         },
@@ -30113,10 +30123,10 @@ $.widget("jui.juiBase", {
                     b.options.controls.audioTotalTimeElm.elm.text(c);
                 }
             }), $(a.obj).bind("progress", function() {
-                var c = a.obj.buffered.end(0) / a.obj.duration * 100, d = b.options.controls.audioLoadProgressBar.elm;
+                var c = 100 * (a.obj.buffered.end(0) / a.obj.duration), d = b.options.controls.audioLoadProgressBar.elm;
                 d.progressbar("value", c);
             }), $(a.obj).bind("timeupdate", function() {
-                var c = a.obj.currentTime / a.obj.duration * 100, d = b.options.controls.audioPlayProgressBar.elm;
+                var c = 100 * (a.obj.currentTime / a.obj.duration), d = b.options.controls.audioPlayProgressBar.elm;
                 if (b.options.controls.audioCurrentTimeElm.enabled) {
                     var e = a.timeHelper.prettyPrintFromSecs(a.obj.currentTime);
                     b.options.controls.audioCurrentTimeElm.elm.text(e);
@@ -30456,7 +30466,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -30553,11 +30563,8 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        {
-            var a = this;
-            a.options;
-        }
-        a.element.addClass(a.options.className), a._super();
+        var a = this;
+        a.options, a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -30568,8 +30575,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
@@ -30644,7 +30651,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, sjl.classOfIs(a, "Number") ? a : 0;
+            return a = 2 * (this.getUiElement("contentHolder").height() / 3 / 3), sjl.classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,
@@ -30875,7 +30882,7 @@ $.widget("jui.juiBase", {
                 onComplete: a
             });
         } catch (e) {
-            throw new Error('Could not create a new "' + d.defaultTimelineClass + '"when trying to create a timeline object.');
+            throw new Error('Could not create a new "' + d.defaultTimelineClass + '"' + "when trying to create a timeline object.");
         }
     },
     _init: function() {
@@ -30913,8 +30920,8 @@ $.widget("jui.juiBase", {
             a.ensureAnimationFunctionality(), a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
             a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
             c.timeline.reverse();
-        }), $(window).on("click", function(d) {
-            $.contains(a.element, $(d.target)) === !1 && 1 === c.timeline.progress() && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
+        }), c.mousePos = $(window).juiMouse(), $(window).on("click", function(d) {
+            $.contains(a.element.get(0), d.target) === !1 && 1 === c.timeline.progress() && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
             a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
             a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
             c.timeline.reverse());
@@ -30977,7 +30984,8 @@ $.widget("jui.juiBase", {
                 selector: ".jui-select-picker",
                 html: "<div></div>",
                 create: !0,
-                timeline: new TimelineLite()
+                timeline: new TimelineLite(),
+                suggestedExpandHeight: null
             },
             buttonElm: {
                 elm: null,
@@ -31041,7 +31049,8 @@ $.widget("jui.juiBase", {
                 html: "<div></div>",
                 appendTo: "bodyElm",
                 create: !0,
-                optionSelectedClassName: "selected"
+                optionSelectedClassName: "selected",
+                suggestedExpandHeight: null
             }
         }
     },
@@ -31070,7 +31079,7 @@ $.widget("jui.juiBase", {
                 0 !== b || sjl.empty(e.ui.buttonElm.text) ? 1 === b && sjl.empty(e.ui.buttonElm.text) && k.addClass("first") : k.addClass("first"), 
                 b === c.length - 1 && k.addClass("last"), d.append(k);
             }
-        }), b.append(d);
+        }), b.append(d), c = $("li", b), e.ui.optionsElm.suggestedExpandHeight = c.eq(0).height() * c.length;
     },
     _addEventListeners: function() {
         var a = this, b = this.options, c = a.getUiElement("wrapperElm");
@@ -31102,9 +31111,9 @@ $.widget("jui.juiBase", {
         }, sjl.isset(h.expandOn) && (d.expandOn = h.expandOn), sjl.isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
         c = i.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
         b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
-            height: i.css("max-height")
+            height: g.getSuggestedWrapperExpandHeight()
         }), TweenLite.to(j, k, {
-            height: j.css("max-height"),
+            height: g.getSuggestedContentExpandHeight(),
             autoAlpha: 1,
             delay: -.3
         }), TweenLite.to(a, k, {
@@ -31118,6 +31127,24 @@ $.widget("jui.juiBase", {
     refreshOptions: function() {
         this.options.selectedValue = this.getSelectedOwnOptionElmValue(), this._removeCreatedOptions(), 
         this._drawSelectOptions(), this.setLabelText(), this.element.trigger("change");
+    },
+    getSuggestedWrapperExpandHeight: function() {
+        var a, b = this, c = b.options, d = b.getUiElement("wrapperElm"), e = null, f = b.getMaxHeightFromElm(d);
+        return c.ui.optionsElm.suggestedExpandHeight && (a = b.getWrapperElmPaddingBottom(), 
+        e = b.getSuggestedContentExpandHeight() + (-1 >= a ? 0 : a) + b.getUiElement("buttonElm").height()), 
+        e = sjl.isset(e) ? e > f ? f : e : f;
+    },
+    getSuggestedContentExpandHeight: function() {
+        var a = this, b = a.getUiElement("optionsElm"), c = a.getMaxHeightFromElm(b), d = a.options.ui.optionsElm.suggestedExpandHeight;
+        return d = sjl.isset(d) ? d > c ? c : d : c;
+    },
+    getWrapperElmPaddingBottom: function() {
+        var a = this, b = a.getUiElement("buttonElm"), c = a.getUiElement("wrapperElm"), d = a.getUiElement("optionsElm"), e = a.getMaxHeightFromElm(d), f = a.getMaxHeightFromElm(c), g = f - b.height() - (d.height() || e || 0);
+        return g;
+    },
+    getMaxHeightFromElm: function(a) {
+        var b = a.css("max-height");
+        return sjl.classOfIs(b, "String") ? parseInt(b) : b;
     },
     setSelectedItemLabelText: function(a, b, c) {
         var d, e, f = this.options, g = f.ui.selectedItemLabelElm, h = this.getUiElement("selectedItemLabelElm").eq(0);

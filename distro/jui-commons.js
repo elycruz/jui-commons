@@ -1,4 +1,4 @@
-/*! jui-commons 2014-04-22 */
+/*! jui-commons 2014-04-28 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -203,11 +203,8 @@ $.widget("jui.juiBase", {
         }), g = c.scrollableElm;
         c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
         g.bind("scroll resize orientationchange load", function() {
-            {
-                var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
-                g.width() - k;
-            }
-            c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
+            var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
+            g.width() - k, c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
                 position: "fixed",
                 top: a.top,
                 bottom: "auto"
@@ -345,11 +342,8 @@ $.widget("jui.juiBase", {
             debug: !0
         },
         _create: function() {
-            {
-                var b = this;
-                b.options;
-            }
-            "function" != typeof Audio && alert("Html 5 Audio not supported by this browser."), 
+            var b = this;
+            b.options, "function" != typeof Audio && alert("Html 5 Audio not supported by this browser."), 
             this.element.html(this.options.template);
             var c = this.options.audio;
             c.obj = c.obj || new Audio(), c.obj.volume = c.volume, c.obj.autoplay = c.autoplay, 
@@ -426,7 +420,7 @@ $.widget("jui.juiBase", {
             }), a.volumeSlider.enabled && a.volumeSlider.elm.bind("slide", function(a, c) {
                 b.changeVolume(.01 * c.value);
             }), a.audioPlayProgressBar.enabled && a.audioPlayProgressBar.elm.bind("click", function(a) {
-                var c = $(this), d = .01 * ((a.pageX - c.offset().left) / c.width()) * 100;
+                var c = $(this), d = .01 * 100 * ((a.pageX - c.offset().left) / c.width());
                 c.progressbar("value", d), b.seekAudio(d * b.options.audio.obj.duration);
             });
         },
@@ -443,10 +437,10 @@ $.widget("jui.juiBase", {
                     b.options.controls.audioTotalTimeElm.elm.text(c);
                 }
             }), $(a.obj).bind("progress", function() {
-                var c = a.obj.buffered.end(0) / a.obj.duration * 100, d = b.options.controls.audioLoadProgressBar.elm;
+                var c = 100 * (a.obj.buffered.end(0) / a.obj.duration), d = b.options.controls.audioLoadProgressBar.elm;
                 d.progressbar("value", c);
             }), $(a.obj).bind("timeupdate", function() {
-                var c = a.obj.currentTime / a.obj.duration * 100, d = b.options.controls.audioPlayProgressBar.elm;
+                var c = 100 * (a.obj.currentTime / a.obj.duration), d = b.options.controls.audioPlayProgressBar.elm;
                 if (b.options.controls.audioCurrentTimeElm.enabled) {
                     var e = a.timeHelper.prettyPrintFromSecs(a.obj.currentTime);
                     b.options.controls.audioCurrentTimeElm.elm.text(e);
@@ -786,7 +780,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -883,11 +877,8 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        {
-            var a = this;
-            a.options;
-        }
-        a.element.addClass(a.options.className), a._super();
+        var a = this;
+        a.options, a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -898,8 +889,8 @@ $.widget("jui.juiBase", {
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
                 if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
+                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "proceeding to last page.");
+                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\n" + "Proceeding to first page.");
                     a._gotoPageNum(f - 1);
                 } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
@@ -974,7 +965,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, sjl.classOfIs(a, "Number") ? a : 0;
+            return a = 2 * (this.getUiElement("contentHolder").height() / 3 / 3), sjl.classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,
@@ -1205,7 +1196,7 @@ $.widget("jui.juiBase", {
                 onComplete: a
             });
         } catch (e) {
-            throw new Error('Could not create a new "' + d.defaultTimelineClass + '"when trying to create a timeline object.');
+            throw new Error('Could not create a new "' + d.defaultTimelineClass + '"' + "when trying to create a timeline object.");
         }
     },
     _init: function() {
@@ -1243,8 +1234,8 @@ $.widget("jui.juiBase", {
             a.ensureAnimationFunctionality(), a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
             a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
             c.timeline.reverse();
-        }), $(window).on("click", function(d) {
-            $.contains(a.element, $(d.target)) === !1 && 1 === c.timeline.progress() && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
+        }), c.mousePos = $(window).juiMouse(), $(window).on("click", function(d) {
+            $.contains(a.element.get(0), d.target) === !1 && 1 === c.timeline.progress() && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
             a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
             a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
             c.timeline.reverse());
@@ -1307,7 +1298,8 @@ $.widget("jui.juiBase", {
                 selector: ".jui-select-picker",
                 html: "<div></div>",
                 create: !0,
-                timeline: new TimelineLite()
+                timeline: new TimelineLite(),
+                suggestedExpandHeight: null
             },
             buttonElm: {
                 elm: null,
@@ -1371,7 +1363,8 @@ $.widget("jui.juiBase", {
                 html: "<div></div>",
                 appendTo: "bodyElm",
                 create: !0,
-                optionSelectedClassName: "selected"
+                optionSelectedClassName: "selected",
+                suggestedExpandHeight: null
             }
         }
     },
@@ -1400,7 +1393,7 @@ $.widget("jui.juiBase", {
                 0 !== b || sjl.empty(e.ui.buttonElm.text) ? 1 === b && sjl.empty(e.ui.buttonElm.text) && k.addClass("first") : k.addClass("first"), 
                 b === c.length - 1 && k.addClass("last"), d.append(k);
             }
-        }), b.append(d);
+        }), b.append(d), c = $("li", b), e.ui.optionsElm.suggestedExpandHeight = c.eq(0).height() * c.length;
     },
     _addEventListeners: function() {
         var a = this, b = this.options, c = a.getUiElement("wrapperElm");
@@ -1432,9 +1425,9 @@ $.widget("jui.juiBase", {
         }, sjl.isset(h.expandOn) && (d.expandOn = h.expandOn), sjl.isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
         c = i.juiScrollableDropDown(d), b = c.juiScrollableDropDown("getAnimationTimeline"), 
         b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
-            height: i.css("max-height")
+            height: g.getSuggestedWrapperExpandHeight()
         }), TweenLite.to(j, k, {
-            height: j.css("max-height"),
+            height: g.getSuggestedContentExpandHeight(),
             autoAlpha: 1,
             delay: -.3
         }), TweenLite.to(a, k, {
@@ -1448,6 +1441,24 @@ $.widget("jui.juiBase", {
     refreshOptions: function() {
         this.options.selectedValue = this.getSelectedOwnOptionElmValue(), this._removeCreatedOptions(), 
         this._drawSelectOptions(), this.setLabelText(), this.element.trigger("change");
+    },
+    getSuggestedWrapperExpandHeight: function() {
+        var a, b = this, c = b.options, d = b.getUiElement("wrapperElm"), e = null, f = b.getMaxHeightFromElm(d);
+        return c.ui.optionsElm.suggestedExpandHeight && (a = b.getWrapperElmPaddingBottom(), 
+        e = b.getSuggestedContentExpandHeight() + (-1 >= a ? 0 : a) + b.getUiElement("buttonElm").height()), 
+        e = sjl.isset(e) ? e > f ? f : e : f;
+    },
+    getSuggestedContentExpandHeight: function() {
+        var a = this, b = a.getUiElement("optionsElm"), c = a.getMaxHeightFromElm(b), d = a.options.ui.optionsElm.suggestedExpandHeight;
+        return d = sjl.isset(d) ? d > c ? c : d : c;
+    },
+    getWrapperElmPaddingBottom: function() {
+        var a = this, b = a.getUiElement("buttonElm"), c = a.getUiElement("wrapperElm"), d = a.getUiElement("optionsElm"), e = a.getMaxHeightFromElm(d), f = a.getMaxHeightFromElm(c), g = f - b.height() - (d.height() || e || 0);
+        return g;
+    },
+    getMaxHeightFromElm: function(a) {
+        var b = a.css("max-height");
+        return sjl.classOfIs(b, "String") ? parseInt(b) : b;
     },
     setSelectedItemLabelText: function(a, b, c) {
         var d, e, f = this.options, g = f.ui.selectedItemLabelElm, h = this.getUiElement("selectedItemLabelElm").eq(0);

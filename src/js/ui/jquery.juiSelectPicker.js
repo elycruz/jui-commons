@@ -109,7 +109,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 selector: '.jui-select-picker',
                 html: '<div></div>',
                 create: true,
-                timeline: new TimelineLite()
+                timeline: new TimelineLite(),
+                suggestedExpandHeight: null
             },
             buttonElm: {
                 elm: null,
@@ -173,7 +174,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 html: '<div></div>',
                 appendTo: 'bodyElm',
                 create: true,
-                optionSelectedClassName: 'selected'
+                optionSelectedClassName: 'selected',
+                suggestedExpandHeight: null
             }
         }
     },
@@ -313,6 +315,13 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Append unordered list element
         optionsElm.append(ul);
+
+        // Get height of first ul > li element
+        options = $('li', optionsElm);
+
+        // Set suggested expand height
+        ops.ui.optionsElm.suggestedExpandHeight
+            = options.eq(0).height() * options.length;
     },
 
     /**
@@ -419,8 +428,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         scrollbarElm = $('.vertical.scrollbar', wrapperElm);
 
         tweens = [
-            TweenLite.to(wrapperElm, duration, {height: wrapperElm.css('max-height')}),
-            TweenLite.to(contentElm, duration, {height: contentElm.css('max-height'), autoAlpha: 1, delay: -0.30}),
+            TweenLite.to(wrapperElm, duration, {height: self.getSuggestedWrapperExpandHeight()}),
+            TweenLite.to(contentElm, duration, {height: self.getSuggestedContentExpandHeight(), autoAlpha: 1, delay: -0.30}),
             TweenLite.to(scrollbarElm, duration, {opacity: 1, delay: -0.20})
         ];
 
@@ -458,6 +467,68 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._drawSelectOptions();
         this.setLabelText();
         this.element.trigger('change');
+    },
+
+    getSuggestedWrapperExpandHeight: function (value) {
+        var self = this,
+            ops = self.options,
+            wrapperElm = self.getUiElement('wrapperElm'),
+            suggestedExpandHeight = null,
+            wrapperPaddingBottom,
+            maxHeight = self.getMaxHeightFromElm(wrapperElm);
+
+        // Compose suggested height if no value passed in
+        if (ops.ui.optionsElm.suggestedExpandHeight) {
+            wrapperPaddingBottom = self.getWrapperElmPaddingBottom();
+            suggestedExpandHeight = self.getSuggestedContentExpandHeight()
+                + (wrapperPaddingBottom <= -1 ? 0 : wrapperPaddingBottom)
+                + self.getUiElement('buttonElm').height();
+        }
+
+        // Choose suggested height based wrapper max-height or suggested height
+        if (sjl.isset(suggestedExpandHeight)) {
+            suggestedExpandHeight = suggestedExpandHeight > maxHeight
+                ? maxHeight : suggestedExpandHeight;
+        }
+
+        // Else default it to the default
+        else {
+            suggestedExpandHeight = maxHeight;
+        }
+
+        return suggestedExpandHeight;
+    },
+
+    getSuggestedContentExpandHeight: function () {
+        var self = this,
+            contentElm = self.getUiElement('optionsElm'),
+            maxHeight = self.getMaxHeightFromElm(contentElm),
+            suggestedHeight = self.options.ui.optionsElm.suggestedExpandHeight;
+        if (sjl.isset(suggestedHeight)) {
+            suggestedHeight = suggestedHeight > maxHeight ? maxHeight : suggestedHeight;
+        }
+        else {
+            suggestedHeight = maxHeight;
+        }
+
+        return suggestedHeight;
+    },
+
+    getWrapperElmPaddingBottom: function () {
+        var self = this,
+            btnElm = self.getUiElement('buttonElm'),
+            wrapperElm = self.getUiElement('wrapperElm'),
+            optionsElm = self.getUiElement('optionsElm'),
+            optionsElmMaxHeight = self.getMaxHeightFromElm(optionsElm),
+            wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm),
+            retVal =  wrapperElmMaxHeight - btnElm.height() - (optionsElm.height() || optionsElmMaxHeight || 0);
+        return retVal;
+    },
+
+    getMaxHeightFromElm: function (elm) {
+        var maxHeight = elm.css('max-height');
+        return sjl.classOfIs(maxHeight, 'String') ?
+            parseInt(maxHeight) : maxHeight;
     },
 
     /**

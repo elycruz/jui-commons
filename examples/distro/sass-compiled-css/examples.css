@@ -1087,10 +1087,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   width: 100% !important;
   overflow: hidden;
   max-height: 220px;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-  opacity: 1;
   background: #fff;
   z-index: 97;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
 }
 /* line 30, ../../../src/sass/jui-commons/_jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .content ul li {

@@ -206,9 +206,13 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 });
         }
 
+        // Get mouse position tracker
+        ops.mousePos = $(window).juiMouse(),
+
         // When clicking outside of drop down close it
         $(window).on('click', function (e) {
-            if ($.contains(self.element, $(e.target)) === false
+            // If mouse not within scrollpane elm, bail
+            if ($.contains(self.element.get(0), e.target) === false
                 && ops.timeline.progress() === 1) {
                 if (self.options.state === states.EXPANDED) {
                     self.ensureAnimationFunctionality();

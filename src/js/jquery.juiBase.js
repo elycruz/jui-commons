@@ -457,3 +457,4 @@ $.widget('jui.juiBase', {
     }
 
 });
+
