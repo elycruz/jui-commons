@@ -25,11 +25,13 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
     },
 
     _create: function () {
-        this._gotoPageNum(this.options.pages.pointer);
+        var self = this;
+        self._gotoPageNum(self.options.pages.pointer);
     },
 
     _nextPage: function () {
-        var ops = this.options;
+        var self = this,
+            ops = self.options;
 
         // Set direction to next
         ops.pages.pointer_direction = 1;
@@ -42,15 +44,18 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
         }
 
         // Goto Page src number
-        this._gotoPageNum(ops.pages.pointer);
+        self._gotoPageNum(ops.pages.pointer);
 
         // Trigger event
-        this.element.trigger(this.widgetName + ':nextPage',
+        self.element.trigger(self.widgetName + ':nextPage',
             {pointer: ops.pages.pointer});
+        
+        return self;
     },
 
     _prevPage: function () {
-        var ops = this.options;
+        var self = this,
+            ops = self.options;
         if (ops.pages.pointer > 0) {
             ops.pages.pointer -= 1;
         }
@@ -62,15 +67,18 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
         ops.pages.pointer_direction = -1;
 
         // Goto Page src number
-        this._gotoPageNum(ops.pages.pointer);
+        self._gotoPageNum(ops.pages.pointer);
 
         // Trigger event
-        this.element.trigger(this.widgetName + ':prevPage',
+        self.element.trigger(self.widgetName + ':prevPage',
             {pointer: ops.pages.pointer});
+
+        return self;
     },
 
     _gotoPageNum: function (num) {
-        var ops = this.options;
+        var self = this,
+            ops = self.options;
         // Set prev and next
         ops.pages.prev = num - 1;
 
@@ -90,11 +98,13 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
         ops.pages.pointer = num;
 
         // If callback is set call it
-        this.getValueFromOptions('onGotoPageNum');
+        self.getValueFromOptions('onGotoPageNum');
 
         // Trigger gotoPageNum
-        this.element.trigger(this.widgetName + ':gotoPageNum',
+        self.element.trigger(self.widgetName + ':gotoPageNum',
             {pointer: num});
+
+        return self;
     },
 
     getPointer: function () {

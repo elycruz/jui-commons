@@ -29668,7 +29668,7 @@ case 27:t.datepicker._hideDatepicker();break;case 33:t.datepicker._adjustDate(e.
 if(n){if(a=this._find(s),a.length)return a.find(".ui-tooltip-content").html(n),void 0;s.is("[title]")&&(i&&"mouseover"===i.type?s.attr("title",""):s.removeAttr("title")),a=this._tooltip(s),e(s,a.attr("id")),a.find(".ui-tooltip-content").html(n),this.options.track&&i&&/^mouse/.test(i.type)?(this._on(this.document,{mousemove:o}),o(i)):a.position(t.extend({of:s},this.options.position)),a.hide(),this._show(a,this.options.show),this.options.show&&this.options.show.delay&&(h=this.delayedShow=setInterval(function(){a.is(":visible")&&(o(l.of),clearInterval(h))},t.fx.interval)),this._trigger("open",i,{tooltip:a}),r={keyup:function(e){if(e.keyCode===t.ui.keyCode.ESCAPE){var i=t.Event(e);i.currentTarget=s[0],this.close(i,!0)}},remove:function(){this._removeTooltip(a)}},i&&"mouseover"!==i.type||(r.mouseleave="close"),i&&"focusin"!==i.type||(r.focusout="close"),this._on(!0,s,r)}},close:function(e){var s=this,n=t(e?e.currentTarget:this.element),o=this._find(n);this.closing||(clearInterval(this.delayedShow),n.data("ui-tooltip-title")&&n.attr("title",n.data("ui-tooltip-title")),i(n),o.stop(!0),this._hide(o,this.options.hide,function(){s._removeTooltip(t(this))}),n.removeData("ui-tooltip-open"),this._off(n,"mouseleave focusout keyup"),n[0]!==this.element[0]&&this._off(n,"remove"),this._off(this.document,"mousemove"),e&&"mouseleave"===e.type&&t.each(this.parents,function(e,i){t(i.element).attr("title",i.title),delete s.parents[e]}),this.closing=!0,this._trigger("close",e,{tooltip:o}),this.closing=!1)},_tooltip:function(e){var i="ui-tooltip-"+s++,n=t("<div>").attr({id:i,role:"tooltip"}).addClass("ui-tooltip ui-widget ui-corner-all ui-widget-content "+(this.options.tooltipClass||""));return t("<div>").addClass("ui-tooltip-content").appendTo(n),n.appendTo(this.document[0].body),this.tooltips[i]=e,n},_find:function(e){var i=e.data("ui-tooltip-id");return i?t("#"+i):t()},_removeTooltip:function(t){t.remove(),delete this.tooltips[t.attr("id")]},_destroy:function(){var e=this;t.each(this.tooltips,function(i,s){var n=t.Event("blur");n.target=n.currentTarget=s[0],e.close(n,!0),t("#"+i).remove(),s.data("ui-tooltip-title")&&(s.attr("title",s.data("ui-tooltip-title")),s.removeData("ui-tooltip-title"))})}})}(jQuery);
 define("jquery-ui", ["jquery"], function(){});
 
-/*! jui-commons 2014-04-22 */
+/*! jui-commons 2014-05-03 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -29820,29 +29820,30 @@ $.widget("jui.juiBase", {
         onGotoPageNum: null
     },
     _create: function() {
-        this._gotoPageNum(this.options.pages.pointer);
+        var a = this;
+        a._gotoPageNum(a.options.pages.pointer);
     },
     _nextPage: function() {
-        var a = this.options;
-        a.pages.pointer_direction = 1, a.pages.pointer < a.pages.length - 1 ? a.pages.pointer += 1 : a.pages.pointer = 0, 
-        this._gotoPageNum(a.pages.pointer), this.element.trigger(this.widgetName + ":nextPage", {
-            pointer: a.pages.pointer
-        });
+        var a = this, b = a.options;
+        return b.pages.pointer_direction = 1, b.pages.pointer < b.pages.length - 1 ? b.pages.pointer += 1 : b.pages.pointer = 0, 
+        a._gotoPageNum(b.pages.pointer), a.element.trigger(a.widgetName + ":nextPage", {
+            pointer: b.pages.pointer
+        }), a;
     },
     _prevPage: function() {
-        var a = this.options;
-        a.pages.pointer > 0 ? a.pages.pointer -= 1 : a.pages.pointer = a.pages.length - 1, 
-        a.pages.pointer_direction = -1, this._gotoPageNum(a.pages.pointer), this.element.trigger(this.widgetName + ":prevPage", {
-            pointer: a.pages.pointer
-        });
+        var a = this, b = a.options;
+        return b.pages.pointer > 0 ? b.pages.pointer -= 1 : b.pages.pointer = b.pages.length - 1, 
+        b.pages.pointer_direction = -1, a._gotoPageNum(b.pages.pointer), a.element.trigger(a.widgetName + ":prevPage", {
+            pointer: b.pages.pointer
+        }), a;
     },
     _gotoPageNum: function(a) {
-        var b = this.options;
-        b.pages.prev = a - 1, b.pages.next = a + 1, a > b.pages.length - 1 && (a = b.pages.length - 1), 
-        0 > a && (a = 0), b.pages.pointer = a, this.getValueFromOptions("onGotoPageNum"), 
-        this.element.trigger(this.widgetName + ":gotoPageNum", {
+        var b = this, c = b.options;
+        return c.pages.prev = a - 1, c.pages.next = a + 1, a > c.pages.length - 1 && (a = c.pages.length - 1), 
+        0 > a && (a = 0), c.pages.pointer = a, b.getValueFromOptions("onGotoPageNum"), 
+        b.element.trigger(b.widgetName + ":gotoPageNum", {
             pointer: a
-        });
+        }), b;
     },
     getPointer: function() {
         return this.options.pages.pointer;
@@ -30567,11 +30568,8 @@ $.widget("jui.juiBase", {
             var d = ($(this), {});
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
-                if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
-                    a._gotoPageNum(f - 1);
-                } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
+                /\d+/.test(f) ? (f - 1 > b.pages.length ? a._gotoPageNum(b.pages.length) : 0 > f - 1 && a._gotoPageNum(0), 
+                a._gotoPageNum(f - 1)) : d.messages = [ "Only numbers are allowed in the paginator textfield." ], 
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
                 b.ui.textField.callback(d));
             }

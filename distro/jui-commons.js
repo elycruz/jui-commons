@@ -1,4 +1,4 @@
-/*! jui-commons 2014-04-22 */
+/*! jui-commons 2014-05-03 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -150,29 +150,30 @@ $.widget("jui.juiBase", {
         onGotoPageNum: null
     },
     _create: function() {
-        this._gotoPageNum(this.options.pages.pointer);
+        var a = this;
+        a._gotoPageNum(a.options.pages.pointer);
     },
     _nextPage: function() {
-        var a = this.options;
-        a.pages.pointer_direction = 1, a.pages.pointer < a.pages.length - 1 ? a.pages.pointer += 1 : a.pages.pointer = 0, 
-        this._gotoPageNum(a.pages.pointer), this.element.trigger(this.widgetName + ":nextPage", {
-            pointer: a.pages.pointer
-        });
+        var a = this, b = a.options;
+        return b.pages.pointer_direction = 1, b.pages.pointer < b.pages.length - 1 ? b.pages.pointer += 1 : b.pages.pointer = 0, 
+        a._gotoPageNum(b.pages.pointer), a.element.trigger(a.widgetName + ":nextPage", {
+            pointer: b.pages.pointer
+        }), a;
     },
     _prevPage: function() {
-        var a = this.options;
-        a.pages.pointer > 0 ? a.pages.pointer -= 1 : a.pages.pointer = a.pages.length - 1, 
-        a.pages.pointer_direction = -1, this._gotoPageNum(a.pages.pointer), this.element.trigger(this.widgetName + ":prevPage", {
-            pointer: a.pages.pointer
-        });
+        var a = this, b = a.options;
+        return b.pages.pointer > 0 ? b.pages.pointer -= 1 : b.pages.pointer = b.pages.length - 1, 
+        b.pages.pointer_direction = -1, a._gotoPageNum(b.pages.pointer), a.element.trigger(a.widgetName + ":prevPage", {
+            pointer: b.pages.pointer
+        }), a;
     },
     _gotoPageNum: function(a) {
-        var b = this.options;
-        b.pages.prev = a - 1, b.pages.next = a + 1, a > b.pages.length - 1 && (a = b.pages.length - 1), 
-        0 > a && (a = 0), b.pages.pointer = a, this.getValueFromOptions("onGotoPageNum"), 
-        this.element.trigger(this.widgetName + ":gotoPageNum", {
+        var b = this, c = b.options;
+        return c.pages.prev = a - 1, c.pages.next = a + 1, a > c.pages.length - 1 && (a = c.pages.length - 1), 
+        0 > a && (a = 0), c.pages.pointer = a, b.getValueFromOptions("onGotoPageNum"), 
+        b.element.trigger(b.widgetName + ":gotoPageNum", {
             pointer: a
-        });
+        }), b;
     },
     getPointer: function() {
         return this.options.pages.pointer;
@@ -897,11 +898,8 @@ $.widget("jui.juiBase", {
             var d = ($(this), {});
             if (13 == c.keyCode) {
                 var e = $(this), f = e.val();
-                if (/\d+/.test(f)) {
-                    if (f - 1 > b.pages.length) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nproceeding to last page.");
-                    if (0 > f - 1) throw new Error("Range Exception: Paginator value entered is out of range.  Value entered: " + f + "\n\nProceeding to first page.");
-                    a._gotoPageNum(f - 1);
-                } else d.messages = [ "Only numbers are allowed in the paginator textfield." ];
+                /\d+/.test(f) ? (f - 1 > b.pages.length ? a._gotoPageNum(b.pages.length) : 0 > f - 1 && a._gotoPageNum(0), 
+                a._gotoPageNum(f - 1)) : d.messages = [ "Only numbers are allowed in the paginator textfield." ], 
                 "function" == typeof b.ui.textField.callback && (d.items = b.ui.items, d.pages = b.pages, 
                 b.ui.textField.callback(d));
             }

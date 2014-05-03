@@ -87,17 +87,17 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
             if (/\d+/.test(value)) {
                 // goto page number
                 if ((value - 1) > ops.pages.length) {
-                    throw new Error ('Range Exception: Paginator value entered is ' +
-                        'out of range.  Value entered: ' + value + '\n\n' +
-                        'proceeding to last page.');
+//                    throw new Error ('Range Exception: Paginator value entered is ' +
+//                        'out of range.  Value entered: ' + value + '\n\n' +
+//                        'proceeding to last page.');
 
                     // Proceed to greates page number
                     self._gotoPageNum(ops.pages.length);
                 }
                 else if ((value - 1) < 0) {
-                    throw new Error ('Range Exception: Paginator value entered is ' +
-                        'out of range.  Value entered: ' + value + '\n\n' +
-                        'Proceeding to first page.');
+//                    throw new Error ('Range Exception: Paginator value entered is ' +
+//                        'out of range.  Value entered: ' + value + '\n\n' +
+//                        'Proceeding to first page.');
 
                     // Proceed to first page
                     self._gotoPageNum(0);
