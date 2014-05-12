@@ -40,6 +40,18 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         },
 
         /**
+         * Is touch device
+         * @type {Boolean}
+         */
+        isTouchDevice: false,
+
+        /**
+         * Less than ie9
+         * @type {Boolean}
+         */
+        isLessThanIE9: false,
+
+        /**
          * Label text.
          * @type {String}
          */
@@ -188,6 +200,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // If using modernizr and is touch enabled device, set flag
         if ($('html').hasClass('touch') && ops.disableOnTouchDevice) {
             ops.isTouchDevice = true;
+        }
+
+        // Remove animation since something is fishy about TweenMax's animating opacities in ie less than 9
+        if ($('html').hasClass('lt-ie9')) {
+            ops.isLessThanIE9 = true;
         }
     },
 
