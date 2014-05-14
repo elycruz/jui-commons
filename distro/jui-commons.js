@@ -1,4 +1,4 @@
-/*! jui-commons 2014-05-03 */
+/*! jui-commons 2014-05-14 */
 $.widget("jui.juiBase", {
     options: {
         defaultTimelineClass: "TimelineLite",
@@ -1286,6 +1286,8 @@ $.widget("jui.juiBase", {
         animation: {
             duration: .3
         },
+        isTouchDevice: !1,
+        isLessThanIE9: !1,
         labelText: "",
         selectedLabelPrefix: "",
         selectedLabelSuffix: "",
@@ -1375,16 +1377,17 @@ $.widget("jui.juiBase", {
     },
     _create: function() {
         var a = this.options;
-        $("html").hasClass("touch") && a.disableOnTouchDevice && (a.isTouchDevice = !0);
+        $("html").hasClass("touch") && a.disableOnTouchDevice && (a.isTouchDevice = !0), 
+        $("html").hasClass("lt-ie9") && (a.isLessThanIE9 = !0);
     },
     _init: function() {
         var a = this, b = this.options, c = a.getValueFromHash("className", b), d = a.getValueFromHash("ui.wrapperElm.attribs", b)["class"];
-        sjl.empty(c) || (sjl.empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
+        b.disableOnTouchDevice && b.isTouchDevice || b.isLessThanIE9 || (sjl.empty(c) || (sjl.empty(d) || "string" != typeof d ? b.ui.wrapperElm.attribs["class"] = c : b.ui.wrapperElm.attribs["class"] += " " + c), 
         this.options.timeline = new TimelineLite({
             paused: !0
         }), this.element.attr("hidden", "hidden").css("display", "none"), this._populateUiElementsFromOptions(), 
         this.setLabelText(), this._drawSelectOptions(), this._initScrollableDropDown(), 
-        this._addEventListeners();
+        this._addEventListeners());
     },
     _drawSelectOptions: function() {
         var a = this, b = a.getUiElement("optionsElm"), c = a.element.find("option"), d = $("<ul></ul>"), e = a.options;
@@ -1476,11 +1479,11 @@ $.widget("jui.juiBase", {
     },
     playAnimation: function() {
         var a = this, b = a.options;
-        b.disableOnTouchDevice && b.isTouchDevice || b.timeline.play();
+        b.disableOnTouchDevice && b.isTouchDevice || b.isLessThanIE9 || b.timeline.play();
     },
     reverseAnimation: function() {
         var a = this, b = a.options;
-        b.disableOnTouchDevice && b.isTouchDevice || b.timeline.reverse();
+        b.disableOnTouchDevice && b.isTouchDevice || b.isLessThanIE9 || b.timeline.reverse();
     },
     getOwnOptionElmByValue: function(a) {
         this.getUiElement("optionsElm").find('[data-value="' + a + '"]');

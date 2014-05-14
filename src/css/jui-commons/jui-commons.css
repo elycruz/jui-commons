@@ -172,6 +172,11 @@
   border-radius: 8px;
 }
 
+/* line 114, ../../sass/jui-commons/_jui-select-picker.scss */
+.lt-ie9 .jui-select-picker {
+  display: none;
+}
+
 /* line 3, ../../sass/jui-commons/_jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar {
   position: absolute;

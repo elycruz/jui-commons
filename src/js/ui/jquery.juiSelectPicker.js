@@ -225,6 +225,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             currentClassName =
                 self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
 
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice) || ops.isLessThanIE9) {
+            return;
+        }
+
         // Resolve class name
         if (!sjl.empty(className)) {
             if (!sjl.empty(currentClassName)
@@ -565,7 +569,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     playAnimation: function () {
         var self = this,
             ops = self.options;
-        if (ops.disableOnTouchDevice && ops.isTouchDevice) {
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice)
+        || (ops.isLessThanIE9)) {
             return;
         }
         ops.timeline.play();
@@ -578,7 +583,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     reverseAnimation: function () {
         var self = this,
             ops = self.options;
-        if (ops.disableOnTouchDevice && ops.isTouchDevice) {
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice)
+            || (ops.isLessThanIE9)) {
             return;
         }
         ops.timeline.reverse();

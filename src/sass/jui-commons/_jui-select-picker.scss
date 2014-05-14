@@ -109,3 +109,9 @@
         }
     }
 }
+
+.lt-ie9 {
+  .jui-select-picker {
+    display: none;
+  }
+}
