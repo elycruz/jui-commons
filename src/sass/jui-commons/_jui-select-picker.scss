@@ -56,7 +56,7 @@
         max-height: 220px;
         background: #fff;
         z-index: 97;
-        @include opacity(1);
+//        @include opacity(1);
         visibility: visible;
 
         ul {
@@ -99,7 +99,7 @@
         right: 10px;
         width: 8px;
         height: 220px;
-        @include opacity(0);
+//        @include opacity(0);
         @include border-radius(8px);
         z-index: 99;
 
@@ -111,7 +111,18 @@
 }
 
 .lt-ie9 {
-  .jui-select-picker {
-    display: none;
+  .expanded {
+    .scrollbar,
+    .options {
+//      @include opacity(1);
+      display: block;
+    }
+  }
+
+  .collapsed {
+    .scrollbar,
+    .options {
+      display: none;
+    }
   }
 }

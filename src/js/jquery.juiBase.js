@@ -27,9 +27,46 @@ $.widget('jui.juiBase', {
      * @type {Object}
      */
     options: {
+        /**
+         * Flag for disabling plugins on touch devices (and using devices default).
+         * @type {Boolean}
+         */
+        disableOnTouchDevice: true,
+
+        /**
+         * Is touch device
+         * @type {Boolean}
+         */
+        isTouchDevice: false,
+
+        /**
+         * Less than ie9
+         * @type {Boolean}
+         */
+        isLessThanIE9: false,
+
         defaultTimelineClass: 'TimelineLite',
         timeline: null,
         ui: {}
+    },
+
+
+    /**
+     * Sets flag if touch device (used for disable plugin if options.disableOnTouchDevice
+     * is true) and also tracks browsers less than ie9.
+     * @private
+     */
+    _create: function () {
+        var ops = this.options;
+        // If using modernizr and is touch enabled device, set flag
+        if ($('html').hasClass('touch') && ops.disableOnTouchDevice) {
+            ops.isTouchDevice = true;
+        }
+
+        // Track browsers less than ie9
+        if ($('html').hasClass('lt-ie9')) {
+            ops.isLessThanIE9 = true;
+        }
     },
 
     /**

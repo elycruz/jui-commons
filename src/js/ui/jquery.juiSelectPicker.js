@@ -40,18 +40,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         },
 
         /**
-         * Is touch device
-         * @type {Boolean}
-         */
-        isTouchDevice: false,
-
-        /**
-         * Less than ie9
-         * @type {Boolean}
-         */
-        isLessThanIE9: false,
-
-        /**
          * Label text.
          * @type {String}
          */
@@ -86,12 +74,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
          * @type {mixed|null}
          */
         selectedValue: null,
-
-        /**
-         * Flag for disabling this plugin on touch devices (and using devices default).
-         * @type {Boolean}
-         */
-        disableOnTouchDevice: true,
 
         /**
          * The attribute to get the value from on the select element's option element.
@@ -196,16 +178,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * @private
      */
     _create: function () {
-        var ops = this.options;
-        // If using modernizr and is touch enabled device, set flag
-        if ($('html').hasClass('touch') && ops.disableOnTouchDevice) {
-            ops.isTouchDevice = true;
-        }
-
-        // Remove animation since something is fishy about TweenMax's animating opacities in ie less than 9
-        if ($('html').hasClass('lt-ie9')) {
-            ops.isLessThanIE9 = true;
-        }
+        this._super();
     },
 
     /**
@@ -225,7 +198,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             currentClassName =
                 self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
 
-        if ((ops.disableOnTouchDevice && ops.isTouchDevice) || ops.isLessThanIE9) {
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice)) {
             return;
         }
 
@@ -429,6 +402,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Apply scrollable drop down on wrapper element
         dropDown = wrapperElm.juiScrollableDropDown(dropDownOptions);
+
+        // If less than ie 9 bail
+        if (ops.isLessThanIE9) {
+            return;
+        }
 
         // Get the dropdowns timeline
         timeline = dropDown.juiScrollableDropDown('getAnimationTimeline');
