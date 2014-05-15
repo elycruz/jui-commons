@@ -198,7 +198,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             currentClassName =
                 self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
 
-        if ((ops.disableOnTouchDevice && ops.isTouchDevice)) {
+        if (ops.disableOnTouchDevice && ops.isTouchDevice) {
             return;
         }
 
@@ -456,7 +456,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._removeCreatedOptions();
         this._drawSelectOptions();
         this.setLabelText();
-        this.element.trigger('change');
+//        this.element.trigger('change');
     },
 
     /**
@@ -634,3 +634,4 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     }
 
 });
+

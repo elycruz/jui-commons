@@ -1,4 +1,4 @@
-/*! jui-commons 2014-05-14 */
+/*! jui-commons 2014-05-15 */
 $.widget("jui.juiBase", {
     options: {
         disableOnTouchDevice: !0,
@@ -212,11 +212,8 @@ $.widget("jui.juiBase", {
         }), g = c.scrollableElm;
         c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
         g.bind("scroll resize orientationchange load", function() {
-            {
-                var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
-                g.width() - k;
-            }
-            c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
+            var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
+            g.width() - k, c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
                 position: "fixed",
                 top: a.top,
                 bottom: "auto"
@@ -354,11 +351,8 @@ $.widget("jui.juiBase", {
             debug: !0
         },
         _create: function() {
-            {
-                var b = this;
-                b.options;
-            }
-            "function" != typeof Audio && alert("Html 5 Audio not supported by this browser."), 
+            var b = this;
+            b.options, "function" != typeof Audio && alert("Html 5 Audio not supported by this browser."), 
             this.element.html(this.options.template);
             var c = this.options.audio;
             c.obj = c.obj || new Audio(), c.obj.volume = c.volume, c.obj.autoplay = c.autoplay, 
@@ -435,7 +429,7 @@ $.widget("jui.juiBase", {
             }), a.volumeSlider.enabled && a.volumeSlider.elm.bind("slide", function(a, c) {
                 b.changeVolume(.01 * c.value);
             }), a.audioPlayProgressBar.enabled && a.audioPlayProgressBar.elm.bind("click", function(a) {
-                var c = $(this), d = .01 * ((a.pageX - c.offset().left) / c.width()) * 100;
+                var c = $(this), d = .01 * 100 * ((a.pageX - c.offset().left) / c.width());
                 c.progressbar("value", d), b.seekAudio(d * b.options.audio.obj.duration);
             });
         },
@@ -452,10 +446,10 @@ $.widget("jui.juiBase", {
                     b.options.controls.audioTotalTimeElm.elm.text(c);
                 }
             }), $(a.obj).bind("progress", function() {
-                var c = a.obj.buffered.end(0) / a.obj.duration * 100, d = b.options.controls.audioLoadProgressBar.elm;
+                var c = 100 * (a.obj.buffered.end(0) / a.obj.duration), d = b.options.controls.audioLoadProgressBar.elm;
                 d.progressbar("value", c);
             }), $(a.obj).bind("timeupdate", function() {
-                var c = a.obj.currentTime / a.obj.duration * 100, d = b.options.controls.audioPlayProgressBar.elm;
+                var c = 100 * (a.obj.currentTime / a.obj.duration), d = b.options.controls.audioPlayProgressBar.elm;
                 if (b.options.controls.audioCurrentTimeElm.enabled) {
                     var e = a.timeHelper.prettyPrintFromSecs(a.obj.currentTime);
                     b.options.controls.audioCurrentTimeElm.elm.text(e);
@@ -795,7 +789,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -892,11 +886,8 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        {
-            var a = this;
-            a.options;
-        }
-        a.element.addClass(a.options.className), a._super();
+        var a = this;
+        a.options, a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -980,7 +971,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, sjl.classOfIs(a, "Number") ? a : 0;
+            return a = 2 * (this.getUiElement("contentHolder").height() / 3 / 3), sjl.classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,
@@ -1207,7 +1198,7 @@ $.widget("jui.juiBase", {
                 onComplete: b.executeTimelineCompleteFunc
             });
         } catch (d) {
-            throw new Error('Could not create a new "' + c.defaultTimelineClass + '"when trying to create a timeline object.');
+            throw new Error('Could not create a new "' + c.defaultTimelineClass + '"' + "when trying to create a timeline object.");
         }
     },
     _init: function() {
@@ -1461,7 +1452,7 @@ $.widget("jui.juiBase", {
     },
     refreshOptions: function() {
         this.options.selectedValue = this.getSelectedOwnOptionElmValue(), this._removeCreatedOptions(), 
-        this._drawSelectOptions(), this.setLabelText(), this.element.trigger("change");
+        this._drawSelectOptions(), this.setLabelText();
     },
     setSelectedItemLabelText: function(a, b, c) {
         var d, e, f = this.options, g = f.ui.selectedItemLabelElm, h = this.getUiElement("selectedItemLabelElm").eq(0);
