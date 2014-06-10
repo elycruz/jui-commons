@@ -37,7 +37,9 @@ All jui plugins share the following naming conventions:
 List of current components offered:
 - jquery.juiAbstractPaginator
 - jquery.juiBasicPaginator
+- jquery.juiMouse
 - jquery.juiPaginatorWithTextField
+- jquery.juiScalableBtn
 - jquery.juiScrollableDropDown
 - jquery.juiScrollPane
 - jquery.juiSelectPicker
@@ -45,6 +47,7 @@ List of current components offered:
 List of WIPs
 - jquery.juiAffix
 - jquery.juiFloatingScrollIndicators (candidate for rename)
+- jquery.juiDialog
 
 #### jquery.jui.juiAbstractPaginator
 ----
@@ -61,9 +64,7 @@ currently used in backend systems.
 
 ### Requirements
 ---------------------------
-* Ecmascript 5 support (native or shim) (tentative).
-* Phpjs shim (elycruz/phpjs).
-* CheckJs (elycruz/checkjs).
+* Sjljs (elycruz/sjljs).
 * Modernizr
 * Gsap (Green Sock Animation Platform)
 * jquery 1.8 +
