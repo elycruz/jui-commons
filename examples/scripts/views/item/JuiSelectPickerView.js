@@ -102,6 +102,10 @@ function (Backbone, tmpl) {
                 $example1.juiSelectPicker('refreshOptions');
             });
 
+            $('.btn.refresh', this.$el).click(function () {
+                $example1.juiSelectPicker('refreshOptions');
+            });
+
         },
 
         onClose: function () {

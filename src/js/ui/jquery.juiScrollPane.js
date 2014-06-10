@@ -114,8 +114,6 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         this._populateUiElementsFromOptions();
         var ops = this.options,
             contentHolder = this.getUiElement('contentHolder'),
-            contentScrollWidth = contentHolder.get(0).scrollWidth,
-            contentScrollHeight = contentHolder.get(0).scrollHeight,
             self = this;
 
         // Conetnt Holder
@@ -128,18 +126,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         self.element.addClass(ops.pluginClassName);
 
         // Determine whether we need a horizontal and/or vertical scrollbar.
-        // Init vertical scrollbar
-        if (contentScrollHeight > contentHolder.height()) {
-            self.initScrollbar(ops.scrollbarOriented.VERTICALLY);
-        }
-
-        // Init horizontal scrollbar or hide it
-        if (contentScrollWidth > contentHolder.width()) {
-            self.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
-        }
-        else {
-            self.getUiElement('horizScrollbar').css('display', 'none');
-        }
+        self.initScrollbars();
 
         // ----------------------------------------------------------
         // Move to an add event listener function (for consistency)
@@ -327,12 +314,36 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
     },
 
+    initScrollbars: function () {
+        var self = this,
+            ops = self.options,
+            contentHolder = self.getUiElement('contentHolder'),
+            contentScrollWidth = contentHolder.get(0).scrollWidth,
+            contentScrollHeight = contentHolder.get(0).scrollHeight;
+
+        // Init vertical scrollbar
+        if (contentScrollHeight > contentHolder.height()) {
+            self.initScrollbar(ops.scrollbarOriented.VERTICALLY);
+        }
+        else {
+            self.getUiElement('vertScrollbar').css('display', 'none');
+        }
+
+        // Init horizontal scrollbar or hide it
+        if (contentScrollWidth > contentHolder.width()) {
+            self.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
+        }
+        else {
+            self.getUiElement('horizScrollbar').css('display', 'none');
+        }
+    },
+
     initScrollbar: function (oriented) {
-        var scrollbar = this.getScrollbarByOrientation(oriented),
-            handle = this.getScrollbarHandleByOrientation(oriented),
-            contentHolder = this.getUiElement('contentHolder'),
-            ops = this.options,
-            plugin = this,
+        var self = this,
+            scrollbar = self.getScrollbarByOrientation(oriented),
+            handle = self.getScrollbarHandleByOrientation(oriented),
+            contentHolder = self.getUiElement('contentHolder'),
+            plugin = self,
 
         // Resolve scrollbar direction variables
             scrollVars = plugin.getScrollDirVars(oriented),
@@ -344,7 +355,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         plugin.initScrollbarHandle(oriented);
 
         // Make draggable handle on scrollbar
-        handle.draggable({
+        handle = handle.draggable({
             containment: 'parent',
             cursor: 's-resize',
             axis: dragAxis,
@@ -366,6 +377,9 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             plugin.constrainHandle(oriented);
             plugin.scrollContentHolder(oriented);
         });
+
+        // Save the draggable handle for later (for calling destroy on it for reinitialization
+        self.saveDraggableHandleForLater(handle, oriented);
     },
 
     initScrollbarHandle: function (oriented) {
@@ -429,6 +443,38 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     scrollHorizontally: function (value) {
         this._scrollByOrientation(value,
             this.options.scrollbarOriented.HORIZONTALLY);
+    },
+
+    saveDraggableHandleForLater: function (handle, oriented) {
+        var self = this,
+            ops = self.options;
+        if (oriented === ops.scrollbarOriented.VERTICALLY) {
+            ops.draggableVertHandle = handle;
+        }
+        else {
+            ops.draggableHorizHandle = handle;
+        }
+    },
+
+    refresh: function () {
+        var self = this,
+            ops = self.options,
+            vertHandle = ops.draggableVertHandle,
+            horizHandle = ops.draggableHorizHandle;
+
+        // Destroy draggable on handle
+        if (!sjl.empty(vertHandle) && vertHandle instanceof $) {
+            vertHandle.draggable('destroy');
+        }
+
+        // Destroy draggable on handle
+        if (!sjl.empty(horizHandle) && horizHandle instanceof $) {
+            horizHandle.draggable('destroy');
+        }
+
+        // Re-initialize scrollbars (recalc heights, widths,
+        // and make draggable and constrainable etc.
+        self.initScrollbars();
     },
 
     _destroy: function () {

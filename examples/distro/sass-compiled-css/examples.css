@@ -2,7 +2,7 @@
  * In this file you should write your main styles. (or centralize your imports)
  * Import this file using the following HTML or equivalent:
  */
-/* line 17, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 17, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -24,45 +24,45 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 
-/* line 22, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 22, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 html {
   line-height: 1;
 }
 
-/* line 24, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 24, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 ol, ul {
   list-style: none;
 }
 
-/* line 26, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 26, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/* line 28, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 28, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 caption, th, td {
   text-align: left;
   font-weight: normal;
   vertical-align: middle;
 }
 
-/* line 30, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 30, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 q, blockquote {
   quotes: none;
 }
-/* line 103, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 103, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 q:before, q:after, blockquote:before, blockquote:after {
   content: "";
   content: none;
 }
 
-/* line 32, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 32, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 a img {
   border: none;
 }
 
-/* line 116, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 116, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block;
 }
@@ -942,8 +942,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   max-height: 220px;
   background: #fff;
   z-index: 97;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-  opacity: 1;
   visibility: visible;
 }
 /* line 62, ../../../src/sass/jui-commons/_jui-select-picker.scss */
@@ -998,8 +996,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   right: 10px;
   width: 8px;
   height: 220px;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-  opacity: 0;
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
   -ms-border-radius: 8px;
@@ -1015,6 +1011,17 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   -ms-border-radius: 8px;
   -o-border-radius: 8px;
   border-radius: 8px;
+}
+
+/* line 116, ../../../src/sass/jui-commons/_jui-select-picker.scss */
+.lt-ie9 .expanded .scrollbar,
+.lt-ie9 .expanded .options {
+  display: block;
+}
+/* line 124, ../../../src/sass/jui-commons/_jui-select-picker.scss */
+.lt-ie9 .collapsed .scrollbar,
+.lt-ie9 .collapsed .options {
+  display: none;
 }
 
 /* line 3, ../../../src/sass/jui-commons/_jui-scroll-pane.scss */
@@ -1394,7 +1401,7 @@ nav > ul {
   overflow: hidden;
   *zoom: 1;
 }
-/* line 60, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 60, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 nav > ul li {
   list-style-image: none;
   list-style-type: none;
@@ -1405,15 +1412,15 @@ nav > ul li {
   padding-left: 10px;
   padding-right: 10px;
 }
-/* line 48, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 48, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 nav > ul li:first-child, nav > ul li.first {
   padding-left: 0;
 }
-/* line 49, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 49, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 nav > ul li:last-child {
   padding-right: 0;
 }
-/* line 50, ../../../../../../../../Ruby193/lib/ruby/gems/1.9.1/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 50, D:/Program Files/Ruby/Ruby200-x64/Ruby200-x64/lib/ruby/gems/2.0.0/gems/compass-0.12.4/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 nav > ul li.last {
   padding-right: 0;
 }

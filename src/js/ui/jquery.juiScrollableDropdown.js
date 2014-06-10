@@ -4,9 +4,6 @@
  *
  * @module $.jui.juiScrollableDropdown
  *
- * @requires es5-shim
- * @requires es5-sham
- * @requires phpjs-shim
  * @requires jquery
  * @requires jquery.ui.core
  * @requires jquery.ui.widget
@@ -23,7 +20,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     options: {
         className: 'jui-scrollable-drop-down',
-
 
         ui: {
             contentElm: {
@@ -72,6 +68,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             ops = self.options,
             contentElm;
 
+        self._super();
+
         // Add event class names
         self.element
             .addClass(ops.className)
@@ -82,19 +80,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         // Populate ui elements on self (self.ui[elmKeyAlias])
         self._populateUiElementsFromOptions();
 
-        // Function for executing css: display (original | none)
-        function executeTimelineCompleteFunc () {
-            var contentElm = self.getUiElement('contentElm');
-            if (ops.state === ops.states.COLLAPSED) {
-                contentElm.css('display', 'none');
-            }
-            else if (ops.state === ops.states.EXPANDED) {
-                contentElm.css('display', ops.ui.contentElm.originalCss.display);
-            }
-        }
-
         // Get content element
         contentElm = self.getUiElement('contentElm');
+
+        if (ops.isLessThanIE9) {
+            contentElm.css('display', 'block');
+        }
 
         // Save original css `display` value
         self._namespace('ui.contentElm.originalCss',
@@ -103,21 +94,24 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 visibility: contentElm.css('visibility')
             });
 
-        // Set content element's visibility
-        contentElm.css('visibility', 'hidden');
+        // If not touch device enable animation
+        if (!ops.isTouchDevice && !ops.isLessThanIE9) {
+            try {
 
-        try {
-            // Setup timeline object
-            self.timeline = new TimelineLite({
-                onReverseComplete: executeTimelineCompleteFunc,
-                onComplete: executeTimelineCompleteFunc
-            });
-        }
-        catch (e) {
-            throw new Error('Could not create a new "' + ops.defaultTimelineClass + '"' +
-                'when trying to create a timeline object.');
-        }
+                // Set content element's visibility
+                contentElm.css('visibility', 'hidden');
 
+                // Setup timeline object
+                self.timeline = new TimelineLite({
+                    onReverseComplete: self.executeTimelineCompleteFunc,
+                    onComplete: self.executeTimelineCompleteFunc
+                });
+            }
+            catch (e) {
+                throw new Error('Could not create a new "' + ops.defaultTimelineClass + '"' +
+                    'when trying to create a timeline object.');
+            }
+        }
     },
 
     _init: function () {
@@ -132,9 +126,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         // Ensure animation functionality
         this.ensureAnimationFunctionality();
 
-        // Start initial animation
-        ops.state === ops.states.COLLAPSED ? ops.timeline.reverse() :
-            ops.timeline.play();
+        if (!ops.isTouchDevice) {
+            // Start initial animation
+            ops.state === ops.states.COLLAPSED ? this.reverseAnimation() :
+                ops.playAnimation();
+        }
+
     },
 
     _getExpandOnClassName: function () {
@@ -173,7 +170,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                     self.element.removeClass(ops.collapseClassName);
                     self.element.addClass(ops.expandClassName);
                     self.element.trigger('expand', e);
-                    ops.timeline.play();
+                    self.playAnimation();
+//                    ops.timeline.play();
                 }
                 else {
                     self.ensureAnimationFunctionality();
@@ -181,7 +179,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                     self.element.removeClass(ops.expandClassName);
                     self.element.addClass(ops.collapseClassName);
                     self.element.trigger('collapse', e);
-                    ops.timeline.reverse();
+                    self.reverseAnimation();
+//                    ops.timeline.reverse();
                 }
             });
         }
@@ -193,7 +192,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 self.element.removeClass(ops.collapseClassName);
                 self.element.addClass(ops.expandClassName);
                 self.element.trigger('expand', e);
-                ops.timeline.play();
+                self.playAnimation();
+//                ops.timeline.play();
             })
                 // On collapse event
                 .on(collapseOnMouseEvent, function (e) {
@@ -202,7 +202,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                     self.element.removeClass(ops.expandClassName);
                     self.element.addClass(ops.collapseClassName);
                     self.element.trigger('collapse', e);
-                    ops.timeline.reverse();
+                    self.reverseAnimation();
+//                    ops.timeline.reverse();
                 });
         }
 
@@ -211,7 +212,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
         // When clicking outside of drop down close it
         $(window).on('click', function (e) {
-            // If mouse not within scrollpane elm, bail
             if ($.contains(self.element.get(0), e.target) === false
                 && ops.timeline.progress() === 1) {
                 if (self.options.state === states.EXPANDED) {
@@ -220,7 +220,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                     self.element.removeClass(ops.expandClassName);
                     self.element.addClass(ops.collapseClassName);
                     self.element.trigger('collapse', e);
-                    ops.timeline.reverse();
+                    self.reverseAnimation();
+//                    ops.timeline.reverse();
                 }
             }
         });
@@ -241,7 +242,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             return;
         }
 
-        this.element.juiScrollPane({
+        ops.juiScrollPaneElm = this.element.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement('contentElm'),
@@ -263,9 +264,60 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         }
     },
 
+    // Function for executing css: display (original | none)
+    executeTimelineCompleteFunc: function () {
+        var self = this,
+            ops = self.options,
+            contentElm = self.getUiElement('contentElm');
+        if (ops.state === ops.states.COLLAPSED) {
+            contentElm.css('display', 'none');
+        }
+        else if (ops.state === ops.states.EXPANDED) {
+            contentElm.css('display', ops.ui.contentElm.originalCss.display);
+        }
+    },
+
     ensureAnimationFunctionality: function () {
         this._initScrollbar();
+        if (this.options.isLessThanIE9) {
+            return;
+        }
         this._initTimeline();
+    },
+
+
+    /**
+     * Plays animation timeline (if disableOnTouchDevice is true and isTouchDevice, does nothing).
+     * @return {void}
+     */
+    playAnimation: function () {
+        var self = this,
+            ops = self.options;
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice)) {
+            return;
+        }
+        else if (ops.isLessThanIE9) {
+            self.executeTimelineCompleteFunc();
+            return;
+        }
+        ops.timeline.play();
+    },
+
+    /**
+     * Reverses the animation timeline if not touch device.
+     * @return {void}
+     */
+    reverseAnimation: function () {
+        var self = this,
+            ops = self.options;
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice)) {
+            return;
+        }
+        else if (ops.isLessThanIE9) {
+            self.executeTimelineCompleteFunc();
+            return;
+        }
+        ops.timeline.reverse();
     },
 
     destroy: function () {
@@ -274,9 +326,10 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         this._super();
     },
 
-    refreshOptions: function () {
+    refresh: function () {
         this._removeEventListeners();
         this._addEventListeners();
+        this.options.juiScrollPaneElm.refresh();
     },
 
     getState: function () {

@@ -76,12 +76,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         selectedValue: null,
 
         /**
-         * Flag for disabling this plugin on touch devices (and using devices default).
-         * @type {Boolean}
-         */
-        disableOnTouchDevice: true,
-
-        /**
          * The attribute to get the value from on the select element's option element.
          * @type {String} - default 'value'
          */
@@ -186,11 +180,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * @private
      */
     _create: function () {
-        var ops = this.options;
-        // If using modernizr and is touch enabled device, set flag
-        if ($('html').hasClass('touch') && ops.disableOnTouchDevice) {
-            ops.isTouchDevice = true;
-        }
+        this._super();
     },
 
     /**
@@ -209,6 +199,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             className = self.getValueFromHash('className', ops),
             currentClassName =
                 self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
+
+        if (ops.disableOnTouchDevice && ops.isTouchDevice) {
+            return;
+        }
 
         // Resolve class name
         if (!sjl.empty(className)) {
@@ -328,7 +322,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * Adds event listeners for:
      * - wrapper - mouseup;
      * - wrapper - a[data-value] click;
-     * - select element - change;
      * @private
      */
     _addEventListeners: function () {
@@ -337,7 +330,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        wrapperElm.on('mouseup', function () {
+        wrapperElm.on('mouseup', 'a[data-value]', function () {
             var collapsed = wrapperElm
                 .juiScrollableDropDown('getState')
                 .indexOf('collapsed') > -1 ? true : false;
@@ -350,21 +343,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         });
 
         wrapperElm.on('click', 'a[data-value]', function (e) {
-//            e.stopPropagation();
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
             ops.timeline.reverse();
-        });
-
-        // On select element change set it's selected item label text
-        this.element.on('change', function (e) {
-            var elm = $(this),
-                val = elm.val();
-            if (sjl.isset(val)) {
-                self.setSelectedItemLabelText(val);
-//                self.setSelected(self.getOwnOptionElmByValue(val));
-            }
         });
     },
 
@@ -418,6 +400,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Apply scrollable drop down on wrapper element
         dropDown = wrapperElm.juiScrollableDropDown(dropDownOptions);
 
+        // If less than ie 9 bail
+        if (ops.isLessThanIE9) {
+            return;
+        }
+
         // Get the dropdowns timeline
         timeline = dropDown.juiScrollableDropDown('getAnimationTimeline');
         timeline.seek(0);
@@ -458,7 +445,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * - removes options;
      * - recreates options;
      * - sets label text;
-     * - triggers `change` event on this (select element);
      * @returns {void}
      */
     refreshOptions: function () {
@@ -466,7 +452,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._removeCreatedOptions();
         this._drawSelectOptions();
         this.setLabelText();
-        this.element.trigger('change');
+        // @todo Shouldn't call this directly on internal element of other component
+        // @todo should call components refresh method instead
+        this.refreshScrollbar();
+    },
+
+    /**
+     * @todo remove this function and use external components refresh method instead
+     */
+    refreshScrollbar: function () {
+        this.getUiElement('wrapperElm').juiScrollPane('refresh');
     },
 
     getSuggestedWrapperExpandHeight: function (value) {
@@ -595,10 +590,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         if (elm.length === 0) {
             return;
         }
-        elm.parent().addClass(
-            this.options.ui.optionsElm.optionSelectedClassName);
-        this.element.val(elm.attr('data-value')).trigger('change');
+        elm.parent().addClass(this.options.ui.optionsElm.optionSelectedClassName);
         this.options.selectedValue = elm.attr('data-value');
+        this.element.val(elm.attr('data-value')).trigger('change');
+        this.setSelectedItemLabelText(this.options.selectedValue);
     },
 
     /**
@@ -619,7 +614,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     playAnimation: function () {
         var self = this,
             ops = self.options;
-        if (ops.disableOnTouchDevice && ops.isTouchDevice) {
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice)
+        || (ops.isLessThanIE9)) {
             return;
         }
         ops.timeline.play();
@@ -632,7 +628,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     reverseAnimation: function () {
         var self = this,
             ops = self.options;
-        if (ops.disableOnTouchDevice && ops.isTouchDevice) {
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice)
+            || (ops.isLessThanIE9)) {
             return;
         }
         ops.timeline.reverse();
