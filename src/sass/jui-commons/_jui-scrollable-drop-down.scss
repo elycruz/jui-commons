@@ -23,9 +23,9 @@
         width: 100% !important;
         overflow: hidden;
         max-height: 220px;
-        @include opacity(1);
         background: #fff;
         z-index: 97;
+        @include opacity(1);
         ul {
             li {
                 width: 100%;

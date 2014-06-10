@@ -1,4 +1,4 @@
-/*! jui-commons 2014-06-09 */
+/*! jui-commons 2014-06-10 */
 $.widget("jui.juiBase", {
     options: {
         disableOnTouchDevice: !0,
@@ -238,233 +238,7 @@ $.widget("jui.juiBase", {
             sjl.isset(c[e]) || (b.offset[e] = a.element.attr("data-offset-" + c[e]) || null);
         }), c;
     }
-}), function() {
-    function a() {
-        this.resolveFromSecs = function(a) {
-            var b = {
-                hours: 0,
-                minutes: 0,
-                seconds: 0
-            };
-            return b.minutes = a >= 60 ? Math.floor(a / 60) : 0, b.seconds = a >= 60 ? Math.floor(a % 60) : Math.floor(a), 
-            b.hours = b.minutes >= 60 ? Math.floor(b.minutes / 60) : 0, b;
-        }, this.leadingZero = function(a) {
-            return 10 > a && (a = "0" + a), a;
-        }, this.prettyPrint = function(a) {
-            var b = (sjl.empty(arguments[1]) ? "" : this.leadingZero(a.hours) + ":") + this.leadingZero(a.minutes) + ":" + this.leadingZero(a.seconds);
-            return b;
-        }, this.prettyPrintFromSecs = function(a) {
-            return sjl.empty(arguments[1]) ? this.prettyPrint(this.resolveFromSecs(a)) : this.prettyPrint(this.resolveFromSecs(a), arguments[1]);
-        };
-    }
-    $.widget("jui.juiAudioPlayer", $.jui.juiBase, {
-        options: {
-            template: '<a class="ap-btn prev-btn"><span class="ui-icon ui-icon-seek-prev"></span></a><a class="ap-btn stop-btn"><span class="ui-icon ui-icon-stop"></span></a><a class="ap-btn play-btn"><span class="ui-icon ui-icon-play"></span></a><a class="ap-btn next-btn"><span class="ui-icon ui-icon-seek-next"></span></a><div class="lcd-screen"><div class="song-info"></div></div><div class="volume-panel"><a class="ap-btn volume-btn"><span class="ui-icon ui-icon-volume-on"></span></a><div class="slider-holder cb fl"><span class="ui-icon ui-icon-plus"></span><div class="slider"></div><span class="ui-icon ui-icon-minus"></span></div><br class="cb" /></div><!--/.volume-panel--><div class="progress-bars"><div class="load-progress-bar progress-bar"></div><div class="play-progress-bar progress-bar"></div></div><br class="cb" />',
-            width: 550,
-            height: 36,
-            animation: {
-                speed: 300
-            },
-            audio: {
-                autoplay: !0,
-                preload: !1,
-                volume: .6,
-                lastVolume: .6,
-                obj: null,
-                pointer: 0,
-                pointer_direction: 1,
-                xmlList: null,
-                timeHelper: null,
-                playing: !1
-            },
-            ui: {
-                firstBtn: {
-                    elm: null,
-                    selector: ".first-btn.btn",
-                    enabled: !0
-                },
-                prevBtn: {
-                    elm: null,
-                    selector: ".prev-btn.btn",
-                    enabled: !0
-                },
-                stopBtn: {
-                    elm: null,
-                    selector: ".stop-btn.btn",
-                    enabled: !0
-                },
-                playBtn: {
-                    elm: null,
-                    selector: ".play-btn.btn",
-                    onIconCssClass: "ui-icon-play",
-                    offIconCssClass: "ui-icon-pause",
-                    enabled: !0
-                },
-                nextBtn: {
-                    elm: null,
-                    selector: ".next-btn.btn",
-                    enabled: !0
-                },
-                lastBtn: {
-                    elm: null,
-                    selector: ".last-btn.btn",
-                    enabled: !0
-                },
-                volumeBtn: {
-                    elm: null,
-                    selector: ".volume-btn.btn",
-                    onIconCssClass: "ui-icon-volume-on",
-                    offIconCssClass: "ui-icon-volume-off",
-                    enabled: !0
-                },
-                volumeSlider: {
-                    elm: null,
-                    selector: ".volume-slider",
-                    enabled: !0
-                },
-                audioPlayProgressBar: {
-                    elm: null,
-                    selector: ".play-progress-bar",
-                    enabled: !0
-                },
-                audioLoadProgressBar: {
-                    elm: null,
-                    selector: ".load-progress-bar",
-                    enabled: !0
-                },
-                audioTitleElm: {
-                    elm: null,
-                    selector: ".audio-title",
-                    loadingText: "Loading...",
-                    enabled: !0
-                },
-                audioTotalTimeElm: {
-                    elm: null,
-                    selector: ".audio-total-time",
-                    enabled: !0
-                },
-                audioCurrentTimeElm: {
-                    elm: null,
-                    selector: ".audio-current-time",
-                    enabled: !0
-                }
-            },
-            playlist: null,
-            debug_output: "",
-            debug: !0
-        },
-        _create: function() {
-            {
-                var b = this;
-                b.options;
-            }
-            "function" != typeof Audio && alert("Html 5 Audio not supported by this browser."), 
-            this.element.html(this.options.template);
-            var c = this.options.audio;
-            c.obj = c.obj || new Audio(), c.obj.volume = c.volume, c.obj.autoplay = c.autoplay, 
-            c.obj.preload = c.preload, sjl.empty(c.timeHelper) && (c.timeHelper = new a()), 
-            this._addControlListeners(), this._addAudioObjectListeners(), this.setAudioTitleElmText("Loading..."), 
-            this.gotoAudioSrcNum(0), this.changeVolume(c.obj.volume), this.options.controls.volumeSlider.enabled && this.options.controls.volumeSlider.elm.slider("value", 100 * c.obj.volume);
-        },
-        nextAudio: function() {
-            this.options.audio.playing = !1, this.gotoAudioSrcNum(this.options.audio.pointer);
-        },
-        prevAudio: function() {
-            this.options.audio.playing = !1, this.gotoAudioSrcNum(this.options.audio.pointer);
-        },
-        playAudio: function() {
-            var a, b, c = this.options.audio;
-            c.playing === !1 ? (this.options.audio.playing = !0, this.options.audio.obj.play(), 
-            b = this.options.controls.playBtn.offIconCssClass, a = this.options.controls.playBtn.onIconCssClass) : (this.options.audio.playing = !1, 
-            this.options.audio.obj.pause(), b = this.options.controls.playBtn.onIconCssClass, 
-            a = this.options.controls.playBtn.offIconCssClass), $("span", this.options.controls.playBtn.elm).switchClass(a, b);
-        },
-        stopAudio: function() {
-            this.options.audio.obj.pause(), this.options.audio.obj.currentTime = 0;
-        },
-        seekAudio: function(a) {
-            return a = a, a < this.options.audio.obj.duration && a > -1 ? (this.options.audio.obj.currentTime = a, 
-            void 0) : (alert("Range Exception: Jquery Simple Audio Player Widget says: Cannot not seek audio to position: " + a + "Position out of range."), 
-            void 0);
-        },
-        volumeToggle: function() {
-            var a, b = this.options.audio, c = this;
-            b.obj.volume > 0 ? (b.lastVolume = b.obj.volume, a = 0) : a = b.lastVolume || b.volume, 
-            this.changeVolume(a), c.options.controls.volumeSlider.elm.slider({
-                value: 100 * b.obj.volume
-            });
-        },
-        changeVolume: function(a) {
-            var b, c, d = this;
-            a > 1 && (a = 1), 1 >= a && a > 0 && (c = d.options.controls.volumeBtn.onIconCssClass, 
-            b = d.options.controls.volumeBtn.offIconCssClass), 0 > a && (a = 0), 0 === a && (c = d.options.controls.volumeBtn.offIconCssClass, 
-            b = d.options.controls.volumeBtn.onIconCssClass), $("span", d.options.controls.volumeBtn.elm).switchClass(b, c), 
-            this.options.audio.obj.volume = a;
-        },
-        gotoAudioSrcNum: function(a) {
-            var b = this.getAudioSrcElement(a);
-            this.options.audio.obj.src = $("directory", this.options.playlist.xml).eq(0).attr("name") + "/" + b.attr("name"), 
-            $("span", this.options.controls.playBtn.elm).switchClass(this.options.controls.playBtn.onIconCssClass, this.options.controls.playBtn.offIconCssClass, "slow"), 
-            this.options.audio.playing = !0, this.setAudioTitleElmText(b.attr("name"));
-        },
-        setAudioTitleElmText: function(a) {
-            var b = this, c = this.options.controls.audioTitleElm.elm;
-            c.fadeOut(b.options.animation.speed, function() {
-                $(this).text(decodeURI(a)).fadeIn(b.options.animation.speed);
-            });
-        },
-        getAudioTitleElmText: function() {
-            return this.options.audioTitleElm.text();
-        },
-        getAudioSrcElement: function(a) {
-            return a = a, a <= this.options.audio.xmlList.length && a >= 0 ? this.options.audio.xmlList.eq(a) : (alert('Range Exception: Jquery Edlc Audio Player Widget says: "Cannot get Audio Source Element Index`' + a + '`.  Index out of range"'), 
-            0);
-        },
-        _addControlListeners: function() {
-            var a = this.options.controls, b = this;
-            a.prevBtn.enabled && a.prevBtn.elm.bind("click", function() {
-                b.prevAudio();
-            }), a.nextBtn.enabled && a.nextBtn.elm.bind("click", function() {
-                b.nextAudio();
-            }), a.playBtn.enabled && a.playBtn.elm.bind("click", function() {
-                b.playAudio();
-            }), a.stopBtn.enabled && a.stopBtn.elm.bind("click", function() {
-                b.stopAudio();
-            }), a.volumeBtn.enabled && a.volumeBtn.elm.bind("click", function() {
-                b.volumeToggle();
-            }), a.volumeSlider.enabled && a.volumeSlider.elm.bind("slide", function(a, c) {
-                b.changeVolume(.01 * c.value);
-            }), a.audioPlayProgressBar.enabled && a.audioPlayProgressBar.elm.bind("click", function(a) {
-                var c = $(this), d = .01 * ((a.pageX - c.offset().left) / c.width()) * 100;
-                c.progressbar("value", d), b.seekAudio(d * b.options.audio.obj.duration);
-            });
-        },
-        _addAudioObjectListeners: function() {
-            var a = this.options.audio, b = this;
-            $(a.obj).bind("playing", function() {
-                a.obj.readyState === a.obj.HAVE_ENOUGH_DATA && b.options.controls.audioLoadProgressBar.elm.progressbar("value", 100);
-            }), $(a.obj).bind("ended", function() {
-                b.nextAudio();
-            }), $(a.obj).bind("loadedmetadata", function() {
-                if (b.options.controls.audioPlayProgressBar.elm.progressbar("value", 0), 
-                b.options.controls.audioCurrentTimeElm.enabled) {
-                    var c = a.timeHelper.prettyPrintFromSecs(a.obj.duration);
-                    b.options.controls.audioTotalTimeElm.elm.text(c);
-                }
-            }), $(a.obj).bind("progress", function() {
-                var c = a.obj.buffered.end(0) / a.obj.duration * 100, d = b.options.controls.audioLoadProgressBar.elm;
-                d.progressbar("value", c);
-            }), $(a.obj).bind("timeupdate", function() {
-                var c = a.obj.currentTime / a.obj.duration * 100, d = b.options.controls.audioPlayProgressBar.elm;
-                if (b.options.controls.audioCurrentTimeElm.enabled) {
-                    var e = a.timeHelper.prettyPrintFromSecs(a.obj.currentTime);
-                    b.options.controls.audioCurrentTimeElm.elm.text(e);
-                }
-                d.progressbar("value", c);
-            });
-        }
-    });
-}(), $.widget("jui.juiBasicPaginator", $.jui.juiAbstractPaginator, {
+}), $.widget("jui.juiBasicPaginator", $.jui.juiAbstractPaginator, {
     options: {
         template: null,
         className: "jui-basic-paginator",
@@ -1257,8 +1031,8 @@ $.widget("jui.juiBase", {
             a.ensureAnimationFunctionality(), a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
             a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
             a.reverseAnimation();
-        }), $(window).on("click", function(d) {
-            c.isTouchDevice || $.contains(a.element, $(d.target)) !== !1 || 1 !== c.timeline.progress() || a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
+        }), c.mousePos = $(window).juiMouse(), $(window).on("click", function(d) {
+            $.contains(a.element.get(0), d.target) === !1 && 1 === c.timeline.progress() && a.options.state === b.EXPANDED && (a.ensureAnimationFunctionality(), 
             a.options.state = b.COLLAPSED, a.element.removeClass(c.expandClassName), 
             a.element.addClass(c.collapseClassName), a.element.trigger("collapse", d), 
             a.reverseAnimation());
@@ -1334,7 +1108,8 @@ $.widget("jui.juiBase", {
                 selector: ".jui-select-picker",
                 html: "<div></div>",
                 create: !0,
-                timeline: new TimelineLite()
+                timeline: new TimelineLite(),
+                suggestedExpandHeight: null
             },
             buttonElm: {
                 elm: null,
@@ -1398,7 +1173,8 @@ $.widget("jui.juiBase", {
                 html: "<div></div>",
                 appendTo: "bodyElm",
                 create: !0,
-                optionSelectedClassName: "selected"
+                optionSelectedClassName: "selected",
+                suggestedExpandHeight: null
             }
         }
     },
@@ -1426,7 +1202,7 @@ $.widget("jui.juiBase", {
                 0 !== b || sjl.empty(e.ui.buttonElm.text) ? 1 === b && sjl.empty(e.ui.buttonElm.text) && k.addClass("first") : k.addClass("first"), 
                 b === c.length - 1 && k.addClass("last"), d.append(k);
             }
-        }), b.append(d);
+        }), b.append(d), c = $("li", b), e.ui.optionsElm.suggestedExpandHeight = c.eq(0).height() * c.length;
     },
     _addEventListeners: function() {
         var a = this, b = this.options, c = a.getUiElement("wrapperElm");
@@ -1455,9 +1231,9 @@ $.widget("jui.juiBase", {
         }, sjl.isset(h.expandOn) && (d.expandOn = h.expandOn), sjl.isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
         c = i.juiScrollableDropDown(d), !h.isLessThanIE9) for (b = c.juiScrollableDropDown("getAnimationTimeline"), 
         b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
-            height: i.css("max-height")
+            height: g.getSuggestedWrapperExpandHeight()
         }), TweenLite.to(j, k, {
-            height: j.css("max-height"),
+            height: g.getSuggestedContentExpandHeight(),
             autoAlpha: 1,
             delay: -.3
         }), TweenLite.to(a, k, {
@@ -1474,6 +1250,24 @@ $.widget("jui.juiBase", {
     },
     refreshScrollbar: function() {
         this.getUiElement("wrapperElm").juiScrollPane("refresh");
+    },
+    getSuggestedWrapperExpandHeight: function() {
+        var a, b = this, c = b.options, d = b.getUiElement("wrapperElm"), e = null, f = b.getMaxHeightFromElm(d);
+        return c.ui.optionsElm.suggestedExpandHeight && (a = b.getWrapperElmPaddingBottom(), 
+        e = b.getSuggestedContentExpandHeight() + (-1 >= a ? 0 : a) + b.getUiElement("buttonElm").height()), 
+        e = sjl.isset(e) ? e > f ? f : e : f;
+    },
+    getSuggestedContentExpandHeight: function() {
+        var a = this, b = a.getUiElement("optionsElm"), c = a.getMaxHeightFromElm(b), d = a.options.ui.optionsElm.suggestedExpandHeight;
+        return d = sjl.isset(d) ? d > c ? c : d : c;
+    },
+    getWrapperElmPaddingBottom: function() {
+        var a = this, b = a.getUiElement("buttonElm"), c = a.getUiElement("wrapperElm"), d = a.getUiElement("optionsElm"), e = a.getMaxHeightFromElm(d), f = a.getMaxHeightFromElm(c), g = f - b.height() - (d.height() || e || 0);
+        return g;
+    },
+    getMaxHeightFromElm: function(a) {
+        var b = a.css("max-height");
+        return sjl.classOfIs(b, "String") ? parseInt(b) : b;
     },
     setSelectedItemLabelText: function(a, b, c) {
         var d, e, f = this.options, g = f.ui.selectedItemLabelElm, h = this.getUiElement("selectedItemLabelElm").eq(0);

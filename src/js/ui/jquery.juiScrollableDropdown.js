@@ -4,9 +4,6 @@
  *
  * @module $.jui.juiScrollableDropdown
  *
- * @requires es5-shim
- * @requires es5-sham
- * @requires phpjs-shim
  * @requires jquery
  * @requires jquery.ui.core
  * @requires jquery.ui.widget
@@ -210,10 +207,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 });
         }
 
+        // Get mouse position tracker
+        ops.mousePos = $(window).juiMouse(),
+
         // When clicking outside of drop down close it
         $(window).on('click', function (e) {
-            if (!ops.isTouchDevice
-                && $.contains(self.element, $(e.target)) === false
+            if ($.contains(self.element.get(0), e.target) === false
                 && ops.timeline.progress() === 1) {
                 if (self.options.state === states.EXPANDED) {
                     self.ensureAnimationFunctionality();

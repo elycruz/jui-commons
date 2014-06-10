@@ -27,7 +27,7 @@ module.exports = function (grunt) {
             distro: {
                 options: {
                     baseUrl: './scripts',
-                    optimize: 'uglify',
+                    optimize: 'none',
                     out: './distro/js/examples.min.js',
                     name: 'init',
                     mainConfigFile: './scripts/init.js',

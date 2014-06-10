@@ -12,7 +12,8 @@ function (Backbone, tmpl) {
         ui: {
             example1: '#categories',
             example2: '#other-options',
-            example3: '#other-options-2'
+            example3: '#other-options-2',
+            example4: '#example-4-options'
         },
 
         template: tmpl,
@@ -63,6 +64,17 @@ function (Backbone, tmpl) {
                 labelText: '"Option":',
                 expandOn: 'mouseenter',
                 collapseOn: 'mouseleave'
+            }),
+
+            // Example 4 - expands on click
+            $example4 = ui.example4.juiSelectPicker({
+                useSelectedLabelPrefixAndSuffix: true,
+                selectedLabelPrefix: '< "',
+                selectedLabelSuffix: '" >',
+                labelText: 'Select a Category:',
+                skipFirstOptionItem: true,
+                expandOn: 'click',
+                collapseOn: 'click'
             });
 
             // Trigger tests
@@ -100,8 +112,12 @@ function (Backbone, tmpl) {
             var ui = this.ui;
             ui.example1.juiSelectPicker('destroy');
             ui.example2.juiSelectPicker('destroy');
+            ui.example3.juiSelectPicker('destroy');
+            ui.example4.juiSelectPicker('destroy');
             delete ui.example1;
             delete ui.example2;
+            delete ui.example3;
+            delete ui.example4;
         }
     });
 
