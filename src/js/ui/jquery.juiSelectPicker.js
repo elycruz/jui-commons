@@ -313,7 +313,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * Adds event listeners for:
      * - wrapper - mouseup;
      * - wrapper - a[data-value] click;
-     * - select element - change;
      * @private
      */
     _addEventListeners: function () {
@@ -322,7 +321,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        wrapperElm.on('mouseup', function () {
+        wrapperElm.on('mouseup', 'a[data-value]', function () {
             var collapsed = wrapperElm
                 .juiScrollableDropDown('getState')
                 .indexOf('collapsed') > -1 ? true : false;
@@ -335,21 +334,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         });
 
         wrapperElm.on('click', 'a[data-value]', function (e) {
-//            e.stopPropagation();
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
             ops.timeline.reverse();
-        });
-
-        // On select element change set it's selected item label text
-        this.element.on('change', function (e) {
-            var elm = $(this),
-                val = elm.val();
-            if (sjl.isset(val)) {
-                self.setSelectedItemLabelText(val);
-//                self.setSelected(self.getOwnOptionElmByValue(val));
-            }
         });
     },
 
@@ -448,7 +436,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * - removes options;
      * - recreates options;
      * - sets label text;
-     * - triggers `change` event on this (select element);
      * @returns {void}
      */
     refreshOptions: function () {
@@ -456,7 +443,16 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._removeCreatedOptions();
         this._drawSelectOptions();
         this.setLabelText();
-//        this.element.trigger('change');
+        // @todo Shouldn't call this directly on internal element of other component
+        // @todo should call components refresh method instead
+        this.refreshScrollbar();
+    },
+
+    /**
+     * @todo remove this function and use external components refresh method instead
+     */
+    refreshScrollbar: function () {
+        this.getUiElement('wrapperElm').juiScrollPane('refresh');
     },
 
     /**
@@ -523,10 +519,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         if (elm.length === 0) {
             return;
         }
-        elm.parent().addClass(
-            this.options.ui.optionsElm.optionSelectedClassName);
-        this.element.val(elm.attr('data-value')).trigger('change');
+        elm.parent().addClass(this.options.ui.optionsElm.optionSelectedClassName);
         this.options.selectedValue = elm.attr('data-value');
+        this.element.val(elm.attr('data-value')).trigger('change');
+        this.setSelectedItemLabelText(this.options.selectedValue);
     },
 
     /**
@@ -634,4 +630,3 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     }
 
 });
-
