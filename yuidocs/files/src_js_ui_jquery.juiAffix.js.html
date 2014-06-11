@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src\js\ui\jquery.juiAffix.js - jui-commons</title>
+    <title>src\js\ui\jquery.juiAffix.js</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -15,11 +15,11 @@
     <div id="hd" class="yui3-g header">
         <div class="yui3-u-3-4">
             
-                <h1><img src="../assets/css/logo.png" title="jui-commons"></h1>
+                <h1><img src="../assets/css/logo.png" title=""></h1>
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.49</em>
+            <em>API Docs for: </em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -41,19 +41,19 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/$.jui.juiBase.html">$.jui.juiBase</a></li>
+            
+                <li><a href="../classes/$.jui.juiScrollableDropdown.html">$.jui.juiScrollableDropdown</a></li>
+            
+                <li><a href="../classes/$.jui.juiScrollPane.html">$.jui.juiScrollPane</a></li>
+            
+                <li><a href="../classes/$.jui.juiSplitText.html">$.jui.juiSplitText</a></li>
+            
                 <li><a href="../classes/jquery.juiSelectPicker.html">jquery.juiSelectPicker</a></li>
             
             </ul>
 
             <ul id="api-modules" class="apis modules">
-            
-                <li><a href="../modules/$.jui.juiScrollableDropdown.html">$.jui.juiScrollableDropdown</a></li>
-            
-                <li><a href="../modules/$.jui.juiScrollPane.html">$.jui.juiScrollPane</a></li>
-            
-                <li><a href="../modules/$.jui.juiSplitText.html">$.jui.juiSplitText</a></li>
-            
-                <li><a href="../modules/jQuery.jui.juiBase.html">jQuery.jui.juiBase</a></li>
             
             </ul>
         </div>
@@ -123,10 +123,10 @@ $.widget(&#x27;jui.juiAffix&#x27;, $.jui.juiBase, {
         // @todo put the t r b l into an offset object
             original = {
                 position: elm.css(&#x27;position&#x27;),
-                top: elm.position().top,
+                top: elm.offset().top,
                 right: elm.css(&#x27;right&#x27;),
                 bottom: elm.css(&#x27;bottom&#x27;),
-                left: elm.position().left
+                left: elm.offset().left
             },
             scrollableElm = ops.scrollableElm,
             affixOffset;
@@ -144,8 +144,10 @@ $.widget(&#x27;jui.juiAffix&#x27;, $.jui.juiBase, {
             var oElm = $(this),
                 scrollTop = oElm.scrollTop(),
                 scrollLeft = oElm.scrollLeft(),
-                bottomLimit = scrollableElm.height() - affixOffset.bottom - elm.height(),
-                rightLimit = scrollableElm.width() - affixOffset.right;
+                affixBottom = sjl.isset(affixOffset.bottom) ? affixOffset.bottom : 0,
+                affixRight = sjl.isset(affixOffset.right) ? affixOffset.right : 0,
+                bottomLimit = scrollableElm.height() - affixBottom - elm.outerHeight(),
+                rightLimit = scrollableElm.width() - affixRight;
 
             // If realtime option calcs
             if (ops.realtime) {
@@ -153,9 +155,9 @@ $.widget(&#x27;jui.juiAffix&#x27;, $.jui.juiBase, {
             }
 
             if (affixVertically) {
-                if (isset(affixOffset.top)) {
-                    if (scrollTop &gt; original.top - affixOffset.top &amp;&amp;
-                        elm.position().top - scrollTop &lt; bottomLimit) {
+                if (sjl.isset(affixOffset.top)) {
+                    if (scrollTop &gt; original.top + affixOffset.top &amp;&amp;
+                        elm.offset().top + elm.outerHeight() - scrollTop + affixOffset.top &lt; bottomLimit) {
                         elm.css({
                             position: &#x27;fixed&#x27;,
                             top: affixOffset.top,
@@ -169,39 +171,49 @@ $.widget(&#x27;jui.juiAffix&#x27;, $.jui.juiBase, {
                     }
                 }
 
-                if (original.bottom - scrollTop &gt;= bottomLimit
-                    &amp;&amp; isset(affixOffset.bottom)) {
-                    elm.css({
-                        position: &#x27;fixed&#x27;,
-                        top: &#x27;auto&#x27;,
-                        bottom: affixOffset.bottom
-                    });
-                }
-            }
 
-            if (affixHorizontally) {
-                if (scrollLeft &gt; original.left - affixOffset.left &amp;&amp;
-                    elm.offset().left - scrollLeft &lt; rightLimit) {
-                    elm.css({
-                        position: &#x27;fixed&#x27;,
-                        left: affixOffset.left,
-                        right: &#x27;auto&#x27;
-                    });
-                }
-                else if (scrollLeft &lt;= original.left) {
-                    elm.css(&#x27;position&#x27;, original.position);
-                    elm.css(&#x27;left&#x27;, original.left);
-                    elm.css(&#x27;right&#x27;, &#x27;auto&#x27;);
+                if (sjl.isset(affixOffset.bottom)) {
+                    if (original.top - bottomLimit &lt;= scrollTop) {
+                        elm.css({
+                            position: original.position,
+                            top: original.top,
+                            bottom: original.bottom
+                        });
+                    }
+                    else {
+                        elm.css({
+                            position: &#x27;fixed&#x27;,
+                            top: &#x27;auto&#x27;,
+                            bottom: affixOffset.bottom
+                        });
+                    }
                 }
 
-                if (original.left - scrollLeft &gt;= rightLimit) {
-                    elm.css({
-                        position: &#x27;fixed&#x27;,
-                        left: &#x27;auto&#x27;,
-                        right: -affixOffset.right
-                    });
-                }
             }
+
+//            if (affixHorizontally) {
+//                if (scrollLeft &gt; original.left - affixOffset.left &amp;&amp;
+//                    elm.offset().left - scrollLeft &lt; rightLimit) {
+//                    elm.css({
+//                        position: &#x27;fixed&#x27;,
+//                        left: affixOffset.left,
+//                        right: &#x27;auto&#x27;
+//                    });
+//                }
+//                else if (scrollLeft &lt;= original.left) {
+//                    elm.css(&#x27;position&#x27;, original.position);
+//                    elm.css(&#x27;left&#x27;, original.left);
+//                    elm.css(&#x27;right&#x27;, &#x27;auto&#x27;);
+//                }
+//
+//                if (original.left - scrollLeft &gt;= rightLimit) {
+//                    elm.css({
+//                        position: &#x27;fixed&#x27;,
+//                        left: &#x27;auto&#x27;,
+//                        right: -affixOffset.right
+//                    });
+//                }
+//            }
         });
 
         scrollableElm.scroll();
@@ -212,7 +224,7 @@ $.widget(&#x27;jui.juiAffix&#x27;, $.jui.juiBase, {
             ops = self.options,
             offsets = self.getValueFromOptions(&#x27;offset&#x27;);
         $.each([&#x27;top&#x27;, &#x27;right&#x27;, &#x27;bottom&#x27;, &#x27;left&#x27;], function (index, key) {
-            if (!isset(offsets[key])) {
+            if (!sjl.isset(offsets[key])) {
                 ops.offset[key] = self.element.attr(&#x27;data-offset-&#x27; + offsets[key]) || null;
             }
         });

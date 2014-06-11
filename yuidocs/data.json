@@ -1,10 +1,5 @@
 {
-    "project": {
-        "name": "jui-commons",
-        "description": "JQuery Ui Commons",
-        "version": "0.0.49",
-        "url": ""
-    },
+    "project": {},
     "files": {
         "src\\js\\effects\\jquery.juiTickingText.js": {
             "name": "src\\js\\effects\\jquery.juiTickingText.js",
@@ -71,19 +66,19 @@
         },
         "src\\js\\ui\\jquery.juiScrollPane.js": {
             "name": "src\\js\\ui\\jquery.juiScrollPane.js",
-            "modules": {
+            "modules": {},
+            "classes": {
                 "$.jui.juiScrollPane": 1
             },
-            "classes": {},
             "fors": {},
             "namespaces": {}
         },
         "src\\js\\ui\\jquery.juiScrollableDropdown.js": {
             "name": "src\\js\\ui\\jquery.juiScrollableDropdown.js",
-            "modules": {
+            "modules": {},
+            "classes": {
                 "$.jui.juiScrollableDropdown": 1
             },
-            "classes": {},
             "fors": {},
             "namespaces": {}
         },
@@ -98,31 +93,33 @@
         },
         "src\\js\\utils\\jquery.splitText.js": {
             "name": "src\\js\\utils\\jquery.splitText.js",
-            "modules": {
+            "modules": {},
+            "classes": {
                 "$.jui.juiSplitText": 1
             },
-            "classes": {},
             "fors": {},
             "namespaces": {}
         },
         "src\\js\\jquery.juiBase.js": {
             "name": "src\\js\\jquery.juiBase.js",
-            "modules": {
-                "jQuery.jui.juiBase": 1
+            "modules": {},
+            "classes": {
+                "$.jui.juiBase": 1
             },
-            "classes": {},
             "fors": {},
             "namespaces": {}
         }
     },
-    "modules": {
+    "modules": {},
+    "classes": {
         "$.jui.juiScrollPane": {
             "name": "$.jui.juiScrollPane",
-            "submodules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {},
-            "tag": "module",
+            "shortname": "$.jui.juiScrollPane",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
             "file": "src\\js\\ui\\jquery.juiScrollPane.js",
             "line": 1,
             "description": "Makes a content area scrollable with custom\nscrollbars whose elements are fetched or created depending on the\nflags passed in/or-not-passed in by the user.",
@@ -147,20 +144,16 @@
         },
         "$.jui.juiScrollableDropdown": {
             "name": "$.jui.juiScrollableDropdown",
-            "submodules": {},
-            "classes": {
-                "jquery.juiSelectPicker": 1
-            },
-            "fors": {},
-            "namespaces": {},
-            "tag": "module",
-            "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
+            "shortname": "$.jui.juiScrollableDropdown",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\js\\ui\\jquery.juiScrollableDropdown.js",
             "line": 1,
             "description": "Created by ElyDeLaCruz on 10/1/13.\nA scrollable drop down.",
             "requires": [
-                "es5-shim",
-                "es5-sham",
-                "phpjs-shim",
                 "jquery",
                 "jquery.ui.core",
                 "jquery.ui.widget",
@@ -169,51 +162,9 @@
                 "TweenMax",
                 "jquery.juiBase",
                 "jquery.juiScrollPane"
-            ]
-        },
-        "$.jui.juiSplitText": {
-            "name": "$.jui.juiSplitText",
-            "submodules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {},
-            "tag": "module",
-            "file": "src\\js\\utils\\jquery.splitText.js",
-            "line": 1,
-            "requires": [
-                "jquery",
-                "jquery.ui (jquery ui core)",
-                "jquery.widget",
-                "jquery.jui.juiBase"
             ],
-            "triggers": "split-text:complete",
-            "author": "ElyDeLaCruz",
-            "created": "2013/12"
+            "triggers": "collapse"
         },
-        "jQuery.jui.juiBase": {
-            "name": "jQuery.jui.juiBase",
-            "submodules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {},
-            "tag": "module",
-            "file": "src\\js\\jquery.juiBase.js",
-            "line": 1,
-            "description": "Created with JetBrains WebStorm.\nUser: ElyDeLaCruz\nDate: 9/1/13\nTime: 4:27 AM",
-            "desc": "JUI Plugins Base.",
-            "extends": "jQuery.Widget - JQuery Ui Widget Factory Constructor.",
-            "requires": [
-                "jQuery",
-                "jQuery.ui - JQuery Ui Core.",
-                "jquery.widget - JQuery Ui Widget Factory."
-            ],
-            "todo": [
-                "-- issue solved -- make sure all classes that need a timeline object\nimplement their own `getTimeline` method.\n~~~deprecated~~~\nResolve issue with non-unique timeline object -\nTimeline object seems to be only one instance not new instances on\nnew calls of the extending plugins.",
-                "start using $.each instead of Object.keys (gets rid of one more dependancy)"
-            ]
-        }
-    },
-    "classes": {
         "jquery.juiSelectPicker": {
             "name": "jquery.juiSelectPicker",
             "shortname": "jquery.juiSelectPicker",
@@ -222,12 +173,9 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "module": "$.jui.juiScrollableDropdown",
-            "namespace": "",
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
             "line": 1,
             "description": "Created by ElyDeLaCruz on 10/1/13.\n\nHides a Select Element and Replaces it with a scrollable Select Picker element\nwhich is fully stylable.",
-            "is_constructor": 1,
             "requires": [
                 "jquery",
                 "jquery.ui (core)",
@@ -237,6 +185,53 @@
             "todo": [
                 "convert all inline option docs to options doclet using the @ property tag"
             ]
+        },
+        "$.jui.juiSplitText": {
+            "name": "$.jui.juiSplitText",
+            "shortname": "$.jui.juiSplitText",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\js\\utils\\jquery.splitText.js",
+            "line": 1,
+            "requires": [
+                "jquery",
+                "jquery.ui (jquery ui core)",
+                "jquery.widget",
+                "jquery.jui.juiBase"
+            ],
+            "description": "Jquery Plugin for toggling text between split text to spans -to- original text/html.",
+            "triggers": "split-text:complete",
+            "author": "ElyDeLaCruz",
+            "created": "2013/12"
+        },
+        "$.jui.juiBase": {
+            "name": "$.jui.juiBase",
+            "shortname": "$.jui.juiBase",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 1,
+            "description": "JUI Plugins Base.",
+            "extends": "jQuery.Widget",
+            "requires": [
+                "jQuery",
+                "jQuery.ui",
+                "jquery.widget"
+            ],
+            "created": "with JetBrains WebStorm.",
+            "user": ": ElyDeLaCruz",
+            "date": ": 9/1/13",
+            "time": ": 4:27 AM",
+            "todo": [
+                "-- issue solved -- make sure all classes that need a timeline object\nimplement their own `getTimeline` method.\n~~~deprecated~~~\nResolve issue with non-unique timeline object -\nTimeline object seems to be only one instance not new instances on\nnew calls of the extending plugins.",
+                "start using $.each instead of Object.keys (gets rid of one more dependancy)"
+            ]
         }
     },
     "classitems": [
@@ -245,7 +240,7 @@
             "line": 1,
             "description": "Ticking Text Jquery Plugin.",
             "author": "elydelacruz",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\effects\\jquery.juiTickingText.js",
@@ -265,40 +260,40 @@
                 "description": "",
                 "type": "Number"
             },
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\effects\\jquery.juiTickingText.js",
             "line": 23,
             "description": "Jquery Plugin for making Ticking Text",
             "triggers": "tickint-text:complete",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiAbstractPaginator.js",
             "line": 1,
             "description": "Base paginator class for pagination classes.  This plugin is meant to be extended not\nused on it's own!",
             "triggers": "widgetName + ':gotoPageNum'",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiAffix.js",
             "line": 1,
             "description": "Created by edelacruz on 11/19/13.",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiBasicPaginator.js",
             "line": 1,
             "description": "Base paginator class for pagination classes.  This plugin is meant to be extended not\nused on it's own!",
             "triggers": "'paginator:gotoPageNum', {pointer: Number}",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
             "line": 1,
             "description": "Created by ElyDeLaCruz on 1/21/14.",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
@@ -307,7 +302,7 @@
             "type": "{Object}",
             "itemtype": "property",
             "name": "labelText {String}",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
@@ -320,21 +315,21 @@
                     "type": "String"
                 }
             ],
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
             "line": 29,
             "description": "Animation options.",
             "type": "{Object}",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
             "line": 44,
             "description": "Ui Hash.",
             "type": "{Object}",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
@@ -342,7 +337,7 @@
             "description": "Sets flag if touch device (used for disable plugin if options.disableOnTouchDevice\nis true).",
             "access": "private",
             "tagname": "",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
@@ -350,7 +345,7 @@
             "description": "Adds event listeners for:\n- wrapper - mouseup;\n- wrapper - a[data-value] click;\n- select element - change;",
             "access": "private",
             "tagname": "",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
@@ -360,7 +355,7 @@
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
@@ -370,7 +365,7 @@
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiDialog.js",
@@ -380,31 +375,31 @@
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiFloatingScrollIndicators.js",
             "line": 1,
             "description": "Created by edelacruz on 11/15/13.",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiMouse.js",
             "line": 1,
             "description": "Created by edelacruz on 2/3/14.",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiMouse.js",
             "line": 4,
             "description": "Created with JetBrains WebStorm.\nUser: ElyDeLaCruz\nDate: 9/1/13\nTime: 1:15 AM\nTo change this template use File | Settings | File Templates.",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiPaginatorWithTextField.js",
             "line": 1,
             "description": "Created with JetBrains WebStorm.\nUser: ElyDeLaCruz\nDate: 9/1/13\nTime: 1:15 AM\nTo change this template use File | Settings | File Templates.",
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiScalableBtn.js",
@@ -413,189 +408,206 @@
             "todo": [
                 "add destory and remove event listeners  methods/functions."
             ],
-            "class": "jquery.juiSelectPicker"
+            "class": "$.jui.juiScrollPane"
         },
         {
             "file": "src\\js\\ui\\jquery.juiScrollPane.js",
             "line": 23,
             "description": "Options Hash.",
             "type": "{Object}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollPane"
+            "class": "$.jui.juiScrollPane"
+        },
+        {
+            "file": "src\\js\\ui\\jquery.juiScrollableDropdown.js",
+            "line": 289,
+            "description": "Plays animation timeline (if disableOnTouchDevice is true and isTouchDevice, does nothing).",
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "class": "$.jui.juiScrollableDropdown"
+        },
+        {
+            "file": "src\\js\\ui\\jquery.juiScrollableDropdown.js",
+            "line": 306,
+            "description": "Reverses the animation timeline if not touch device.",
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "class": "$.jui.juiScrollableDropdown"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 20,
+            "line": 19,
             "description": "Options hash.",
             "type": "{Object}",
             "itemtype": "property",
             "name": "labelText {String}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 29,
+            "line": 28,
             "description": "Class name added to wrapper element.",
-            "type": "{String} default: 'jui-select-picker';",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "params": [
+                {
+                    "name": "default:",
+                    "description": "'jui-select-picker';",
+                    "type": "String"
+                }
+            ],
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 35,
+            "line": 34,
             "description": "Animation options.",
             "type": "{Object}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 43,
+            "line": 42,
             "description": "Label text.",
             "type": "{String}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 49,
+            "line": 48,
             "description": "Selected Value Label Prefix.",
             "type": "{String}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 55,
+            "line": 54,
             "description": "Selected Value Label Suffix.",
             "type": "{String}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 61,
+            "line": 60,
             "description": "Flag for using selected value label suffix and prefix.",
             "type": "{String}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 67,
+            "line": 66,
             "description": "Skip the first option from the select element in rendering to wrapper.",
             "type": "{Boolean}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 73,
+            "line": 72,
             "description": "Selected Value.",
             "type": "{mixed|null}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 79,
-            "description": "Flag for disabling this plugin on touch devices (and using devices default).",
-            "type": "{Boolean}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "line": 78,
+            "description": "The attribute to get the value from on the select element's option element.",
+            "type": "{String} - default 'value'",
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 85,
+            "line": 84,
+            "description": "Where to get the label string for the option from (if 'html', or\n'text uses jquery to pull the 'html'/'text' from the select element's\noption element).",
+            "type": "{String} - default 'html'",
+            "class": "jquery.juiSelectPicker"
+        },
+        {
+            "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
+            "line": 92,
             "description": "Ui Hash.",
             "type": "{Object}",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 169,
+            "line": 177,
             "description": "Sets flag if touch device (used for disable plugin if options.disableOnTouchDevice\nis true).",
             "access": "private",
             "tagname": "",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 182,
+            "line": 186,
             "description": "Initializes the select picker:\n- Hides select element plugin was called on;\n- Adds css classes for wrapper;\n- Sets initial label text;\n- Draws options within wrapper;\n- Initializes scrollable drop down on wrapper;\n- and Adds event listeners;",
             "access": "private",
             "tagname": "",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 233,
+            "line": 241,
             "description": "Draws select element's options into wrapper.",
             "access": "private",
             "tagname": "",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 308,
-            "description": "Adds event listeners for:\n- wrapper - mouseup;\n- wrapper - a[data-value] click;\n- select element - change;",
+            "line": 321,
+            "description": "Adds event listeners for:\n- wrapper - mouseup;\n- wrapper - a[data-value] click;",
             "access": "private",
             "tagname": "",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 352,
+            "line": 353,
             "description": "Removes created options.",
             "access": "private",
             "tagname": "",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 360,
+            "line": 361,
             "description": "Makes wrapper's content scrollable.\n- Calls jui.scrollableDropDown on wrapper;",
             "access": "private",
             "tagname": "",
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 419,
+            "line": 429,
             "description": "Destroys `this` instance.\n- Shows hidden select element;\n- Removes created options;\n- and calls _super's destroy method (to finish up the cleaning process);",
-            "itemtype": "method",
-            "name": "destroy",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 433,
-            "description": "Refreshes the currently drawn options.\n- Sets selected value;\n- removes options;\n- recreates options;\n- sets label text;\n- triggers `change` event on this (select element);",
-            "itemtype": "method",
-            "name": "refreshOptions",
+            "line": 442,
+            "description": "Refreshes the currently drawn options.\n- Sets selected value;\n- removes options;\n- recreates options;\n- sets label text;",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 451,
+            "line": 460,
+            "todo": [
+                "remove this function and use external components refresh method instead"
+            ],
+            "class": "jquery.juiSelectPicker"
+        },
+        {
+            "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
+            "line": 529,
             "description": "Sets the select picker's `selected item label`.",
             "params": [
                 {
@@ -614,18 +626,15 @@
                     "type": "Boolean"
                 }
             ],
-            "itemtype": "method",
-            "name": "setSelectedItemLabelText",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 491,
+            "line": 568,
             "description": "Sets the select picker's label.",
             "params": [
                 {
@@ -639,18 +648,15 @@
                     "type": "String"
                 }
             ],
-            "itemtype": "method",
-            "name": "setLabelText",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 507,
+            "line": 583,
             "description": "Sets the selected element in the wrapper's drawn options.\n- Triggers a change event on this.element (select element);",
             "params": [
                 {
@@ -659,111 +665,123 @@
                     "type": "Jquery"
                 }
             ],
-            "itemtype": "method",
-            "name": "setSelected",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 524,
+            "line": 599,
             "description": "Clears the currently selected element.",
-            "itemtype": "method",
-            "name": "clearSelected",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 536,
+            "line": 610,
             "description": "Plays animation timeline (if disableOnTouchDevice is true and isTouchDevice, does nothing).",
-            "itemtype": "method",
-            "name": "playAnimation",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 550,
+            "line": 624,
             "description": "Reverses the animation timeline if not touch device.",
-            "itemtype": "method",
-            "name": "reverseAnimation",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 564,
+            "line": 638,
             "description": "Gets a drawn option element (from within wrapper) by value.",
-            "itemtype": "method",
-            "name": "getOptionElementByValue",
             "params": [
                 {
                     "name": "value",
                     "description": ""
                 }
             ],
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
-            "line": 574,
+            "line": 647,
             "description": "Gets the selected option's value (from within wrapper).",
             "return": {
                 "description": "",
                 "type": "*"
             },
-            "class": "jquery.juiSelectPicker",
-            "module": "$.jui.juiScrollableDropdown"
+            "class": "jquery.juiSelectPicker"
+        },
+        {
+            "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
+            "line": 657,
+            "description": "Get's an option element's value.",
+            "params": [
+                {
+                    "name": "option",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "- null or option's value",
+                "type": "*"
+            },
+            "class": "jquery.juiSelectPicker"
+        },
+        {
+            "file": "src\\js\\ui\\jquery.juiSelectPicker.js",
+            "line": 680,
+            "description": "Get's an option element's label.",
+            "params": [
+                {
+                    "name": "option",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "- null or option's label",
+                "type": "*"
+            },
+            "class": "jquery.juiSelectPicker"
         },
         {
             "file": "src\\js\\utils\\jquery.splitText.js",
             "line": 16,
             "description": "Options hash.",
             "type": "{object}",
-            "class": "",
-            "module": "$.jui.juiSplitText"
+            "class": "$.jui.juiSplitText"
         },
         {
             "file": "src\\js\\utils\\jquery.splitText.js",
             "line": 22,
             "description": "Used internally as a hash of possible states.",
             "type": "{object}",
-            "class": "",
-            "module": "$.jui.juiSplitText"
+            "class": "$.jui.juiSplitText"
         },
         {
             "file": "src\\js\\utils\\jquery.splitText.js",
             "line": 31,
             "description": "Used internally to keep track of text state.",
             "type": "{string}",
-            "class": "",
-            "module": "$.jui.juiSplitText"
+            "class": "$.jui.juiSplitText"
         },
         {
             "file": "src\\js\\utils\\jquery.splitText.js",
             "line": 37,
             "description": "The event's prefix name used when triggering event [complete,toggle]",
             "type": "{string}",
-            "class": "",
-            "module": "$.jui.juiSplitText"
+            "class": "$.jui.juiSplitText"
         },
         {
             "file": "src\\js\\utils\\jquery.splitText.js",
@@ -782,8 +800,7 @@
             },
             "access": "private",
             "tagname": "",
-            "class": "",
-            "module": "$.jui.juiSplitText"
+            "class": "$.jui.juiSplitText"
         },
         {
             "file": "src\\js\\utils\\jquery.splitText.js",
@@ -795,8 +812,7 @@
             },
             "access": "private",
             "tagname": "",
-            "class": "",
-            "module": "$.jui.juiSplitText"
+            "class": "$.jui.juiSplitText"
         },
         {
             "file": "src\\js\\utils\\jquery.splitText.js",
@@ -812,8 +828,7 @@
             "return": {
                 "description": "void"
             },
-            "class": "",
-            "module": "$.jui.juiSplitText"
+            "class": "$.jui.juiSplitText"
         },
         {
             "file": "src\\js\\utils\\jquery.splitText.js",
@@ -823,21 +838,91 @@
                 "description": "",
                 "type": "String"
             },
-            "class": "",
-            "module": "$.jui.juiSplitText"
+            "class": "$.jui.juiSplitText"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 25,
+            "line": 24,
             "description": "Options hash.",
+            "itemtype": "property",
+            "name": "options",
             "type": "{Object}",
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 35,
-            "description": "Takes a namespace string and fetches that location out from\nan object.  If the namespace doesn't exists it is created then\nreturned.\nExample: _namespace('hello.world.how.are.you.doing') will\ncreate/fetch:\nhello: { world: { how: { are: { you: { doing: {} } } } } }",
+            "line": 30,
+            "description": "Flag for disabling plugins on touch devices (and using devices default).",
+            "itemtype": "property",
+            "name": "disableOnTouchDevice",
+            "type": "{Boolean}",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 37,
+            "description": "Is touch device",
+            "itemtype": "property",
+            "name": "isTouchDevice",
+            "type": "{Boolean}",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 44,
+            "description": "Less than ie9",
+            "itemtype": "property",
+            "name": "isLessThanIE9",
+            "type": "{Boolean}",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 51,
+            "description": "Default Timeline Class",
+            "itemtype": "property",
+            "name": "defaultTimelineClass",
+            "type": "{String}",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 58,
+            "description": "Gsap Timeline object",
+            "itemtype": "property",
+            "name": "timeline",
+            "type": "{Timeline}",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 65,
+            "description": "Ui hash for ui element",
+            "itemtype": "property",
+            "name": "ui",
+            "type": "{Object}",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 74,
+            "description": "Sets flag if touch device (used for disable plugin if options.disableOnTouchDevice\nis true) and also tracks browsers less than ie9.",
+            "itemtype": "method",
+            "name": "_create",
+            "access": "protected",
+            "tagname": "",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 93,
+            "description": "Takes a namespace string and fetches that location out from\nan object.  If the namespace doesn't exists it is created then\nreturned.",
+            "example": [
+                " _namespace('hello.world.how.are.you.doing') // will create/fetch:",
+                " {hello: { world: { how: { are: { you: { doing: {} } } } } } }"
+            ],
+            "itemtype": "method",
+            "name": "_namespace",
             "params": [
                 {
                     "name": "ns_string",
@@ -859,13 +944,14 @@
                 "description": "",
                 "type": "Object"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 65,
+            "line": 123,
             "description": "Populates this.ui with element collections from this.options.",
+            "itemtype": "method",
+            "name": "_populateUiElementsFromOptions",
             "params": [
                 {
                     "name": "config",
@@ -877,13 +963,14 @@
                 "description": "",
                 "type": "Void"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 103,
+            "line": 164,
             "description": "Fetches an element from the option hash's `ui` namespace.",
+            "itemtype": "method",
+            "name": "_getElementFromOptions",
             "params": [
                 {
                     "name": "optionKey",
@@ -891,17 +978,37 @@
                     "type": "Object|String"
                 }
             ],
+            "access": "protected",
+            "tagname": "",
             "return": {
                 "description": "null or the jquery element selection",
                 "type": "Null|jQuery"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 201,
+            "line": 232,
+            "description": "Appends an element from it's hash config object",
+            "itemtype": "method",
+            "name": "_appendElementFromOptions",
+            "params": [
+                {
+                    "name": "config",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "access": "protected",
+            "tagname": "",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 270,
             "description": "Create and Element from the options.ui hash and appends it to\nit's config.appendTo section alias string.",
+            "itemtype": "method",
+            "name": "_createElementFromOptions",
             "params": [
                 {
                     "name": "config",
@@ -909,79 +1016,95 @@
                     "type": "Object"
                 }
             ],
+            "access": "protected",
+            "tagname": "",
             "return": {
                 "description": "",
                 "type": "Null|jQuery"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 232,
+            "line": 303,
             "description": "Remove created elements from the options.ui hash plugin.",
+            "itemtype": "method",
+            "name": "_removeCreatedElements",
             "return": {
                 "description": "",
                 "type": "Void"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "access": "protected",
+            "tagname": "",
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 271,
-            "description": "Pulls a ui element from the options -> ui hash else uses\ngetElementFromOptions to create/fetch it.",
+            "line": 318,
+            "itemtype": "method",
+            "name": "_setOption",
             "params": [
                 {
-                    "name": "alias",
-                    "description": "",
-                    "type": "String"
+                    "name": "key",
+                    "description": ""
+                },
+                {
+                    "name": "value",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "void"
+            },
+            "access": "protected",
+            "tagname": "",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 329,
+            "itemtype": "method",
+            "name": "_setOptions",
+            "params": [
+                {
+                    "name": "options",
+                    "description": ""
                 }
             ],
             "return": {
                 "description": "",
                 "type": "*"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "access": "protected",
+            "tagname": "",
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 289,
-            "description": "Sets css on element if it exist.",
-            "tentative": "",
+            "line": 346,
+            "itemtype": "method",
+            "name": "_callSetterForKey",
             "params": [
                 {
-                    "name": "alias",
-                    "description": "Element alias",
-                    "type": "String"
+                    "name": "key",
+                    "description": ""
                 },
                 {
-                    "name": "cssHash",
-                    "description": "",
-                    "type": "Object"
+                    "name": "value",
+                    "description": ""
                 }
             ],
-            "class": "",
-            "module": "jQuery.jui.juiBase"
-        },
-        {
-            "file": "src\\js\\jquery.juiBase.js",
-            "line": 302,
-            "description": "Lazy initializes a Timeline Lite or\nTimeline Max animation timeline.",
+            "access": "protected",
+            "tagname": "",
             "return": {
                 "description": "",
-                "type": "TimelineMax|TimelineLite"
+                "type": "Void"
             },
-            "todo": [
-                "move this out of here."
-            ],
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 318,
+            "line": 364,
             "description": "Adds animations to our animation timeline.",
             "params": [
                 {
@@ -1002,13 +1125,86 @@
             "return": {
                 "description": "default"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "access": "protected",
+            "tagname": "",
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 384,
+            "line": 431,
+            "itemtype": "method",
+            "name": "_removeDisabledElements",
+            "params": [
+                {
+                    "name": "options",
+                    "description": ""
+                }
+            ],
+            "access": "protected",
+            "tagname": "",
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 460,
+            "description": "Pulls a ui element from the options -> ui hash else uses\ngetElementFromOptions to create/fetch it.",
+            "itemtype": "method",
+            "name": "getUiElement",
+            "params": [
+                {
+                    "name": "alias",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 479,
+            "description": "Sets css on element if it exist.",
+            "itemtype": "method",
+            "name": "setCssOnUiElement",
+            "tentative": "",
+            "params": [
+                {
+                    "name": "alias",
+                    "description": "Element alias",
+                    "type": "String"
+                },
+                {
+                    "name": "cssHash",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 493,
+            "description": "Lazy initializes a Timeline Lite or\nTimeline Max animation timeline.",
+            "itemtype": "method",
+            "name": "getAnimationTimeline",
+            "return": {
+                "description": "",
+                "type": "TimelineMax|TimelineLite"
+            },
+            "todo": [
+                "move this out of here."
+            ],
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 510,
             "description": "Gets an option value from the options hash.  This function is a\nproxy for `getValueFromHash` and it just sets the hash to `this.options`.",
+            "itemtype": "method",
+            "name": "getValueFromOptions",
             "see": [
                 "getValueFromHash"
             ],
@@ -1022,13 +1218,14 @@
                 "description": "",
                 "type": "Object"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 395,
+            "line": 522,
             "description": "Searches hash for key and returns it's value.  If value is a function\ncalls function, with optional `args`, and returns it's return value.\nIf `raw` is true returns the actual function if value is a function.",
+            "itemtype": "method",
+            "name": "getValueFromHash",
             "params": [
                 {
                     "name": "key",
@@ -1055,19 +1252,40 @@
                 "description": "",
                 "type": "*"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         },
         {
             "file": "src\\js\\jquery.juiBase.js",
-            "line": 420,
+            "line": 546,
+            "itemtype": "method",
+            "name": "setValueOnHash",
+            "params": [
+                {
+                    "name": "key",
+                    "description": ""
+                },
+                {
+                    "name": "value",
+                    "description": ""
+                },
+                {
+                    "name": "hash",
+                    "description": ""
+                }
+            ],
+            "class": "$.jui.juiBase"
+        },
+        {
+            "file": "src\\js\\jquery.juiBase.js",
+            "line": 556,
             "description": "Returns the timeline classname to use for the instance of the plugin\nextending juibase.",
+            "itemtype": "method",
+            "name": "getTimelineClassName",
             "return": {
                 "description": "default defaultTimelineClassName = 'TimelineLite'",
                 "type": "*"
             },
-            "class": "",
-            "module": "jQuery.jui.juiBase"
+            "class": "$.jui.juiBase"
         }
     ],
     "warnings": [
@@ -1096,24 +1314,40 @@
             "line": " src\\js\\ui\\jquery.juiScrollPane.js:1"
         },
         {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:419"
+            "message": "unknown tag: triggers",
+            "line": " src\\js\\ui\\jquery.juiScrollableDropdown.js:1"
+        },
+        {
+            "message": "unknown tag: triggers",
+            "line": " src\\js\\ui\\jquery.juiScrollableDropdown.js:1"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:433"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:429"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:451"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:442"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:524"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:529"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:574"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:599"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:647"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:657"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:680"
         },
         {
             "message": "unknown tag: triggers",
@@ -1136,52 +1370,68 @@
             "line": " src\\js\\utils\\jquery.splitText.js:114"
         },
         {
-            "message": "unknown tag: desc",
+            "message": "unknown tag: created",
+            "line": " src\\js\\jquery.juiBase.js:1"
+        },
+        {
+            "message": "unknown tag: user",
+            "line": " src\\js\\jquery.juiBase.js:1"
+        },
+        {
+            "message": "unknown tag: date",
+            "line": " src\\js\\jquery.juiBase.js:1"
+        },
+        {
+            "message": "unknown tag: time",
             "line": " src\\js\\jquery.juiBase.js:1"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:35"
+            "line": " src\\js\\jquery.juiBase.js:93"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:103"
+            "line": " src\\js\\jquery.juiBase.js:164"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:201"
+            "line": " src\\js\\jquery.juiBase.js:270"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:232"
+            "line": " src\\js\\jquery.juiBase.js:303"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:271"
+            "line": " src\\js\\jquery.juiBase.js:329"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src\\js\\jquery.juiBase.js:364"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src\\js\\jquery.juiBase.js:460"
         },
         {
             "message": "unknown tag: tentative",
-            "line": " src\\js\\jquery.juiBase.js:289"
+            "line": " src\\js\\jquery.juiBase.js:479"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:302"
+            "line": " src\\js\\jquery.juiBase.js:493"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:318"
+            "line": " src\\js\\jquery.juiBase.js:510"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:384"
+            "line": " src\\js\\jquery.juiBase.js:522"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:395"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src\\js\\jquery.juiBase.js:420"
+            "line": " src\\js\\jquery.juiBase.js:556"
         },
         {
             "message": "Missing item type\nTicking Text Jquery Plugin.",
@@ -1268,72 +1518,132 @@
             "line": " src\\js\\ui\\jquery.juiScrollPane.js:23"
         },
         {
+            "message": "Missing item type\nPlays animation timeline (if disableOnTouchDevice is true and isTouchDevice, does nothing).",
+            "line": " src\\js\\ui\\jquery.juiScrollableDropdown.js:289"
+        },
+        {
+            "message": "Missing item type\nReverses the animation timeline if not touch device.",
+            "line": " src\\js\\ui\\jquery.juiScrollableDropdown.js:306"
+        },
+        {
             "message": "Missing item type\nClass name added to wrapper element.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:29"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:28"
         },
         {
             "message": "Missing item type\nAnimation options.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:35"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:34"
         },
         {
             "message": "Missing item type\nLabel text.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:43"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:42"
         },
         {
             "message": "Missing item type\nSelected Value Label Prefix.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:49"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:48"
         },
         {
             "message": "Missing item type\nSelected Value Label Suffix.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:55"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:54"
         },
         {
             "message": "Missing item type\nFlag for using selected value label suffix and prefix.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:61"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:60"
         },
         {
             "message": "Missing item type\nSkip the first option from the select element in rendering to wrapper.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:67"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:66"
         },
         {
             "message": "Missing item type\nSelected Value.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:73"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:72"
         },
         {
-            "message": "Missing item type\nFlag for disabling this plugin on touch devices (and using devices default).",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:79"
+            "message": "Missing item type\nThe attribute to get the value from on the select element's option element.",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:78"
+        },
+        {
+            "message": "Missing item type\nWhere to get the label string for the option from (if 'html', or\n'text uses jquery to pull the 'html'/'text' from the select element's\noption element).",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:84"
         },
         {
             "message": "Missing item type\nUi Hash.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:85"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:92"
         },
         {
             "message": "Missing item type\nSets flag if touch device (used for disable plugin if options.disableOnTouchDevice\nis true).",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:169"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:177"
         },
         {
             "message": "Missing item type\nInitializes the select picker:\n- Hides select element plugin was called on;\n- Adds css classes for wrapper;\n- Sets initial label text;\n- Draws options within wrapper;\n- Initializes scrollable drop down on wrapper;\n- and Adds event listeners;",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:182"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:186"
         },
         {
             "message": "Missing item type\nDraws select element's options into wrapper.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:233"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:241"
         },
         {
-            "message": "Missing item type\nAdds event listeners for:\n- wrapper - mouseup;\n- wrapper - a[data-value] click;\n- select element - change;",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:308"
+            "message": "Missing item type\nAdds event listeners for:\n- wrapper - mouseup;\n- wrapper - a[data-value] click;",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:321"
         },
         {
             "message": "Missing item type\nRemoves created options.",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:352"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:353"
         },
         {
             "message": "Missing item type\nMakes wrapper's content scrollable.\n- Calls jui.scrollableDropDown on wrapper;",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:360"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:361"
+        },
+        {
+            "message": "Missing item type\nDestroys `this` instance.\n- Shows hidden select element;\n- Removes created options;\n- and calls _super's destroy method (to finish up the cleaning process);",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:429"
+        },
+        {
+            "message": "Missing item type\nRefreshes the currently drawn options.\n- Sets selected value;\n- removes options;\n- recreates options;\n- sets label text;",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:442"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:460"
+        },
+        {
+            "message": "Missing item type\nSets the select picker's `selected item label`.",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:529"
+        },
+        {
+            "message": "Missing item type\nSets the select picker's label.",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:568"
+        },
+        {
+            "message": "Missing item type\nSets the selected element in the wrapper's drawn options.\n- Triggers a change event on this.element (select element);",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:583"
+        },
+        {
+            "message": "Missing item type\nClears the currently selected element.",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:599"
+        },
+        {
+            "message": "Missing item type\nPlays animation timeline (if disableOnTouchDevice is true and isTouchDevice, does nothing).",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:610"
+        },
+        {
+            "message": "Missing item type\nReverses the animation timeline if not touch device.",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:624"
+        },
+        {
+            "message": "Missing item type\nGets a drawn option element (from within wrapper) by value.",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:638"
         },
         {
             "message": "Missing item type\nGets the selected option's value (from within wrapper).",
-            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:574"
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:647"
+        },
+        {
+            "message": "Missing item type\nGet's an option element's value.",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:657"
+        },
+        {
+            "message": "Missing item type\nGet's an option element's label.",
+            "line": " src\\js\\ui\\jquery.juiSelectPicker.js:680"
         },
         {
             "message": "Missing item type\nOptions hash.",
@@ -1368,56 +1678,8 @@
             "line": " src\\js\\utils\\jquery.splitText.js:114"
         },
         {
-            "message": "Missing item type\nOptions hash.",
-            "line": " src\\js\\jquery.juiBase.js:25"
-        },
-        {
-            "message": "Missing item type\nTakes a namespace string and fetches that location out from\nan object.  If the namespace doesn't exists it is created then\nreturned.\nExample: _namespace('hello.world.how.are.you.doing') will\ncreate/fetch:\nhello: { world: { how: { are: { you: { doing: {} } } } } }",
-            "line": " src\\js\\jquery.juiBase.js:35"
-        },
-        {
-            "message": "Missing item type\nPopulates this.ui with element collections from this.options.",
-            "line": " src\\js\\jquery.juiBase.js:65"
-        },
-        {
-            "message": "Missing item type\nFetches an element from the option hash's `ui` namespace.",
-            "line": " src\\js\\jquery.juiBase.js:103"
-        },
-        {
-            "message": "Missing item type\nCreate and Element from the options.ui hash and appends it to\nit's config.appendTo section alias string.",
-            "line": " src\\js\\jquery.juiBase.js:201"
-        },
-        {
-            "message": "Missing item type\nRemove created elements from the options.ui hash plugin.",
-            "line": " src\\js\\jquery.juiBase.js:232"
-        },
-        {
-            "message": "Missing item type\nPulls a ui element from the options -> ui hash else uses\ngetElementFromOptions to create/fetch it.",
-            "line": " src\\js\\jquery.juiBase.js:271"
-        },
-        {
-            "message": "Missing item type\nSets css on element if it exist.",
-            "line": " src\\js\\jquery.juiBase.js:289"
-        },
-        {
-            "message": "Missing item type\nLazy initializes a Timeline Lite or\nTimeline Max animation timeline.",
-            "line": " src\\js\\jquery.juiBase.js:302"
-        },
-        {
             "message": "Missing item type\nAdds animations to our animation timeline.",
-            "line": " src\\js\\jquery.juiBase.js:318"
-        },
-        {
-            "message": "Missing item type\nGets an option value from the options hash.  This function is a\nproxy for `getValueFromHash` and it just sets the hash to `this.options`.",
-            "line": " src\\js\\jquery.juiBase.js:384"
-        },
-        {
-            "message": "Missing item type\nSearches hash for key and returns it's value.  If value is a function\ncalls function, with optional `args`, and returns it's return value.\nIf `raw` is true returns the actual function if value is a function.",
-            "line": " src\\js\\jquery.juiBase.js:395"
-        },
-        {
-            "message": "Missing item type\nReturns the timeline classname to use for the instance of the plugin\nextending juibase.",
-            "line": " src\\js\\jquery.juiBase.js:420"
+            "line": " src\\js\\jquery.juiBase.js:364"
         }
     ]
 }

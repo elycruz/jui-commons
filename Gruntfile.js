@@ -99,7 +99,6 @@ module.exports = function (grunt) {
         'compass',
         'cssmin',
         'uglify',
-        'jsdoc',
         'connect',
         'open',
         'watch'
@@ -110,14 +109,12 @@ module.exports = function (grunt) {
         'compass',
         'cssmin',
         'uglify',
-        'jsdoc'
     ]);
 
     // Development task
     grunt.registerTask('develop', [
         'compass',
         'cssmin',
-//        'uglify',
         'connect',
         'open',
         'watch'

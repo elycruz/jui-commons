@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src\js\ui\jquery.juiAbstractPaginator.js - jui-commons</title>
+    <title>src\js\ui\jquery.juiAbstractPaginator.js</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -15,11 +15,11 @@
     <div id="hd" class="yui3-g header">
         <div class="yui3-u-3-4">
             
-                <h1><img src="../assets/css/logo.png" title="jui-commons"></h1>
+                <h1><img src="../assets/css/logo.png" title=""></h1>
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.49</em>
+            <em>API Docs for: </em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -41,19 +41,19 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/$.jui.juiBase.html">$.jui.juiBase</a></li>
+            
+                <li><a href="../classes/$.jui.juiScrollableDropdown.html">$.jui.juiScrollableDropdown</a></li>
+            
+                <li><a href="../classes/$.jui.juiScrollPane.html">$.jui.juiScrollPane</a></li>
+            
+                <li><a href="../classes/$.jui.juiSplitText.html">$.jui.juiSplitText</a></li>
+            
                 <li><a href="../classes/jquery.juiSelectPicker.html">jquery.juiSelectPicker</a></li>
             
             </ul>
 
             <ul id="api-modules" class="apis modules">
-            
-                <li><a href="../modules/$.jui.juiScrollableDropdown.html">$.jui.juiScrollableDropdown</a></li>
-            
-                <li><a href="../modules/$.jui.juiScrollPane.html">$.jui.juiScrollPane</a></li>
-            
-                <li><a href="../modules/$.jui.juiSplitText.html">$.jui.juiSplitText</a></li>
-            
-                <li><a href="../modules/jQuery.jui.juiBase.html">jQuery.jui.juiBase</a></li>
             
             </ul>
         </div>
@@ -121,11 +121,13 @@ $.widget(&#x27;jui.juiAbstractPaginator&#x27;, $.jui.juiBase, {
     },
 
     _create: function () {
-        this._gotoPageNum(this.options.pages.pointer);
+        var self = this;
+        self._gotoPageNum(self.options.pages.pointer);
     },
 
     _nextPage: function () {
-        var ops = this.options;
+        var self = this,
+            ops = self.options;
 
         // Set direction to next
         ops.pages.pointer_direction = 1;
@@ -138,15 +140,18 @@ $.widget(&#x27;jui.juiAbstractPaginator&#x27;, $.jui.juiBase, {
         }
 
         // Goto Page src number
-        this._gotoPageNum(ops.pages.pointer);
+        self._gotoPageNum(ops.pages.pointer);
 
         // Trigger event
-        this.element.trigger(this.widgetName + &#x27;:nextPage&#x27;,
+        self.element.trigger(self.widgetName + &#x27;:nextPage&#x27;,
             {pointer: ops.pages.pointer});
+        
+        return self;
     },
 
     _prevPage: function () {
-        var ops = this.options;
+        var self = this,
+            ops = self.options;
         if (ops.pages.pointer &gt; 0) {
             ops.pages.pointer -= 1;
         }
@@ -158,15 +163,18 @@ $.widget(&#x27;jui.juiAbstractPaginator&#x27;, $.jui.juiBase, {
         ops.pages.pointer_direction = -1;
 
         // Goto Page src number
-        this._gotoPageNum(ops.pages.pointer);
+        self._gotoPageNum(ops.pages.pointer);
 
         // Trigger event
-        this.element.trigger(this.widgetName + &#x27;:prevPage&#x27;,
+        self.element.trigger(self.widgetName + &#x27;:prevPage&#x27;,
             {pointer: ops.pages.pointer});
+
+        return self;
     },
 
     _gotoPageNum: function (num) {
-        var ops = this.options;
+        var self = this,
+            ops = self.options;
         // Set prev and next
         ops.pages.prev = num - 1;
 
@@ -186,17 +194,20 @@ $.widget(&#x27;jui.juiAbstractPaginator&#x27;, $.jui.juiBase, {
         ops.pages.pointer = num;
 
         // If callback is set call it
-        this.getValueFromOptions(&#x27;onGotoPageNum&#x27;);
+        self.getValueFromOptions(&#x27;onGotoPageNum&#x27;);
 
         // Trigger gotoPageNum
-        this.element.trigger(this.widgetName + &#x27;:gotoPageNum&#x27;,
+        self.element.trigger(self.widgetName + &#x27;:gotoPageNum&#x27;,
             {pointer: num});
+
+        return self;
     },
 
     getPointer: function () {
         return this.options.pages.pointer;
     }
 });
+
     </pre>
 </div>
 

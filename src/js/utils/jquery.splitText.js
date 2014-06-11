@@ -1,5 +1,5 @@
 /**
- * @module $.jui.juiSplitText
+ * @class $.jui.juiSplitText
  * @requires jquery
  * @requires jquery.ui (jquery ui core)
  * @requires jquery.widget

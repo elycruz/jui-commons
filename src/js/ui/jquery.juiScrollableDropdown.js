@@ -2,7 +2,7 @@
  * Created by ElyDeLaCruz on 10/1/13.
  * A scrollable drop down.
  *
- * @module $.jui.juiScrollableDropdown
+ * @class $.jui.juiScrollableDropdown
  *
  * @requires jquery
  * @requires jquery.ui.core

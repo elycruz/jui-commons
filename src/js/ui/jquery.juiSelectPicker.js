@@ -4,7 +4,7 @@
  * Hides a Select Element and Replaces it with a scrollable Select Picker element
  * which is fully stylable.
  *
- * @module jquery.juiSelectPicker
+ * @class jquery.juiSelectPicker
  *
  * @requires jquery
  * @requires jquery.ui (core)

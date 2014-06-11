@@ -1,14 +1,13 @@
 /**
- * Created with JetBrains WebStorm.
- * User: ElyDeLaCruz
- * Date: 9/1/13
- * Time: 4:27 AM
- * @module jQuery.jui.juiBase
- * @desc JUI Plugins Base.
- * @extends jQuery.Widget - JQuery Ui Widget Factory Constructor.
- * @requires jQuery
- * @requires jQuery.ui - JQuery Ui Core.
- * @requires jquery.widget - JQuery Ui Widget Factory.
+ * JUI Plugins Base.
+ * @class $.jui.juiBase
+ * @extends jQuery.Widget
+ * @requires jQuery, jQuery.ui, jquery.widget
+ *
+ * @created with JetBrains WebStorm.
+ * @user: ElyDeLaCruz
+ * @date: 9/1/13
+ * @time: 4:27 AM
  *
  * @todo -- issue solved -- make sure all classes that need a timeline object
  * implement their own `getTimeline` method.
@@ -24,29 +23,50 @@ $.widget('jui.juiBase', {
 
     /**
      * Options hash.
+     * @property options
      * @type {Object}
      */
     options: {
         /**
          * Flag for disabling plugins on touch devices (and using devices default).
+         * @property disableOnTouchDevice
          * @type {Boolean}
          */
         disableOnTouchDevice: true,
 
         /**
          * Is touch device
+         * @property isTouchDevice
          * @type {Boolean}
          */
         isTouchDevice: false,
 
         /**
          * Less than ie9
+         * @property isLessThanIE9
          * @type {Boolean}
          */
         isLessThanIE9: false,
 
+        /**
+         * Default Timeline Class
+         * @property defaultTimelineClass
+         * @type {String}
+         */
         defaultTimelineClass: 'TimelineLite',
+
+        /**
+         * Gsap Timeline object
+         * @property timeline
+         * @type {Timeline}
+         */
         timeline: null,
+
+        /**
+         * Ui hash for ui element
+         * @property ui
+         * @type {Object}
+         */
         ui: {}
     },
 
@@ -54,7 +74,8 @@ $.widget('jui.juiBase', {
     /**
      * Sets flag if touch device (used for disable plugin if options.disableOnTouchDevice
      * is true) and also tracks browsers less than ie9.
-     * @private
+     * @method _create
+     * @protected
      */
     _create: function () {
         var ops = this.options;
@@ -73,9 +94,9 @@ $.widget('jui.juiBase', {
      * Takes a namespace string and fetches that location out from
      * an object.  If the namespace doesn't exists it is created then
      * returned.
-     * Example: _namespace('hello.world.how.are.you.doing') will
-     * create/fetch:
-     * hello: { world: { how: { are: { you: { doing: {} } } } } }
+     * @example _namespace('hello.world.how.are.you.doing') // will create/fetch:
+     * @example {hello: { world: { how: { are: { you: { doing: {} } } } } } }
+     * @method _namespace
      * @param ns_string {String} the namespace you wish to fetch
      * @param extendObj {Object} optional, default this.options
      * @param valueToSet {Object} optional, a value to set on the key (last key if key string (a.b.c.d = value))
@@ -101,6 +122,7 @@ $.widget('jui.juiBase', {
 
     /**
      * Populates this.ui with element collections from this.options.
+     * @method _populateUiElementsFromOptions
      * @param config {Object|String} optional, default this.options
      * @return {void}
      */
@@ -141,7 +163,9 @@ $.widget('jui.juiBase', {
 
     /**
      * Fetches an element from the option hash's `ui` namespace.
+     * @method _getElementFromOptions
      * @param optionKey {Object|String}
+     * @protected
      * @returns {null|jQuery} null or the jquery element selection
      */
     _getElementFromOptions: function (optionKey) {
@@ -205,6 +229,12 @@ $.widget('jui.juiBase', {
         return !sjl.empty(config.elm) ? config.elm : null;
     },
 
+    /**
+     * Appends an element from it's hash config object
+     * @method _appendElementFromOptions
+     * @param {Object} config
+     * @protected
+     */
     _appendElementFromOptions: function (config) {
         var self = this,
             parent = this.element.parent();
@@ -240,8 +270,10 @@ $.widget('jui.juiBase', {
     /**
      * Create and Element from the options.ui hash and appends it to
      * it's config.appendTo section alias string.
+     * @method _createElementFromOptions
      * @param config {Object} the options object from which to create
      *  and where to populate the created element to.
+     * @protected
      * @returns {null|jQuery}
      */
     _createElementFromOptions: function (config) {
@@ -270,7 +302,9 @@ $.widget('jui.juiBase', {
 
     /**
      * Remove created elements from the options.ui hash plugin.
+     * @method _removeCreatedElements
      * @returns {void}
+     * @protected
      */
     _removeCreatedElements: function () {
         var self = this, ops = self.options;
@@ -281,10 +315,23 @@ $.widget('jui.juiBase', {
         };
     },
 
+    /**
+     * @method _setOption
+     * @param key
+     * @param value
+     * @return void
+     * @protected
+     */
     _setOption: function (key, value) {
         this._namespace(key, this.options, value);
     },
 
+    /**
+     * @method _setOptions
+     * @param options
+     * @returns {*}
+     * @protected
+     */
     _setOptions: function (options) {
         var self = this;
         if (!sjl.isset(options)) {
@@ -296,6 +343,13 @@ $.widget('jui.juiBase', {
         return self;
     },
 
+    /**
+     * @method _callSetterForKey
+     * @param key
+     * @param value
+     * @protected
+     * @return {void}
+     */
     _callSetterForKey: function (key, value) {
         var setterFunc = 'set' + sjl.camelCase(key, true),
             self = this;
@@ -313,6 +367,7 @@ $.widget('jui.juiBase', {
      * @param animations {array} optional animations array
      * @param options {object] optional options hash to search on
      * @returns default
+     * @protected
      */
     _initAnimationTimeline: function (timeline, animations, options) {
         var self = this,
@@ -373,6 +428,11 @@ $.widget('jui.juiBase', {
         }
     },
 
+    /**
+     * @method _removeDisabledElements
+     * @param options
+     * @protected
+     */
     _removeDisabledElements: function (options) {
         // Get options
         ops = !sjl.isset(options) ? this.options : options;
@@ -400,6 +460,7 @@ $.widget('jui.juiBase', {
     /**
      * Pulls a ui element from the options -> ui hash else uses
      * getElementFromOptions to create/fetch it.
+     * @method getUiElement
      * @param {string} alias
      * @returns {*}
      */
@@ -417,6 +478,7 @@ $.widget('jui.juiBase', {
 
     /**
      * Sets css on element if it exist.
+     * @method setCssOnUiElement
      * @tentative
      * @param alias {string} Element alias
      * @param cssHash {object}
@@ -431,6 +493,7 @@ $.widget('jui.juiBase', {
     /**
      * Lazy initializes a Timeline Lite or
      * Timeline Max animation timeline.
+     * @method getAnimationTimeline
      * @returns {TimelineMax|TimelineLite}
      * @todo move this out of here.
      */
@@ -447,6 +510,7 @@ $.widget('jui.juiBase', {
     /**
      * Gets an option value from the options hash.  This function is a
      * proxy for `getValueFromHash` and it just sets the hash to `this.options`.
+     * @method getValueFromOptions
      * @see getValueFromHash
      * @param key
      * @returns {Object}
@@ -459,6 +523,7 @@ $.widget('jui.juiBase', {
      * Searches hash for key and returns it's value.  If value is a function
      * calls function, with optional `args`, and returns it's return value.
      * If `raw` is true returns the actual function if value is a function.
+     * @method getValueFromHash
      * @param key {string} The hash key to search for
      * @param hash {object} optional, the hash to search within
      * @param args {array} optional the arrays to pass to value if it is a function
@@ -478,6 +543,12 @@ $.widget('jui.juiBase', {
         return retVal;
     },
 
+    /**
+     * @method setValueOnHash
+     * @param key
+     * @param value
+     * @param hash
+     */
     setValueOnHash: function (key, value, hash) {
         this._namespace(key, hash, value);
     },
@@ -485,6 +556,7 @@ $.widget('jui.juiBase', {
     /**
      * Returns the timeline classname to use for the instance of the plugin
      * extending juibase.
+     * @method getTimelineClassName
      * @returns {*} default defaultTimelineClassName = 'TimelineLite'
      */
     getTimelineClassName: function () {

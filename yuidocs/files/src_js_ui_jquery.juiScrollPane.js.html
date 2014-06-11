@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src\js\ui\jquery.juiScrollPane.js - jui-commons</title>
+    <title>src\js\ui\jquery.juiScrollPane.js</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -15,11 +15,11 @@
     <div id="hd" class="yui3-g header">
         <div class="yui3-u-3-4">
             
-                <h1><img src="../assets/css/logo.png" title="jui-commons"></h1>
+                <h1><img src="../assets/css/logo.png" title=""></h1>
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.49</em>
+            <em>API Docs for: </em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -41,19 +41,19 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/$.jui.juiBase.html">$.jui.juiBase</a></li>
+            
+                <li><a href="../classes/$.jui.juiScrollableDropdown.html">$.jui.juiScrollableDropdown</a></li>
+            
+                <li><a href="../classes/$.jui.juiScrollPane.html">$.jui.juiScrollPane</a></li>
+            
+                <li><a href="../classes/$.jui.juiSplitText.html">$.jui.juiSplitText</a></li>
+            
                 <li><a href="../classes/jquery.juiSelectPicker.html">jquery.juiSelectPicker</a></li>
             
             </ul>
 
             <ul id="api-modules" class="apis modules">
-            
-                <li><a href="../modules/$.jui.juiScrollableDropdown.html">$.jui.juiScrollableDropdown</a></li>
-            
-                <li><a href="../modules/$.jui.juiScrollPane.html">$.jui.juiScrollPane</a></li>
-            
-                <li><a href="../modules/$.jui.juiSplitText.html">$.jui.juiSplitText</a></li>
-            
-                <li><a href="../modules/jQuery.jui.juiBase.html">jQuery.jui.juiBase</a></li>
             
             </ul>
         </div>
@@ -99,7 +99,7 @@
  * scrollbars whose elements are fetched or created depending on the
  * flags passed in/or-not-passed in by the user.
  *
- * @module $.jui.juiScrollPane
+ * @class $.jui.juiScrollPane
  *
  * @requires jquery.mousewheel (for crossbrowser mousewheel functionality)
  * @requires jquery
@@ -125,7 +125,7 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
         scrollSpeed: function () {
             var retVal = 0;
             retVal = this.getUiElement(&#x27;contentHolder&#x27;).height() / 3 / 3 * 2;
-            return classOfIs(retVal, &#x27;Number&#x27;) ? retVal : 0;
+            return sjl.classOfIs(retVal, &#x27;Number&#x27;) ? retVal : 0;
         },
 
         // Left, up, right, down arrow keys and their direction values
@@ -210,8 +210,6 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
         this._populateUiElementsFromOptions();
         var ops = this.options,
             contentHolder = this.getUiElement(&#x27;contentHolder&#x27;),
-            contentScrollWidth = contentHolder.get(0).scrollWidth,
-            contentScrollHeight = contentHolder.get(0).scrollHeight,
             self = this;
 
         // Conetnt Holder
@@ -224,18 +222,7 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
         self.element.addClass(ops.pluginClassName);
 
         // Determine whether we need a horizontal and/or vertical scrollbar.
-        // Init vertical scrollbar
-        if (contentScrollHeight &gt; contentHolder.height()) {
-            self.initScrollbar(ops.scrollbarOriented.VERTICALLY);
-        }
-
-        // Init horizontal scrollbar or hide it
-        if (contentScrollWidth &gt; contentHolder.width()) {
-            self.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
-        }
-        else {
-            self.getUiElement(&#x27;horizScrollbar&#x27;).css(&#x27;display&#x27;, &#x27;none&#x27;);
-        }
+        self.initScrollbars();
 
         // ----------------------------------------------------------
         // Move to an add event listener function (for consistency)
@@ -257,8 +244,8 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
                 e.stopPropagation();
             }
 
-            delta = isset(delta) ? delta :
-                (isset(deltaX)? deltaX : deltaY);
+            delta = sjl.isset(delta) ? delta :
+                (sjl.isset(deltaX)? deltaX : deltaY);
 
             // Prelims
             scrollSpeed = self.getValueFromOptions(&#x27;scrollSpeed&#x27;);
@@ -351,7 +338,7 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
             scrollbar = this.getScrollbarByOrientation(layout),
             scrollPercent,
             dir = vars.cssCalcDir,
-            dimProp = &#x27;outer&#x27; + ucaseFirst(vars.scrollbarDimProp);
+            dimProp = &#x27;outer&#x27; + sjl.ucaseFirst(vars.scrollbarDimProp);
 
         // If not scrollable bail
         if (contentHolder[vars.scrollbarDimProp]() &gt;= scrollTotal) {
@@ -359,7 +346,7 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
         }
 
         if (value &lt;= scrollTotal &amp;&amp; value &gt;= 0) {
-            contentHolder[&#x27;scroll&#x27; + ucaseFirst(dir)](value);
+            contentHolder[&#x27;scroll&#x27; + sjl.ucaseFirst(dir)](value);
             scrollPercent = value / scrollTotal;
             handle.css(dir, scrollbar[dimProp]() * scrollPercent);
         }
@@ -388,7 +375,7 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
         // Math
             percentScroll = handle.position()[dir] / scrollbar[dimProp](),
             scrollPos = percentScroll * scrollAmountTotal,
-            contentHolderScrollFunc = &#x27;scroll&#x27; + ucaseFirst(dir);
+            contentHolderScrollFunc = &#x27;scroll&#x27; + sjl.ucaseFirst(dir);
 
         // Scroll only if limits haven&#x27;t been reached
         if (scrollPos &gt;= 0 &amp;&amp; scrollPos &lt;= scrollAmountTotal) {
@@ -423,12 +410,36 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
         }
     },
 
+    initScrollbars: function () {
+        var self = this,
+            ops = self.options,
+            contentHolder = self.getUiElement(&#x27;contentHolder&#x27;),
+            contentScrollWidth = contentHolder.get(0).scrollWidth,
+            contentScrollHeight = contentHolder.get(0).scrollHeight;
+
+        // Init vertical scrollbar
+        if (contentScrollHeight &gt; contentHolder.height()) {
+            self.initScrollbar(ops.scrollbarOriented.VERTICALLY);
+        }
+        else {
+            self.getUiElement(&#x27;vertScrollbar&#x27;).css(&#x27;display&#x27;, &#x27;none&#x27;);
+        }
+
+        // Init horizontal scrollbar or hide it
+        if (contentScrollWidth &gt; contentHolder.width()) {
+            self.initScrollbar(ops.scrollbarOriented.HORIZONTALLY);
+        }
+        else {
+            self.getUiElement(&#x27;horizScrollbar&#x27;).css(&#x27;display&#x27;, &#x27;none&#x27;);
+        }
+    },
+
     initScrollbar: function (oriented) {
-        var scrollbar = this.getScrollbarByOrientation(oriented),
-            handle = this.getScrollbarHandleByOrientation(oriented),
-            contentHolder = this.getUiElement(&#x27;contentHolder&#x27;),
-            ops = this.options,
-            plugin = this,
+        var self = this,
+            scrollbar = self.getScrollbarByOrientation(oriented),
+            handle = self.getScrollbarHandleByOrientation(oriented),
+            contentHolder = self.getUiElement(&#x27;contentHolder&#x27;),
+            plugin = self,
 
         // Resolve scrollbar direction variables
             scrollVars = plugin.getScrollDirVars(oriented),
@@ -440,7 +451,7 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
         plugin.initScrollbarHandle(oriented);
 
         // Make draggable handle on scrollbar
-        handle.draggable({
+        handle = handle.draggable({
             containment: &#x27;parent&#x27;,
             cursor: &#x27;s-resize&#x27;,
             axis: dragAxis,
@@ -448,7 +459,7 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
                 var percentScroll =
                     ui.position[dir] / scrollbar[dimProp]();
 
-                contentHolder[&#x27;scroll&#x27; + ucaseFirst(dir)]
+                contentHolder[&#x27;scroll&#x27; + sjl.ucaseFirst(dir)]
                     (percentScroll * scrollVars.scrollAmountTotal);
             }
         });
@@ -462,6 +473,9 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
             plugin.constrainHandle(oriented);
             plugin.scrollContentHolder(oriented);
         });
+
+        // Save the draggable handle for later (for calling destroy on it for reinitialization
+        self.saveDraggableHandleForLater(handle, oriented);
     },
 
     initScrollbarHandle: function (oriented) {
@@ -472,7 +486,7 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
             dimProp = vars.scrollbarDimProp,
             contentDimVal = contentHolder[dimProp](),
             scrollTotal = contentHolder.get(0)[&#x27;scroll&#x27;
-                + ucaseFirst(dimProp)],
+                + sjl.ucaseFirst(dimProp)],
             scrollbarDimVal = scrollBar[dimProp]();
         handle[dimProp]
             ((contentDimVal * scrollbarDimVal) / scrollTotal);
@@ -525,6 +539,38 @@ $.widget(&#x27;jui.juiScrollPane&#x27;, $.jui.juiBase, {
     scrollHorizontally: function (value) {
         this._scrollByOrientation(value,
             this.options.scrollbarOriented.HORIZONTALLY);
+    },
+
+    saveDraggableHandleForLater: function (handle, oriented) {
+        var self = this,
+            ops = self.options;
+        if (oriented === ops.scrollbarOriented.VERTICALLY) {
+            ops.draggableVertHandle = handle;
+        }
+        else {
+            ops.draggableHorizHandle = handle;
+        }
+    },
+
+    refresh: function () {
+        var self = this,
+            ops = self.options,
+            vertHandle = ops.draggableVertHandle,
+            horizHandle = ops.draggableHorizHandle;
+
+        // Destroy draggable on handle
+        if (!sjl.empty(vertHandle) &amp;&amp; vertHandle instanceof $) {
+            vertHandle.draggable(&#x27;destroy&#x27;);
+        }
+
+        // Destroy draggable on handle
+        if (!sjl.empty(horizHandle) &amp;&amp; horizHandle instanceof $) {
+            horizHandle.draggable(&#x27;destroy&#x27;);
+        }
+
+        // Re-initialize scrollbars (recalc heights, widths,
+        // and make draggable and constrainable etc.
+        self.initScrollbars();
     },
 
     _destroy: function () {

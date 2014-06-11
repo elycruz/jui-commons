@@ -3,7 +3,7 @@
  * scrollbars whose elements are fetched or created depending on the
  * flags passed in/or-not-passed in by the user.
  *
- * @module $.jui.juiScrollPane
+ * @class $.jui.juiScrollPane
  *
  * @requires jquery.mousewheel (for crossbrowser mousewheel functionality)
  * @requires jquery
