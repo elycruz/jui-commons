@@ -1,4 +1,4 @@
-/*! jui-commons 2014-06-10 */
+/*! jui-commons 2014-08-06 */
 $.widget("jui.juiBase", {
     options: {
         disableOnTouchDevice: !0,
@@ -212,11 +212,8 @@ $.widget("jui.juiBase", {
         }), g = c.scrollableElm;
         c.realtime || (a = b._getUserDefinedOffset()), d.addClass(c.className), 
         g.bind("scroll resize orientationchange load", function() {
-            {
-                var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
-                g.width() - k;
-            }
-            c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
+            var h = $(this), i = h.scrollTop(), j = (h.scrollLeft(), sjl.isset(a.bottom) ? a.bottom : 0), k = sjl.isset(a.right) ? a.right : 0, l = g.height() - j - d.outerHeight();
+            g.width() - k, c.realtime && (a = b._getUserDefinedOffset()), e && (sjl.isset(a.top) && (i > f.top + a.top && d.offset().top + d.outerHeight() - i + a.top < l ? d.css({
                 position: "fixed",
                 top: a.top,
                 bottom: "auto"
@@ -569,7 +566,7 @@ $.widget("jui.juiBase", {
         var a, b, c = this, d = c.options, e = d.ui.inidicatorsNeededElms, f = c.getUiElement("wrapperElm"), g = c.getUiElement("scrollableElm");
         e.elm = a = $(e.selector, this.element), 0 !== a.length && (a.each(function(b, c) {
             c = $(c);
-            var d = $('<div class="indicator" title="' + c.text() + '"data-index="' + b + '"></div>');
+            var d = $('<div class="indicator" title="' + c.text() + '"' + 'data-index="' + b + '"></div>');
             f.append(d), $(".indicator", f).eq(b).css("top", c.offset().top), d.juiAffix({
                 scrollableElm: g,
                 offset: {
@@ -666,11 +663,8 @@ $.widget("jui.juiBase", {
         }
     },
     _create: function() {
-        {
-            var a = this;
-            a.options;
-        }
-        a.element.addClass(a.options.className), a._super();
+        var a = this;
+        a.options, a.element.addClass(a.options.className), a._super();
     },
     _addEventListeners: function() {
         var a = this, b = a.options, c = a.getUiElement("textField");
@@ -754,7 +748,7 @@ $.widget("jui.juiBase", {
     options: {
         scrollSpeed: function() {
             var a = 0;
-            return a = this.getUiElement("contentHolder").height() / 3 / 3 * 2, sjl.classOfIs(a, "Number") ? a : 0;
+            return a = 2 * (this.getUiElement("contentHolder").height() / 3 / 3), sjl.classOfIs(a, "Number") ? a : 0;
         },
         keyPressHash: {
             "37": -1,
@@ -993,7 +987,7 @@ $.widget("jui.juiBase", {
                 onComplete: b.executeTimelineCompleteFunc
             });
         } catch (d) {
-            throw new Error('Could not create a new "' + c.defaultTimelineClass + '"when trying to create a timeline object.');
+            throw new Error('Could not create a new "' + c.defaultTimelineClass + '"' + "when trying to create a timeline object.");
         }
     },
     _init: function() {
@@ -1318,7 +1312,7 @@ $.widget("jui.juiBase", {
     },
     getLabelFromOptionElm: function(a) {
         var b, c = this.options;
-        return sjl.empty(a) ? null : (sjl.isset(c.labelAttribName) && (b = a.attr(c.labelAtribName)), 
+        return sjl.empty(a) ? null : (sjl.isset(c.labelAttribName) && (b = a.attr(c.labelAttribName)), 
         sjl.isset(b) ? b : a.text());
     }
 });

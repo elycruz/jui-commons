@@ -693,7 +693,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // If we have a label attribute name, get label by attribute name
         if (sjl.isset(ops.labelAttribName)) {
-            label = option.attr(ops.labelAtribName);
+            label = option.attr(ops.labelAttribName);
         }
 
         // Else use the option elements text
