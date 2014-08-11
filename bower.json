@@ -19,5 +19,9 @@
     "requirejs": "~2.1.9",
     "checkjs": "elycruz/checkjs#~0.2.0",
     "sjljs": "elycruz/sjljs"
+  },
+  "resolutions": {
+    "chai": "~1.9.1",
+    "mocha": "~1.18.2"
   }
 }

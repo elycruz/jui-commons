@@ -31014,7 +31014,7 @@ $.widget("jui.juiBase", {
     },
     getLabelFromOptionElm: function(a) {
         var b, c = this.options;
-        return sjl.empty(a) ? null : (sjl.isset(c.labelAttribName) && (b = a.attr(c.labelAtribName)), 
+        return sjl.empty(a) ? null : (sjl.isset(c.labelAttribName) && (b = a.attr(c.labelAttribName)), 
         sjl.isset(b) ? b : a.text());
     }
 });

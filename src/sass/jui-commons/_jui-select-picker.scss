@@ -93,20 +93,27 @@
         }
     }
 
-    .vertical.scrollbar {
+    .scrollbar {
         position: absolute;
+        @include border-radius(8px);
+        z-index: 99;
+    }
+
+    .horizontal.scrollbar {
+        display: none;
+    }
+
+    .vertical.scrollbar {
         top: auto;
         right: 10px;
         width: 8px;
         height: 220px;
-//        @include opacity(0);
-        @include border-radius(8px);
-        z-index: 99;
 
         .handle {
             width: 8px;
             @include border-radius(8px);
         }
+
     }
 }
 
