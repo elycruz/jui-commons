@@ -424,6 +424,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         for (tween = 0; tween < tweens.length; tween += 1) {
             timeline.add(tweens[tween]);
         }
+
+        self.options.dropDownElm = dropDown;
     },
 
     /**
@@ -461,7 +463,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * @todo remove this function and use external components refresh method instead
      */
     refreshScrollbar: function () {
-        this.getUiElement('wrapperElm').juiScrollPane('refresh');
+        this.options.dropDownElm.juiScrollableDropDown('refresh');
     },
 
     getSuggestedWrapperExpandHeight: function (value) {
@@ -701,3 +703,4 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     }
 
 });
+

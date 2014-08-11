@@ -1,4 +1,4 @@
-/*! jui-commons 2014-06-10 */
+/*! jui-commons 2014-08-11 */
 $.widget("jui.juiBase", {
     options: {
         disableOnTouchDevice: !0,
@@ -929,7 +929,9 @@ $.widget("jui.juiBase", {
     },
     refresh: function() {
         var a = this, b = a.options, c = b.draggableVertHandle, d = b.draggableHorizHandle;
-        !sjl.empty(c) && c instanceof $ && c.draggable("destroy"), !sjl.empty(d) && d instanceof $ && d.draggable("destroy"), 
+        try {
+            !sjl.empty(c) && c instanceof $ && c.draggable("destroy"), !sjl.empty(d) && d instanceof $ && d.draggable("destroy");
+        } catch (e) {}
         a.initScrollbars();
     },
     _destroy: function() {
@@ -1043,7 +1045,7 @@ $.widget("jui.juiBase", {
     },
     _initScrollbar: function() {
         var a = this.options, b = this._namespace("ui.scrollbar");
-        !sjl.empty(b.elm) && b.elm.length > 0 || (a.juiScrollPaneElm = this.element.juiScrollPane({
+        !sjl.empty(b.elm) && b.elm.length > 0 || (this.options.juiScrollPaneElm = this.element.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement("contentElm"),
@@ -1079,7 +1081,7 @@ $.widget("jui.juiBase", {
         this._removeCreatedElements(), this._removeEventListeners(), this._super();
     },
     refresh: function() {
-        this._removeEventListeners(), this._addEventListeners(), this.options.juiScrollPaneElm.refresh();
+        this._removeEventListeners(), this._addEventListeners(), this.options.juiScrollPaneElm.juiScrollPane("refresh");
     },
     getState: function() {
         return this.options.state;
@@ -1229,17 +1231,20 @@ $.widget("jui.juiBase", {
                 }
             }
         }, sjl.isset(h.expandOn) && (d.expandOn = h.expandOn), sjl.isset(h.collapseOn) && (d.collapseOn = h.collapseOn), 
-        c = i.juiScrollableDropDown(d), !h.isLessThanIE9) for (b = c.juiScrollableDropDown("getAnimationTimeline"), 
-        b.seek(0), b.clear(), b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
-            height: g.getSuggestedWrapperExpandHeight()
-        }), TweenLite.to(j, k, {
-            height: g.getSuggestedContentExpandHeight(),
-            autoAlpha: 1,
-            delay: -.3
-        }), TweenLite.to(a, k, {
-            opacity: 1,
-            delay: -.2
-        }) ], e = 0; e < f.length; e += 1) b.add(f[e]);
+        c = i.juiScrollableDropDown(d), !h.isLessThanIE9) {
+            for (b = c.juiScrollableDropDown("getAnimationTimeline"), b.seek(0), b.clear(), 
+            b.pause(), a = $(".vertical.scrollbar", i), f = [ TweenLite.to(i, k, {
+                height: g.getSuggestedWrapperExpandHeight()
+            }), TweenLite.to(j, k, {
+                height: g.getSuggestedContentExpandHeight(),
+                autoAlpha: 1,
+                delay: -.3
+            }), TweenLite.to(a, k, {
+                opacity: 1,
+                delay: -.2
+            }) ], e = 0; e < f.length; e += 1) b.add(f[e]);
+            g.options.dropDownElm = c;
+        }
     },
     destroy: function() {
         this.element.removeAttr("hidden"), this._removeCreatedOptions(), this._super();
@@ -1249,7 +1254,7 @@ $.widget("jui.juiBase", {
         this._drawSelectOptions(), this.setLabelText(), this.refreshScrollbar();
     },
     refreshScrollbar: function() {
-        this.getUiElement("wrapperElm").juiScrollPane("refresh");
+        this.options.dropDownElm.juiScrollableDropDown("refresh");
     },
     getSuggestedWrapperExpandHeight: function() {
         var a, b = this, c = b.options, d = b.getUiElement("wrapperElm"), e = null, f = b.getMaxHeightFromElm(d);

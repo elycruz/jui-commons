@@ -242,7 +242,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             return;
         }
 
-        ops.juiScrollPaneElm = this.element.juiScrollPane({
+        this.options.juiScrollPaneElm = this.element.juiScrollPane({
             ui: {
                 contentHolder: {
                     elm: this.getUiElement('contentElm'),
@@ -329,7 +329,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     refresh: function () {
         this._removeEventListeners();
         this._addEventListeners();
-        this.options.juiScrollPaneElm.refresh();
+        this.options.juiScrollPaneElm.juiScrollPane('refresh');
     },
 
     getState: function () {

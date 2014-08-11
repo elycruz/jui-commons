@@ -462,15 +462,20 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             vertHandle = ops.draggableVertHandle,
             horizHandle = ops.draggableHorizHandle;
 
-        // Destroy draggable on handle
-        if (!sjl.empty(vertHandle) && vertHandle instanceof $) {
-            vertHandle.draggable('destroy');
-        }
+        try {
 
-        // Destroy draggable on handle
-        if (!sjl.empty(horizHandle) && horizHandle instanceof $) {
-            horizHandle.draggable('destroy');
+            // Destroy draggable on handle
+            if (!sjl.empty(vertHandle) && vertHandle instanceof $) {
+                vertHandle.draggable('destroy');
+            }
+
+            // Destroy draggable on handle
+            if (!sjl.empty(horizHandle) && horizHandle instanceof $) {
+                horizHandle.draggable('destroy');
+            }
+
         }
+        catch (e) { }
 
         // Re-initialize scrollbars (recalc heights, widths,
         // and make draggable and constrainable etc.
@@ -502,3 +507,4 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     }
 
 });
+
