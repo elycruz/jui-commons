@@ -4,7 +4,6 @@ define([
     'routers/Router',
     'controllers/IndexController'
 ],
-
 function( Backbone, Communicator, Router, IndexController ) {
     'use strict';
 

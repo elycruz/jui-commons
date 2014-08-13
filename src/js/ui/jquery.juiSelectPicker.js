@@ -331,22 +331,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Option/A-Tag click
         wrapperElm.on('mouseup', 'a[data-value]', function () {
-            var collapsed = wrapperElm
-                .juiScrollableDropDown('getState')
-                .indexOf('collapsed') > -1 ? true : false;
-            if (collapsed) {
-                self.playAnimation();
-            }
-            else {
-                self.reverseAnimation();
-            }
-        });
-
-        wrapperElm.on('click', 'a[data-value]', function (e) {
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-            ops.timeline.reverse();
+            wrapperElm.trigger('click');
         });
     },
 
