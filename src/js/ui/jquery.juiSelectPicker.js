@@ -326,15 +326,14 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      */
     _addEventListeners: function () {
         var self = this,
-            ops = this.options,
             wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        wrapperElm.on('mouseup', 'a[data-value]', function () {
+        wrapperElm.on('mouseup', 'a[data-value]', function (e) {
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-            wrapperElm.trigger('click');
+            self.options.dropDownElm.trigger('click');
         });
     },
 
@@ -442,8 +441,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._removeCreatedOptions();
         this._drawSelectOptions();
         this.setLabelText();
-        // @todo Shouldn't call this directly on internal element of other component
-        // @todo should call components refresh method instead
         this.refreshScrollbar();
     },
 
@@ -595,34 +592,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             .find('> ul > li').removeClass(
                 this.options.ui.optionsElm.optionSelectedClassName);
         this.options.selectedValue = null;
-    },
-
-    /**
-     * Plays animation timeline (if disableOnTouchDevice is true and isTouchDevice, does nothing).
-     * @return {void}
-     */
-    playAnimation: function () {
-        var self = this,
-            ops = self.options;
-        if ((ops.disableOnTouchDevice && ops.isTouchDevice)
-        || (ops.isLessThanIE9)) {
-            return;
-        }
-        ops.timeline.play();
-    },
-
-    /**
-     * Reverses the animation timeline if not touch device.
-     * @return {void}
-     */
-    reverseAnimation: function () {
-        var self = this,
-            ops = self.options;
-        if ((ops.disableOnTouchDevice && ops.isTouchDevice)
-            || (ops.isLessThanIE9)) {
-            return;
-        }
-        ops.timeline.reverse();
     },
 
     /**

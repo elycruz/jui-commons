@@ -1,4 +1,4 @@
-/*! jui-commons 2014-08-11 */
+/*! jui-commons 2014-08-13 */
 $.widget("jui.juiBase", {
     options: {
         disableOnTouchDevice: !0,
@@ -1060,6 +1060,9 @@ $.widget("jui.juiBase", {
     _initTimeline: function() {
         sjl.empty(this.options.timeline) && this.initAnimationTimeline();
     },
+    setStateTo: function(a) {
+        this.options.state = "undefined" != typeof a && "expanded" === a ? this.options.states.EXPANDED : this.options.states.COLLAPSED;
+    },
     executeTimelineCompleteFunc: function() {
         var a = this, b = a.options, c = a.getUiElement("contentElm");
         b.state === b.states.COLLAPSED ? c.css("display", "none") : b.state === b.states.EXPANDED && c.css("display", b.ui.contentElm.originalCss.display);
@@ -1076,6 +1079,12 @@ $.widget("jui.juiBase", {
         var a = this, b = a.options;
         if (!b.disableOnTouchDevice || !b.isTouchDevice) return b.isLessThanIE9 ? (a.executeTimelineCompleteFunc(), 
         void 0) : (b.timeline.reverse(), void 0);
+    },
+    collapse: function() {
+        this.reverseAnimation(), this.setStateTo("collapsed");
+    },
+    expand: function() {
+        this.playAnimation(), this.setStateTo("expanded");
     },
     destroy: function() {
         this._removeCreatedElements(), this._removeEventListeners(), this._super();
@@ -1207,13 +1216,10 @@ $.widget("jui.juiBase", {
         }), b.append(d), c = $("li", b), e.ui.optionsElm.suggestedExpandHeight = c.eq(0).height() * c.length;
     },
     _addEventListeners: function() {
-        var a = this, b = this.options, c = a.getUiElement("wrapperElm");
-        c.on("mouseup", "a[data-value]", function() {
-            var b = c.juiScrollableDropDown("getState").indexOf("collapsed") > -1 ? !0 : !1;
-            b ? a.playAnimation() : a.reverseAnimation();
-        }), c.on("click", "a[data-value]", function(c) {
-            var d = $(c.currentTarget);
-            a.clearSelected(), a.setSelected(d), b.timeline.reverse();
+        var a = this, b = a.getUiElement("wrapperElm");
+        b.on("mouseup", "a[data-value]", function(b) {
+            var c = $(b.currentTarget);
+            a.clearSelected(), a.setSelected(c), a.options.dropDownElm.trigger("click");
         });
     },
     _removeCreatedOptions: function() {
@@ -1301,14 +1307,6 @@ $.widget("jui.juiBase", {
     clearSelected: function() {
         this.getUiElement("optionsElm").find("> ul > li").removeClass(this.options.ui.optionsElm.optionSelectedClassName), 
         this.options.selectedValue = null;
-    },
-    playAnimation: function() {
-        var a = this, b = a.options;
-        b.disableOnTouchDevice && b.isTouchDevice || b.isLessThanIE9 || b.timeline.play();
-    },
-    reverseAnimation: function() {
-        var a = this, b = a.options;
-        b.disableOnTouchDevice && b.isTouchDevice || b.isLessThanIE9 || b.timeline.reverse();
     },
     getOwnOptionElmByValue: function(a) {
         this.getUiElement("optionsElm").find('[data-value="' + a + '"]');
