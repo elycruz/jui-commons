@@ -326,7 +326,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      */
     _addEventListeners: function () {
         var self = this,
-            ops = this.options,
             wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
@@ -442,8 +441,6 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._removeCreatedOptions();
         this._drawSelectOptions();
         this.setLabelText();
-        // @todo Shouldn't call this directly on internal element of other component
-        // @todo should call components refresh method instead
         this.refreshScrollbar();
     },
 

@@ -264,6 +264,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         }
     },
 
+    setStateTo: function (state) {
+        this.options.state = typeof state !== 'undefined'
+            && state === 'expanded' ? this.options.states.EXPANDED
+            : this.options.states.COLLAPSED;
+    },
+
     // Function for executing css: display (original | none)
     executeTimelineCompleteFunc: function () {
         var self = this,
@@ -320,6 +326,16 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         ops.timeline.reverse();
     },
 
+    collapse: function () {
+        this.reverseAnimation();
+        this.setStateTo('collapsed');
+    },
+
+    expand: function () {
+        this.playAnimation();
+        this.setStateTo('expanded');
+    },
+
     destroy: function () {
         this._removeCreatedElements();
         this._removeEventListeners();
@@ -329,7 +345,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     refresh: function () {
         this._removeEventListeners();
         this._addEventListeners();
-        this.options.juiScrollPaneElm.juiScrollPane('refresh');
+        this.element.juiScrollPane('refresh');
     },
 
     getState: function () {

@@ -55,14 +55,14 @@ module.exports = function (grunt) {
                 tasks: ['uglify'],
                 options: {
                     spawn: false,
-                    livereload: 9000
+                    livereload: 3000
                 }
             }
         },
         connect: {
             server: {
                 options: {
-                    port: 9000,
+                    port: 3000,
                     base: '.'
                 }
             }
