@@ -535,7 +535,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             optionsElm = self.getUiElement('optionsElm'),
             optionsElmMaxHeight = self.getMaxHeightFromElm(optionsElm) || 180,
             wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm) || 220,
-            suggestedHeight = self.options.ui.optionsElm.suggestedExpandHeight + (self.getUiElement('buttonElm').height() / 3 * 2);
+            suggestedHeight = self.options.ui.optionsElm.suggestedExpandHeight + (btnElm.height() / 3 * 2);
         suggestedHeight = suggestedHeight > wrapperElmMaxHeight ? wrapperElmMaxHeight : suggestedHeight;
         return (suggestedHeight - (optionsElm.height() || optionsElmMaxHeight || 0));
     },
