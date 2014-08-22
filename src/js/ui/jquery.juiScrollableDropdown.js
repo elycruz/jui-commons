@@ -30,16 +30,16 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         // Example animations hash
         defaultAnimations: [{
                 type: 'from',
-                duration: 0.30,
+                duration: 0.34,
                 elmAlias: 'contentElm',
                 props: {css: {height: 0, autoAlpha: 0}}
             },
             {
                 type: 'to',
-                duration: 0.30,
+                duration: 0.34,
                 elmAlias: 'scrollbar',
                 props: {css: {autoAlpha: 1},
-                    delay: -0.10}
+                    delay: -0.13}
         }],
 
         // Expand select-picker on event
@@ -166,18 +166,19 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 if (self.options.state === states.COLLAPSED) {
                     self.ensureAnimationFunctionality();
                     self.options.state = states.EXPANDED;
-                    self.element.removeClass(ops.collapseClassName);
-                    self.element.addClass(ops.expandClassName);
-                    self.element.trigger('expand', e);
+                    self.element.removeClass(ops.collapseClassName)
+                        .addClass(ops.expandClassName)
+                        .trigger('expand', e);
                     self.playAnimation();
 //                    ops.timeline.play();
                 }
                 else {
                     self.ensureAnimationFunctionality();
                     self.options.state = states.COLLAPSED;
-                    self.element.removeClass(ops.expandClassName);
-                    self.element.addClass(ops.collapseClassName);
-                    self.element.trigger('collapse', e);
+                    self.element
+                        .removeClass(ops.expandClassName)
+                        .addClass(ops.collapseClassName)
+                        .trigger('collapse', e);
                     self.reverseAnimation();
 //                    ops.timeline.reverse();
                 }

@@ -70,7 +70,7 @@ module.exports = function (grunt) {
         },
         open: {
             server: {
-                path: 'http://localhost:<%= connect.server.options.port %>/examples'
+                path: 'http://localhost:<%= connect.server.options.port %>/examples/index.html'
             }
         },
         jsdoc : {

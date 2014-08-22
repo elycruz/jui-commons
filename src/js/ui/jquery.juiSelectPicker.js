@@ -328,7 +328,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Get suggested expand height
         options.each(function () {
-            suggestedExpandHeight += $(this).height();
+            var elm = $(this),
+            padding = parseInt(elm.css('padding'));
+            padding = padding === 0 ? parseInt(elm.css('paddingTop'), 10) : 0;
+            padding = padding === 0 ? parseInt(elm.css('paddingBottom'), 10) : 0;
+            suggestedExpandHeight += elm.height() + (padding * 2);
         });
 
         // Set suggested expand height
@@ -343,16 +347,19 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      */
     _addEventListeners: function () {
         var self = this,
+            ops = self.options,
             wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        $('a[data-value]', wrapperElm).click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
+        wrapperElm.on('mouseup', 'a[data-value]', function (e) {
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-            self.options.dropDownElm.juiScrollableDropDown('collapse');
+            // If mouseleave event force the select picker to collapse
+            // via scrollable dropdown
+            if (ops.collapseOn === 'mouseleave') {
+                wrapperElm.trigger(ops.collapseOn);
+            }
         });
     },
 
@@ -714,4 +721,3 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     }
 
 });
-
