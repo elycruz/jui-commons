@@ -268,7 +268,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     // Function for executing css: display (original | none)
     executeTimelineCompleteFunc: function (state) {
-        return;
         var self = this,
             ops = self.options,
             contentElm = ops.juiScrollPaneElm.juiScrollPane('getUiElement', 'contentHolder'),
@@ -278,12 +277,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         state = state || ops.state;
 
         if (state === ops.states.COLLAPSED) {
-            contentElm.css('display', 'none');
-            scrollbarElm.css('display', 'none');
+            contentElm.attr('disabled', 'disabled');
+            scrollbarElm.attr('disabled', 'disabled');
         }
         else if (state === ops.states.EXPANDED) {
-            contentElm.css('display', ops.ui.contentElm.originalCss.display);
-            scrollbarElm.css('display', 'block');
+            contentElm.attr('disabled', false);
+            scrollbarElm.css('disabled', false);
         }
     },
 

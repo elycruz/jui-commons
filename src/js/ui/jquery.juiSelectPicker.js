@@ -346,7 +346,9 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        wrapperElm.on('mouseup', 'a[data-value]', function (e) {
+        $('a[data-value]', wrapperElm).click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
@@ -474,13 +476,13 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this.options.dropDownElm.juiScrollableDropDown('refresh');
     },
 
-    getSuggestedWrapperExpandHeight: function (value) {
+    getSuggestedWrapperExpandHeight: function () {
         var self = this,
             ops = self.options,
             wrapperElm = self.getUiElement('wrapperElm'),
             suggestedExpandHeight = null,
             wrapperPaddingBottom,
-            maxHeight = self.getMaxHeightFromElm(wrapperElm);
+            maxHeight = self.getMaxHeightFromElm(wrapperElm) || 220;
 
         // Compose suggested height if no value passed in
         if (ops.ui.optionsElm.suggestedExpandHeight) {
@@ -524,10 +526,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             btnElm = self.getUiElement('buttonElm'),
             wrapperElm = self.getUiElement('wrapperElm'),
             optionsElm = self.getUiElement('optionsElm'),
-            optionsElmMaxHeight = self.getMaxHeightFromElm(optionsElm),
-            wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm),
-            retVal =  wrapperElmMaxHeight - btnElm.height() - (optionsElm.height() || optionsElmMaxHeight || 0);
-        return retVal;
+            optionsElmMaxHeight = self.getMaxHeightFromElm(optionsElm) || 180,
+            wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm) || 220,
+            suggestedHeight = self.options.ui.optionsElm.suggestedExpandHeight + (self.getUiElement('buttonElm').height() / 3 * 2);
+        suggestedHeight = suggestedHeight > wrapperElmMaxHeight ? wrapperElmMaxHeight : suggestedHeight;
+        return (suggestedHeight - (optionsElm.height() || optionsElmMaxHeight || 0));
     },
 
     getMaxHeightFromElm: function (elm) {
@@ -711,3 +714,4 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     }
 
 });
+
