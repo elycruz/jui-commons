@@ -2839,7 +2839,9 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm) || 220,
             suggestedHeight = self.options.ui.optionsElm.suggestedExpandHeight + (btnElm.height() / 3 * 2);
         suggestedHeight = suggestedHeight > wrapperElmMaxHeight ? wrapperElmMaxHeight : suggestedHeight;
-        return (suggestedHeight - (optionsElm.height() || optionsElmMaxHeight || 0));
+        return suggestedHeight < optionsElmMaxHeight ?
+            (suggestedHeight - (optionsElmMaxHeight || 0))
+                : optionsElmMaxHeight - suggestedHeight;
     },
 
     getMaxHeightFromElm: function (elm) {
