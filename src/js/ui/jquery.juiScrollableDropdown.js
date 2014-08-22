@@ -7,7 +7,6 @@
  * @requires jquery
  * @requires jquery.ui.core
  * @requires jquery.ui.widget
- * @requires jquery.ui.mouse
  * @requires jquery.ui.draggable
  * @requires TweenMax
  * @requires jquery.juiBase
@@ -102,9 +101,9 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 contentElm.css('visibility', 'hidden');
 
                 // Setup timeline object
-                self.timeline = new TimelineLite({
-                    onReverseComplete: self.executeTimelineCompleteFunc,
-                    onComplete: self.executeTimelineCompleteFunc
+                ops.timeline = new TimelineLite({
+                    onReverseCompleteParams: [self],
+                    onReverseComplete: function (context) { context.executeTimelineCompleteFunc(); }
                 });
             }
             catch (e) {
@@ -207,9 +206,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 });
         }
 
-        // Get mouse position tracker
-        ops.mousePos = $(window).juiMouse(),
-
         // When clicking outside of drop down close it
         $(window).on('click', function (e) {
             if ($.contains(self.element.get(0), e.target) === false
@@ -251,7 +247,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             }
         });
 
-        scrollbar.elm = $('.scrollbar', this.element);
+        scrollbar.elm = $('.vertical.scrollbar', this.element);
     },
 
     initAnimationTimeline: function () {
@@ -271,15 +267,23 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     },
 
     // Function for executing css: display (original | none)
-    executeTimelineCompleteFunc: function () {
+    executeTimelineCompleteFunc: function (state) {
+        return;
         var self = this,
             ops = self.options,
-            contentElm = self.getUiElement('contentElm');
-        if (ops.state === ops.states.COLLAPSED) {
+            contentElm = ops.juiScrollPaneElm.juiScrollPane('getUiElement', 'contentHolder'),
+            scrollbarElm = $('.vertical.scrollbar', ops.juiScrollPaneElm);
+
+        // Get state
+        state = state || ops.state;
+
+        if (state === ops.states.COLLAPSED) {
             contentElm.css('display', 'none');
+            scrollbarElm.css('display', 'none');
         }
-        else if (ops.state === ops.states.EXPANDED) {
+        else if (state === ops.states.EXPANDED) {
             contentElm.css('display', ops.ui.contentElm.originalCss.display);
+            scrollbarElm.css('display', 'block');
         }
     },
 
@@ -343,8 +347,6 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     },
 
     refresh: function () {
-        this._removeEventListeners();
-        this._addEventListeners();
         this.element.juiScrollPane('refresh');
     },
 

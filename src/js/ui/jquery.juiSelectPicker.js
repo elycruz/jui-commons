@@ -26,6 +26,18 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     options: {
 
         /**
+         * Collapse on event
+         * @type {String}
+         */
+        collapseOn: 'click',
+
+        /**
+         * Expand on event
+         * @type {String}
+         */
+        expandOn: 'click',
+
+        /**
          * Class name added to wrapper element.
          * @param {String} default: 'jui-select-picker';
          */
@@ -247,7 +259,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             optionsElm = self.getUiElement('optionsElm'),
             options = self.element.find('option'),
             ul = $('<ul></ul>'),
-            ops = self.options;
+            ops = self.options,
+            suggestedExpandHeight = 0;
 
         // Loop through option elements and copy them over to our
         // options container
@@ -313,9 +326,13 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Get height of first ul > li element
         options = $('li', optionsElm);
 
+        // Get suggested expand height
+        options.each(function () {
+            suggestedExpandHeight += $(this).height();
+        });
+
         // Set suggested expand height
-        ops.ui.optionsElm.suggestedExpandHeight
-            = options.eq(0).height() * options.length;
+        ops.ui.optionsElm.suggestedExpandHeight = suggestedExpandHeight;
     },
 
     /**
@@ -329,11 +346,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        wrapperElm.on('mouseup', 'a[data-value]', function () {
+        wrapperElm.on('mouseup', 'a[data-value]', function (e) {
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-            wrapperElm.trigger('click');
+            self.options.dropDownElm.juiScrollableDropDown('collapse');
         });
     },
 
@@ -401,6 +418,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Get scrollbar element
         scrollbarElm = $('.vertical.scrollbar', wrapperElm);
 
+        // Add custom tweens for select picker animation
         tweens = [
             TweenLite.to(wrapperElm, duration, {height: self.getSuggestedWrapperExpandHeight()}),
             TweenLite.to(contentElm, duration, {height: self.getSuggestedContentExpandHeight(), autoAlpha: 1, delay: -0.30}),
@@ -412,6 +430,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             timeline.add(tweens[tween]);
         }
 
+        // Set drop down on self for access later
         self.options.dropDownElm = dropDown;
     },
 
@@ -442,6 +461,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this._drawSelectOptions();
         this.setLabelText();
         this.refreshScrollbar();
+    },
+
+    refresh: function () {
+       this.refreshOptions();
     },
 
     /**
@@ -688,4 +711,3 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     }
 
 });
-
