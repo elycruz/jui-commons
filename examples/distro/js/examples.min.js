@@ -32423,8 +32423,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Add custom tweens for select picker animation
         tweens = [
             TweenLite.to(wrapperElm, duration, {height: self.getSuggestedWrapperExpandHeight()}),
-            TweenLite.to(contentElm, duration, {height: self.getSuggestedContentExpandHeight(), autoAlpha: 1, delay: -0.30}),
-            TweenLite.to(scrollbarElm, duration, {opacity: 1, delay: -0.20})
+            TweenLite.to(contentElm, duration, {height: self.getSuggestedContentExpandHeight(), autoAlpha: 1, delay: -0.34}),
+            TweenLite.to(scrollbarElm, duration, {opacity: 1, delay: -0.21})
         ];
 
         // Supply new tweens
@@ -32478,61 +32478,33 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
     getSuggestedWrapperExpandHeight: function () {
         var self = this,
-            ops = self.options,
             wrapperElm = self.getUiElement('wrapperElm'),
-            suggestedExpandHeight = null,
-            wrapperPaddingBottom,
-            maxHeight = self.getMaxHeightFromElm(wrapperElm) || 220;
-
-        // Compose suggested height if no value passed in
-        if (ops.ui.optionsElm.suggestedExpandHeight) {
-            wrapperPaddingBottom = self.getWrapperElmPaddingBottom();
+            maxHeight = self.getMaxHeightFromElm(wrapperElm) || 220,
+            wrapperPaddingTopBottomSum = self.getWrapperElmPaddingTopBottomSum(),
             suggestedExpandHeight = self.getSuggestedContentExpandHeight()
-                + (wrapperPaddingBottom <= -1 ? 0 : wrapperPaddingBottom)
-                + self.getUiElement('buttonElm').height();
-        }
+            + (wrapperPaddingTopBottomSum <= -1 ? 0 : wrapperPaddingTopBottomSum);
 
-        // Choose suggested height based wrapper max-height or suggested height
-        if (sjl.isset(suggestedExpandHeight)) {
-            suggestedExpandHeight = suggestedExpandHeight > maxHeight
-                ? maxHeight : suggestedExpandHeight;
-        }
-
-        // Else default it to the default
-        else {
-            suggestedExpandHeight = maxHeight;
-        }
-
-        return suggestedExpandHeight;
+        // Return suggested height
+        return suggestedExpandHeight > maxHeight ? maxHeight : suggestedExpandHeight;
     },
 
     getSuggestedContentExpandHeight: function () {
         var self = this,
-            contentElm = self.getUiElement('optionsElm'),
-            maxHeight = self.getMaxHeightFromElm(contentElm),
-            suggestedHeight = self.options.ui.optionsElm.suggestedExpandHeight;
-        if (sjl.isset(suggestedHeight)) {
-            suggestedHeight = suggestedHeight > maxHeight ? maxHeight : suggestedHeight;
-        }
-        else {
-            suggestedHeight = maxHeight;
-        }
+            optionsElm = self.getUiElement('optionsElm'),
+            optionsMaxHeight = self.getMaxHeightFromElm(optionsElm),
+            suggestedOptionsHeight = self.options.ui.optionsElm.suggestedExpandHeight;
 
-        return suggestedHeight;
+        return suggestedOptionsHeight > optionsMaxHeight ? optionsMaxHeight : suggestedOptionsHeight;
     },
 
-    getWrapperElmPaddingBottom: function () {
+    getWrapperElmPaddingTopBottomSum: function () {
         var self = this,
-            btnElm = self.getUiElement('buttonElm'),
             wrapperElm = self.getUiElement('wrapperElm'),
             optionsElm = self.getUiElement('optionsElm'),
             optionsElmMaxHeight = self.getMaxHeightFromElm(optionsElm) || 180,
-            wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm) || 220,
-            suggestedHeight = self.options.ui.optionsElm.suggestedExpandHeight + (btnElm.height() / 3 * 2);
-        suggestedHeight = suggestedHeight > wrapperElmMaxHeight ? wrapperElmMaxHeight : suggestedHeight;
-        return suggestedHeight < optionsElmMaxHeight ?
-            (suggestedHeight - (optionsElmMaxHeight || 0))
-                : optionsElmMaxHeight - suggestedHeight;
+            wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm) || 220;
+
+        return wrapperElmMaxHeight - optionsElmMaxHeight;
     },
 
     getMaxHeightFromElm: function (elm) {
