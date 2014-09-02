@@ -7,29 +7,30 @@ module.exports = function (grunt) {
             options: {
                 banner: '/*! ' +
                     '<%= pkg.name %> ' +
-                    '<%= grunt.template.today("yyyy-mm-dd") %> */\n'
+                    '<%= grunt.template.today("yyyy-mm-dd") %> */'
             },
             build: {
                 src: [
-                    'src/js/jquery.juiBase.js',
-                    'src/js/utils/*.js',
-                    'src/js/ui/*.js'
+                    'distro/<%= pkg.name %>.js'
                 ],
                 dest: 'distro/<%= pkg.name %>.min.js'
-            },
-            dev: {
+            }
+        },
+        concat: {
+            debug: {
                 src: [
                     'src/js/jquery.juiBase.js',
-                    'src/js/utils/*.js',
-                    'src/js/ui/*.js'
+                    'src/js/ui/jquery.juiMouse.js',
+                    'src/js/ui/jquery.juiAbstractPaginator.js',
+                    'src/js/ui/jquery.juiBasicPaginator.js',
+                    'src/js/ui/jquery.juiPaginatorWithTextField.js',
+                    'src/js/ui/jquery.juiScrollPane.js',
+                    'src/js/ui/jquery.juiDialog.js',
+                    'src/js/ui/jquery.juiScalableBtn.js',
+                    'src/js/ui/jquery.juiScrollableDropDown.js',
+                    'src/js/ui/jquery.juiSelectPicker.js'
                 ],
-                dest: 'distro/<%= pkg.name %>.js',
-                options: {
-                    beautify: {
-                        beautify: true,
-                        width: 72
-                    }
-                }
+                dest: 'distro/<%= pkg.name %>.js'
             }
         },
         compass: {
@@ -52,7 +53,7 @@ module.exports = function (grunt) {
             },
             js: {
                 files: ['./src/js/**/*.js'],
-                tasks: ['uglify'],
+                tasks: ['concat', 'uglify'],
                 options: {
                     spawn: false,
                     livereload: 3000
@@ -69,7 +70,7 @@ module.exports = function (grunt) {
         },
         open: {
             server: {
-                path: 'http://localhost:<%= connect.server.options.port %>/examples'
+                path: 'http://localhost:<%= connect.server.options.port %>/examples/index.html'
             }
         },
         jsdoc : {
@@ -86,6 +87,7 @@ module.exports = function (grunt) {
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -98,6 +100,7 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'compass',
         'cssmin',
+        'concat',
         'uglify',
         'connect',
         'open',
@@ -108,6 +111,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'compass',
         'cssmin',
+        'concat',
         'uglify',
     ]);
 
