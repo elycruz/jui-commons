@@ -26,5 +26,9 @@
     "sjljs": "elycruz/sjljs#~0.1.1"
   },
   "devDependencies": {},
-  "directory": "bower_components"
+  "directory": "bower_components",
+  "resolutions": {
+    "chai": "~1.9.1",
+    "mocha": "~1.18.2"
+  }
 }

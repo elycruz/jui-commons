@@ -1,7 +1,4 @@
 .jui-scrollable-drop-down {
-    &.expanded {
-        border: 1px solid #000;
-    }
 
     position: absolute;
     border: 1px solid #888;
@@ -10,6 +7,10 @@
     min-width: 320px;
     max-height: 280px;
     color: #888;
+
+    &.expanded {
+        border: 1px solid #000;
+    }
 
     .button {
         position: relative;

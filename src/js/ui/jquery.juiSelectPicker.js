@@ -26,6 +26,18 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     options: {
 
         /**
+         * Collapse on event
+         * @type {String}
+         */
+        collapseOn: 'click',
+
+        /**
+         * Expand on event
+         * @type {String}
+         */
+        expandOn: 'click',
+
+        /**
          * Class name added to wrapper element.
          * @param {String} default: 'jui-select-picker';
          */
@@ -247,7 +259,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             optionsElm = self.getUiElement('optionsElm'),
             options = self.element.find('option'),
             ul = $('<ul></ul>'),
-            ops = self.options;
+            ops = self.options,
+            suggestedExpandHeight = 0;
 
         // Loop through option elements and copy them over to our
         // options container
@@ -313,9 +326,17 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Get height of first ul > li element
         options = $('li', optionsElm);
 
+        // Get suggested expand height
+        options.each(function () {
+            var elm = $(this),
+            padding = parseInt(elm.css('padding'));
+            padding = padding === 0 ? parseInt(elm.css('paddingTop'), 10) : 0;
+            padding = padding === 0 ? parseInt(elm.css('paddingBottom'), 10) : 0;
+            suggestedExpandHeight += elm.height() + (padding * 2);
+        });
+
         // Set suggested expand height
-        ops.ui.optionsElm.suggestedExpandHeight
-            = options.eq(0).height() * options.length;
+        ops.ui.optionsElm.suggestedExpandHeight = suggestedExpandHeight;
     },
 
     /**
@@ -326,14 +347,19 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      */
     _addEventListeners: function () {
         var self = this,
+            ops = self.options,
             wrapperElm = self.getUiElement('wrapperElm');
 
         // Option/A-Tag click
-        wrapperElm.on('mouseup', 'a[data-value]', function () {
+        wrapperElm.on('mouseup', 'a[data-value]', function (e) {
             var elm = $(e.currentTarget);
             self.clearSelected();
             self.setSelected(elm);
-            wrapperElm.trigger('click');
+            // If mouseleave event force the select picker to collapse
+            // via scrollable dropdown
+            if (ops.collapseOn === 'mouseleave') {
+                wrapperElm.trigger(ops.collapseOn);
+            }
         });
     },
 
@@ -401,10 +427,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Get scrollbar element
         scrollbarElm = $('.vertical.scrollbar', wrapperElm);
 
+        // Add custom tweens for select picker animation
         tweens = [
             TweenLite.to(wrapperElm, duration, {height: self.getSuggestedWrapperExpandHeight()}),
-            TweenLite.to(contentElm, duration, {height: self.getSuggestedContentExpandHeight(), autoAlpha: 1, delay: -0.30}),
-            TweenLite.to(scrollbarElm, duration, {opacity: 1, delay: -0.20})
+            TweenLite.to(contentElm, duration, {height: self.getSuggestedContentExpandHeight(), autoAlpha: 1, delay: -0.34}),
+            TweenLite.to(scrollbarElm, duration, {opacity: 1, delay: -0.21})
         ];
 
         // Supply new tweens
@@ -412,6 +439,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             timeline.add(tweens[tween]);
         }
 
+        // Set drop down on self for access later
         self.options.dropDownElm = dropDown;
     },
 
@@ -444,6 +472,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this.refreshScrollbar();
     },
 
+    refresh: function () {
+       this.refreshOptions();
+    },
+
     /**
      * @todo remove this function and use external components refresh method instead
      */
@@ -451,60 +483,35 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         this.options.dropDownElm.juiScrollableDropDown('refresh');
     },
 
-    getSuggestedWrapperExpandHeight: function (value) {
+    getSuggestedWrapperExpandHeight: function () {
         var self = this,
-            ops = self.options,
             wrapperElm = self.getUiElement('wrapperElm'),
-            suggestedExpandHeight = null,
-            wrapperPaddingBottom,
-            maxHeight = self.getMaxHeightFromElm(wrapperElm);
-
-        // Compose suggested height if no value passed in
-        if (ops.ui.optionsElm.suggestedExpandHeight) {
-            wrapperPaddingBottom = self.getWrapperElmPaddingBottom();
+            maxHeight = self.getMaxHeightFromElm(wrapperElm) || 220,
+            wrapperPaddingTopBottomSum = self.getWrapperElmPaddingTopBottomSum(),
             suggestedExpandHeight = self.getSuggestedContentExpandHeight()
-                + (wrapperPaddingBottom <= -1 ? 0 : wrapperPaddingBottom)
-                + self.getUiElement('buttonElm').height();
-        }
+            + (wrapperPaddingTopBottomSum <= -1 ? 0 : wrapperPaddingTopBottomSum);
 
-        // Choose suggested height based wrapper max-height or suggested height
-        if (sjl.isset(suggestedExpandHeight)) {
-            suggestedExpandHeight = suggestedExpandHeight > maxHeight
-                ? maxHeight : suggestedExpandHeight;
-        }
-
-        // Else default it to the default
-        else {
-            suggestedExpandHeight = maxHeight;
-        }
-
-        return suggestedExpandHeight;
+        // Return suggested height
+        return suggestedExpandHeight > maxHeight ? maxHeight : suggestedExpandHeight;
     },
 
     getSuggestedContentExpandHeight: function () {
         var self = this,
-            contentElm = self.getUiElement('optionsElm'),
-            maxHeight = self.getMaxHeightFromElm(contentElm),
-            suggestedHeight = self.options.ui.optionsElm.suggestedExpandHeight;
-        if (sjl.isset(suggestedHeight)) {
-            suggestedHeight = suggestedHeight > maxHeight ? maxHeight : suggestedHeight;
-        }
-        else {
-            suggestedHeight = maxHeight;
-        }
+            optionsElm = self.getUiElement('optionsElm'),
+            optionsMaxHeight = self.getMaxHeightFromElm(optionsElm),
+            suggestedOptionsHeight = self.options.ui.optionsElm.suggestedExpandHeight;
 
-        return suggestedHeight;
+        return suggestedOptionsHeight > optionsMaxHeight ? optionsMaxHeight : suggestedOptionsHeight;
     },
 
-    getWrapperElmPaddingBottom: function () {
+    getWrapperElmPaddingTopBottomSum: function () {
         var self = this,
-            btnElm = self.getUiElement('buttonElm'),
             wrapperElm = self.getUiElement('wrapperElm'),
             optionsElm = self.getUiElement('optionsElm'),
-            optionsElmMaxHeight = self.getMaxHeightFromElm(optionsElm),
-            wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm),
-            retVal =  wrapperElmMaxHeight - btnElm.height() - (optionsElm.height() || optionsElmMaxHeight || 0);
-        return retVal;
+            optionsElmMaxHeight = self.getMaxHeightFromElm(optionsElm) || 180,
+            wrapperElmMaxHeight = self.getMaxHeightFromElm(wrapperElm) || 220;
+
+        return wrapperElmMaxHeight - optionsElmMaxHeight;
     },
 
     getMaxHeightFromElm: function (elm) {
@@ -688,4 +695,3 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     }
 
 });
-
