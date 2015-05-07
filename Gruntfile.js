@@ -102,7 +102,7 @@ module.exports = function (grunt) {
         'cssmin',
         'concat',
         'uglify',
-        'connect',
+        //'connect',
         'open',
         'watch'
     ]);
@@ -119,7 +119,7 @@ module.exports = function (grunt) {
     grunt.registerTask('develop', [
         'compass',
         'cssmin',
-        'connect',
+        //'connect',
         'open',
         'watch'
     ]);
