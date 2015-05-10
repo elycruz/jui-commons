@@ -28,22 +28,10 @@ module.exports = function (grunt) {
                 options: {
                     baseUrl: './scripts',
                     optimize: 'none',
-                    out: './distro/js/examples.min.js',
+                    no_mangle: true,
+                    out: './distro/js/examples.js',
                     name: 'init',
                     mainConfigFile: './scripts/init.js',
-                    stubModules: ['text', 'hbs'],
-                    preserveLicenseComments: false,
-                    useStrict: true,
-                    wrap: true
-                }
-            },
-            debug: {
-                options: {
-                    baseUrl: 'scripts',
-                    optimize: 'none',
-                    out: 'distro/js/examples.js',
-                    name: 'init',
-                    mainConfigFile: 'scripts/init.js',
                     stubModules: ['text', 'hbs'],
                     preserveLicenseComments: false,
                     useStrict: true,
@@ -104,7 +92,7 @@ module.exports = function (grunt) {
     grunt.registerTask('develop', [
         'compass',
         'cssmin',
-        'requirejs:debug',
+        'requirejs',
         'watch'
     ]);
 

@@ -34,7 +34,7 @@ require.config({
         'sjl':                  '../bower_components/sjljs/sjl',
 
         'gsap-scrollto-plugin': '../bower_components/greensock/src/uncompressed/plugins/ScrollToPlugin',
-        'jui-commons':          '../../distro/jui-commons',
+        'jui-commons':          '../../distro/js/jui-commons',
 
         'jquery':               '../bower_components/jquery/jquery',
         'jquery-mousewheel':    '../bower_components/jquery-mousewheel/jquery.mousewheel',
@@ -54,4 +54,3 @@ require.config({
         partialsUrl: ''           // default: ''
     }
 });
-

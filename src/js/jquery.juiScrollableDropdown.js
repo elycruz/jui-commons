@@ -77,7 +77,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             .addClass('collapsed');
 
         // Populate ui elements on self (self.ui[elmKeyAlias])
-        self._populateUiElementsFromOptions();
+        self._autoPopulateUiElements();
 
         // Get content element
         contentElm = self.getUiElement('contentElm');
@@ -231,7 +231,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     },
 
     _initTimeline: function () {
-        if (sjl.empty(this.options.timeline)) {
+        if (sjl.empty(this.options.gsapTimeline)) {
             this.initAnimationTimeline()
         }
     },

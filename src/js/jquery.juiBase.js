@@ -49,18 +49,26 @@ $.widget('jui.juiBase', {
         isLessThanIE9: false,
 
         /**
+         * Default Gsap Timeline Constructor Options
+         * @type {Object}
+         */
+        defaultGsapTimelineConstructorOptions: {
+            paused: true
+        },
+
+        /**
          * Default Timeline Class
-         * @property defaultTimelineClass
+         * @property gsapTimelineConstructor
          * @type {String}
          */
-        defaultTimelineClass: 'TimelineLite',
+        gsapTimelineConstructor: TimelineLite,
 
         /**
          * Gsap Timeline object
          * @property timeline
          * @type {Timeline}
          */
-        timeline: null,
+        gsapTimeline: null,
 
         /**
          * Ui hash for ui element
@@ -71,7 +79,6 @@ $.widget('jui.juiBase', {
 
         uiElmPropagateOrder: ['selector', 'creation']
     },
-
 
     /**
      * Sets flag if touch device (used for disable plugin if options.disableOnTouchDevice
@@ -108,11 +115,11 @@ $.widget('jui.juiBase', {
 
     /**
      * Populates this.ui with element collections from this.options.
-     * @method _populateUiElementsFromOptions
+     * @method _autoPopulateUiElements
      * @param ops {Object|String} Optional. Default `this.options`.
      * @return {void}
      */
-    _populateUiElementsFromOptions: function (ops) {
+    _autoPopulateUiElements: function (ops) {
         var self = this,
             item,
             classOfItem,
@@ -149,7 +156,7 @@ $.widget('jui.juiBase', {
                 // If item is plain object
                 else if (classOfItem === 'Object') {
                     // If element already is populated, skip it
-                    if (self._notEmptyObjectKey(item, 'elm')) {
+                    if (!self._isEmptyObjectKey(item, 'elm')) {
                         continue;
                     }
                     // Else Create/fetch element
@@ -178,10 +185,10 @@ $.widget('jui.juiBase', {
      */
     _getElementFromOptions: function (config, self, ops) {
         var retVal = null,
-            configHasHtml = self._notEmptyObjectKey(config, 'html'),
-            configCreate = self._notEmptyObjectKey(config, 'create', 'Boolean'),
-            configHasSelector = self._notEmptyObjectKey(config, 'selector', 'String'),
-            configHasAppendTo = self._notEmptyObjectKey(config, 'appendTo', 'String'),
+            configHasHtml = !self._isEmptyObjectKey(config, 'html'),
+            configCreate = !self._isEmptyObjectKey(config, 'create', 'Boolean'),
+            configHasSelector = !self._isEmptyObjectKey(config, 'selector', 'String'),
+            configHasAppendTo = !self._isEmptyObjectKey(config, 'appendTo', 'String'),
             retVal = null;
 
         // Create element and `append to` config section if necessary
@@ -190,7 +197,7 @@ $.widget('jui.juiBase', {
             if (configHasAppendTo) {
                 self._appendElementFromOptions(config);
             }
-            retVal = config.elm = $(config.selector, self.element);
+            retVal = config.elm; // = $(config.selector, self._getAppendToElement(config));
         }
 
         // If config has a `selector`
@@ -236,8 +243,7 @@ $.widget('jui.juiBase', {
             config.elm = this.element.children().first();
         }
         else {
-            config.elm = this.getUiElement(config.appendTo)
-                .append(config.elm).find(config.selector);
+            config.elm = this.getUiElement(config.appendTo).append(config.elm).find(config.selector);
         }
     },
 
@@ -251,26 +257,12 @@ $.widget('jui.juiBase', {
      * @returns {null|jQuery}
      */
     _createElementFromOptions: function (config) {
-        var elm = null;
-
-        // If config is string look it up in our options hash
-        if (sjl.isset(config) && typeof config === 'string') {
-            config = this._namespace(config);
+        var elm = $(config.html);
+        if (sjl.isset(config.attribs)
+            && $.isPlainObject(config.attribs)) {
+            elm.attr(config.attribs);
         }
-
-        // If config is empty
-        if (sjl.empty(config)) {
-            return null;
-        }
-
-        // Assume config is an object
-        if (config.html) {
-            elm = $(config.html);
-            if (sjl.isset(config.attribs)
-                && $.isPlainObject(config.attribs)) {
-                elm.attr(config.attribs);
-            }
-        }
+        config.create = false;
         return elm;
     },
 
@@ -349,7 +341,7 @@ $.widget('jui.juiBase', {
             i, config, elm, dur, props,
             _animations;
 
-        timeline = !sjl.isset(timeline) ? this.getAnimationTimeline() : timeline;
+        timeline = !sjl.isset(timeline) ? this.gsapTimeline() : timeline;
         options = options || self.options;
         animations = animations || null;
 
@@ -407,9 +399,9 @@ $.widget('jui.juiBase', {
      * @param options
      * @protected
      */
-    _removeDisabledElements: function (options) {
+    _removeDisabledElements: function (ops) {
         // Get options
-        ops = !sjl.isset(options) ? this.options : options;
+        ops = !sjl.isset(ops) ? this.options : ops;
 
         // Set our ui collection
         if (!sjl.isset(ops.ui)) {
@@ -442,7 +434,7 @@ $.widget('jui.juiBase', {
         var self = this,
             ops = self.options,
             elm = sjl.namespace('ui.' + alias, ops);
-        if (!self._isValid$selection(elm) && self._notEmptyObjectKey(elm, 'elm')) {
+        if (!self._isValid$selection(elm) && !self._isEmptyObjectKey(elm, 'elm')) {
             elm = elm.elm;
         }
         else if (sjl.classOfIs(elm, 'Object')) {
@@ -468,16 +460,16 @@ $.widget('jui.juiBase', {
     /**
      * Lazy initializes a Timeline Lite or
      * Timeline Max animation timeline.
-     * @method getAnimationTimeline
+     * @method gsapTimeline
      * @returns {TimelineMax|TimelineLite}
      * @todo move this out of here.
      */
-    getAnimationTimeline: function () {
-        var timeline = this.options.timeline;
+    gsapTimeline: function () {
+        var ops = this.options,
+            timeline = ops.gsapTimeline;
         if (sjl.empty(timeline)) {
             timeline =
-                this.options.timeline =
-                    new window[this.options.defaultTimelineClass];
+                ops.gsapTimeline = new ops.gsapTimelineConstructor(ops.defaultGsapTimelineConstructorOptions);
         }
         return timeline;
     },
@@ -524,38 +516,50 @@ $.widget('jui.juiBase', {
      * @param value
      * @param hash
      */
-    setValueOnHash: function (key, value, hash) {
-        this._namespace(key, hash, value);
-    },
-
-    /**
-     * Returns the timeline classname to use for the instance of the plugin
-     * extending juibase.
-     * @method getTimelineClassName
-     * @returns {*} default defaultTimelineClassName = 'TimelineLite'
-     */
-    getTimelineClassName: function () {
-        var ops = this.options;
-        return sjl.isset(ops.timelineClassName) ? ops.timelineClassName :
-            ops.defaultTimelineClassName;
-    },
+    setValueOnHash: sjl.namespace,
 
     _issetObjectKey: function (obj, key) {
         return obj.hasOwnProperty(key) && sjl.isset(obj[key]);
     },
 
-    _notEmptyObjectKey: function (obj, key, type) {
+    _isEmptyObjectKey: function (obj, key, type) {
         var isOfType = true,
-            isJQuerySelection = obj instanceof $;
+            isEmpty = this._isValid$selection(obj) || (obj[key] instanceof $) ? true : sjl.empty(obj[key]);
         if (typeof type !== 'undefined' && sjl.classOfIs(type, 'String')) {
             isOfType = sjl.classOfIs(obj[key], type);
         }
-        return this._issetObjectKey(obj, key, type) && isOfType && !sjl.empty(obj[key]);
+        return !this._issetObjectKey(obj, key, type) || !isOfType || isEmpty;
     },
 
     _isValid$selection: function (item) {
-        item instanceof $ && item.length > 0;
+        return item instanceof $ && item.length > 0;
+    },
+
+    _getAppendToElement: function (config) {
+        var retVal = this.element;
+        if (!this._isEmptyObjectKey(config, 'appendTo')) {
+            switch (config.appendTo) {
+                case 'body':
+                    retVal = $('body').eq(0);
+                    break;
+                case 'after':
+                case 'after this.element':
+                case 'after self.element':
+                case 'before':
+                case 'before this.element':
+                case 'before self.element':
+                    retVal = retVal.parent();
+                    break;
+                case 'self' :
+                case 'this' :
+                case 'prepend' :
+                case 'this.element':
+                case 'self.element':
+                default:
+                    break;
+            }
+        }
+        return retVal;
     }
 
 });
-

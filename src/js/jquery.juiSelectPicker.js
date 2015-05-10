@@ -228,14 +228,14 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         }
 
         // Timeline
-        this.options.timeline = new TimelineLite({paused: true});
+        this.options.gsapTimeline = new TimelineLite({paused: true});
 
         // Hide this element and append new markup beside where it used
         // to be
         this.element.attr('hidden', 'hidden').css('display', 'none');
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
-        this._populateUiElementsFromOptions();
+        this._autoPopulateUiElements();
 
         // Set button text/label
         this.setLabelText();
@@ -419,7 +419,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         }
 
         // Get the dropdowns timeline
-        timeline = dropDown.juiScrollableDropDown('getAnimationTimeline');
+        timeline = dropDown.juiScrollableDropDown('gsapTimeline');
         timeline.seek(0);
         timeline.clear();
         timeline.pause();

@@ -145,7 +145,7 @@
             ops.timeline = new TimelineLite({paused: true});
 
             // Populate ui elements on self (self.options.ui[elmKeyAlias])
-            self._populateUiElementsFromOptions();
+            self._autoPopulateUiElements();
 
             // Set `class name` from options
             self._setClassNameFromOptions();

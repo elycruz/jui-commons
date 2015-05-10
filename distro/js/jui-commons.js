@@ -49,18 +49,26 @@ $.widget('jui.juiBase', {
         isLessThanIE9: false,
 
         /**
+         * Default Gsap Timeline Constructor Options
+         * @type {Object}
+         */
+        defaultGsapTimelineConstructorOptions: {
+            paused: true
+        },
+
+        /**
          * Default Timeline Class
-         * @property defaultTimelineClass
+         * @property gsapTimelineConstructor
          * @type {String}
          */
-        defaultTimelineClass: 'TimelineLite',
+        gsapTimelineConstructor: TimelineLite,
 
         /**
          * Gsap Timeline object
          * @property timeline
          * @type {Timeline}
          */
-        timeline: null,
+        gsapTimeline: null,
 
         /**
          * Ui hash for ui element
@@ -71,7 +79,6 @@ $.widget('jui.juiBase', {
 
         uiElmPropagateOrder: ['selector', 'creation']
     },
-
 
     /**
      * Sets flag if touch device (used for disable plugin if options.disableOnTouchDevice
@@ -108,11 +115,11 @@ $.widget('jui.juiBase', {
 
     /**
      * Populates this.ui with element collections from this.options.
-     * @method _populateUiElementsFromOptions
+     * @method _autoPopulateUiElements
      * @param ops {Object|String} Optional. Default `this.options`.
      * @return {void}
      */
-    _populateUiElementsFromOptions: function (ops) {
+    _autoPopulateUiElements: function (ops) {
         var self = this,
             item,
             classOfItem,
@@ -149,7 +156,7 @@ $.widget('jui.juiBase', {
                 // If item is plain object
                 else if (classOfItem === 'Object') {
                     // If element already is populated, skip it
-                    if (self._notEmptyObjectKey(item, 'elm')) {
+                    if (!self._isEmptyObjectKey(item, 'elm')) {
                         continue;
                     }
                     // Else Create/fetch element
@@ -178,10 +185,10 @@ $.widget('jui.juiBase', {
      */
     _getElementFromOptions: function (config, self, ops) {
         var retVal = null,
-            configHasHtml = self._notEmptyObjectKey(config, 'html'),
-            configCreate = self._notEmptyObjectKey(config, 'create', 'Boolean'),
-            configHasSelector = self._notEmptyObjectKey(config, 'selector', 'String'),
-            configHasAppendTo = self._notEmptyObjectKey(config, 'appendTo', 'String'),
+            configHasHtml = !self._isEmptyObjectKey(config, 'html'),
+            configCreate = !self._isEmptyObjectKey(config, 'create', 'Boolean'),
+            configHasSelector = !self._isEmptyObjectKey(config, 'selector', 'String'),
+            configHasAppendTo = !self._isEmptyObjectKey(config, 'appendTo', 'String'),
             retVal = null;
 
         // Create element and `append to` config section if necessary
@@ -190,7 +197,7 @@ $.widget('jui.juiBase', {
             if (configHasAppendTo) {
                 self._appendElementFromOptions(config);
             }
-            retVal = config.elm = $(config.selector, self.element);
+            retVal = config.elm; // = $(config.selector, self._getAppendToElement(config));
         }
 
         // If config has a `selector`
@@ -236,8 +243,7 @@ $.widget('jui.juiBase', {
             config.elm = this.element.children().first();
         }
         else {
-            config.elm = this.getUiElement(config.appendTo)
-                .append(config.elm).find(config.selector);
+            config.elm = this.getUiElement(config.appendTo).append(config.elm).find(config.selector);
         }
     },
 
@@ -251,26 +257,12 @@ $.widget('jui.juiBase', {
      * @returns {null|jQuery}
      */
     _createElementFromOptions: function (config) {
-        var elm = null;
-
-        // If config is string look it up in our options hash
-        if (sjl.isset(config) && typeof config === 'string') {
-            config = this._namespace(config);
+        var elm = $(config.html);
+        if (sjl.isset(config.attribs)
+            && $.isPlainObject(config.attribs)) {
+            elm.attr(config.attribs);
         }
-
-        // If config is empty
-        if (sjl.empty(config)) {
-            return null;
-        }
-
-        // Assume config is an object
-        if (config.html) {
-            elm = $(config.html);
-            if (sjl.isset(config.attribs)
-                && $.isPlainObject(config.attribs)) {
-                elm.attr(config.attribs);
-            }
-        }
+        config.create = false;
         return elm;
     },
 
@@ -349,7 +341,7 @@ $.widget('jui.juiBase', {
             i, config, elm, dur, props,
             _animations;
 
-        timeline = !sjl.isset(timeline) ? this.getAnimationTimeline() : timeline;
+        timeline = !sjl.isset(timeline) ? this.gsapTimeline() : timeline;
         options = options || self.options;
         animations = animations || null;
 
@@ -407,9 +399,9 @@ $.widget('jui.juiBase', {
      * @param options
      * @protected
      */
-    _removeDisabledElements: function (options) {
+    _removeDisabledElements: function (ops) {
         // Get options
-        ops = !sjl.isset(options) ? this.options : options;
+        ops = !sjl.isset(ops) ? this.options : ops;
 
         // Set our ui collection
         if (!sjl.isset(ops.ui)) {
@@ -442,7 +434,7 @@ $.widget('jui.juiBase', {
         var self = this,
             ops = self.options,
             elm = sjl.namespace('ui.' + alias, ops);
-        if (!self._isValid$selection(elm) && self._notEmptyObjectKey(elm, 'elm')) {
+        if (!self._isValid$selection(elm) && !self._isEmptyObjectKey(elm, 'elm')) {
             elm = elm.elm;
         }
         else if (sjl.classOfIs(elm, 'Object')) {
@@ -468,16 +460,16 @@ $.widget('jui.juiBase', {
     /**
      * Lazy initializes a Timeline Lite or
      * Timeline Max animation timeline.
-     * @method getAnimationTimeline
+     * @method gsapTimeline
      * @returns {TimelineMax|TimelineLite}
      * @todo move this out of here.
      */
-    getAnimationTimeline: function () {
-        var timeline = this.options.timeline;
+    gsapTimeline: function () {
+        var ops = this.options,
+            timeline = ops.gsapTimeline;
         if (sjl.empty(timeline)) {
             timeline =
-                this.options.timeline =
-                    new window[this.options.defaultTimelineClass];
+                ops.gsapTimeline = new ops.gsapTimelineConstructor(ops.defaultGsapTimelineConstructorOptions);
         }
         return timeline;
     },
@@ -524,41 +516,53 @@ $.widget('jui.juiBase', {
      * @param value
      * @param hash
      */
-    setValueOnHash: function (key, value, hash) {
-        this._namespace(key, hash, value);
-    },
-
-    /**
-     * Returns the timeline classname to use for the instance of the plugin
-     * extending juibase.
-     * @method getTimelineClassName
-     * @returns {*} default defaultTimelineClassName = 'TimelineLite'
-     */
-    getTimelineClassName: function () {
-        var ops = this.options;
-        return sjl.isset(ops.timelineClassName) ? ops.timelineClassName :
-            ops.defaultTimelineClassName;
-    },
+    setValueOnHash: sjl.namespace,
 
     _issetObjectKey: function (obj, key) {
         return obj.hasOwnProperty(key) && sjl.isset(obj[key]);
     },
 
-    _notEmptyObjectKey: function (obj, key, type) {
+    _isEmptyObjectKey: function (obj, key, type) {
         var isOfType = true,
-            isJQuerySelection = obj instanceof $;
+            isEmpty = this._isValid$selection(obj) || (obj[key] instanceof $) ? true : sjl.empty(obj[key]);
         if (typeof type !== 'undefined' && sjl.classOfIs(type, 'String')) {
             isOfType = sjl.classOfIs(obj[key], type);
         }
-        return this._issetObjectKey(obj, key, type) && isOfType && !sjl.empty(obj[key]);
+        return !this._issetObjectKey(obj, key, type) || !isOfType || isEmpty;
     },
 
     _isValid$selection: function (item) {
-        item instanceof $ && item.length > 0;
+        return item instanceof $ && item.length > 0;
+    },
+
+    _getAppendToElement: function (config) {
+        var retVal = this.element;
+        if (!this._isEmptyObjectKey(config, 'appendTo')) {
+            switch (config.appendTo) {
+                case 'body':
+                    retVal = $('body').eq(0);
+                    break;
+                case 'after':
+                case 'after this.element':
+                case 'after self.element':
+                case 'before':
+                case 'before this.element':
+                case 'before self.element':
+                    retVal = retVal.parent();
+                    break;
+                case 'self' :
+                case 'this' :
+                case 'prepend' :
+                case 'this.element':
+                case 'self.element':
+                default:
+                    break;
+            }
+        }
+        return retVal;
     }
 
 });
-
 
 /**
  * Created by edelacruz on 2/3/14.
@@ -854,7 +858,7 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
             self.element.append(ops.template);
         }
 
-        self._populateUiElementsFromOptions(ops);
+        self._autoPopulateUiElements(ops);
         self._addEventListeners();
         if (sjl.empty(ops.skipPagesCalculation)) {
             self._calculateNumberOfPages(ops);
@@ -1203,7 +1207,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     },
 
     _create: function () {
-        this._populateUiElementsFromOptions();
+        this._autoPopulateUiElements();
         var ops = this.options,
             contentHolder = this.getUiElement('contentHolder'),
             self = this;
@@ -1748,7 +1752,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             ops.timeline = new TimelineLite({paused: true});
 
             // Populate ui elements on self (self.options.ui[elmKeyAlias])
-            self._populateUiElementsFromOptions();
+            self._autoPopulateUiElements();
 
             // Set `class name` from options
             self._setClassNameFromOptions();
@@ -1998,6 +2002,302 @@ $.widget('jui.juiScalableBtn', $.jui.juiBase, {
 
 /**
  * Created by ElyDeLaCruz on 10/1/13.
+ * A scrollable drop down.
+ *
+ * @class $.jui.juiScrollableDropdown
+ *
+ * @requires jquery
+ * @requires jquery.ui.core
+ * @requires jquery.ui.widget
+ * @requires jquery.ui.draggable
+ * @requires TweenMax
+ * @requires jquery.juiBase
+ * @requires jquery.juiScrollPane
+ *
+ * @triggers expand
+ * @triggers collapse
+ */
+$.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
+
+    options: {
+        className: 'jui-scrollable-drop-down',
+
+        ui: {
+            contentElm: {
+                elm: null,
+                selector: '> .content'
+            }
+        },
+
+        // Example animations hash
+        defaultAnimations: [{
+                type: 'from',
+                duration: 0.34,
+                elmAlias: 'contentElm',
+                props: {css: {height: 0, autoAlpha: 0}}
+            },
+            {
+                type: 'to',
+                duration: 0.34,
+                elmAlias: 'scrollbar',
+                props: {css: {autoAlpha: 1},
+                    delay: -0.13}
+        }],
+
+        // Expand select-picker on event
+        expandOn: 'click',
+        expandOnClassNamePrefix: 'expands-on',
+        expandClassName: 'expanded',
+
+        // Collapse select-picker on event
+        collapseOn: 'click',
+        collapseOnClassNamePrefix: 'collapses-on',
+        collapseClassName: 'collapsed',
+
+        // States
+        states: {
+            COLLAPSED: 'collapsed',
+            EXPANDED: 'expanded'
+        },
+
+        // State
+        state: null
+    },
+
+    _create: function () {
+        var self = this,
+            ops = self.options,
+            contentElm;
+
+        self._super();
+
+        // Add event class names
+        self.element
+            .addClass(ops.className)
+            .addClass(self._getExpandOnClassName())
+            .addClass(self._getCollapseOnClassName())
+            .addClass('collapsed');
+
+        // Populate ui elements on self (self.ui[elmKeyAlias])
+        self._autoPopulateUiElements();
+
+        // Get content element
+        contentElm = self.getUiElement('contentElm');
+
+        if (ops.isLessThanIE9) {
+            contentElm.css('display', 'block');
+        }
+
+        // Save original css `display` and `visibility` values
+        self._namespace('ui.contentElm.originalCss',
+            ops, {
+                display: contentElm.css('display'),
+                visibility: contentElm.css('visibility')
+            });
+    },
+
+    _init: function () {
+        var ops = this.options;
+
+        // Add event listeners
+        this._addEventListeners();
+
+        // Set collapsed state
+        ops.state = ops.state || ops.states.COLLAPSED;
+
+        // Ensure animation functionality
+        this.ensureAnimationFunctionality();
+
+        if (!ops.isTouchDevice) {
+            // Start initial animation
+            ops.state === ops.states.COLLAPSED ? this.reverseAnimation() :
+                this.playAnimation();
+        }
+    },
+
+    _getExpandOnClassName: function () {
+        var ops = this.options;
+        return ops.expandOnClassNamePrefix
+            + ops.expandOn;
+    },
+
+    _getExpandOnEventStringName: function () {
+        return this.options.expandOn;
+    },
+
+    _getCollapseOnClassName: function () {
+        var ops = this.options;
+        return ops.collapseOnClassNamePrefix
+            + ops.collapseOn;
+    },
+
+    _getCollapseOnEventStringName: function () {
+        return this.options.collapseOn;
+    },
+
+    _addEventListeners: function () {
+        var self = this,
+            states = self.options.states,
+            ops = self.options,
+            collapseOnMouseEvent = self._getCollapseOnEventStringName(),
+            expandOnMouseEvent = self._getExpandOnEventStringName();
+
+        // If expand and collapse events are the same (use toggle pattern)
+        if (expandOnMouseEvent === collapseOnMouseEvent) {
+            self.element.on(expandOnMouseEvent, function (e) {
+                if (self.options.state === states.COLLAPSED) {
+                    self.ensureAnimationFunctionality();
+                    self.options.state = states.EXPANDED;
+                    self.element.removeClass(ops.collapseClassName)
+                        .addClass(ops.expandClassName)
+                        .trigger('expand', e);
+                    self.playAnimation();
+                }
+                else {
+                    self.ensureAnimationFunctionality();
+                    self.options.state = states.COLLAPSED;
+                    self.element
+                        .removeClass(ops.expandClassName)
+                        .addClass(ops.collapseClassName)
+                        .trigger('collapse', e);
+                    self.reverseAnimation();
+                }
+            });
+        }
+        else {
+            // On expand event
+            self.element.on(expandOnMouseEvent, function (e) {
+                self.ensureAnimationFunctionality();
+                self.options.state = states.EXPANDED;
+                self.element.removeClass(ops.collapseClassName);
+                self.element.addClass(ops.expandClassName);
+                self.element.trigger('expand', e);
+                self.playAnimation();
+            })
+                // On collapse event
+                .on(collapseOnMouseEvent, function (e) {
+                    self.ensureAnimationFunctionality();
+                    self.options.state = states.COLLAPSED;
+                    self.element.removeClass(ops.expandClassName);
+                    self.element.addClass(ops.collapseClassName);
+                    self.element.trigger('collapse', e);
+                    self.reverseAnimation();
+                });
+        }
+
+        // When clicking outside of drop down close it
+        $(window).on('click', function (e) {
+            if ($.contains(self.element.get(0), e.target) === false
+                && ops.timeline.progress() === 1) {
+                if (self.options.state === states.EXPANDED) {
+                    self.ensureAnimationFunctionality();
+                    self.options.state = states.COLLAPSED;
+                    self.element.removeClass(ops.expandClassName);
+                    self.element.addClass(ops.collapseClassName);
+                    self.element.trigger('collapse', e);
+                    self.reverseAnimation();
+                }
+            }
+        });
+
+    },
+
+    _removeEventListeners: function () {
+        this.element
+            .off(this._getCollapseOnEventStringName())
+            .off(this._getExpandOnEventStringName());
+    },
+
+    _initScrollbar: function () {
+        var ops = this.options,
+            scrollbar = this._namespace('ui.scrollbar');
+
+        if (!sjl.empty(scrollbar.elm) && scrollbar.elm.length > 0) {
+            return;
+        }
+
+        this.options.juiScrollPaneElm = this.element.juiScrollPane({
+            ui: {
+                contentHolder: {
+                    elm: this.getUiElement('contentElm'),
+                    selector: ops.ui.contentElm.selector + ''
+                }
+            }
+        });
+
+        scrollbar.elm = $('.vertical.scrollbar', this.element);
+    },
+
+    initAnimationTimeline: function () {
+        this._initAnimationTimeline();
+    },
+
+    _initTimeline: function () {
+        if (sjl.empty(this.options.gsapTimeline)) {
+            this.initAnimationTimeline()
+        }
+    },
+
+    setStateTo: function (state) {
+        this.options.state = typeof state !== 'undefined'
+            && state === 'expanded' ? this.options.states.EXPANDED
+            : this.options.states.COLLAPSED;
+    },
+
+    ensureAnimationFunctionality: function () {
+        if (this.options.isLessThanIE9) {
+            return;
+        }
+        this._initScrollbar();
+        this._initTimeline();
+    },
+
+    /**
+     * Plays animation timeline (if disableOnTouchDevice is true and isTouchDevice, does nothing).
+     * @return {void}
+     */
+    playAnimation: function () {
+        var self = this,
+            ops = self.options;
+        // Bail if device/browser not supported
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice) || (ops.isLessThanIE9)) {
+            return;
+        }
+        ops.timeline.play();
+    },
+
+    /**
+     * Reverses the animation timeline if not touch device.
+     * @return {void}
+     */
+    reverseAnimation: function () {
+        var self = this,
+            ops = self.options;
+        // Bail if device/browser not supported
+        if ((ops.disableOnTouchDevice && ops.isTouchDevice) || (ops.isLessThanIE9)) {
+            return;
+        }
+        ops.timeline.reverse();
+    },
+
+    destroy: function () {
+        this._removeCreatedElements();
+        this._removeEventListeners();
+        this._super();
+    },
+
+    refresh: function () {
+        this.element.juiScrollPane('refresh');
+    },
+
+    getState: function () {
+        return this.options.state;
+    }
+
+});
+
+/**
+ * Created by ElyDeLaCruz on 10/1/13.
  *
  * Hides a Select Element and Replaces it with a scrollable Select Picker element
  * which is fully stylable.
@@ -2226,14 +2526,14 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         }
 
         // Timeline
-        this.options.timeline = new TimelineLite({paused: true});
+        this.options.gsapTimeline = new TimelineLite({paused: true});
 
         // Hide this element and append new markup beside where it used
         // to be
         this.element.attr('hidden', 'hidden').css('display', 'none');
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
-        this._populateUiElementsFromOptions();
+        this._autoPopulateUiElements();
 
         // Set button text/label
         this.setLabelText();
@@ -2417,7 +2717,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         }
 
         // Get the dropdowns timeline
-        timeline = dropDown.juiScrollableDropDown('getAnimationTimeline');
+        timeline = dropDown.juiScrollableDropDown('gsapTimeline');
         timeline.seek(0);
         timeline.clear();
         timeline.pause();
