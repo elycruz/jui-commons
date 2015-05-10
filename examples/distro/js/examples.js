@@ -30452,10 +30452,26 @@ $.widget('jui.juiBase', {
      */
     setValueOnHash: sjl.namespace,
 
+    /**
+     * Returns whether and object's key isset and whether it even has the key as it's own property.
+     * @param obj {Object} - Object to search on.
+     * @param key {String} - Key to search for on obj.
+     * @returns {Boolean}
+     * @private
+     */
     _issetObjectKey: function (obj, key) {
         return obj.hasOwnProperty(key) && sjl.isset(obj[key]);
     },
 
+    /**
+     * Returns whether a object key's value is not set or empty (empty jquery selection or empty string, object, array etc)
+     * or not of given type for `type` string param.
+     * @param obj {Object|$|*} - Object to search for key on.
+     * @param key {String} - Key to search for on object.
+     * @param type {String} - Optional type to ensure obj[key] is of.  E.g., sjl.classOfIs(obj[key], type) .
+     * @returns {Boolean} - Whether the object passed in is empty or not.
+     * @private
+     */
     _isEmptyObjectKey: function (obj, key, type) {
         var isOfType = true,
             issetObjKey = this._issetObjectKey(obj, key),
@@ -30467,10 +30483,23 @@ $.widget('jui.juiBase', {
         return isEmpty || !isOfType;
     },
 
+    /**
+     * Returns true if a non empty jquery selection is passed in.
+     * @param item {$} - JQuery selection.
+     * @returns {boolean} - Whether selection is non empty (length > 0 and is jquery selection).
+     * @private
+     */
     _isValid$Selection: function (item) {
         return item instanceof $ && item.length > 0;
     },
 
+    /**
+     * Gets the element to append to based on `config.appendTo` string
+     * @param $appendToElm {$}
+     * @param config {Object}
+     * @returns {$} - Selection determined to be attached/append to based config.appendTo value
+     * @private
+     */
     _getAppendToElement: function ($appendToElm, config) {
         if (!this._isEmptyObjectKey(config, 'appendTo')) {
             switch (config.appendTo) {
@@ -30499,6 +30528,11 @@ $.widget('jui.juiBase', {
         return $appendToElm;
     },
 
+    /**
+     * Destroys this plugin instance and removes all self created elements from this.elements dom tree.
+     * @return {void}
+     * @private
+     */
     _destroy: function () {
         this._removeCreatedElements();
         this._super();

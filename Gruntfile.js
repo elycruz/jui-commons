@@ -39,8 +39,10 @@ module.exports = function (grunt) {
             }
         },
         copy: {
-            files: {
-                'distro/css/jui-commons.css': 'src/css/jui-commons.css'
+            distro: {
+                files: [
+                    {expand: true, src: ['src/css/*'], dest: 'dest/css'}
+                ]
             }
         },
         cssmin: {
