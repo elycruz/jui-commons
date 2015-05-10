@@ -38,8 +38,13 @@ module.exports = function (grunt) {
                 }
             }
         },
+        copy: {
+            files: {
+                'distro/css/jui-commons.css': 'src/css/jui-commons.css'
+            }
+        },
         cssmin: {
-            'distro/css/jui-commons.css': 'src/css/jui-commons.css'
+            'distro/css/jui-commons.min.css': 'src/css/jui-commons.css'
         },
         watch: {
             compass: {
@@ -86,6 +91,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -97,10 +103,11 @@ module.exports = function (grunt) {
     // Default task(s).
     grunt.registerTask('default', [
         'compass',
+        'copy',
         'cssmin',
         'concat',
         'uglify',
-        //'connect',
+        'connect',
         'open',
         'watch'
     ]);
@@ -117,7 +124,7 @@ module.exports = function (grunt) {
     grunt.registerTask('develop', [
         'compass',
         'cssmin',
-        //'connect',
+        'connect',
         'open',
         'watch'
     ]);

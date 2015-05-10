@@ -47,7 +47,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         self.element.addClass(ops.className);
 
         // Populate initial ui elements
-        self._autoPopulateUiElements();
+        self._autoPopulateUiElements(self, self.element, ops);
 
         self._createInidicators();
 

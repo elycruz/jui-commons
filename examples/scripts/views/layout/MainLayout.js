@@ -1,7 +1,8 @@
 define([
-	'backbone'
+	'backbone',
+    'backbone.marionette'
 ],
-function( Backbone, tmpl  ) {
+function( Backbone ) {
     'use strict';
 
 	/* Return a Layout class definition */

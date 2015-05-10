@@ -145,7 +145,7 @@
             ops.timeline = new TimelineLite({paused: true});
 
             // Populate ui elements on self (self.options.ui[elmKeyAlias])
-            self._autoPopulateUiElements();
+            self._autoPopulateUiElements(self, self.element, ops);
 
             // Set `class name` from options
             self._setClassNameFromOptions();
@@ -246,7 +246,7 @@
         },
 
         setClassName: function (value) {
-            this._namespace('titleText', value);
+            this._namespace('titleText', this.options, value);
             this._setClassNameFromOptions();
         },
 

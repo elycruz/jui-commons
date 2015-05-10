@@ -111,7 +111,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     },
 
     _create: function () {
-        this._autoPopulateUiElements();
+        this._autoPopulateUiElements(this, this.element, this.options);
         var ops = this.options,
             contentHolder = this.getUiElement('contentHolder'),
             self = this;

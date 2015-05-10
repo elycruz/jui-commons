@@ -227,15 +227,12 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             }
         }
 
-        // Timeline
-        this.options.gsapTimeline = new TimelineLite({paused: true});
-
         // Hide this element and append new markup beside where it used
         // to be
         this.element.attr('hidden', 'hidden').css('display', 'none');
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
-        this._autoPopulateUiElements();
+        this._autoPopulateUiElements(this, this.element, this.options);
 
         // Set button text/label
         this.setLabelText();
@@ -420,9 +417,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Get the dropdowns timeline
         timeline = dropDown.juiScrollableDropDown('gsapTimeline');
-        timeline.seek(0);
+        timeline.pause(0);
         timeline.clear();
-        timeline.pause();
 
         // Get scrollbar element
         scrollbarElm = $('.vertical.scrollbar', wrapperElm);
@@ -612,7 +608,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         || (ops.isLessThanIE9)) {
             return;
         }
-        ops.timeline.play();
+        ops.gsapTimeline.play();
     },
 
     /**
@@ -626,7 +622,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             || (ops.isLessThanIE9)) {
             return;
         }
-        ops.timeline.reverse();
+        ops.gsapTimeline.reverse();
     },
 
     /**

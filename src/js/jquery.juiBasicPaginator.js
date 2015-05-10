@@ -90,7 +90,7 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
             self.element.append(ops.template);
         }
 
-        self._autoPopulateUiElements(ops);
+        self._autoPopulateUiElements(self, self.element, ops);
         self._addEventListeners();
         if (sjl.empty(ops.skipPagesCalculation)) {
             self._calculateNumberOfPages(ops);

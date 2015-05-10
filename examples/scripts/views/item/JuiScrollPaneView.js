@@ -3,6 +3,7 @@ define([
 	'hbs!tmpl/item/jui-scroll-pane-view'
 ],
 function( Backbone, tmpl ) {
+
     'use strict';
 
 	/* Return a ItemView class definition */
@@ -37,8 +38,7 @@ function( Backbone, tmpl ) {
                 }
                 var currVal = self.scrollPanes.juiScrollPane('option', 'mimickBrowser');
                 self.scrollPanes.juiScrollPane('option', 'mimickBrowser', (currVal === true ? false : true));
-//                console.log(currVal);
-            })
+            });
         }
 	});
 

@@ -1,4 +1,4 @@
-/* line 1, ../../sass/jui-commons/jui-dialog.scss */
+/* line 1, ../sass/jui-dialog.scss */
 .jui-dialog {
   position: absolute;
   top: 25%;
@@ -10,12 +10,12 @@
   z-index: 9999;
   box-sizing: border-box;
 }
-/* line 12, ../../sass/jui-commons/jui-dialog.scss */
+/* line 12, ../sass/jui-dialog.scss */
 .jui-dialog > header, .jui-dialog > footer, .jui-dialog > section {
   position: relative;
   width: 100%;
 }
-/* line 18, ../../sass/jui-commons/jui-dialog.scss */
+/* line 18, ../sass/jui-dialog.scss */
 .jui-dialog > header .close.button {
   position: relative;
   float: right;
@@ -24,7 +24,7 @@
   border: 1px solid #000;
 }
 
-/* line 28, ../../sass/jui-commons/jui-dialog.scss */
+/* line 28, ../sass/jui-dialog.scss */
 .jui-page-overlay {
   position: absolute;
   position: fixed;

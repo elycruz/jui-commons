@@ -29173,9 +29173,10 @@ define('controllers/BaseController',['backbone.marionette'], function(Marionette
 
 });
 define('views/layout/MainLayout',[
-	'backbone'
+	'backbone',
+    'backbone.marionette'
 ],
-function( Backbone, tmpl  ) {
+function( Backbone ) {
     'use strict';
 
 	/* Return a Layout class definition */
@@ -29671,6 +29672,7 @@ define('views/item/JuiScrollPaneView',[
 	'hbs!tmpl/item/jui-scroll-pane-view'
 ],
 function( Backbone, tmpl ) {
+
     'use strict';
 
 	/* Return a ItemView class definition */
@@ -29705,8 +29707,7 @@ function( Backbone, tmpl ) {
                 }
                 var currVal = self.scrollPanes.juiScrollPane('option', 'mimickBrowser');
                 self.scrollPanes.juiScrollPane('option', 'mimickBrowser', (currVal === true ? false : true));
-//                console.log(currVal);
-            })
+            });
         }
 	});
 
@@ -30004,9 +30005,8 @@ $.widget('jui.juiBase', {
          * @property ui
          * @type {Object}
          */
-        ui: {},
+        ui: {}
 
-        uiElmPropagateOrder: ['selector', 'creation']
     },
 
     /**
@@ -30046,16 +30046,16 @@ $.widget('jui.juiBase', {
      * Populates this.ui with element collections from this.options.
      * @method _autoPopulateUiElements
      * @param ops {Object|String} Optional. Default `this.options`.
-     * @return {void}
+     * @return {$.jui.juiBase}
      */
-    _autoPopulateUiElements: function (ops) {
-        var self = this,
-            item,
+    _autoPopulateUiElements: function (self, $selfElm, ops) {
+        self = self || this;
+        $selfElm = $selfElm || self.element;
+        ops = ops || self.options || {};
+
+        var item,
             classOfItem,
             key;
-
-        // Get options
-        ops = !sjl.isset(ops) ? self.options : ops;
 
         // Set our ui collection
         if (!ops.hasOwnProperty('ui') || !sjl.isset(ops.ui)) {
@@ -30065,40 +30065,34 @@ $.widget('jui.juiBase', {
         // Loop through ops and populate elements
         for (key in ops.ui) {
 
-            // If `ops` has key
-            if (ops.ui.hasOwnProperty(key)) {
+            // Get item
+            item = ops.ui[key];
+            classOfItem = sjl.classOf(item);
 
-                // Get item
-                item = ops.ui[key];
-                classOfItem = sjl.classOf(item);
+            // If key is string (class selector)
+            if (classOfItem === 'String') {
+                ops.ui[key] = $(item, self.element);
+            }
 
-                // If key is string (class selector)
-                if (classOfItem === 'String') {
-                    ops.ui[key] = $(item, self.element);
-                }
+            // If element is a valid jquery selection skip it
+            else if (self._isValid$Selection(ops.ui[key])) {
+                continue;
+            }
+
+            // If item is plain object
+            else if (classOfItem === 'Object') {
 
                 // If element is a valid jquery selection skip it
-                else if (self._isValid$selection(item)) {
+                if (!self._isEmptyObjectKey(item, 'elm') && self._isValid$Selection(item.elm)) {
                     continue;
                 }
+                // Get element from options
+                item.elm = self._getElementFromOptions(item, self, $selfElm, ops);
+            }
 
-                // If item is plain object
-                else if (classOfItem === 'Object') {
-                    // If element already is populated, skip it
-                    if (!self._isEmptyObjectKey(item, 'elm')) {
-                        continue;
-                    }
-                    // Else Create/fetch element
-                    else {
-                        item.elm = self._getElementFromOptions(item, self, ops);
-                    }
-                }
-
-                else if (classOfItem === 'Function') {
-                    item = self._getElementFromOptions(item.apply(self, {}), self, ops);
-                }
-
-            } // has own property
+            else if (classOfItem === 'Function') {
+                item.elm = self._getElementFromOptions(item.apply(self, {}), self, $selfElm, ops);
+            }
 
         } // loop
 
@@ -30112,27 +30106,35 @@ $.widget('jui.juiBase', {
      * @protected
      * @returns {null|jQuery} null or the jquery element selection
      */
-    _getElementFromOptions: function (config, self, ops) {
+    _getElementFromOptions: function (config, self, $selfElm, ops) {
         var retVal = null,
             configHasHtml = !self._isEmptyObjectKey(config, 'html'),
-            configCreate = !self._isEmptyObjectKey(config, 'create', 'Boolean'),
+            configCreate = !self._isEmptyObjectKey(config, 'create', 'Boolean') && config.create,
             configHasSelector = !self._isEmptyObjectKey(config, 'selector', 'String'),
             configHasAppendTo = !self._isEmptyObjectKey(config, 'appendTo', 'String'),
+            validJquerySelection,
+            $findIn = $selfElm,
             retVal = null;
 
-        // Create element and `append to` config section if necessary
-        if (configCreate && configHasHtml && configHasSelector) {
-            config.elm = this._createElementFromOptions(config);
-            if (configHasAppendTo) {
-                self._appendElementFromOptions(config);
-            }
-            retVal = config.elm; // = $(config.selector, self._getAppendToElement(config));
+        if (configHasAppendTo) {
+            $findIn = self._getAppendToElement($selfElm, config);
         }
 
         // If config has a `selector`
-        else if (configHasSelector) {
-            config.elm = $(config.selector, self.element);
-            retVal = config.elm;
+        if (configHasSelector) {
+            retVal = $(config.selector, $findIn);
+        }
+
+        // Check if element was selected
+        validJquerySelection = self._isValid$Selection(retVal);
+
+        // If element wasn't selected create it
+        if (!validJquerySelection && configCreate && configHasHtml && configHasSelector) {
+            retVal = self._createElementFromOptions(config);
+            if (configHasAppendTo) {
+                self._appendByAppendToString(config.appendTo, retVal, $findIn, $selfElm);
+            }
+            retVal = $(config.selector, $findIn)
         }
 
         // Return element
@@ -30141,38 +30143,28 @@ $.widget('jui.juiBase', {
 
     /**
      * Appends an element from it's hash config object
-     * @method _appendElementFromOptions
+     * @method _appendByAppendToString
      * @param {Object} config
      * @protected
      */
-    _appendElementFromOptions: function (config) {
-        var self = this,
-            parent = this.element.parent();
-        if (config.appendTo === 'body') {
-            config.elm = $('body').eq(0)
-                .append(config.elm).find(config.selector);
+    _appendByAppendToString: function (appendToStr, $elm, $appendToElm, $selfElm) {
+        if (appendToStr === 'body') {
+            $appendToElm.append($elm);
         }
-        else if (config.appendTo === 'this.element') {
-            config.elm = this.element
-                .append(config.elm).find(config.selector);
+        else if (appendToStr === 'this.element') {
+            $selfElm.append($elm);
         }
-        else if (config.appendTo === 'after this.element') {
-            this.element.after(config.elm);
-            config.elm = parent.find(
-                this.element.get(0).nodeName
-                    + ' ~ ' + config.selector);
+        else if (appendToStr === 'after this.element') {
+            $selfElm.after($elm);
         }
-        else if (config.appendTo === 'before this.element') {
-            this.element.before(config.elm);
-            config.elm = parent.find(config.selector
-                + ' ~ ' + this.element.get(0).nodeName);
+        else if (appendToStr === 'before this.element') {
+            $selfElm.before($elm);
         }
-        else if (config.appendTo === 'prepend to this.element') {
-            this.element.prepend(config.elm);
-            config.elm = this.element.children().first();
+        else if (appendToStr === 'prepend to this.element') {
+            $selfElm.prepend($elm);
         }
         else {
-            config.elm = this.getUiElement(config.appendTo).append(config.elm).find(config.selector);
+            $appendToElm.append($elm);
         }
     },
 
@@ -30204,10 +30196,12 @@ $.widget('jui.juiBase', {
     _removeCreatedElements: function () {
         var self = this, ops = self.options;
         for (var key in ops.ui) {
-            if (ops.ui[key].elm instanceof $ && ops.ui[key].create) {
+            if (!self._isValid$Selection(ops.ui[key])
+                && !self._isEmptyObjectKey(ops.ui[key], 'elm')
+                && ops.ui[key].hasOwnProperty('create')) {
                 ops.ui[key].elm.remove();
             }
-        };
+        }
     },
 
     /**
@@ -30328,25 +30322,19 @@ $.widget('jui.juiBase', {
      * @param options
      * @protected
      */
-    _removeDisabledElements: function (ops) {
-        // Get options
-        ops = !sjl.isset(ops) ? this.options : ops;
-
+    _removeDisabledElements: function (uiHash) {
         // Set our ui collection
-        if (!sjl.isset(ops.ui)) {
-            ops.ui = {};
+        if (!sjl.isset(uiHash)) {
+            return;
         }
-
-        // Ui ops
-        ops = ops.ui;
-
         // Loop through ops and remove disabled elements
-        Object.keys(ops).forEach(function (key) {
+        Object.keys(uiHash).forEach(function (key) {
+            var item = uiHash[key];
             // If key is plain object
-            if ($.isPlainObject(ops[key])) {
+            if ($.isPlainObject(item)) {
                 // If element is populated and disabled remove it
-                if (!ops.enabled && sjl.isset(ops[key].elm) && ops[key].elm.length > 0) {
-                    ops[key].elm.remove();
+                if (!item.enabled && sjl.isset(uiHash[key].elm) && uiHash[key].elm.length > 0) {
+                    uiHash[key].elm.remove();
                 }
             }
         });
@@ -30363,11 +30351,11 @@ $.widget('jui.juiBase', {
         var self = this,
             ops = self.options,
             elm = sjl.namespace('ui.' + alias, ops);
-        if (!self._isValid$selection(elm) && !self._isEmptyObjectKey(elm, 'elm')) {
+        if (!self._isValid$Selection(elm) && !self._isEmptyObjectKey(elm, 'elm')) {
             elm = elm.elm;
         }
         else if (sjl.classOfIs(elm, 'Object')) {
-            elm = self._getElementFromOptions(elm, self, ops);
+            elm = self._getElementFromOptions(elm, self, self.element, ops);
         }
         return elm;
     },
@@ -30393,14 +30381,31 @@ $.widget('jui.juiBase', {
      * @returns {TimelineMax|TimelineLite}
      * @todo move this out of here.
      */
-    gsapTimeline: function () {
-        var ops = this.options,
-            timeline = ops.gsapTimeline;
-        if (sjl.empty(timeline)) {
-            timeline =
-                ops.gsapTimeline = new ops.gsapTimelineConstructor(ops.defaultGsapTimelineConstructorOptions);
+    gsapTimeline: function (timeline) {
+        var retVal = this,
+            ops = this.options,
+            issetTimeline = sjl.isset(timeline);
+
+        // If getter call and timeline is not set, create it
+        if (!issetTimeline) {
+            retVal =
+                ops.gsapTimeline =
+                    new ops.gsapTimelineConstructor(ops.defaultGsapTimelineConstructorOptions);
         }
-        return timeline;
+
+        // If setter call and timeline matches one of the allowed timeline classes, set it
+        else if (issetTimeline && (timeline instanceof TimelineMax || timeline instanceof TimelineLite)) {
+            ops.gsapTimeline = timeline;
+        }
+
+        // Else if setter call but timeline doesn't match one of the allowed timeline classes, throw an error
+        else if (issetTimeline) {
+            throw new Error(this.widgetFullName + '.gsapTimeline expects timeline to be of types: ' +
+                'undefined, TimelineLite, or TimelineMax.  Type recieved: ' + sjl.classOf(timeline));
+        }
+
+        // Return return value
+        return retVal;
     },
 
     /**
@@ -30453,23 +30458,24 @@ $.widget('jui.juiBase', {
 
     _isEmptyObjectKey: function (obj, key, type) {
         var isOfType = true,
-            isEmpty = this._isValid$selection(obj) || (obj[key] instanceof $) ? true : sjl.empty(obj[key]);
+            issetObjKey = this._issetObjectKey(obj, key),
+            is$Selection = issetObjKey && this._isValid$Selection(obj[key]),
+            isEmpty = !issetObjKey || !is$Selection ? sjl.empty(obj[key]) : true;
         if (typeof type !== 'undefined' && sjl.classOfIs(type, 'String')) {
             isOfType = sjl.classOfIs(obj[key], type);
         }
-        return !this._issetObjectKey(obj, key, type) || !isOfType || isEmpty;
+        return isEmpty || !isOfType;
     },
 
-    _isValid$selection: function (item) {
+    _isValid$Selection: function (item) {
         return item instanceof $ && item.length > 0;
     },
 
-    _getAppendToElement: function (config) {
-        var retVal = this.element;
+    _getAppendToElement: function ($appendToElm, config) {
         if (!this._isEmptyObjectKey(config, 'appendTo')) {
             switch (config.appendTo) {
                 case 'body':
-                    retVal = $('body').eq(0);
+                    $appendToElm = $('body').eq(0);
                     break;
                 case 'after':
                 case 'after this.element':
@@ -30477,18 +30483,25 @@ $.widget('jui.juiBase', {
                 case 'before':
                 case 'before this.element':
                 case 'before self.element':
-                    retVal = retVal.parent();
+                    $appendToElm = $appendToElm.parent();
                     break;
                 case 'self' :
                 case 'this' :
                 case 'prepend' :
                 case 'this.element':
-                case 'self.element':
+                case 'self.element': // Assume that $appendToElm default is self.element
+                    break;
                 default:
+                    $appendToElm = this.getUiElement(config.appendTo);
                     break;
             }
         }
-        return retVal;
+        return $appendToElm;
+    },
+
+    _destroy: function () {
+        this._removeCreatedElements();
+        this._super();
     }
 
 });
@@ -30787,7 +30800,7 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
             self.element.append(ops.template);
         }
 
-        self._autoPopulateUiElements(ops);
+        self._autoPopulateUiElements(self, self.element, ops);
         self._addEventListeners();
         if (sjl.empty(ops.skipPagesCalculation)) {
             self._calculateNumberOfPages(ops);
@@ -31136,7 +31149,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     },
 
     _create: function () {
-        this._autoPopulateUiElements();
+        this._autoPopulateUiElements(this, this.element, this.options);
         var ops = this.options,
             contentHolder = this.getUiElement('contentHolder'),
             self = this;
@@ -31681,7 +31694,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             ops.timeline = new TimelineLite({paused: true});
 
             // Populate ui elements on self (self.options.ui[elmKeyAlias])
-            self._autoPopulateUiElements();
+            self._autoPopulateUiElements(self, self.element, ops);
 
             // Set `class name` from options
             self._setClassNameFromOptions();
@@ -31782,7 +31795,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         },
 
         setClassName: function (value) {
-            this._namespace('titleText', value);
+            this._namespace('titleText', this.options, value);
             this._setClassNameFromOptions();
         },
 
@@ -31964,14 +31977,15 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 duration: 0.34,
                 elmAlias: 'contentElm',
                 props: {css: {height: 0, autoAlpha: 0}}
-            },
-            {
-                type: 'to',
-                duration: 0.34,
-                elmAlias: 'scrollbar',
-                props: {css: {autoAlpha: 1},
-                    delay: -0.13}
-        }],
+            }
+        //    {
+        //        type: 'to',
+        //        duration: 0.34,
+        //        elmAlias: 'scrollbar',
+        //        props: {css: {autoAlpha: 1},
+        //            delay: -0.13}
+        //}
+        ],
 
         // Expand select-picker on event
         expandOn: 'click',
@@ -31996,7 +32010,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _create: function () {
         var self = this,
             ops = self.options,
-            contentElm;
+            contentElm,
+            timeline = this.gsapTimeline();
 
         self._super();
 
@@ -32008,7 +32023,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             .addClass('collapsed');
 
         // Populate ui elements on self (self.ui[elmKeyAlias])
-        self._autoPopulateUiElements();
+        self._autoPopulateUiElements(self, self.element, ops);
 
         // Get content element
         contentElm = self.getUiElement('contentElm');
@@ -32117,7 +32132,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         // When clicking outside of drop down close it
         $(window).on('click', function (e) {
             if ($.contains(self.element.get(0), e.target) === false
-                && ops.timeline.progress() === 1) {
+                && ops.gsapTimeline.progress() === 1) {
                 if (self.options.state === states.EXPANDED) {
                     self.ensureAnimationFunctionality();
                     self.options.state = states.COLLAPSED;
@@ -32139,7 +32154,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     _initScrollbar: function () {
         var ops = this.options,
-            scrollbar = this._namespace('ui.scrollbar');
+            scrollbar = this._namespace('ui.scrollbar', ops);
 
         if (!sjl.empty(scrollbar.elm) && scrollbar.elm.length > 0) {
             return;
@@ -32192,7 +32207,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         if ((ops.disableOnTouchDevice && ops.isTouchDevice) || (ops.isLessThanIE9)) {
             return;
         }
-        ops.timeline.play();
+        ops.gsapTimeline.play();
     },
 
     /**
@@ -32206,7 +32221,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         if ((ops.disableOnTouchDevice && ops.isTouchDevice) || (ops.isLessThanIE9)) {
             return;
         }
-        ops.timeline.reverse();
+        ops.gsapTimeline.reverse();
     },
 
     destroy: function () {
@@ -32454,15 +32469,12 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             }
         }
 
-        // Timeline
-        this.options.gsapTimeline = new TimelineLite({paused: true});
-
         // Hide this element and append new markup beside where it used
         // to be
         this.element.attr('hidden', 'hidden').css('display', 'none');
 
         // Populate ui elements on this (this.options.ui[elmKeyAlias])
-        this._autoPopulateUiElements();
+        this._autoPopulateUiElements(this, this.element, this.options);
 
         // Set button text/label
         this.setLabelText();
@@ -32647,9 +32659,8 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
 
         // Get the dropdowns timeline
         timeline = dropDown.juiScrollableDropDown('gsapTimeline');
-        timeline.seek(0);
+        timeline.pause(0);
         timeline.clear();
-        timeline.pause();
 
         // Get scrollbar element
         scrollbarElm = $('.vertical.scrollbar', wrapperElm);
@@ -32839,7 +32850,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         || (ops.isLessThanIE9)) {
             return;
         }
-        ops.timeline.play();
+        ops.gsapTimeline.play();
     },
 
     /**
@@ -32853,7 +32864,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             || (ops.isLessThanIE9)) {
             return;
         }
-        ops.timeline.reverse();
+        ops.gsapTimeline.reverse();
     },
 
     /**

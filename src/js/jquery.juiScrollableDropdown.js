@@ -33,14 +33,15 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 duration: 0.34,
                 elmAlias: 'contentElm',
                 props: {css: {height: 0, autoAlpha: 0}}
-            },
-            {
-                type: 'to',
-                duration: 0.34,
-                elmAlias: 'scrollbar',
-                props: {css: {autoAlpha: 1},
-                    delay: -0.13}
-        }],
+            }
+        //    {
+        //        type: 'to',
+        //        duration: 0.34,
+        //        elmAlias: 'scrollbar',
+        //        props: {css: {autoAlpha: 1},
+        //            delay: -0.13}
+        //}
+        ],
 
         // Expand select-picker on event
         expandOn: 'click',
@@ -65,7 +66,8 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _create: function () {
         var self = this,
             ops = self.options,
-            contentElm;
+            contentElm,
+            timeline = this.gsapTimeline();
 
         self._super();
 
@@ -77,7 +79,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             .addClass('collapsed');
 
         // Populate ui elements on self (self.ui[elmKeyAlias])
-        self._autoPopulateUiElements();
+        self._autoPopulateUiElements(self, self.element, ops);
 
         // Get content element
         contentElm = self.getUiElement('contentElm');
@@ -186,7 +188,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         // When clicking outside of drop down close it
         $(window).on('click', function (e) {
             if ($.contains(self.element.get(0), e.target) === false
-                && ops.timeline.progress() === 1) {
+                && ops.gsapTimeline.progress() === 1) {
                 if (self.options.state === states.EXPANDED) {
                     self.ensureAnimationFunctionality();
                     self.options.state = states.COLLAPSED;
@@ -208,7 +210,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     _initScrollbar: function () {
         var ops = this.options,
-            scrollbar = this._namespace('ui.scrollbar');
+            scrollbar = this._namespace('ui.scrollbar', ops);
 
         if (!sjl.empty(scrollbar.elm) && scrollbar.elm.length > 0) {
             return;
@@ -261,7 +263,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         if ((ops.disableOnTouchDevice && ops.isTouchDevice) || (ops.isLessThanIE9)) {
             return;
         }
-        ops.timeline.play();
+        ops.gsapTimeline.play();
     },
 
     /**
@@ -275,7 +277,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         if ((ops.disableOnTouchDevice && ops.isTouchDevice) || (ops.isLessThanIE9)) {
             return;
         }
-        ops.timeline.reverse();
+        ops.gsapTimeline.reverse();
     },
 
     destroy: function () {

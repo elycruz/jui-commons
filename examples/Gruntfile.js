@@ -54,7 +54,7 @@ module.exports = function (grunt) {
             cssmin: {
                 files: [
                     './distro/sass-compiled-css/**/*.css',
-                    '../src/css/jui-commons.css'
+                    '../distro/css/jui-commons.css'
                 ],
                 tasks: ['cssmin'],
                 options: {
@@ -65,7 +65,7 @@ module.exports = function (grunt) {
                 files: [
                     './bower_components/**/*',
                     './scripts/**/*',
-                    '../distro/**/*',
+                    '../distro/**/*.js',
                     './templates/**/*'],
                 tasks: ['requirejs'],
                 options: {
