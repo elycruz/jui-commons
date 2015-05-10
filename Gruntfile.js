@@ -5,32 +5,30 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
             options: {
-                banner: '/*! ' +
-                    '<%= pkg.name %> ' +
-                    '<%= grunt.template.today("yyyy-mm-dd") %> */'
+                banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd") %> */'
             },
             build: {
                 src: [
-                    'distro/<%= pkg.name %>.js'
+                    'distro/js/<%= pkg.name %>.js'
                 ],
-                dest: 'distro/<%= pkg.name %>.min.js'
+                dest: 'distro/js/<%= pkg.name %>.min.js'
             }
         },
         concat: {
             debug: {
                 src: [
                     'src/js/jquery.juiBase.js',
-                    'src/js/ui/jquery.juiMouse.js',
-                    'src/js/ui/jquery.juiAbstractPaginator.js',
-                    'src/js/ui/jquery.juiBasicPaginator.js',
-                    'src/js/ui/jquery.juiPaginatorWithTextField.js',
-                    'src/js/ui/jquery.juiScrollPane.js',
-                    'src/js/ui/jquery.juiDialog.js',
-                    'src/js/ui/jquery.juiScalableBtn.js',
-                    'src/js/ui/jquery.juiScrollableDropDown.js',
-                    'src/js/ui/jquery.juiSelectPicker.js'
+                    'src/js/jquery.juiMouse.js',
+                    'src/js/jquery.juiAbstractPaginator.js',
+                    'src/js/jquery.juiBasicPaginator.js',
+                    'src/js/jquery.juiPaginatorWithTextField.js',
+                    'src/js/jquery.juiScrollPane.js',
+                    'src/js/jquery.juiDialog.js',
+                    'src/js/jquery.juiScalableBtn.js',
+                    'src/js/jquery.juiScrollableDropDown.js',
+                    'src/js/jquery.juiSelectPicker.js'
                 ],
-                dest: 'distro/<%= pkg.name %>.js'
+                dest: 'distro/js/<%= pkg.name %>.js'
             }
         },
         compass: {
@@ -41,7 +39,7 @@ module.exports = function (grunt) {
             }
         },
         cssmin: {
-            'distro/css/jui-commons.css': 'src/css/jui-commons/jui-commons.css'
+            'distro/css/jui-commons.css': 'src/css/jui-commons.css'
         },
         watch: {
             compass: {

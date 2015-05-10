@@ -1,0 +1,39 @@
+/* line 1, ../../sass/jui-commons/jui-dialog.scss */
+.jui-dialog {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+  heigth: 50%;
+  background: #fff;
+  outline: solid #000 1px;
+  z-index: 9999;
+  box-sizing: border-box;
+}
+/* line 12, ../../sass/jui-commons/jui-dialog.scss */
+.jui-dialog > header, .jui-dialog > footer, .jui-dialog > section {
+  position: relative;
+  width: 100%;
+}
+/* line 18, ../../sass/jui-commons/jui-dialog.scss */
+.jui-dialog > header .close.button {
+  position: relative;
+  float: right;
+  padding: 10px;
+  margin-right: 20px;
+  border: 1px solid #000;
+}
+
+/* line 28, ../../sass/jui-commons/jui-dialog.scss */
+.jui-page-overlay {
+  position: absolute;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.38);
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9998;
+}

@@ -10,11 +10,6 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "1.9.1",
-    "jquery-ui": "~1.10.3",
-    "chai": "~1.8.1",
-    "mocha": "~1.16.2",
-    "requirejs": "~2.1.9",
     "sjljs": "elycruz/sjljs"
   },
   "resolutions": {

@@ -10,7 +10,6 @@
  * @author ElyDeLaCruz
  * @created 2013/12
  */
-
     $.widget('jui.splitText', {
 
         /**
