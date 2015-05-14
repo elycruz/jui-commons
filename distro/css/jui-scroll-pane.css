@@ -1,41 +1,41 @@
-/* line 4, ../sass/jui-scroll-pane.scss */
+/* line 4, ../../src/sass/jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar {
   position: absolute;
   background: #ddd;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
   opacity: 0.8;
 }
-/* line 8, ../sass/jui-scroll-pane.scss */
+/* line 8, ../../src/sass/jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar .handle {
   background: #888;
 }
-/* line 13, ../sass/jui-scroll-pane.scss */
+/* line 13, ../../src/sass/jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar.vertical {
   top: 0;
   right: 0;
   height: 100%;
   width: 13px;
 }
-/* line 18, ../sass/jui-scroll-pane.scss */
+/* line 18, ../../src/sass/jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar.vertical .handle {
   width: 13px;
 }
-/* line 20, ../sass/jui-scroll-pane.scss */
+/* line 20, ../../src/sass/jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar.vertical .handle:hover {
   cursor: ns-resize;
 }
-/* line 26, ../sass/jui-scroll-pane.scss */
+/* line 26, ../../src/sass/jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar.horizontal {
   bottom: 0;
   left: 0;
   height: 13px;
   width: 100%;
 }
-/* line 31, ../sass/jui-scroll-pane.scss */
+/* line 31, ../../src/sass/jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar.horizontal .handle {
   height: 13px;
 }
-/* line 33, ../sass/jui-scroll-pane.scss */
+/* line 33, ../../src/sass/jui-scroll-pane.scss */
 .jui-scroll-pane .scrollbar.horizontal .handle:hover {
   cursor: ew-resize;
 }

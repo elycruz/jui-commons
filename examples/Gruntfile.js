@@ -10,7 +10,7 @@ module.exports = function (grunt) {
         },
 
         cssmin: {
-            './distro/css/examples.min.css': './distro/sass-compiled-css/examples.css'
+            './distro/css/examples.min.css': './distro/css/examples.css'
         },
 
         jshint: {
@@ -39,12 +39,11 @@ module.exports = function (grunt) {
                 }
             }
         },
-
         watch: {
             compass: {
                 files: [
-                    './sass/**/*.scss',
-                    '../src/sass/**/*.scss'
+                    './sass/**/*',
+                    '../src/sass/**/*'
                 ],
                 tasks: ['compass'],
                 options: {
@@ -53,8 +52,8 @@ module.exports = function (grunt) {
             },
             cssmin: {
                 files: [
-                    './distro/sass-compiled-css/**/*.css',
-                    '../distro/css/jui-commons.css'
+                    './distro/css/*',
+                    '../distro/css/*'
                 ],
                 tasks: ['cssmin'],
                 options: {
@@ -65,7 +64,7 @@ module.exports = function (grunt) {
                 files: [
                     './bower_components/**/*',
                     './scripts/**/*',
-                    '../distro/**/*.js',
+                    '../distro/js/*',
                     './templates/**/*'],
                 tasks: ['requirejs'],
                 options: {

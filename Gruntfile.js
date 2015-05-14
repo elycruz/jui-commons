@@ -38,13 +38,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        copy: {
-            distro: {
-                files: [
-                    {expand: true, src: ['src/css/*'], dest: 'dest/css'}
-                ]
-            }
-        },
         cssmin: {
             'distro/css/jui-commons.min.css': 'src/css/jui-commons.css'
         },
@@ -65,19 +58,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        connect: {
-            server: {
-                options: {
-                    port: 3000,
-                    base: '.'
-                }
-            }
-        },
-        open: {
-            server: {
-                path: 'http://localhost:<%= connect.server.options.port %>/examples/index.html'
-            }
-        },
         jsdoc : {
             dist : {
                 src: ['src/*'],
@@ -93,11 +73,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-open');
 
     // Load the plugin that provides the "jsdoc" task.
     grunt.loadNpmTasks('grunt-jsdoc');
@@ -105,12 +82,11 @@ module.exports = function (grunt) {
     // Default task(s).
     grunt.registerTask('default', [
         'compass',
-        'copy',
         'cssmin',
         'concat',
         'uglify',
-        'connect',
-        'open',
+        //'connect',
+        //'open',
         'watch'
     ]);
 
@@ -126,8 +102,8 @@ module.exports = function (grunt) {
     grunt.registerTask('develop', [
         'compass',
         'cssmin',
-        'connect',
-        'open',
+        //'connect',
+        //'open',
         'watch'
     ]);
 
