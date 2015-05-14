@@ -378,27 +378,45 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Lazy initializes a Timeline Lite or
-     * Timeline Max animation timeline.
-     * @method gsapTimeline
+     * Overloaded Lazy initializer (getter) or setter method for the main Timeline Lite/Timeline Max animation timeline.
+     * @param timeline {undefined|TimelineMax|TimelineLite} (if undefined returns the currently set timeline or lazily initializes one and returns it.
      * @returns {TimelineMax|TimelineLite}
-     * @todo move this out of here.
      */
     gsapTimeline: function (timeline) {
+        return this._timeline(timeline, 'gsapTimeline', this.options);
+    },
+
+    /**
+     * Overloaded Lazy initializer (getter) and setter method for TimelineLite and TimelineMax animation timelines.
+     * @param timeline {undefined|TimelineLite|TimelineMax} - If undefined method operates as a getter (and lazyloads a timeline if one is doesn't exist for `optionsKey`).
+     * @param optionsKey {String} - Required, the key where the timeline you want to get or set is stored.
+     * @returns {$.jui.juiBase}
+     * @overloaded
+     * @private
+     */
+    _timeline: function (timeline, optionsKey, ops) {
         var retVal = this,
-            ops = this.options,
-            issetTimeline = sjl.isset(timeline);
+            issetTimeline = sjl.isset(timeline),
+            constructorOptions;
+
+        // If not set optionskey exit the function
+        if (!sjl.isset(optionsKey)) {
+            throw new Error(this.widgetFullName + '._timeline requires an `optionsKey` string param.');
+        }
 
         // If getter call and timeline is not set, create it
         if (!issetTimeline) {
+            constructorOptions = ['default' + optionsKey + 'Options'];
+            constructorOptions = ops.hasOwnProperty(constructorOptions) && !sjl.isset(ops[constructorOptions])
+                    ? ops[constructorOptions] : null;
             retVal =
-                ops.gsapTimeline =
-                    new ops.gsapTimelineConstructor(ops.defaultGsapTimelineConstructorOptions);
+                ops[optionsKey] =
+                    new ops.gsapTimelineConstructor(constructorOptions);
         }
 
         // If setter call and timeline matches one of the allowed timeline classes, set it
         else if (issetTimeline && (timeline instanceof TimelineMax || timeline instanceof TimelineLite)) {
-            ops.gsapTimeline = timeline;
+            ops[optionsKey] = timeline;
         }
 
         // Else if setter call but timeline doesn't match one of the allowed timeline classes, throw an error

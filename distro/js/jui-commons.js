@@ -378,27 +378,45 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Lazy initializes a Timeline Lite or
-     * Timeline Max animation timeline.
-     * @method gsapTimeline
+     * Overloaded Lazy initializer (getter) or setter method for the main Timeline Lite/Timeline Max animation timeline.
+     * @param timeline {undefined|TimelineMax|TimelineLite} (if undefined returns the currently set timeline or lazily initializes one and returns it.
      * @returns {TimelineMax|TimelineLite}
-     * @todo move this out of here.
      */
     gsapTimeline: function (timeline) {
+        return this._timeline(timeline, 'gsapTimeline', this.options);
+    },
+
+    /**
+     * Overloaded Lazy initializer (getter) and setter method for TimelineLite and TimelineMax animation timelines.
+     * @param timeline {undefined|TimelineLite|TimelineMax} - If undefined method operates as a getter (and lazyloads a timeline if one is doesn't exist for `optionsKey`).
+     * @param optionsKey {String} - Required, the key where the timeline you want to get or set is stored.
+     * @returns {$.jui.juiBase}
+     * @overloaded
+     * @private
+     */
+    _timeline: function (timeline, optionsKey, ops) {
         var retVal = this,
-            ops = this.options,
-            issetTimeline = sjl.isset(timeline);
+            issetTimeline = sjl.isset(timeline),
+            constructorOptions;
+
+        // If not set optionskey exit the function
+        if (!sjl.isset(optionsKey)) {
+            throw new Error(this.widgetFullName + '._timeline requires an `optionsKey` string param.');
+        }
 
         // If getter call and timeline is not set, create it
         if (!issetTimeline) {
+            constructorOptions = ['default' + optionsKey + 'Options'];
+            constructorOptions = ops.hasOwnProperty(constructorOptions) && !sjl.isset(ops[constructorOptions])
+                    ? ops[constructorOptions] : null;
             retVal =
-                ops.gsapTimeline =
-                    new ops.gsapTimelineConstructor(ops.defaultGsapTimelineConstructorOptions);
+                ops[optionsKey] =
+                    new ops.gsapTimelineConstructor(constructorOptions);
         }
 
         // If setter call and timeline matches one of the allowed timeline classes, set it
         else if (issetTimeline && (timeline instanceof TimelineMax || timeline instanceof TimelineLite)) {
-            ops.gsapTimeline = timeline;
+            ops[optionsKey] = timeline;
         }
 
         // Else if setter call but timeline doesn't match one of the allowed timeline classes, throw an error
@@ -2000,30 +2018,28 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     options: {
         className: 'jui-scrollable-drop-down',
-        contentElmEffectConfig: {
+        contentElmTimelineConfig: {
             setterCall: 'from',
             elmAlias: 'contentElm',
+            duration: 0.34,
             params: {
-                duration: 0.34,
                 css: {height: 0, autoAlpha: 0}
             }
         },
-        scrollbarElmEffectConfig: {
+        scrollbarElmTimelineConfig: {
             setterCall: 'to',
             elmAlias: 'scrollbarElm',
+            duration: 0.34,
             params: {
-                duration: 0.34,
-                css: {opacity: 1, height: 0}
+                css: {autoAlpha: 1}
             }
         },
-
         ui: {
             contentElm: {
-                elm: null,
                 selector: '> .content'
             },
             scrollbarElm: {
-
+                selector: '.vertical.scrollbar'
             }
         },
 
@@ -2050,8 +2066,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     _create: function () {
         var self = this,
             ops = self.options,
-            contentElm,
-            timeline = this.gsapTimeline();
+            contentElm;
 
         self._super();
 
@@ -2089,7 +2104,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             ops = self.options;
 
         // Add event listeners
-        self._addEventListeners(self, ops)
+        self._addEventListeners(self, self.element, ops)
 
             // Ensure animation functionality
             .ensureAnimationFunctionality(self, ops);
@@ -2098,6 +2113,17 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         if (!ops.isTouchDevice) {
             ops.state === ops.states.COLLAPSED ? self.reverseAnimation() : self.playAnimation();
         }
+    },
+
+    _defineAnimation: function (self, ops) {
+        var timeline = self.gsapTimeline();
+        $.each(['contentElmTimeline', 'scrollbarElmTimeline'], function (index, timelineName) {
+            var item = ops[timelineName + 'Config'];
+            timeline.add(
+                    self[timelineName]()[item.setterCall](self.getUiElement(item.elmAlias), item.duration, item.params)
+                );
+        });
+        return self;
     },
 
     _addEventListeners: function (self, $selfElm, ops) {
@@ -2109,7 +2135,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         if (expandOnMouseEvent === collapseOnMouseEvent) {
             $selfElm.on(expandOnMouseEvent, function (e) {
                 if (ops.state === states.COLLAPSED) {
-                    self.ensureAnimationFunctionality(self, ops);
+                    //self.ensureAnimationFunctionality(self, ops);
                     ops.state = states.EXPANDED;
                     $selfElm.removeClass(ops.collapseClassName)
                         .addClass(ops.expandClassName)
@@ -2117,7 +2143,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                     self.playAnimation();
                 }
                 else {
-                    self.ensureAnimationFunctionality(self, ops);
+                    //self.ensureAnimationFunctionality(self, ops);
                     ops.state = states.COLLAPSED;
                     $selfElm
                         .removeClass(ops.expandClassName)
@@ -2130,7 +2156,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         else {
             // On expand event
             $selfElm.on(expandOnMouseEvent, function (e) {
-                self.ensureAnimationFunctionality(self, ops);
+                //self.ensureAnimationFunctionality(self, ops);
                 ops.state = states.EXPANDED;
                 $selfElm.removeClass(ops.collapseClassName);
                 $selfElm.addClass(ops.expandClassName);
@@ -2139,7 +2165,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             })
                 // On collapse event
                 .on(collapseOnMouseEvent, function (e) {
-                    self.ensureAnimationFunctionality(self, ops);
+                    //self.ensureAnimationFunctionality(self, ops);
                     ops.state = states.COLLAPSED;
                     $selfElm.removeClass(ops.expandClassName);
                     $selfElm.addClass(ops.collapseClassName);
@@ -2153,7 +2179,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             if ($.contains($selfElm.get(0), e.target) === false
                 && ops.gsapTimeline.progress() === 1) {
                 if (ops.state === states.EXPANDED) {
-                    self.ensureAnimationFunctionality(self, ops);
+                    //self.ensureAnimationFunctionality(self, ops);
                     ops.state = states.COLLAPSED;
                     $selfElm.removeClass(ops.expandClassName);
                     $selfElm.addClass(ops.collapseClassName);
@@ -2163,20 +2189,20 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             }
         });
 
+        return self;
     },
 
     _removeEventListeners: function (self) {
         self.element.off(self.options.collapseOn)
                     .off(self.options.expandOn);
+        return self;
     },
 
     _initScrollbar: function (self, ops) {
         var $scrollbar = self.getUiElement('scrollbarElm');
-
-        if (!sjl.empty($scrollbar.elm) && $scrollbar.elm.length > 0) {
-            return;
+        if (!sjl.empty($scrollbar) && $scrollbar.length > 0) {
+            return self;
         }
-
         self.options.juiScrollPaneElm = self.element.juiScrollPane({ ui: {
                 contentHolder: {
                     elm: self.getUiElement('contentElm'),
@@ -2184,21 +2210,23 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
                 }
             }});
 
-        $scrollbar.elm = $('.vertical.scrollbar', self.element);
+        ops.ui.scrollbarElm.elm = $('.vertical.scrollbar', self.element);
+        return self;
     },
 
     setStateTo: function (state) {
         this.options.state = typeof state !== 'undefined'
             && state === 'expanded' ? this.options.states.EXPANDED
             : this.options.states.COLLAPSED;
+        return this;
     },
 
     ensureAnimationFunctionality: function (self, ops) {
         if (ops.isLessThanIE9) {
             return;
         }
-        self._initScrollbar(self, $selfElm, ops);
-        self._initTimeline(self, $selfElm, ops);
+        return self._initScrollbar(self, ops)
+                    ._defineAnimation(self, ops);
     },
 
     /**
@@ -2242,10 +2270,17 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     getState: function () {
         return this.options.state;
+    },
+
+    scrollbarElmTimeline: function (timeline) {
+        return this._timeline(timeline, 'scrollbarElmTimeline', this.options);
+    },
+
+    contentElmTimeline: function (timeline) {
+        return this._timeline(timeline, 'contentElmTimeline', this.options);
     }
 
 });
-
 /**
  * Created by ElyDeLaCruz on 10/1/13.
  *

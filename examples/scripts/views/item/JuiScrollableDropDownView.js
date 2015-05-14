@@ -14,9 +14,6 @@ define([
                 test2Elm: '.clipped-drop-down'
             },
 
-            initialize: function () {
-            },
-
             template: tmpl,
 
             onShow: function () {
