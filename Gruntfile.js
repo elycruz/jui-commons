@@ -39,7 +39,7 @@ module.exports = function (grunt) {
             }
         },
         cssmin: {
-            'distro/css/jui-commons.min.css': 'src/css/jui-commons.css'
+            'distro/css/jui-commons.min.css': 'distro/css/jui-commons.css'
         },
         watch: {
             compass: {

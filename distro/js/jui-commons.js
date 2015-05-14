@@ -321,73 +321,6 @@ $.widget('jui.juiBase', {
     },
 
     /**
-     * Adds animations to our animation timeline.
-     * @param timeline {TimelineLite|TimelineMax} optional
-     * @param animations {array} optional animations array
-     * @param options {object] optional options hash to search on
-     * @returns default
-     * @protected
-     */
-    _initAnimationTimeline: function (timeline, animations, options) {
-        var self = this,
-            ops,
-            i, config, elm, dur, props,
-            _animations;
-
-        timeline = !sjl.isset(timeline) ? this.gsapTimeline() : timeline;
-        options = options || self.options;
-        animations = animations || null;
-
-        ops = options;
-
-        // If default animations, use them
-        if (sjl.isset(ops.defaultAnimations)
-            && ops.defaultAnimations instanceof Array) {
-            _animations = ops.defaultAnimations;
-        }
-
-        // If animations, use them (also override defaults if any)
-        if (sjl.isset(ops.animations)
-            && ops.animations instanceof Array && sjl.isset(_animations)) {
-            _animations = sjl.isset(animations)
-                ? $.extend(true, _animations, ops.animations) : ops.animations;
-        }
-
-        // Set animations variable
-        if (sjl.isset(animations) && sjl.isset(_animations)) {
-            animations = $.extend(true, _animations, animations);
-        }
-        else if (sjl.isset(_animations)) {
-            animations = _animations;
-        }
-        // If no animations, bail
-        else {
-            return;
-        }
-
-        // Add animations to timeline
-        for (i = 0; i < animations.length; i += 1) {
-            config = animations[i];
-            elm = self.getUiElement(config.elmAlias);
-            dur = config.duration;
-            props = config.props;
-
-            // Pre init function
-            if (sjl.isset(config.preInit) && typeof config.preInit === 'function') {
-                config.preInit.apply(this);
-            }
-
-            // Init timeline
-            timeline[config.type](elm, dur, props);
-
-            // Post init function
-            if (sjl.isset(config.postInit) && typeof config.postInit === 'function') {
-                config.postInit.apply(this);
-            }
-        }
-    },
-
-    /**
      * @method _removeDisabledElements
      * @param options
      * @protected
@@ -2067,29 +2000,32 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     options: {
         className: 'jui-scrollable-drop-down',
+        contentElmEffectConfig: {
+            setterCall: 'from',
+            elmAlias: 'contentElm',
+            params: {
+                duration: 0.34,
+                css: {height: 0, autoAlpha: 0}
+            }
+        },
+        scrollbarElmEffectConfig: {
+            setterCall: 'to',
+            elmAlias: 'scrollbarElm',
+            params: {
+                duration: 0.34,
+                css: {opacity: 1, height: 0}
+            }
+        },
 
         ui: {
             contentElm: {
                 elm: null,
                 selector: '> .content'
+            },
+            scrollbarElm: {
+
             }
         },
-
-        // Example animations hash
-        defaultAnimations: [{
-                type: 'from',
-                duration: 0.34,
-                elmAlias: 'contentElm',
-                props: {css: {height: 0, autoAlpha: 0}}
-            }
-        //    {
-        //        type: 'to',
-        //        duration: 0.34,
-        //        elmAlias: 'scrollbar',
-        //        props: {css: {autoAlpha: 1},
-        //            delay: -0.13}
-        //}
-        ],
 
         // Expand select-picker on event
         expandOn: 'click',
@@ -2119,12 +2055,17 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
         self._super();
 
+        // Set collapsed state
+        ops.state = ops.state || ops.states.COLLAPSED;
+
         // Add event class names
         self.element
-            .addClass(ops.className)
-            .addClass(self._getExpandOnClassName())
-            .addClass(self._getCollapseOnClassName())
-            .addClass('collapsed');
+            .addClass([ops.className,
+                ops.expandOnClassNamePrefix + ops.expandOn,
+                    ops.collapseOnClassNamePrefix + ops.collapseOn,
+                    ops.state === ops.states.COLLAPSED
+                        ? ops.collapseClassName : ops.expandClassName
+                ].join(' '));
 
         // Populate ui elements on self (self.ui[elmKeyAlias])
         self._autoPopulateUiElements(self, self.element, ops);
@@ -2137,74 +2078,48 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         }
 
         // Save original css `display` and `visibility` values
-        self._namespace('ui.contentElm.originalCss',
-            ops, {
+        ops.ui.contentElm.originalCss = {
                 display: contentElm.css('display'),
                 visibility: contentElm.css('visibility')
-            });
+            };
     },
 
     _init: function () {
-        var ops = this.options;
+        var self = this,
+            ops = self.options;
 
         // Add event listeners
-        this._addEventListeners();
+        self._addEventListeners(self, ops)
 
-        // Set collapsed state
-        ops.state = ops.state || ops.states.COLLAPSED;
+            // Ensure animation functionality
+            .ensureAnimationFunctionality(self, ops);
 
-        // Ensure animation functionality
-        this.ensureAnimationFunctionality();
-
+        // Start initial animation if not a touch device
         if (!ops.isTouchDevice) {
-            // Start initial animation
-            ops.state === ops.states.COLLAPSED ? this.reverseAnimation() :
-                this.playAnimation();
+            ops.state === ops.states.COLLAPSED ? self.reverseAnimation() : self.playAnimation();
         }
     },
 
-    _getExpandOnClassName: function () {
-        var ops = this.options;
-        return ops.expandOnClassNamePrefix
-            + ops.expandOn;
-    },
-
-    _getExpandOnEventStringName: function () {
-        return this.options.expandOn;
-    },
-
-    _getCollapseOnClassName: function () {
-        var ops = this.options;
-        return ops.collapseOnClassNamePrefix
-            + ops.collapseOn;
-    },
-
-    _getCollapseOnEventStringName: function () {
-        return this.options.collapseOn;
-    },
-
-    _addEventListeners: function () {
-        var self = this,
-            states = self.options.states,
-            ops = self.options,
-            collapseOnMouseEvent = self._getCollapseOnEventStringName(),
-            expandOnMouseEvent = self._getExpandOnEventStringName();
+    _addEventListeners: function (self, $selfElm, ops) {
+        var states = ops.states,
+            collapseOnMouseEvent = ops.collapseOn,
+            expandOnMouseEvent = ops.expandOn;
 
         // If expand and collapse events are the same (use toggle pattern)
         if (expandOnMouseEvent === collapseOnMouseEvent) {
-            self.element.on(expandOnMouseEvent, function (e) {
-                if (self.options.state === states.COLLAPSED) {
-                    self.ensureAnimationFunctionality();
-                    self.options.state = states.EXPANDED;
-                    self.element.removeClass(ops.collapseClassName)
+            $selfElm.on(expandOnMouseEvent, function (e) {
+                if (ops.state === states.COLLAPSED) {
+                    self.ensureAnimationFunctionality(self, ops);
+                    ops.state = states.EXPANDED;
+                    $selfElm.removeClass(ops.collapseClassName)
                         .addClass(ops.expandClassName)
                         .trigger('expand', e);
                     self.playAnimation();
                 }
                 else {
-                    self.ensureAnimationFunctionality();
-                    self.options.state = states.COLLAPSED;
-                    self.element
+                    self.ensureAnimationFunctionality(self, ops);
+                    ops.state = states.COLLAPSED;
+                    $selfElm
                         .removeClass(ops.expandClassName)
                         .addClass(ops.collapseClassName)
                         .trigger('collapse', e);
@@ -2214,35 +2129,35 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
         }
         else {
             // On expand event
-            self.element.on(expandOnMouseEvent, function (e) {
-                self.ensureAnimationFunctionality();
-                self.options.state = states.EXPANDED;
-                self.element.removeClass(ops.collapseClassName);
-                self.element.addClass(ops.expandClassName);
-                self.element.trigger('expand', e);
+            $selfElm.on(expandOnMouseEvent, function (e) {
+                self.ensureAnimationFunctionality(self, ops);
+                ops.state = states.EXPANDED;
+                $selfElm.removeClass(ops.collapseClassName);
+                $selfElm.addClass(ops.expandClassName);
+                $selfElm.trigger('expand', e);
                 self.playAnimation();
             })
                 // On collapse event
                 .on(collapseOnMouseEvent, function (e) {
-                    self.ensureAnimationFunctionality();
-                    self.options.state = states.COLLAPSED;
-                    self.element.removeClass(ops.expandClassName);
-                    self.element.addClass(ops.collapseClassName);
-                    self.element.trigger('collapse', e);
+                    self.ensureAnimationFunctionality(self, ops);
+                    ops.state = states.COLLAPSED;
+                    $selfElm.removeClass(ops.expandClassName);
+                    $selfElm.addClass(ops.collapseClassName);
+                    $selfElm.trigger('collapse', e);
                     self.reverseAnimation();
                 });
         }
 
         // When clicking outside of drop down close it
         $(window).on('click', function (e) {
-            if ($.contains(self.element.get(0), e.target) === false
+            if ($.contains($selfElm.get(0), e.target) === false
                 && ops.gsapTimeline.progress() === 1) {
-                if (self.options.state === states.EXPANDED) {
-                    self.ensureAnimationFunctionality();
-                    self.options.state = states.COLLAPSED;
-                    self.element.removeClass(ops.expandClassName);
-                    self.element.addClass(ops.collapseClassName);
-                    self.element.trigger('collapse', e);
+                if (ops.state === states.EXPANDED) {
+                    self.ensureAnimationFunctionality(self, ops);
+                    ops.state = states.COLLAPSED;
+                    $selfElm.removeClass(ops.expandClassName);
+                    $selfElm.addClass(ops.collapseClassName);
+                    $selfElm.trigger('collapse', e);
                     self.reverseAnimation();
                 }
             }
@@ -2250,40 +2165,26 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
 
     },
 
-    _removeEventListeners: function () {
-        this.element
-            .off(this._getCollapseOnEventStringName())
-            .off(this._getExpandOnEventStringName());
+    _removeEventListeners: function (self) {
+        self.element.off(self.options.collapseOn)
+                    .off(self.options.expandOn);
     },
 
-    _initScrollbar: function () {
-        var ops = this.options,
-            scrollbar = this._namespace('ui.scrollbar', ops);
+    _initScrollbar: function (self, ops) {
+        var $scrollbar = self.getUiElement('scrollbarElm');
 
-        if (!sjl.empty(scrollbar.elm) && scrollbar.elm.length > 0) {
+        if (!sjl.empty($scrollbar.elm) && $scrollbar.elm.length > 0) {
             return;
         }
 
-        this.options.juiScrollPaneElm = this.element.juiScrollPane({
-            ui: {
+        self.options.juiScrollPaneElm = self.element.juiScrollPane({ ui: {
                 contentHolder: {
-                    elm: this.getUiElement('contentElm'),
+                    elm: self.getUiElement('contentElm'),
                     selector: ops.ui.contentElm.selector + ''
                 }
-            }
-        });
+            }});
 
-        scrollbar.elm = $('.vertical.scrollbar', this.element);
-    },
-
-    initAnimationTimeline: function () {
-        this._initAnimationTimeline();
-    },
-
-    _initTimeline: function () {
-        if (sjl.empty(this.options.gsapTimeline)) {
-            this.initAnimationTimeline()
-        }
+        $scrollbar.elm = $('.vertical.scrollbar', self.element);
     },
 
     setStateTo: function (state) {
@@ -2292,12 +2193,12 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
             : this.options.states.COLLAPSED;
     },
 
-    ensureAnimationFunctionality: function () {
-        if (this.options.isLessThanIE9) {
+    ensureAnimationFunctionality: function (self, ops) {
+        if (ops.isLessThanIE9) {
             return;
         }
-        this._initScrollbar();
-        this._initTimeline();
+        self._initScrollbar(self, $selfElm, ops);
+        self._initTimeline(self, $selfElm, ops);
     },
 
     /**
@@ -2329,9 +2230,10 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     },
 
     destroy: function () {
-        this._removeCreatedElements();
-        this._removeEventListeners();
-        this._super();
+        var self = this;
+        self._removeCreatedElements(self);
+        self._removeEventListeners(self);
+        self._super();
     },
 
     refresh: function () {
