@@ -1,7 +1,11 @@
+require('sjljs');
+
+var fs = require('fs'),
+    path = require('path');
+
 module.exports = function (grunt) {
 
-    // Project configuration.
-    grunt.initConfig({
+    var config = {
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
             options: {
@@ -12,6 +16,15 @@ module.exports = function (grunt) {
                     'distro/js/<%= pkg.name %>.js'
                 ],
                 dest: 'distro/js/<%= pkg.name %>.min.js'
+            }
+        },
+        copy: {
+            js: {
+                expand: true,
+                src: 'src/js/*',
+                dest: 'distro/js/',
+                flatten: true,
+                filter: 'isFile'
             }
         },
         concat: {
@@ -67,12 +80,34 @@ module.exports = function (grunt) {
                 }
             }
         }
+    };
+
+    // Prepare uniminified target
+    config.uglify.unminified = {};
+
+    // Loop through files in js source and add copy and uglify configurations for them
+    fs.readdirSync(__dirname + '/src/js').forEach(function (file) {
+        // Add copy target for file
+        config.copy[sjl.camelCase(file)] = {
+            src: 'src/js/' + file,
+            dest: 'distro/js/' + file
+        };
+
+        // Add unimified file target
+        config.uglify.unminified['distro/js/' + path.basename(file, '.js') + '.min.js'] =
+            ['src/js/' +  file.toString()];
     });
+
+    console.log(config.uglify, config.copy);
+
+    // Project configuration.
+    grunt.initConfig(config);
 
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
@@ -83,28 +118,11 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'compass',
         'cssmin',
+        'copy',
         'concat',
         'uglify',
-        //'connect',
-        //'open',
         'watch'
     ]);
 
-    // Build task
-    grunt.registerTask('build', [
-        'compass',
-        'cssmin',
-        'concat',
-        'uglify',
-    ]);
-
-    // Development task
-    grunt.registerTask('develop', [
-        'compass',
-        'cssmin',
-        //'connect',
-        //'open',
-        'watch'
-    ]);
 
 };

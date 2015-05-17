@@ -1,0 +1,60 @@
+bundlesPath: ./gulpw-bundles
+bundleConfigFormats:
+  - .yaml
+  - .js
+  - .json
+localConfigPath: ./.gulpw
+localConfigBackupPath: ./.gulpw/backups
+tasks:
+  build:
+    prelimTasks:
+      - mocha
+      - jasmine
+    ignoredTasks:
+      - clean
+      - deploy
+      - jshint
+      - csslint
+      - watch
+  compass:
+    configrb: ./config.rb
+  copy:
+  csslint:
+    csslintrc: ./.csslintrc
+  eslint:
+    options:
+      useEslintrc: true
+    failAfterError: false
+    failOnError: false
+    eslintrc: ./.eslintrc
+  minify:
+    header: >
+      /*! jui-commons * http://juicommons.elycruz.com * Filename: <%=
+      bundle.options.alias + '.' + fileExt %> * Version: <%=
+      bundle.options.version %> * Created: (<%= (new Date()).getTime() %>)
+      * Hashsum: <%= fileHashType %>:<%= bundle[fileExt + 'Hash'] %> */
+    cssBuildPath: distro/css
+    htmlBuildPath: /
+    jsBuildPath: distro/js
+    fileHashType: sha256
+    createFileHashes: true
+    allowedFileTypes:
+      - js
+      - html
+      - css
+    htmlTaskOptions:
+      spare: true
+      comments: true
+    jsTaskOptions: {}
+    useMinPreSuffix: false
+    useVersionNumInFileName: false
+    template:
+      templatePartial: null
+      compressWhitespace: true
+      templateTypeKeys:
+        - mustache
+        - handlebars
+        - ejs
+      useFilePathAsKey: true
+      removeFileExtensionsOnKeys: true
+      splitKeyAt: ./
