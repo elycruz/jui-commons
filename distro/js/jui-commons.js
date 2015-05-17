@@ -779,7 +779,6 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
         className: 'jui-basic-paginator',
         ui: {
             firstBtn: {
-                elm: null,
                 selector: '> .first-btn.btn',
                 attribs: {
                     'class': 'first-btn btn',
@@ -791,7 +790,6 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
                 create: true
             },
             prevBtn: {
-                elm: null,
                 selector: '> .prev-btn.btn',
                 attribs: {
                     'class': 'prev-btn btn',
@@ -803,7 +801,6 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
                 create: true
             },
             nextBtn: {
-                elm: null,
                 selector: '> .next-btn.btn',
                 attribs: {
                     'class': 'next-btn btn',
@@ -815,7 +812,6 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
                 create: true
             },
             lastBtn: {
-                elm: null,
                 selector: '> .last-btn.btn',
                 attribs: {
                     'class': 'last-btn btn',
@@ -827,11 +823,10 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
                 create: true
             },
             itemsContainer: {
-                selector: '> .items'
+                selector: '> .content-pane > .items'
             },
             items: {
-                elm: null,
-                selector: '> .items > .item',
+                selector: '> .content-pane > .items > .item',
                 firstInRange: 0,
                 lastInRange: 0,
                 perPage: 0
@@ -980,9 +975,11 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
         className: 'jui-paginator-with-text-field jui-basic-paginator',
 
         ui: {
+            itemsContainer: {
+                selector: '> .content-pane > .items'
+            },
             items: {
-                elm: null,
-                selector: '> .items > .item',
+                selector: '> .content-pane > .items > .item',
                 perPage: 12,
                 create: false
             },

@@ -1,7 +1,10 @@
-# Javascript Ui Commons - jui-commons
+# jui-commons (originally Javascript Ui Commons)
 
-A Collection of commonly used/needed ui components built with
-extensibility in mind using the jquery ui library (version 1.9.x +).
+A Collection of commonly used/needed ui components built using the jquery 
+widget library (version 1.9.x +) and extensibility in mind.
+
+### Included files:
+-----------
 
 ### The Base: jui.juiBase
 -----------
@@ -20,17 +23,6 @@ the hash by default).
 All jui plugins share the following naming conventions:
 
 `jquery.juiPluginNameHere.js`
-
-### Jui Components are broken down into major categories:
------------
-- effects     - Components that create specific ui effects (tentative).
-
-- ui          - Ui specific components (usually composed together with
-                other ui components to build larger,
-                more encompassing components)
-
-- utils       - Utilities that may be commonly used throughout the
-                different components of the jui-eco-sphere.
 
 ### Components
 ---------------------------
@@ -72,8 +64,3 @@ currently used in backend systems.
   * jquery-ui core
   * jquery-ui widget factory
 
-### Todos
-----------------------------
-- [ ] @todo add licensing info here.
-- [ ] @todo Consider putting all plugins in src/ui to simplify things.
-- [ ] @todo list the currently available plugins in the library here.

@@ -4,13 +4,11 @@ define([
     'gsap-scrollto-plugin'
 ],
     function (Backbone, tmpl) {
+
         'use strict';
 
         /* Return a ItemView class definition */
         return Backbone.Marionette.ItemView.extend({
-
-            initialize: function () {
-            },
 
             className: 'grid-100 jui-paginators-example',
 
@@ -29,22 +27,8 @@ define([
                 var self = this,
                     contentPanes = $('.content-pane', this.$el),
                     items = $('.items', contentPanes),
-                    paginator1 = self.ui.example1.juiBasicPaginator({
-                        ui: {
-                            items: {
-                                elm: $('> .item', items.eq(1)),
-                                perPage: 9
-                            }
-                        }
-                    }),
-                    paginator2 = self.ui.example2.juiPaginatorWithTextField({
-                        ui: {
-                            items: {
-                                elm:  $('> .item', items.eq(1)),
-                                perPage: 12
-                            }
-                        }
-                    }),
+                    paginator1 = self.ui.example1.juiBasicPaginator({ ui: {items: { perPage: 9 }} }),
+                    paginator2 = self.ui.example2.juiPaginatorWithTextField({ ui: {items: { perPage: 9 }} }),
                     contentPane1,
                     contentPane2;
 

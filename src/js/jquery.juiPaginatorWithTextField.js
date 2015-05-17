@@ -20,9 +20,11 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
         className: 'jui-paginator-with-text-field jui-basic-paginator',
 
         ui: {
+            itemsContainer: {
+                selector: '> .content-pane > .items'
+            },
             items: {
-                elm: null,
-                selector: '> .items > .item',
+                selector: '> .content-pane > .items > .item',
                 perPage: 12,
                 create: false
             },
