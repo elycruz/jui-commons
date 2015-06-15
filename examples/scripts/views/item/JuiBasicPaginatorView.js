@@ -28,10 +28,9 @@ define([
                     contentPanes = $('.content-pane', this.$el),
                     items = $('.items', contentPanes),
                     paginator1 = self.ui.example1.juiBasicPaginator({ ui: {items: { perPage: 9 }} }),
-                    paginator2 = self.ui.example2.juiPaginatorWithTextField({ ui: {items: { perPage: 9 }} }),
+                    paginator2 = self.ui.example2.juiPaginatorWithTextField({ ui: {items: { perPage: 12 }} }),
                     contentPane1,
                     contentPane2;
-
 
                 contentPane1 = items.eq(0);
                 contentPane1.css('overflow', 'auto');

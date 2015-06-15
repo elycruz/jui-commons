@@ -1,4 +1,4 @@
-/* line 2, ../../src/sass/jui-select-picker.scss */
+/* line 3, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker {
   position: absolute;
   width: auto;
@@ -8,14 +8,14 @@
   background: #fff;
   border: 1px solid #888;
 }
-/* line 12, ../../src/sass/jui-select-picker.scss */
+/* line 13, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker.expanded {
   border: 1px solid #000;
 }
-/* line 16, ../../src/sass/jui-select-picker.scss */
+/* line 17, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .button {
   position: relative;
-  display: border-box;
+  display: block;
   width: 100%;
   height: auto;
   background: #fff;
@@ -24,7 +24,7 @@
   cursor: pointer;
   z-index: 98;
 }
-/* line 27, ../../src/sass/jui-select-picker.scss */
+/* line 32, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .button > span,
 .jui-select-picker .button > div,
 .jui-select-picker .button .label,
@@ -34,7 +34,7 @@
   display: inline-block;
   margin: 10px;
 }
-/* line 37, ../../src/sass/jui-select-picker.scss */
+/* line 38, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .button .arrow {
   top: 8px;
   float: right;
@@ -44,13 +44,13 @@
   border-color: black transparent transparent transparent;
   border-style: solid;
 }
-/* line 48, ../../src/sass/jui-select-picker.scss */
+/* line 49, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .body {
   position: absolute;
   width: 100%;
   height: 100%;
 }
-/* line 54, ../../src/sass/jui-select-picker.scss */
+/* line 55, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options {
   position: absolute;
   width: 100%;
@@ -60,36 +60,36 @@
   z-index: 97;
   visibility: visible;
 }
-/* line 64, ../../src/sass/jui-select-picker.scss */
+/* line 65, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul {
   width: 85%;
   margin: 0 5%;
 }
-/* line 67, ../../src/sass/jui-select-picker.scss */
+/* line 68, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li {
   width: 100%;
   border-bottom: 1px solid #ccc;
   list-style: none;
+  -webkit-transition: background 0.16s linear;
   -moz-transition: background 0.16s linear;
   -o-transition: background 0.16s linear;
-  -webkit-transition: background 0.16s linear;
   transition: background 0.16s linear;
 }
-/* line 73, ../../src/sass/jui-select-picker.scss */
+/* line 74, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li a {
   display: block;
   padding: 10px;
   text-decoration: none;
+  -webkit-transition: background 0.16s linear;
   -moz-transition: background 0.16s linear;
   -o-transition: background 0.16s linear;
-  -webkit-transition: background 0.16s linear;
   transition: background 0.16s linear;
 }
-/* line 79, ../../src/sass/jui-select-picker.scss */
+/* line 80, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li a:hover {
   background: #ddd;
 }
-/* line 82, ../../src/sass/jui-select-picker.scss */
+/* line 87, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li a:active,
 .jui-select-picker .options ul li a.selected,
 .jui-select-picker .options ul li a.active,
@@ -97,47 +97,51 @@
 .jui-select-picker .options ul li.active {
   background: #ccc;
 }
-/* line 89, ../../src/sass/jui-select-picker.scss */
+/* line 90, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li.first {
   border-top: none;
 }
-/* line 92, ../../src/sass/jui-select-picker.scss */
+/* line 93, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li.last {
   border-bottom: none;
 }
-/* line 98, ../../src/sass/jui-select-picker.scss */
+/* line 99, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .scrollbar {
   position: absolute;
-  -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
   border-radius: 8px;
   z-index: 99;
 }
-/* line 104, ../../src/sass/jui-select-picker.scss */
+/* line 105, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .horizontal.scrollbar {
   display: none;
 }
-/* line 108, ../../src/sass/jui-select-picker.scss */
+/* line 109, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar {
   top: auto;
   right: 10px;
   width: 8px;
   height: 220px;
 }
-/* line 114, ../../src/sass/jui-select-picker.scss */
+/* line 115, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar .handle {
   width: 8px;
-  -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
   border-radius: 8px;
 }
 
-/* line 124, ../../src/sass/jui-select-picker.scss */
+/* line 126, ../../src/sass/jui-select-picker.scss */
 .lt-ie9 .expanded .scrollbar,
 .lt-ie9 .expanded .options {
   display: block;
 }
-/* line 132, ../../src/sass/jui-select-picker.scss */
+/* line 134, ../../src/sass/jui-select-picker.scss */
 .lt-ie9 .collapsed .scrollbar,
 .lt-ie9 .collapsed .options {
   display: none;

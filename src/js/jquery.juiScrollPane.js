@@ -148,11 +148,19 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 e.stopPropagation();
             }
 
-            delta = sjl.isset(delta) ? delta :
-                (sjl.isset(deltaX)? deltaX : deltaY);
+            // Ensure delta
+            if (sjl.isset(delta)) {
+                delta = delta;
+            }
+            else if (sjl.isset(deltaX)) {
+                delta = deltaX;
+            }
+            else {
+                delta = deltaY;
+            }
 
             // Prelims
-            scrollSpeed = self.getValueFromOptions('scrollSpeed');
+            scrollSpeed = sjl.getValueFromObj('options.scrollSpeed', self);
             incrementer = delta < 1 ?  scrollSpeed : -scrollSpeed;
 
             // Scroll horizontally
@@ -225,6 +233,8 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 case '40':
                     self.scrollVertically(incrementer + contentHolder.scrollTop());
                 break;
+                default:
+                    break;
             }
         });
         // ----------------------------------------------------------
@@ -233,8 +243,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     },
 
     _scrollByOrientation: function (value, orientation) {
-        var ops = this.options,
-            contentHolder = this.getUiElement('contentHolder'),
+        var contentHolder = this.getUiElement('contentHolder'),
             layout = orientation,
             vars = this.getScrollDirVars(layout),
             scrollTotal = vars.scrollAmountTotal,
@@ -343,16 +352,15 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             scrollbar = self.getScrollbarByOrientation(oriented),
             handle = self.getScrollbarHandleByOrientation(oriented),
             contentHolder = self.getUiElement('contentHolder'),
-            plugin = self,
 
         // Resolve scrollbar direction variables
-            scrollVars = plugin.getScrollDirVars(oriented),
+            scrollVars = self.getScrollDirVars(oriented),
             dragAxis = scrollVars.dragAxis,
             dir = scrollVars.cssCalcDir,
             dimProp = scrollVars.scrollbarDimProp;
 
         // Resize handle
-        plugin.initScrollbarHandle(oriented);
+        self.initScrollbarHandle(oriented);
 
         // Make draggable handle on scrollbar
         handle = handle.draggable({
@@ -374,8 +382,8 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             handle.css(dir, e['offset' + dragAxis.toUpperCase()]
                 - handle[dimProp]() / 2);
 
-            plugin.constrainHandle(oriented);
-            plugin.scrollContentHolder(oriented);
+            self.constrainHandle(oriented);
+            self.scrollContentHolder(oriented);
         });
 
         // Save the draggable handle for later (for calling destroy on it for reinitialization
@@ -397,19 +405,17 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     },
 
     getScrollDirVars: function (oriented) {
-        var plugin = this,
-            ops = plugin.options,
-            contentHolder = this.getUiElement('contentHolder'),
+        var contentHolder = this.getUiElement('contentHolder'),
             retVal;
 
         // Resolve scrollbar direction variables
-        if (oriented === plugin.options.scrollbarOriented.VERTICALLY) {
+        if (oriented === this.options.scrollbarOriented.VERTICALLY) {
             retVal = {
                 dragAxis: 'y',
                 cssCalcDir: 'top',
                 scrollbarDimProp: 'height',
                 scrollAmountTotal: contentHolder.get(0).scrollHeight
-            }
+            };
         }
         else {
             retVal = {
@@ -417,7 +423,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 cssCalcDir: 'left',
                 scrollbarDimProp: 'width',
                 scrollAmountTotal: contentHolder.get(0).scrollWidth
-            }
+            };
         }
 
         return retVal;
@@ -462,20 +468,17 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             vertHandle = ops.draggableVertHandle,
             horizHandle = ops.draggableHorizHandle;
 
-        try {
-
-            // Destroy draggable on handle
-            if (!sjl.empty(vertHandle) && vertHandle instanceof $) {
-                vertHandle.draggable('destroy');
-            }
-
-            // Destroy draggable on handle
-            if (!sjl.empty(horizHandle) && horizHandle instanceof $) {
-                horizHandle.draggable('destroy');
-            }
-
+        // Destroy draggable on handle
+        if (!sjl.empty(vertHandle) && vertHandle instanceof $
+        && vertHandle.data().hasOwnProperty('uiDraggable')) {
+            vertHandle.draggable('destroy');
         }
-        catch (e) { }
+
+        // Destroy draggable on handle
+        if (!sjl.empty(horizHandle) && horizHandle instanceof $
+            && horizHandle.data().hasOwnProperty('uiDraggable')) {
+            horizHandle.draggable('destroy');
+        }
 
         // Re-initialize scrollbars (recalc heights, widths,
         // and make draggable and constrainable etc.
@@ -507,4 +510,3 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     }
 
 });
-

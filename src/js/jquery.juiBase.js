@@ -135,6 +135,11 @@ $.widget('jui.juiBase', {
         // Loop through ops and populate elements
         for (key in ops.ui) {
 
+            // If key is not set
+            if (!sjl.issetObjKey(ops.ui, 'key')) {
+                return;
+            }
+
             // Get item
             item = ops.ui[key];
             classOfItem = sjl.classOf(item);
@@ -153,7 +158,7 @@ $.widget('jui.juiBase', {
             else if (classOfItem === 'Object') {
 
                 // If element is a valid jquery selection skip it
-                if (!self._isEmptyObjectKey(item, 'elm') && self._isValid$Selection(item.elm)) {
+                if (!sjl.isEmptyObjKey(item, 'elm') && self._isValid$Selection(item.elm)) {
                     continue;
                 }
                 // Get element from options
@@ -176,15 +181,14 @@ $.widget('jui.juiBase', {
      * @protected
      * @returns {null|jQuery} null or the jquery element selection
      */
-    _getElementFromOptions: function (config, self, $selfElm, ops) {
+    _getElementFromOptions: function (config, self, $selfElm/*, ops*/) {
         var retVal = null,
-            configHasHtml = !self._isEmptyObjectKey(config, 'html'),
-            configCreate = !self._isEmptyObjectKey(config, 'create', 'Boolean') && config.create,
-            configHasSelector = !self._isEmptyObjectKey(config, 'selector', 'String'),
-            configHasAppendTo = !self._isEmptyObjectKey(config, 'appendTo', 'String'),
+            configHasHtml = !sjl.isEmptyObjKey(config, 'html'),
+            configCreate = !sjl.isEmptyObjKey(config, 'create', 'Boolean') && config.create,
+            configHasSelector = !sjl.isEmptyObjKey(config, 'selector', 'String'),
+            configHasAppendTo = !sjl.isEmptyObjKey(config, 'appendTo', 'String'),
             validJquerySelection,
-            $findIn = $selfElm,
-            retVal = null;
+            $findIn = $selfElm;
 
         if (configHasAppendTo) {
             $findIn = self._getAppendToElement($selfElm, config);
@@ -204,7 +208,7 @@ $.widget('jui.juiBase', {
             if (configHasAppendTo) {
                 self._appendByAppendToString(config.appendTo, retVal, $findIn, $selfElm);
             }
-            retVal = $(config.selector, $findIn)
+            retVal = $(config.selector, $findIn);
         }
 
         // Return element
@@ -267,7 +271,7 @@ $.widget('jui.juiBase', {
         var self = this, ops = self.options;
         for (var key in ops.ui) {
             if (!self._isValid$Selection(ops.ui[key])
-                && !self._isEmptyObjectKey(ops.ui[key], 'elm')
+                && !sjl.isEmptyObjKey(ops.ui[key], 'elm')
                 && ops.ui[key].hasOwnProperty('create')) {
                 ops.ui[key].elm.remove();
             }
@@ -354,7 +358,7 @@ $.widget('jui.juiBase', {
         var self = this,
             ops = self.options,
             elm = sjl.namespace('ui.' + alias, ops);
-        if (!self._isValid$Selection(elm) && !self._isEmptyObjectKey(elm, 'elm')) {
+        if (!self._isValid$Selection(elm) && !sjl.isEmptyObjKey(elm, 'elm')) {
             elm = elm.elm;
         }
         else if (sjl.classOfIs(elm, 'Object')) {
@@ -431,77 +435,14 @@ $.widget('jui.juiBase', {
 
     /**
      * Gets an option value from the options hash.  This function is a
-     * proxy for `getValueFromHash` and it just sets the hash to `this.options`.
+     * proxy for `sjl.getValueFromObj` and it just sets the hash to `this.options`.
      * @method getValueFromOptions
-     * @see getValueFromHash
+     * @see sjl.getValueFromObj
      * @param key
      * @returns {Object}
      */
     getValueFromOptions: function (key, args, raw) {
-        return this.getValueFromHash(key, this.options, args, raw);
-    },
-
-    /**
-     * Searches hash for key and returns it's value.  If value is a function
-     * calls function, with optional `args`, and returns it's return value.
-     * If `raw` is true returns the actual function if value is a function.
-     * @method getValueFromHash
-     * @param key {string} The hash key to search for
-     * @param hash {object} optional, the hash to search within
-     * @param args {array} optional the arrays to pass to value if it is a function
-     * @param raw {boolean} optional whether to return value even if it is a function
-     * @returns {*}
-     */
-    getValueFromHash: function (key, hash, args, raw) {
-        args = args || null;
-        raw = raw || false;
-        var retVal = null;
-        if (typeof key === 'string' && $.isPlainObject(hash)) {
-            retVal = this._namespace(key, hash);
-            if (typeof retVal === 'function' && sjl.empty(raw)) {
-                retVal = args ? retVal.apply(this, args) : retVal.apply(this);
-            }
-        }
-        return retVal;
-    },
-
-    /**
-     * @method setValueOnHash
-     * @param key
-     * @param value
-     * @param hash
-     */
-    setValueOnHash: sjl.namespace,
-
-    /**
-     * Returns whether and object's key isset and whether it even has the key as it's own property.
-     * @param obj {Object} - Object to search on.
-     * @param key {String} - Key to search for on obj.
-     * @returns {Boolean}
-     * @private
-     */
-    _issetObjectKey: function (obj, key) {
-        return obj.hasOwnProperty(key) && sjl.isset(obj[key]);
-    },
-
-    /**
-     * Returns whether a object key's value is not set or empty (empty jquery selection or empty string, object, array etc)
-     * or not of given type for `type` string param.
-     * @param obj {Object|$|*} - Object to search for key on.
-     * @param key {String} - Key to search for on object.
-     * @param type {String} - Optional type to ensure obj[key] is of.  E.g., sjl.classOfIs(obj[key], type) .
-     * @returns {Boolean} - Whether the object passed in is empty or not.
-     * @private
-     */
-    _isEmptyObjectKey: function (obj, key, type) {
-        var isOfType = true,
-            issetObjKey = this._issetObjectKey(obj, key),
-            is$Selection = issetObjKey && this._isValid$Selection(obj[key]),
-            isEmpty = !issetObjKey || !is$Selection ? sjl.empty(obj[key]) : true;
-        if (typeof type !== 'undefined' && sjl.classOfIs(type, 'String')) {
-            isOfType = sjl.classOfIs(obj[key], type);
-        }
-        return isEmpty || !isOfType;
+        return sjl.getValueFromObj(key, this.options, args, raw);
     },
 
     /**
@@ -522,7 +463,7 @@ $.widget('jui.juiBase', {
      * @private
      */
     _getAppendToElement: function ($appendToElm, config) {
-        if (!this._isEmptyObjectKey(config, 'appendTo')) {
+        if (!sjl.isEmptyObjKey(config, 'appendTo')) {
             switch (config.appendTo) {
                 case 'body':
                     $appendToElm = $('body').eq(0);

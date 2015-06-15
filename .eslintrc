@@ -10,9 +10,10 @@
  * --------------------------------------------------------------------------------------------------------------------- **/
 {
   "envs": {
-    "browser": true,
-    "node":    true,
-    "mocha":   true
+    "browser": false,
+    "amd":     false,
+    "node":    false,
+    "mocha":   false
   },
 
   /** ---------------------------------------------------------------------------------------------------------------------
@@ -20,22 +21,31 @@
    * --------------------------------------------------------------------------------------------------------------------- **/
 
   "globals": {
-    "__dirname":    true,
     "after":        true,
     "before":       true,
-    "clearInterval": true,
-    "clearTimeout": true,
-    "console":      true,
     "describe":     true,
     "expect":       true,
-    "global":       true,
     "it":           true,
-    "module":       true,
-    "process":      true,
     "require":      true,
-    "setInterval":  true,
-    "setTimeout":   true,
-    "sjl":          true
+    "sjl":          true,
+    "$":            true,
+    "window":       false,
+    "setInterval":  false,
+    "setTimeout":   false,
+    "clearInterval":false,
+    "clearTimeout": false,
+    "jQuery":       true,
+    "Linear":       true,
+    "TimelineLite": true,
+    "TimelineMax":  true,
+    "TweenLite":    true,
+    "TweenMax":     true,
+    "Power1":       true,
+    "Power2":       true,
+    "Power3":       true,
+    "Power4":       true
+
+
   },
 
   /** --------------------------------------------------------------------------------------------------------------------
@@ -91,7 +101,7 @@
     "consistent-return":      0,  // - require return statements to either always or never specify values
     "curly":                  0,  // - specify curly brace conventions for all control statements
     "default-case":           2,  // - require default case in switch statements (off by default)
-    "dot-notation":           2,  // - encourages use of dot notation whenever possible
+    "dot-notation":           0,  // - encourages use of dot notation whenever possible
     "eqeqeq":                 2,  // - require the use of === and !==
     "guard-for-in":           2,  // - make sure for-in loops have an if statement (off by default)
     "no-alert":               2,  // - disallow the use of alert, confirm, and prompt
@@ -143,7 +153,7 @@
 
     "global-strict":          0,  // - (deprecated) require or disallow the use strict pragma in the global scope (off by default in the node environment)
     "no-extra-strict":        0,  // - (deprecated) disallow unnecessary use of use strict; when already in strict mode
-    "strict":                 [2, "global"],  // - controls location of Use Strict Directives
+    "strict":                 [0, "global"],  // - controls location of Use Strict Directives
 
     /** -------------------------------------------------------------------------------------------------------------------
      * Variables:
@@ -184,7 +194,7 @@
     "camelcase":              2,  // - require camel case names
     "comma-spacing":          0,  // - enforce spacing before and after comma
     "comma-style":            2,  // - enforce one true comma style (off by default)
-    "consistent-this":        [2, "self"],  // - enforces consistent naming when capturing the current execution context (off by default)
+    "consistent-this":        [0, "self"],  // - enforces consistent naming when capturing the current execution context (off by default)
     "eol-last":               2,  // - enforce newline at the end of file, with no multiple empty lines
     "func-names":             0,  // - require function expressions to have a name (off by default)
     "func-style":             0,  // - enforces use of function declarations or expressions (off by default)

@@ -135,6 +135,11 @@ $.widget('jui.juiBase', {
         // Loop through ops and populate elements
         for (key in ops.ui) {
 
+            // If key is not set
+            if (!sjl.issetObjKey(ops.ui, 'key')) {
+                return;
+            }
+
             // Get item
             item = ops.ui[key];
             classOfItem = sjl.classOf(item);
@@ -153,7 +158,7 @@ $.widget('jui.juiBase', {
             else if (classOfItem === 'Object') {
 
                 // If element is a valid jquery selection skip it
-                if (!self._isEmptyObjectKey(item, 'elm') && self._isValid$Selection(item.elm)) {
+                if (!sjl.isEmptyObjKey(item, 'elm') && self._isValid$Selection(item.elm)) {
                     continue;
                 }
                 // Get element from options
@@ -176,15 +181,14 @@ $.widget('jui.juiBase', {
      * @protected
      * @returns {null|jQuery} null or the jquery element selection
      */
-    _getElementFromOptions: function (config, self, $selfElm, ops) {
+    _getElementFromOptions: function (config, self, $selfElm/*, ops*/) {
         var retVal = null,
-            configHasHtml = !self._isEmptyObjectKey(config, 'html'),
-            configCreate = !self._isEmptyObjectKey(config, 'create', 'Boolean') && config.create,
-            configHasSelector = !self._isEmptyObjectKey(config, 'selector', 'String'),
-            configHasAppendTo = !self._isEmptyObjectKey(config, 'appendTo', 'String'),
+            configHasHtml = !sjl.isEmptyObjKey(config, 'html'),
+            configCreate = !sjl.isEmptyObjKey(config, 'create', 'Boolean') && config.create,
+            configHasSelector = !sjl.isEmptyObjKey(config, 'selector', 'String'),
+            configHasAppendTo = !sjl.isEmptyObjKey(config, 'appendTo', 'String'),
             validJquerySelection,
-            $findIn = $selfElm,
-            retVal = null;
+            $findIn = $selfElm;
 
         if (configHasAppendTo) {
             $findIn = self._getAppendToElement($selfElm, config);
@@ -204,7 +208,7 @@ $.widget('jui.juiBase', {
             if (configHasAppendTo) {
                 self._appendByAppendToString(config.appendTo, retVal, $findIn, $selfElm);
             }
-            retVal = $(config.selector, $findIn)
+            retVal = $(config.selector, $findIn);
         }
 
         // Return element
@@ -267,7 +271,7 @@ $.widget('jui.juiBase', {
         var self = this, ops = self.options;
         for (var key in ops.ui) {
             if (!self._isValid$Selection(ops.ui[key])
-                && !self._isEmptyObjectKey(ops.ui[key], 'elm')
+                && !sjl.isEmptyObjKey(ops.ui[key], 'elm')
                 && ops.ui[key].hasOwnProperty('create')) {
                 ops.ui[key].elm.remove();
             }
@@ -354,7 +358,7 @@ $.widget('jui.juiBase', {
         var self = this,
             ops = self.options,
             elm = sjl.namespace('ui.' + alias, ops);
-        if (!self._isValid$Selection(elm) && !self._isEmptyObjectKey(elm, 'elm')) {
+        if (!self._isValid$Selection(elm) && !sjl.isEmptyObjKey(elm, 'elm')) {
             elm = elm.elm;
         }
         else if (sjl.classOfIs(elm, 'Object')) {
@@ -431,77 +435,14 @@ $.widget('jui.juiBase', {
 
     /**
      * Gets an option value from the options hash.  This function is a
-     * proxy for `getValueFromHash` and it just sets the hash to `this.options`.
+     * proxy for `sjl.getValueFromObj` and it just sets the hash to `this.options`.
      * @method getValueFromOptions
-     * @see getValueFromHash
+     * @see sjl.getValueFromObj
      * @param key
      * @returns {Object}
      */
     getValueFromOptions: function (key, args, raw) {
-        return this.getValueFromHash(key, this.options, args, raw);
-    },
-
-    /**
-     * Searches hash for key and returns it's value.  If value is a function
-     * calls function, with optional `args`, and returns it's return value.
-     * If `raw` is true returns the actual function if value is a function.
-     * @method getValueFromHash
-     * @param key {string} The hash key to search for
-     * @param hash {object} optional, the hash to search within
-     * @param args {array} optional the arrays to pass to value if it is a function
-     * @param raw {boolean} optional whether to return value even if it is a function
-     * @returns {*}
-     */
-    getValueFromHash: function (key, hash, args, raw) {
-        args = args || null;
-        raw = raw || false;
-        var retVal = null;
-        if (typeof key === 'string' && $.isPlainObject(hash)) {
-            retVal = this._namespace(key, hash);
-            if (typeof retVal === 'function' && sjl.empty(raw)) {
-                retVal = args ? retVal.apply(this, args) : retVal.apply(this);
-            }
-        }
-        return retVal;
-    },
-
-    /**
-     * @method setValueOnHash
-     * @param key
-     * @param value
-     * @param hash
-     */
-    setValueOnHash: sjl.namespace,
-
-    /**
-     * Returns whether and object's key isset and whether it even has the key as it's own property.
-     * @param obj {Object} - Object to search on.
-     * @param key {String} - Key to search for on obj.
-     * @returns {Boolean}
-     * @private
-     */
-    _issetObjectKey: function (obj, key) {
-        return obj.hasOwnProperty(key) && sjl.isset(obj[key]);
-    },
-
-    /**
-     * Returns whether a object key's value is not set or empty (empty jquery selection or empty string, object, array etc)
-     * or not of given type for `type` string param.
-     * @param obj {Object|$|*} - Object to search for key on.
-     * @param key {String} - Key to search for on object.
-     * @param type {String} - Optional type to ensure obj[key] is of.  E.g., sjl.classOfIs(obj[key], type) .
-     * @returns {Boolean} - Whether the object passed in is empty or not.
-     * @private
-     */
-    _isEmptyObjectKey: function (obj, key, type) {
-        var isOfType = true,
-            issetObjKey = this._issetObjectKey(obj, key),
-            is$Selection = issetObjKey && this._isValid$Selection(obj[key]),
-            isEmpty = !issetObjKey || !is$Selection ? sjl.empty(obj[key]) : true;
-        if (typeof type !== 'undefined' && sjl.classOfIs(type, 'String')) {
-            isOfType = sjl.classOfIs(obj[key], type);
-        }
-        return isEmpty || !isOfType;
+        return sjl.getValueFromObj(key, this.options, args, raw);
     },
 
     /**
@@ -522,7 +463,7 @@ $.widget('jui.juiBase', {
      * @private
      */
     _getAppendToElement: function ($appendToElm, config) {
-        if (!this._isEmptyObjectKey(config, 'appendTo')) {
+        if (!sjl.isEmptyObjKey(config, 'appendTo')) {
             switch (config.appendTo) {
                 case 'body':
                     $appendToElm = $('body').eq(0);
@@ -599,7 +540,6 @@ $.widget('jui.juiMouse', {
     hitTest: function (elm) {
         var self = this,
             offset = self.getBoundingBox(elm),
-            retVal = false,
             ops = self.options;
 
         // Check if mouse is within bounds
@@ -649,6 +589,7 @@ $.widget('jui.juiMouse', {
     }
 
 });
+
 /**
  * Created with JetBrains WebStorm.
  * User: ElyDeLaCruz
@@ -685,7 +626,7 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
             ops = self.options;
 
         // Set direction to next
-        ops.pages.pointer_direction = 1;
+        ops.pages.pointerDirection = 1;
 
         if (ops.pages.pointer < ops.pages.length - 1) {
             ops.pages.pointer += 1;
@@ -715,7 +656,7 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
         }
 
         // Set direction to previous
-        ops.pages.pointer_direction = -1;
+        ops.pages.pointerDirection = -1;
 
         // Goto Page src number
         self._gotoPageNum(ops.pages.pointer);
@@ -904,11 +845,11 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
             itemsPerPage;
 
         // If items per page is a function
-        itemsPerPage = this.getValueFromHash('ui.items.perPage', ops);
+        itemsPerPage = sjl.getValueFromObj('ui.items.perPage', ops);
 
         // Pages length
         ops.pages.length = Math.ceil(items.length / itemsPerPage);
-        ops.pages.length = ops.pages.length !== NaN ? ops.pages.length : 0;
+        ops.pages.length = !isNaN(ops.pages.length)  ? ops.pages.length : 0;
 
         // Trigger event
         this.element.trigger(this.widgetName + ':numbersCalculated',
@@ -953,6 +894,7 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
     }
 
 });
+
 /**
  * Created with JetBrains WebStorm.
  * User: ElyDeLaCruz
@@ -1006,8 +948,7 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
 
     // Creation
     _create: function () {
-        var self = this,
-            ops = self.options;
+        var self = this;
         self.element.addClass(self.options.className);
         // Call parent class' _create method
         self._super();
@@ -1031,10 +972,10 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
 
         // Text Field Element
         self.getTextFieldElm().bind('keyup', function (e) {
-            var o = $(this), outgoing = {};
+            var outgoing = {};
 
             // If the enter key was not pressed bail
-            if (e.keyCode != 13) {
+            if (parseInt(e.keyCode, 10) !== 13) {
                 return;
             }
 
@@ -1088,6 +1029,7 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
     }
 
 });
+
 /**
  * Makes a content area scrollable with custom
  * scrollbars whose elements are fetched or created depending on the
@@ -1238,11 +1180,19 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 e.stopPropagation();
             }
 
-            delta = sjl.isset(delta) ? delta :
-                (sjl.isset(deltaX)? deltaX : deltaY);
+            // Ensure delta
+            if (sjl.isset(delta)) {
+                delta = delta;
+            }
+            else if (sjl.isset(deltaX)) {
+                delta = deltaX;
+            }
+            else {
+                delta = deltaY;
+            }
 
             // Prelims
-            scrollSpeed = self.getValueFromOptions('scrollSpeed');
+            scrollSpeed = sjl.getValueFromObj('options.scrollSpeed', self);
             incrementer = delta < 1 ?  scrollSpeed : -scrollSpeed;
 
             // Scroll horizontally
@@ -1315,6 +1265,8 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 case '40':
                     self.scrollVertically(incrementer + contentHolder.scrollTop());
                 break;
+                default:
+                    break;
             }
         });
         // ----------------------------------------------------------
@@ -1323,8 +1275,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     },
 
     _scrollByOrientation: function (value, orientation) {
-        var ops = this.options,
-            contentHolder = this.getUiElement('contentHolder'),
+        var contentHolder = this.getUiElement('contentHolder'),
             layout = orientation,
             vars = this.getScrollDirVars(layout),
             scrollTotal = vars.scrollAmountTotal,
@@ -1433,16 +1384,15 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             scrollbar = self.getScrollbarByOrientation(oriented),
             handle = self.getScrollbarHandleByOrientation(oriented),
             contentHolder = self.getUiElement('contentHolder'),
-            plugin = self,
 
         // Resolve scrollbar direction variables
-            scrollVars = plugin.getScrollDirVars(oriented),
+            scrollVars = self.getScrollDirVars(oriented),
             dragAxis = scrollVars.dragAxis,
             dir = scrollVars.cssCalcDir,
             dimProp = scrollVars.scrollbarDimProp;
 
         // Resize handle
-        plugin.initScrollbarHandle(oriented);
+        self.initScrollbarHandle(oriented);
 
         // Make draggable handle on scrollbar
         handle = handle.draggable({
@@ -1464,8 +1414,8 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             handle.css(dir, e['offset' + dragAxis.toUpperCase()]
                 - handle[dimProp]() / 2);
 
-            plugin.constrainHandle(oriented);
-            plugin.scrollContentHolder(oriented);
+            self.constrainHandle(oriented);
+            self.scrollContentHolder(oriented);
         });
 
         // Save the draggable handle for later (for calling destroy on it for reinitialization
@@ -1487,19 +1437,17 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     },
 
     getScrollDirVars: function (oriented) {
-        var plugin = this,
-            ops = plugin.options,
-            contentHolder = this.getUiElement('contentHolder'),
+        var contentHolder = this.getUiElement('contentHolder'),
             retVal;
 
         // Resolve scrollbar direction variables
-        if (oriented === plugin.options.scrollbarOriented.VERTICALLY) {
+        if (oriented === this.options.scrollbarOriented.VERTICALLY) {
             retVal = {
                 dragAxis: 'y',
                 cssCalcDir: 'top',
                 scrollbarDimProp: 'height',
                 scrollAmountTotal: contentHolder.get(0).scrollHeight
-            }
+            };
         }
         else {
             retVal = {
@@ -1507,7 +1455,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                 cssCalcDir: 'left',
                 scrollbarDimProp: 'width',
                 scrollAmountTotal: contentHolder.get(0).scrollWidth
-            }
+            };
         }
 
         return retVal;
@@ -1552,20 +1500,17 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
             vertHandle = ops.draggableVertHandle,
             horizHandle = ops.draggableHorizHandle;
 
-        try {
-
-            // Destroy draggable on handle
-            if (!sjl.empty(vertHandle) && vertHandle instanceof $) {
-                vertHandle.draggable('destroy');
-            }
-
-            // Destroy draggable on handle
-            if (!sjl.empty(horizHandle) && horizHandle instanceof $) {
-                horizHandle.draggable('destroy');
-            }
-
+        // Destroy draggable on handle
+        if (!sjl.empty(vertHandle) && vertHandle instanceof $
+        && vertHandle.data().hasOwnProperty('uiDraggable')) {
+            vertHandle.draggable('destroy');
         }
-        catch (e) { }
+
+        // Destroy draggable on handle
+        if (!sjl.empty(horizHandle) && horizHandle instanceof $
+            && horizHandle.data().hasOwnProperty('uiDraggable')) {
+            horizHandle.draggable('destroy');
+        }
 
         // Re-initialize scrollbars (recalc heights, widths,
         // and make draggable and constrainable etc.
@@ -1597,7 +1542,6 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
     }
 
 });
-
 
 /**
  * Created by ElyDeLaCruz on 1/21/14.
@@ -1652,7 +1596,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                     attribs: {
                         'class': 'jui-page-overlay'
                     },
-                    appendTo: "body",
+                    appendTo: 'body',
                     selector: '.jui-page-overlay',
                     html: '<div></div>',
                     create: true
@@ -1662,7 +1606,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
                     attribs: {
                         'class': 'jui-dialog'
                     },
-                    appendTo: "body",
+                    appendTo: 'body',
                     selector: '.jui-dialog',
                     html: '<div></div>',
                     create: true
@@ -1766,9 +1710,9 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         _setClassNameFromOptions: function () {
             var self = this,
                 ops = self.options,
-                className = self.getValueFromHash('className', ops),
+                className = sjl.getValueFromObj('className', ops),
                 currentClassName =
-                    self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
+                    sjl.getValueFromObj('ui.wrapperElm.attribs', ops)['class'];
 
             // Resolve class name
             if (!sjl.empty(className)) {
@@ -1783,7 +1727,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
 
             // Set class name on wrapper
             self.getUiElement('wrapperElm').attr('class',
-                ops.ui.wrapperElm.attribs['class'])
+                ops.ui.wrapperElm.attribs['class']);
         },
 
         _setContentFromThisElement: function () {
@@ -1804,8 +1748,6 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
          */
         _addEventListeners: function () {
             var self = this,
-                ops = self.options,
-                wrapperElm = self.getUiElement('wrapperElm'),
                 pageOverlay = self.getUiElement('pageOverlay'),
                 closeBtnElm = self.getUiElement('closeButtonElm');
 
@@ -1903,7 +1845,7 @@ $.widget('jui.juiScrollPane', $.jui.juiBase, {
         }
     });
 
-})();
+}());
 
 /**
  * Created by edelacruz on 2/3/14.
@@ -1958,16 +1900,16 @@ $.widget('jui.juiScalableBtn', $.jui.juiBase, {
             mouseoutOps = ops.onMouseoutOptions
             ;
 
-        elm.bind('mouseover', function (e) {
+        elm.bind('mouseover', function () {
             TweenLite.to(elm, hoverOps.duration || defaultDuration, hoverOps.props);
         })
-            .bind('mousedown', function (e) {
+            .bind('mousedown', function () {
                 TweenLite.to(elm, mousedownOps.duration || defaultDuration, mousedownOps.props);
             })
-            .bind('mouseup', function (e) {
+            .bind('mouseup', function () {
                 TweenLite.to(elm,  mouseupOps.duration || defaultDuration, mouseupOps.props);
             })
-            .bind('mouseout', function (e) {
+            .bind('mouseout', function () {
                 TweenLite.to(elm, mouseoutOps.duration || defaultDuration, mouseoutOps.props);
             });
     },
@@ -2278,6 +2220,7 @@ $.widget('jui.juiScrollableDropDown', $.jui.juiBase, {
     }
 
 });
+
 /**
  * Created by ElyDeLaCruz on 10/1/13.
  *
@@ -2391,7 +2334,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 attribs: {
                     'class': 'jui-select-picker'
                 },
-                appendTo: "after this.element",
+                appendTo: 'after this.element',
                 selector: '.jui-select-picker',
                 html: '<div></div>',
                 create: true,
@@ -2486,11 +2429,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * @private
      */
     _init: function () {
-        var self = this,
-            ops = this.options,
-            className = self.getValueFromHash('className', ops),
+        var ops = this.options,
+            className = sjl.getValueFromObj('className', ops),
             currentClassName =
-                self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
+                sjl.getValueFromObj('ui.wrapperElm.attribs', ops)['class'];
 
         if (ops.disableOnTouchDevice && ops.isTouchDevice) {
             return;
@@ -2606,7 +2548,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Get suggested expand height
         options.each(function () {
             var elm = $(this),
-            padding = parseInt(elm.css('padding'));
+            padding = parseInt(elm.css('padding'), 10);
             padding = padding === 0 ? parseInt(elm.css('paddingTop'), 10) : 0;
             padding = padding === 0 ? parseInt(elm.css('paddingBottom'), 10) : 0;
             suggestedExpandHeight += elm.height() + (padding * 2);
@@ -2793,7 +2735,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     getMaxHeightFromElm: function (elm) {
         var maxHeight = elm.css('max-height');
         return sjl.classOfIs(maxHeight, 'String') ?
-            parseInt(maxHeight) : maxHeight;
+            parseInt(maxHeight, 10) : maxHeight;
     },
 
     /**
@@ -2827,11 +2769,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             onCompleteParams: [text, textType, elm],
             onComplete: function () {
                 var args = arguments,
-                    text = args[0],
-                    textType = args[1],
-                    elm = args[2];
-                elm[textType](text);
-                TweenMax.to(elm, 0.16, {autoAlpha: 1});
+                    _text = args[0],
+                    _textType = args[1],
+                    _elm = args[2];
+                _elm[_textType](_text);
+                TweenMax.to(_elm, 0.16, {autoAlpha: 1});
             }});
     },
 
@@ -2843,11 +2785,22 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      */
     setLabelText: function (text, textType) {
         textType = textType || 'text';
-        text = text || (!sjl.empty(this.options.ui.buttonElm.text)
-            ? this.options.ui.buttonElm.text
-            : (!sjl.empty(this.options.labelText) ? this.options.labelText :
-            this.element.find('option').eq(0).text()));
-        this.getUiElement('labelElm').eq(0)[textType](text);
+
+        // If text is empty, fetch it
+        if (sjl.empty(text)) {
+            if (!sjl.empty(this.options.ui.buttonElm.text)) {
+                text = this.options.ui.buttonElm.text;
+            }
+            else if (!sjl.empty(this.options.labelText)) {
+                text = this.options.labelText;
+            }
+            else {
+                text = this.element.find('option').eq(0).text();
+            }
+        }
+
+        // Set text
+        this.getUiElement('labelElm')[textType](text);
     },
 
     /**

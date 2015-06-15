@@ -51,7 +51,7 @@
                     attribs: {
                         'class': 'jui-page-overlay'
                     },
-                    appendTo: "body",
+                    appendTo: 'body',
                     selector: '.jui-page-overlay',
                     html: '<div></div>',
                     create: true
@@ -61,7 +61,7 @@
                     attribs: {
                         'class': 'jui-dialog'
                     },
-                    appendTo: "body",
+                    appendTo: 'body',
                     selector: '.jui-dialog',
                     html: '<div></div>',
                     create: true
@@ -165,9 +165,9 @@
         _setClassNameFromOptions: function () {
             var self = this,
                 ops = self.options,
-                className = self.getValueFromHash('className', ops),
+                className = sjl.getValueFromObj('className', ops),
                 currentClassName =
-                    self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
+                    sjl.getValueFromObj('ui.wrapperElm.attribs', ops)['class'];
 
             // Resolve class name
             if (!sjl.empty(className)) {
@@ -182,7 +182,7 @@
 
             // Set class name on wrapper
             self.getUiElement('wrapperElm').attr('class',
-                ops.ui.wrapperElm.attribs['class'])
+                ops.ui.wrapperElm.attribs['class']);
         },
 
         _setContentFromThisElement: function () {
@@ -203,8 +203,6 @@
          */
         _addEventListeners: function () {
             var self = this,
-                ops = self.options,
-                wrapperElm = self.getUiElement('wrapperElm'),
                 pageOverlay = self.getUiElement('pageOverlay'),
                 closeBtnElm = self.getUiElement('closeButtonElm');
 
@@ -302,4 +300,4 @@
         }
     });
 
-})();
+}());

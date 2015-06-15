@@ -111,7 +111,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
                 attribs: {
                     'class': 'jui-select-picker'
                 },
-                appendTo: "after this.element",
+                appendTo: 'after this.element',
                 selector: '.jui-select-picker',
                 html: '<div></div>',
                 create: true,
@@ -206,11 +206,10 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      * @private
      */
     _init: function () {
-        var self = this,
-            ops = this.options,
-            className = self.getValueFromHash('className', ops),
+        var ops = this.options,
+            className = sjl.getValueFromObj('className', ops),
             currentClassName =
-                self.getValueFromHash('ui.wrapperElm.attribs', ops)['class'];
+                sjl.getValueFromObj('ui.wrapperElm.attribs', ops)['class'];
 
         if (ops.disableOnTouchDevice && ops.isTouchDevice) {
             return;
@@ -326,7 +325,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
         // Get suggested expand height
         options.each(function () {
             var elm = $(this),
-            padding = parseInt(elm.css('padding'));
+            padding = parseInt(elm.css('padding'), 10);
             padding = padding === 0 ? parseInt(elm.css('paddingTop'), 10) : 0;
             padding = padding === 0 ? parseInt(elm.css('paddingBottom'), 10) : 0;
             suggestedExpandHeight += elm.height() + (padding * 2);
@@ -513,7 +512,7 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
     getMaxHeightFromElm: function (elm) {
         var maxHeight = elm.css('max-height');
         return sjl.classOfIs(maxHeight, 'String') ?
-            parseInt(maxHeight) : maxHeight;
+            parseInt(maxHeight, 10) : maxHeight;
     },
 
     /**
@@ -547,11 +546,11 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
             onCompleteParams: [text, textType, elm],
             onComplete: function () {
                 var args = arguments,
-                    text = args[0],
-                    textType = args[1],
-                    elm = args[2];
-                elm[textType](text);
-                TweenMax.to(elm, 0.16, {autoAlpha: 1});
+                    _text = args[0],
+                    _textType = args[1],
+                    _elm = args[2];
+                _elm[_textType](_text);
+                TweenMax.to(_elm, 0.16, {autoAlpha: 1});
             }});
     },
 
@@ -563,11 +562,22 @@ $.widget('jui.juiSelectPicker', $.jui.juiBase, {
      */
     setLabelText: function (text, textType) {
         textType = textType || 'text';
-        text = text || (!sjl.empty(this.options.ui.buttonElm.text)
-            ? this.options.ui.buttonElm.text
-            : (!sjl.empty(this.options.labelText) ? this.options.labelText :
-            this.element.find('option').eq(0).text()));
-        this.getUiElement('labelElm').eq(0)[textType](text);
+
+        // If text is empty, fetch it
+        if (sjl.empty(text)) {
+            if (!sjl.empty(this.options.ui.buttonElm.text)) {
+                text = this.options.ui.buttonElm.text;
+            }
+            else if (!sjl.empty(this.options.labelText)) {
+                text = this.options.labelText;
+            }
+            else {
+                text = this.element.find('option').eq(0).text();
+            }
+        }
+
+        // Set text
+        this.getUiElement('labelElm')[textType](text);
     },
 
     /**

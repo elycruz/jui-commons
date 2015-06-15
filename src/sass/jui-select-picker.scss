@@ -1,4 +1,5 @@
 @import "compass";
+
 .jui-select-picker {
 
     position: absolute;
@@ -15,7 +16,7 @@
 
     .button {
         position: relative;
-        display: border-box;
+        display: block;
         width: 100%;
         height: auto;
         background: #fff;

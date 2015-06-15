@@ -26,15 +26,15 @@
      */
     $.widget('jui.tickingText', $.jui.splitText, {
 
-        options:{
-            minCharCode:40,
-            maxCharCode:98,
-            charChangeSpeed:20,
-            delayPerChar:100,
-            charChangeReps:20,
+        options: {
+            minCharCode: 40,
+            maxCharCode: 98,
+            charChangeSpeed: 20,
+            delayPerChar: 100,
+            charChangeReps: 20,
             fadeInSpeed: 1000,
 
-            intervals:[],
+            intervals: [],
 
             // Optional
             originalHtml: '',
@@ -43,33 +43,32 @@
             clearedIntervalsCount: 0
         },
 
-        _create:function () {
-            var plugin = this,
-                i = 0, spans = '';
+        _create: function () {
+            var self = this;
 
             // Hide this element
-            plugin.element.css('visibility', 'hidden');
+            self.element.css('visibility', 'hidden');
 
             // Call split text
-            plugin._super();
+            self._super();
 
             // Delay intervals
             var delayIntervals = [],
                 timeoutSpeed = 0;
 
             // Revert Text Interval
-            if (plugin.options.revertTextOnCompletion) {
-                plugin.options.revertTextInterval = setInterval(function () {
-                    if (plugin.options.clearedIntervalsCount > 0 &&
-                        plugin.options.clearedIntervalsCount >= plugin.options.intervals.length) {
-                        plugin.toggleSplitText();
-                        clearInterval(plugin.options.revertTextInterval);
-                        plugin.element.trigger('ticking-text:complete');
+            if (self.options.revertTextOnCompletion) {
+                self.options.revertTextInterval = setInterval(function () {
+                    if (self.options.clearedIntervalsCount > 0 &&
+                        self.options.clearedIntervalsCount >= self.options.intervals.length) {
+                        self.toggleSplitText();
+                        clearInterval(self.options.revertTextInterval);
+                        self.element.trigger('ticking-text:complete');
                     }
                 });
             }
             // Animate text
-            $('span', plugin.element).each(function (i) {
+            $('span', self.element).each(function () {
                 var span = $(this);
 
                 // Hide span
@@ -79,41 +78,42 @@
                 (function () {
                     var interval = delayIntervals.length;
                     delayIntervals.push(setTimeout(function () {
-                        plugin.animateSpansText(span, i);
+                        self.animateSpansText(span);
                         clearTimeout(delayIntervals[interval]);
                     }, timeoutSpeed));
-                })();
+                }());
 
                 // Increase timeout speed
-                timeoutSpeed += plugin.options.delayPerChar;
+                timeoutSpeed += self.options.delayPerChar;
             });
 
             // Show this element
-            plugin.element.css('visibility', 'visible');
+            self.element.css('visibility', 'visible');
         },
-        animateSpansText:function (span, index) {
-            var plugin = this,
-                intervals = plugin.options.intervals,
+
+        animateSpansText: function (span) {
+            var self = this,
+                intervals = self.options.intervals,
                 intervalIndex = intervals.length,
                 storedStr = span.text(),
                 str = storedStr + '',
                 i = 0;
 
             // Make Span Visible
-            span.fadeTo(plugin.options.fadeInSpeed, 1);
+            span.fadeTo(self.options.fadeInSpeed, 1);
 
             // Begin interval
             intervals.push(setInterval(function () {
-                if (i === plugin.options.charChangeReps) {
+                if (i === self.options.charChangeReps) {
                     span.text(storedStr);
                     clearInterval(intervals[intervalIndex]);
 
                     // Trigger complete event
                     if (intervalIndex === intervals.length - 1) {
-                        plugin.element.trigger('ticking-text:complete');
+                        self.element.trigger('ticking-text:complete');
                     }
 
-                    plugin.options.clearedIntervalsCount += 1;
+                    self.options.clearedIntervalsCount += 1;
                     delete intervalIndex;
                     delete storedStr;
                     delete str;
@@ -123,15 +123,14 @@
 
                 // Generate and Set random character
                 span.text(String.fromCharCode(
-                    randomChar(plugin.options.minCharCode,
-                        plugin.options.maxCharCode)));
+                    randomChar(self.options.minCharCode,
+                        self.options.maxCharCode)));
 
                 // Increment count
                 i += 1;
-            }, plugin.options.charChangeSpeed));
+            }, self.options.charChangeSpeed));
         }
     });
     // End of plugin
 
-})();
-// End of Dog Balls
+}());

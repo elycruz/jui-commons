@@ -22,7 +22,7 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
             ops = self.options,
             elm = self.element,
             affixVertically = ops.affixVertically,
-            affixHorizontally = ops.affixHorizontally,
+            //affixHorizontally = ops.affixHorizontally,
 
         // @todo put the t r b l into an offset object
             original = {
@@ -44,14 +44,14 @@ $.widget('jui.juiAffix', $.jui.juiBase, {
         elm.addClass(ops.className);
 
         // On scrollable elm scroll
-        scrollableElm.bind('scroll resize orientationchange load', function (e) {
+        scrollableElm.bind('scroll resize orientationchange load', function () {
             var oElm = $(this),
                 scrollTop = oElm.scrollTop(),
-                scrollLeft = oElm.scrollLeft(),
+                //scrollLeft = oElm.scrollLeft(),
                 affixBottom = sjl.isset(affixOffset.bottom) ? affixOffset.bottom : 0,
-                affixRight = sjl.isset(affixOffset.right) ? affixOffset.right : 0,
-                bottomLimit = scrollableElm.height() - affixBottom - elm.outerHeight(),
-                rightLimit = scrollableElm.width() - affixRight;
+                //affixRight = sjl.isset(affixOffset.right) ? affixOffset.right : 0,
+                bottomLimit = scrollableElm.height() - affixBottom - elm.outerHeight();
+                //rightLimit = scrollableElm.width() - affixRight;
 
             // If realtime option calcs
             if (ops.realtime) {

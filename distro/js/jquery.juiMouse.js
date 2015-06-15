@@ -36,7 +36,6 @@ $.widget('jui.juiMouse', {
     hitTest: function (elm) {
         var self = this,
             offset = self.getBoundingBox(elm),
-            retVal = false,
             ops = self.options;
 
         // Check if mouse is within bounds

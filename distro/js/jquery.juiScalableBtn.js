@@ -51,16 +51,16 @@ $.widget('jui.juiScalableBtn', $.jui.juiBase, {
             mouseoutOps = ops.onMouseoutOptions
             ;
 
-        elm.bind('mouseover', function (e) {
+        elm.bind('mouseover', function () {
             TweenLite.to(elm, hoverOps.duration || defaultDuration, hoverOps.props);
         })
-            .bind('mousedown', function (e) {
+            .bind('mousedown', function () {
                 TweenLite.to(elm, mousedownOps.duration || defaultDuration, mousedownOps.props);
             })
-            .bind('mouseup', function (e) {
+            .bind('mouseup', function () {
                 TweenLite.to(elm,  mouseupOps.duration || defaultDuration, mouseupOps.props);
             })
-            .bind('mouseout', function (e) {
+            .bind('mouseout', function () {
                 TweenLite.to(elm, mouseoutOps.duration || defaultDuration, mouseoutOps.props);
             });
     },

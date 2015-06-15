@@ -98,7 +98,7 @@ module.exports = function (grunt) {
             ['src/js/' +  file.toString()];
     });
 
-    console.log(config.uglify, config.copy);
+    //console.log(config.uglify, config.copy);
 
     // Project configuration.
     grunt.initConfig(config);

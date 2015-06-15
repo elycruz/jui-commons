@@ -52,7 +52,7 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
         self._createInidicators();
 
         // On resize reposition
-        $(window).on('resize', function (e) {
+        $(window).on('resize', function () {
             var indElms = self.getUiElement('inidicatorsNeededElms'),
                 inds = self.getUiElement('indicatorElms');
 
@@ -119,10 +119,10 @@ $.widget('jui.juiFloatingScrollIndicators', $.jui.juiBase, {
                 $(ops.ui.indicatorElms.selector, wrapper);
 
         // Add click listener to indicator
-        indElms.click(function (e) {
+        indElms.click(function () {
             var elm = $(this),
                 toElm = indNeededElm.eq(elm.attr('data-index')),
-                val = parseInt(toElm.position().top + elm.height());
+                val = parseInt(toElm.position().top + elm.height(), 10);
             TweenMax.to(scrollableElm, ops.animation.duration,
                 {scrollTo: val});
         });

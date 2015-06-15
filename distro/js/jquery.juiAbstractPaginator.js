@@ -34,7 +34,7 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
             ops = self.options;
 
         // Set direction to next
-        ops.pages.pointer_direction = 1;
+        ops.pages.pointerDirection = 1;
 
         if (ops.pages.pointer < ops.pages.length - 1) {
             ops.pages.pointer += 1;
@@ -64,7 +64,7 @@ $.widget('jui.juiAbstractPaginator', $.jui.juiBase, {
         }
 
         // Set direction to previous
-        ops.pages.pointer_direction = -1;
+        ops.pages.pointerDirection = -1;
 
         // Goto Page src number
         self._gotoPageNum(ops.pages.pointer);

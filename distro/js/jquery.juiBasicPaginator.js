@@ -139,11 +139,11 @@ $.widget('jui.juiBasicPaginator', $.jui.juiAbstractPaginator, {
             itemsPerPage;
 
         // If items per page is a function
-        itemsPerPage = this.getValueFromHash('ui.items.perPage', ops);
+        itemsPerPage = sjl.getValueFromObj('ui.items.perPage', ops);
 
         // Pages length
         ops.pages.length = Math.ceil(items.length / itemsPerPage);
-        ops.pages.length = ops.pages.length !== NaN ? ops.pages.length : 0;
+        ops.pages.length = !isNaN(ops.pages.length)  ? ops.pages.length : 0;
 
         // Trigger event
         this.element.trigger(this.widgetName + ':numbersCalculated',

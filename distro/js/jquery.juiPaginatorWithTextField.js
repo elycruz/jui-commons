@@ -51,8 +51,7 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
 
     // Creation
     _create: function () {
-        var self = this,
-            ops = self.options;
+        var self = this;
         self.element.addClass(self.options.className);
         // Call parent class' _create method
         self._super();
@@ -76,10 +75,10 @@ $.widget('jui.juiPaginatorWithTextField', $.jui.juiBasicPaginator, {
 
         // Text Field Element
         self.getTextFieldElm().bind('keyup', function (e) {
-            var o = $(this), outgoing = {};
+            var outgoing = {};
 
             // If the enter key was not pressed bail
-            if (e.keyCode != 13) {
+            if (parseInt(e.keyCode, 10) !== 13) {
                 return;
             }
 

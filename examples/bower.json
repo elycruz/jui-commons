@@ -20,12 +20,12 @@
     "underscore-amd": "~1.4.4",
     "unsemantic": "nathansmith/unsemantic",
     "handlebars": "~1.3.0",
-    "sjljs": "elycruz/sjljs#~0.1.1"
+    "sjljs": "elycruz/sjljs"
   },
   "devDependencies": {},
   "directory": "bower_components",
   "resolutions": {
     "chai": "~1.9.1",
-    "mocha": "~1.18.2"
+    "mocha": "~2.2.5"
   }
 }

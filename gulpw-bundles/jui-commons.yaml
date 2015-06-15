@@ -1,0 +1,26 @@
+alias: jui-commons
+version: 0.2.6
+description: Library bundle
+files:
+  js: 
+    - ./src/js/jquery.juiBase.js
+    - ./src/js/jquery.juiMouse.js
+    - ./src/js/jquery.juiAbstractPaginator.js
+    - ./src/js/jquery.juiBasicPaginator.js
+    - ./src/js/jquery.juiPaginatorWithTextField.js
+    - ./src/js/jquery.juiScrollPane.js
+    - ./src/js/jquery.juiDialog.js
+    - ./src/js/jquery.juiScalableBtn.js
+    - ./src/js/jquery.juiScrollableDropDown.js
+    - ./src/js/jquery.juiSelectPicker.js
+  css:
+    - ./distro/css/jui-commons.css
+  html:
+    - ./src/index.dev.html
+copy:
+  files:
+    './src/js/*.js': ./distro/js/
+compass:
+  configrb: ./config.rb
+#csslint:
+#  csslintrc: ./.csslintrc
