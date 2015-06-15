@@ -121,22 +121,22 @@ $.widget('jui.juiBase', {
     _autoPopulateUiElements: function (self, $selfElm, ops) {
         self = self || this;
         $selfElm = $selfElm || self.element;
-        ops = ops || self.options || {};
+        ops = ops || self.options;
 
         var item,
             classOfItem,
             key;
 
         // Set our ui collection
-        if (!ops.hasOwnProperty('ui') || !sjl.isset(ops.ui)) {
-            ops.ui = {};
+        if (!sjl.issetObjKeyAndOfType(ops, 'ui', 'Object')) {
+            return;
         }
 
         // Loop through ops and populate elements
         for (key in ops.ui) {
 
             // If key is not set
-            if (!sjl.issetObjKey(ops.ui, 'key')) {
+            if (!sjl.issetObjKey(ops.ui, key)) {
                 return;
             }
 
@@ -166,7 +166,7 @@ $.widget('jui.juiBase', {
             }
 
             else if (classOfItem === 'Function') {
-                item.elm = self._getElementFromOptions(item.apply(self, {}), self, $selfElm, ops);
+                item.elm = self._getElementFromOptions(item.apply(self), self, $selfElm, ops);
             }
 
         } // loop
@@ -222,10 +222,7 @@ $.widget('jui.juiBase', {
      * @protected
      */
     _appendByAppendToString: function (appendToStr, $elm, $appendToElm, $selfElm) {
-        if (appendToStr === 'body') {
-            $appendToElm.append($elm);
-        }
-        else if (appendToStr === 'this.element') {
+        if (appendToStr === 'this.element') {
             $selfElm.append($elm);
         }
         else if (appendToStr === 'after this.element') {
@@ -479,6 +476,7 @@ $.widget('jui.juiBase', {
                 case 'self' :
                 case 'this' :
                 case 'prepend' :
+                case 'append' :
                 case 'this.element':
                 case 'self.element': // Assume that $appendToElm default is self.element
                     break;
