@@ -1,6 +1,6 @@
 {
   "name": "jui-commons",
-  "version": "0.2.21",
+  "version": "0.2.50",
   "description": "JQuery Ui Commons",
   "main": "src/jui-commons.min.js",
   "directories": {

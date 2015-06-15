@@ -121,16 +121,16 @@ $.widget('jui.juiBase', {
     _autoPopulateUiElements: function (self, $selfElm, ops) {
         self = self || this;
         $selfElm = $selfElm || self.element;
-        ops = ops || self.options || {};
+        ops = ops || self.options;
 
         var item,
             classOfItem,
             key;
-
-        // Set our ui collection
-        if (!ops.hasOwnProperty('ui') || !sjl.isset(ops.ui)) {
-            ops.ui = {};
-        }
+        //
+        //// Set our ui collection
+        //if (!sjl.issetObjKeyAndOfType(ops, 'ui', 'Object')) {
+        //    ops.ui = {};
+        //}
 
         // Loop through ops and populate elements
         for (key in ops.ui) {
@@ -222,10 +222,7 @@ $.widget('jui.juiBase', {
      * @protected
      */
     _appendByAppendToString: function (appendToStr, $elm, $appendToElm, $selfElm) {
-        if (appendToStr === 'body') {
-            $appendToElm.append($elm);
-        }
-        else if (appendToStr === 'this.element') {
+        if (appendToStr === 'this.element') {
             $selfElm.append($elm);
         }
         else if (appendToStr === 'after this.element') {
@@ -479,6 +476,7 @@ $.widget('jui.juiBase', {
                 case 'self' :
                 case 'this' :
                 case 'prepend' :
+                case 'append' :
                 case 'this.element':
                 case 'self.element': // Assume that $appendToElm default is self.element
                     break;
