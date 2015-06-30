@@ -62,3 +62,14 @@ select {
     @include border-radius(10px);
 }
 
+
+body > header {
+    background: #333;
+}
+
+.running-cat-sprite {
+    position: relative;
+    background-image: url(../../images/running-cat-sprite.png);
+    witdh: 512px !important;
+    height: 256px;
+}

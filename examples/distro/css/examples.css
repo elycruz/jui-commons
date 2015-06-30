@@ -2,7 +2,7 @@
  * In this file you should write your main styles. (or centralize your imports)
  * Import this file using the following HTML or equivalent:
  */
-/* line 17, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 5, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -24,46 +24,46 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 
-/* line 22, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 22, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 html {
   line-height: 1;
 }
 
-/* line 24, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 24, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 ol, ul {
   list-style: none;
 }
 
-/* line 26, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 26, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/* line 28, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 28, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 caption, th, td {
   text-align: left;
   font-weight: normal;
   vertical-align: middle;
 }
 
-/* line 30, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 30, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 q, blockquote {
   quotes: none;
 }
-/* line 103, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 103, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 q:before, q:after, blockquote:before, blockquote:after {
   content: "";
   content: none;
 }
 
-/* line 32, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 32, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 a img {
   border: none;
 }
 
-/* line 116, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+/* line 116, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
   display: block;
 }
 
@@ -884,7 +884,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   cursor: pointer;
   z-index: 98;
 }
-/* line 32, ../../../src/sass/jui-select-picker.scss */
+/* line 28, ../../../src/sass/jui-select-picker.scss */
 .jui-select-picker .button > span,
 .jui-select-picker .button > div,
 .jui-select-picker .button .label,
@@ -930,9 +930,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   width: 100%;
   border-bottom: 1px solid #ccc;
   list-style: none;
-  -webkit-transition: background 0.16s linear;
   -moz-transition: background 0.16s linear;
   -o-transition: background 0.16s linear;
+  -webkit-transition: background 0.16s linear;
   transition: background 0.16s linear;
 }
 /* line 74, ../../../src/sass/jui-select-picker.scss */
@@ -940,16 +940,16 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   display: block;
   padding: 10px;
   text-decoration: none;
-  -webkit-transition: background 0.16s linear;
   -moz-transition: background 0.16s linear;
   -o-transition: background 0.16s linear;
+  -webkit-transition: background 0.16s linear;
   transition: background 0.16s linear;
 }
 /* line 80, ../../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li a:hover {
   background: #ddd;
 }
-/* line 87, ../../../src/sass/jui-select-picker.scss */
+/* line 83, ../../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li a:active,
 .jui-select-picker .options ul li a.selected,
 .jui-select-picker .options ul li a.active,
@@ -968,10 +968,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 /* line 99, ../../../src/sass/jui-select-picker.scss */
 .jui-select-picker .scrollbar {
   position: absolute;
-  -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  -webkit-border-radius: 8px;
   border-radius: 8px;
   z-index: 99;
 }
@@ -989,19 +987,17 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 /* line 115, ../../../src/sass/jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar .handle {
   width: 8px;
-  -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  -webkit-border-radius: 8px;
   border-radius: 8px;
 }
 
-/* line 126, ../../../src/sass/jui-select-picker.scss */
+/* line 125, ../../../src/sass/jui-select-picker.scss */
 .lt-ie9 .expanded .scrollbar,
 .lt-ie9 .expanded .options {
   display: block;
 }
-/* line 134, ../../../src/sass/jui-select-picker.scss */
+/* line 133, ../../../src/sass/jui-select-picker.scss */
 .lt-ie9 .collapsed .scrollbar,
 .lt-ie9 .collapsed .options {
   display: none;
@@ -1080,7 +1076,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   max-height: 220px;
   background: #fff;
   z-index: 97;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
 /* line 33, ../../../src/sass/jui-scrollable-drop-down.scss */
@@ -1112,20 +1108,16 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   height: 220px;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
-  -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  -webkit-border-radius: 8px;
   border-radius: 8px;
   z-index: 99;
 }
 /* line 60, ../../../src/sass/jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .vertical.scrollbar .handle {
   width: 8px;
-  -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  -webkit-border-radius: 8px;
   border-radius: 8px;
 }
 
@@ -1145,45 +1137,40 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   height: 10px;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
   opacity: 0.8;
-  -webkit-transform: scale(1, 1);
   -moz-transform: scale(1, 1);
   -ms-transform: scale(1, 1);
-  -o-transform: scale(1, 1);
+  -webkit-transform: scale(1, 1);
   transform: scale(1, 1);
-  -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
+  -webkit-border-radius: 10px;
   border-radius: 10px;
-  -webkit-transition: -webkit-transform 0.3s linear;
   -moz-transition: -moz-transform 0.3s linear;
   -o-transition: -o-transform 0.3s linear;
+  -webkit-transition: -webkit-transform 0.3s linear;
   transition: transform 0.3s linear;
-  -webkit-transition: background 0.3s linear;
   -moz-transition: background 0.3s linear;
   -o-transition: background 0.3s linear;
+  -webkit-transition: background 0.3s linear;
   transition: background 0.3s linear;
-  -webkit-transition: background-color 0.3s linear;
   -moz-transition: background-color 0.3s linear;
   -o-transition: background-color 0.3s linear;
+  -webkit-transition: background-color 0.3s linear;
   transition: background-color 0.3s linear;
 }
 /* line 20, ../../../src/sass/jui-floating-scroll-indicators.scss */
 .jui-floating-scroll-indicator > .indicator-wrapper .indicator:hover {
-  -webkit-transform: scale(1.3, 1.3);
   -moz-transform: scale(1.3, 1.3);
   -ms-transform: scale(1.3, 1.3);
-  -o-transform: scale(1.3, 1.3);
+  -webkit-transform: scale(1.3, 1.3);
   transform: scale(1.3, 1.3);
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
 /* line 24, ../../../src/sass/jui-floating-scroll-indicators.scss */
 .jui-floating-scroll-indicator > .indicator-wrapper .indicator:active {
-  -webkit-transform: scale(1.1, 1.1);
   -moz-transform: scale(1.1, 1.1);
   -ms-transform: scale(1.1, 1.1);
-  -o-transform: scale(1.1, 1.1);
+  -webkit-transform: scale(1.1, 1.1);
   transform: scale(1.1, 1.1);
   background: #99000;
 }
@@ -1365,14 +1352,12 @@ h1 {
 /* line 30, ../../sass/examples.scss */
 textarea {
   padding: 10px;
-  -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
-  -ms-border-radius: 20px;
-  -o-border-radius: 20px;
+  -webkit-border-radius: 20px;
   border-radius: 20px;
 }
 
-/* line 35, ../../sass/examples.scss */
+/* line 34, ../../sass/examples.scss */
 header, section, nav,
 section > div {
   margin: 10px;
@@ -1386,26 +1371,25 @@ nav > ul {
   overflow: hidden;
   *zoom: 1;
 }
-/* line 60, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 62, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/typography/lists/_horizontal-list.scss */
 nav > ul li {
   list-style-image: none;
   list-style-type: none;
   margin-left: 0;
   white-space: nowrap;
-  display: inline;
   float: left;
   padding-left: 10px;
   padding-right: 10px;
 }
-/* line 48, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
-nav > ul li:first-child, nav > ul li.first {
+/* line 49, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/typography/lists/_horizontal-list.scss */
+nav > ul li:first-child {
   padding-left: 0;
 }
-/* line 49, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 50, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/typography/lists/_horizontal-list.scss */
 nav > ul li:last-child {
   padding-right: 0;
 }
-/* line 50, ../../../../../../../../Program Files/Ruby21-x64/lib/ruby/gems/2.1.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 52, C:/Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/typography/lists/_horizontal-list.scss */
 nav > ul li.last {
   padding-right: 0;
 }
@@ -1432,9 +1416,20 @@ select {
   padding: 10px;
   border: 1px solid #888;
   background: #eee;
-  -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
+  -webkit-border-radius: 10px;
   border-radius: 10px;
+}
+
+/* line 66, ../../sass/examples.scss */
+body > header {
+  background: #333;
+}
+
+/* line 70, ../../sass/examples.scss */
+.running-cat-sprite {
+  position: relative;
+  background-image: url(../../images/running-cat-sprite.png);
+  witdh: 512px !important;
+  height: 256px;
 }

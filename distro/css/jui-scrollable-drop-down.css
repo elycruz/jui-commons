@@ -29,7 +29,7 @@
   max-height: 220px;
   background: #fff;
   z-index: 97;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
 /* line 33, ../../src/sass/jui-scrollable-drop-down.scss */
@@ -61,19 +61,15 @@
   height: 220px;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
-  -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  -webkit-border-radius: 8px;
   border-radius: 8px;
   z-index: 99;
 }
 /* line 60, ../../src/sass/jui-scrollable-drop-down.scss */
 .jui-scrollable-drop-down .vertical.scrollbar .handle {
   width: 8px;
-  -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  -webkit-border-radius: 8px;
   border-radius: 8px;
 }

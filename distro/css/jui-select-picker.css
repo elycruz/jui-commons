@@ -24,7 +24,7 @@
   cursor: pointer;
   z-index: 98;
 }
-/* line 32, ../../src/sass/jui-select-picker.scss */
+/* line 28, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .button > span,
 .jui-select-picker .button > div,
 .jui-select-picker .button .label,
@@ -70,9 +70,9 @@
   width: 100%;
   border-bottom: 1px solid #ccc;
   list-style: none;
-  -webkit-transition: background 0.16s linear;
   -moz-transition: background 0.16s linear;
   -o-transition: background 0.16s linear;
+  -webkit-transition: background 0.16s linear;
   transition: background 0.16s linear;
 }
 /* line 74, ../../src/sass/jui-select-picker.scss */
@@ -80,16 +80,16 @@
   display: block;
   padding: 10px;
   text-decoration: none;
-  -webkit-transition: background 0.16s linear;
   -moz-transition: background 0.16s linear;
   -o-transition: background 0.16s linear;
+  -webkit-transition: background 0.16s linear;
   transition: background 0.16s linear;
 }
 /* line 80, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li a:hover {
   background: #ddd;
 }
-/* line 87, ../../src/sass/jui-select-picker.scss */
+/* line 83, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .options ul li a:active,
 .jui-select-picker .options ul li a.selected,
 .jui-select-picker .options ul li a.active,
@@ -108,10 +108,8 @@
 /* line 99, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .scrollbar {
   position: absolute;
-  -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  -webkit-border-radius: 8px;
   border-radius: 8px;
   z-index: 99;
 }
@@ -129,19 +127,17 @@
 /* line 115, ../../src/sass/jui-select-picker.scss */
 .jui-select-picker .vertical.scrollbar .handle {
   width: 8px;
-  -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  -webkit-border-radius: 8px;
   border-radius: 8px;
 }
 
-/* line 126, ../../src/sass/jui-select-picker.scss */
+/* line 125, ../../src/sass/jui-select-picker.scss */
 .lt-ie9 .expanded .scrollbar,
 .lt-ie9 .expanded .options {
   display: block;
 }
-/* line 134, ../../src/sass/jui-select-picker.scss */
+/* line 133, ../../src/sass/jui-select-picker.scss */
 .lt-ie9 .collapsed .scrollbar,
 .lt-ie9 .collapsed .options {
   display: none;

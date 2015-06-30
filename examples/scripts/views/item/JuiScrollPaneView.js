@@ -15,7 +15,8 @@ function( Backbone, tmpl ) {
 
         ui: {
             toggleCreationStateBtn: '.toggle-creation-destruction-state',
-            toggleMimickBrowserBtn: '.toggle-mimick-browser'
+            toggleMimickBrowserBtn: '.toggle-mimick-browser',
+            runningCat: '.running-cat-sprite'
         },
 
         onShow: function () {
@@ -39,6 +40,8 @@ function( Backbone, tmpl ) {
                 var currVal = self.scrollPanes.juiScrollPane('option', 'mimickBrowser');
                 self.scrollPanes.juiScrollPane('option', 'mimickBrowser', (currVal === true ? false : true));
             });
+
+
         }
 	});
 

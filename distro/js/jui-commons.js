@@ -397,7 +397,8 @@ $.widget('jui.juiBase', {
      */
     _timeline: function (timeline, optionsKey, ops) {
         var retVal = this,
-            issetTimeline = sjl.isset(timeline),
+            isGetterCall = typeof timeline === 'undefined',
+            issetTimeline,
             constructorOptions;
 
         // If not set optionskey exit the function
@@ -405,8 +406,11 @@ $.widget('jui.juiBase', {
             throw new Error(this.widgetFullName + '._timeline requires an `optionsKey` string param.');
         }
 
+        // Is timeline already set
+        issetTimeline = sjl.isset(ops[optionsKey]);
+
         // If getter call and timeline is not set, create it
-        if (!issetTimeline) {
+        if (isGetterCall && !issetTimeline) {
             constructorOptions = ['default' + optionsKey + 'Options'];
             constructorOptions = ops.hasOwnProperty(constructorOptions) && !sjl.isset(ops[constructorOptions])
                     ? ops[constructorOptions] : null;
@@ -415,13 +419,17 @@ $.widget('jui.juiBase', {
                     new ops.gsapTimelineConstructor(constructorOptions);
         }
 
+        else if (isGetterCall && issetTimeline) {
+            retVal = ops[optionsKey];
+        }
+
         // If setter call and timeline matches one of the allowed timeline classes, set it
-        else if (issetTimeline && (timeline instanceof TimelineMax || timeline instanceof TimelineLite)) {
+        else if (!isGetterCall && (timeline instanceof TimelineMax || timeline instanceof TimelineLite)) {
             ops[optionsKey] = timeline;
         }
 
         // Else if setter call but timeline doesn't match one of the allowed timeline classes, throw an error
-        else if (issetTimeline) {
+        else if (!isGetterCall) {
             throw new Error(this.widgetFullName + '.gsapTimeline expects timeline to be of types: ' +
                 'undefined, TimelineLite, or TimelineMax.  Type recieved: ' + sjl.classOf(timeline));
         }
